@@ -1,0 +1,15 @@
+{
+  "name": "vdt-webapp",
+  "workspaces": [
+    "models",
+    "frontend",
+    "server"
+  ],
+  "dependencies": {
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.8.1",
+    "ts-node": "^10.9.2"
+  }
+}

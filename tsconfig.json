@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "target": "ES2023",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "paths": {
+            "@common/*": ["./common/src/*"],
+            "@vdt-webapp/common": ["./common/src"]
+        },
+        "baseUrl": ".",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": false,
+        "forceConsistentCasingInFileNames": true
+    }
+}
