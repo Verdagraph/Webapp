@@ -14,7 +14,7 @@
 </script>
 
 <FormPrimitive.FieldErrors
-	class={cn('text-sm font-medium text-warning-11', className)}
+	class={cn('text-warning-11 text-sm font-medium', className)}
 	{...$$restProps}
 	let:errors
 	let:fieldErrorsAttrs
@@ -27,7 +27,7 @@
 					{...errorAttrs}
 					class={cn(
 						errorClasses,
-						'border-x border-warning-7 bg-warning-3 p-1 first:rounded-t-md first:border-t last:mb-4 last:rounded-b-md last:border-b'
+						'border-warning-7 bg-warning-3 border-x p-1 first:rounded-t-md first:border-t last:mb-4 last:rounded-b-md last:border-b'
 					)}
 				>
 					{error}
@@ -39,7 +39,7 @@
 						{...errorAttrs}
 						class={cn(
 							errorClasses,
-							'border-x border-warning-7 bg-warning-3 p-1 first:rounded-t-md first:border-t last:mb-4 last:rounded-b-md last:border-b'
+							'border-warning-7 bg-warning-3 border-x p-1 first:rounded-t-md first:border-t last:mb-4 last:rounded-b-md last:border-b'
 						)}
 					>
 						{error}

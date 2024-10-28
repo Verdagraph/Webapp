@@ -10,7 +10,7 @@
 
 <MenubarPrimitive.Root
 	class={cn(
-		'flex h-10 items-center space-x-1 rounded-none border bg-neutral-2 p-1',
+		'bg-neutral-2 flex h-10 items-center space-x-1 rounded-none border p-1',
 		className
 	)}
 	{...$$restProps}

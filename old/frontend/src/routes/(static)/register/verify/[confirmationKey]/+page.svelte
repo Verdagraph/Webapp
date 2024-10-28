@@ -43,11 +43,11 @@
 	{:else if $mutation.isError}
 		<Card.Header>
 			<Card.Title>Something went wrong...</Card.Title>
-			<Card.Content class="text-md w-full px-0 pb-0 pt-4 font-medium text-warning-11">
+			<Card.Content class="text-md text-warning-11 w-full px-0 pb-0 pt-4 font-medium">
 				<ul>
 					{#each serverErrors.errors['key'] as error}
 						<li
-							class="border-x border-warning-7 bg-warning-3 p-1 first:rounded-t-md first:border-t last:rounded-b-md last:border-b"
+							class="border-warning-7 bg-warning-3 border-x p-1 first:rounded-t-md first:border-t last:rounded-b-md last:border-b"
 						>
 							{error}
 						</li>

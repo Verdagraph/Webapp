@@ -49,19 +49,19 @@
 </script>
 
 <div use:melt={$root} class="overflow-none relative flex h-16 w-full">
-	<span class="h-[3px] w-full self-start bg-neutral-6">
-		<span use:melt={$range} class="h-[3px] bg-neutral-9"></span>
+	<span class="bg-neutral-6 h-[3px] w-full self-start">
+		<span use:melt={$range} class="bg-neutral-9 h-[3px]"></span>
 	</span>
 
-	<span use:melt={$thumbs[0]} class="h-1/3 w-1 self-start rounded-md bg-neutral-9"
+	<span use:melt={$thumbs[0]} class="bg-neutral-9 h-1/3 w-1 self-start rounded-md"
 	></span>
-	<span use:melt={$thumbs[1]} class="h-1/2 w-1 self-start rounded-b-md bg-primary-8"
+	<span use:melt={$thumbs[1]} class="bg-primary-8 h-1/2 w-1 self-start rounded-b-md"
 	></span>
-	<span use:melt={$thumbs[2]} class="h-1/3 w-1 self-start rounded-md bg-neutral-9"
+	<span use:melt={$thumbs[2]} class="bg-neutral-9 h-1/3 w-1 self-start rounded-md"
 	></span>
 
 	{#each $ticks as tick, index}
-		<span use:melt={tick} class="h-3 w-[3px] self-end rounded-t-lg bg-neutral-11">
+		<span use:melt={tick} class="bg-neutral-11 h-3 w-[3px] self-end rounded-t-lg">
 		</span>
 	{/each}
 </div>

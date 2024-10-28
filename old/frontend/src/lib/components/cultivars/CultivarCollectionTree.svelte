@@ -42,7 +42,9 @@
 	const serverErrors = createServerErrors();
 
 	/** Queries. */
-	const collectionQuery = cultivarCollectionQuery({ ids: [collectionId] });
+	const collectionQuery = cultivarCollectionQuery({
+		ids: [collectionId]
+	});
 
 	const treeView = createTreeView();
 
@@ -58,7 +60,9 @@
 	 *  executes success task, and sets server errors on failure.
 	 * - onChange: Reset server errors.
 	 */
-	const initialData: CultivarCollectionUpdateCommand = { collection_ref: collectionId };
+	const initialData: CultivarCollectionUpdateCommand = {
+		collection_ref: collectionId
+	};
 	const form = superForm(defaults(initialData, zod(cultivarCollectionUpdate.schema)), {
 		SPA: true,
 		resetForm: true,
@@ -86,9 +90,18 @@
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions = [
-		{ value: CultivarCollectionFullSchemaVisibility.private, label: 'Private' },
-		{ value: CultivarCollectionFullSchemaVisibility.unlisted, label: 'Unlisted' },
-		{ value: CultivarCollectionFullSchemaVisibility.public, label: 'Public' }
+		{
+			value: CultivarCollectionFullSchemaVisibility.private,
+			label: 'Private'
+		},
+		{
+			value: CultivarCollectionFullSchemaVisibility.unlisted,
+			label: 'Unlisted'
+		},
+		{
+			value: CultivarCollectionFullSchemaVisibility.public,
+			label: 'Public'
+		}
 	];
 	function visibilityEnumToOption(visibility: CultivarCollectionFullSchemaVisibility) {
 		switch (visibility) {
@@ -105,7 +118,12 @@
 	 * Required as the value of the superform data can't be bound to the form value type.
 	 */
 	function onVisibilitySelectedChange(
-		value: { value: CultivarCollectionFullSchemaVisibility; label?: string } | undefined
+		value:
+			| {
+					value: CultivarCollectionFullSchemaVisibility;
+					label?: string;
+			  }
+			| undefined
 	) {
 		if (value) {
 			/** @ts-ignore */
@@ -202,11 +220,13 @@
 		<!-- Title -->
 		<div class="flex w-full flex-row items-center justify-between">
 			<div class="flex flex-row items-center overflow-hidden">
-				<h1 class="truncate text-2xl font-bold">{$collectionQuery.data[0].name}</h1>
+				<h1 class="truncate text-2xl font-bold">
+					{$collectionQuery.data[0].name}
+				</h1>
 			</div>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
-					class="ml-2 rounded-lg border border-accent-6 bg-accent-4 p-2"
+					class="border-accent-6 bg-accent-4 ml-2 rounded-lg border p-2"
 				>
 					Options
 				</DropdownMenu.Trigger>
@@ -254,7 +274,7 @@
 						<Field {form} name="description">
 							<Control let:attrs>
 								<div
-									class="mx-2 flex items-center justify-between text-sm text-neutral-12"
+									class="text-neutral-12 mx-2 flex items-center justify-between text-sm"
 								>
 									<Label>Description</Label>
 									<Description class="items center flex">
@@ -264,7 +284,7 @@
 										/>
 									</Description>
 									{@render inlineErrors('cultivar_collection_description')}
-									<div class="ml-4 h-[1px] flex-grow rounded-lg bg-neutral-3"></div>
+									<div class="bg-neutral-3 ml-4 h-[1px] flex-grow rounded-lg"></div>
 								</div>
 								<Textarea
 									{...attrs}
@@ -273,24 +293,24 @@
 										$formData.description = $collectionQuery.data[0].description;
 										debounceFormSubmit();
 									}}
-									class="mx-2 mt-2 min-h-12 rounded-lg border border-neutral-4 bg-neutral-2 p-2 text-sm text-neutral-11 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6"
+									class="border-neutral-4 bg-neutral-2 text-neutral-11 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6 mx-2 mt-2 min-h-12 rounded-lg border p-2 text-sm"
 								/>
 							</Control></Field
 						>
 					{:else}
-						<div class="mx-2 flex items-center justify-between text-sm text-neutral-12">
+						<div class="text-neutral-12 mx-2 flex items-center justify-between text-sm">
 							<span>Description</span>
-							<div class="ml-4 h-[1px] flex-grow rounded-lg bg-neutral-3"></div>
+							<div class="bg-neutral-3 ml-4 h-[1px] flex-grow rounded-lg"></div>
 						</div>
 						<div
-							class="m-2 rounded-lg border border-neutral-4 bg-neutral-2 p-2 text-sm text-neutral-11"
+							class="border-neutral-4 bg-neutral-2 text-neutral-11 m-2 rounded-lg border p-2 text-sm"
 						>
 							{#if $collectionQuery.data[0].description}
 								<p>
 									{$collectionQuery.data[0].description}
 								</p>
 							{:else}
-								<span class="font-light italic text-neutral-10"> None </span>
+								<span class="text-neutral-10 font-light italic"> None </span>
 							{/if}
 						</div>
 					{/if}
@@ -298,17 +318,17 @@
 				<div class="my-2">
 					<Collapsible.Root bind:open={detailsOpen}>
 						<Collapsible.Trigger
-							class="flex w-full items-center justify-between rounded-lg py-1 transition-colors hover:bg-neutral-3"
+							class="hover:bg-neutral-3 flex w-full items-center justify-between rounded-lg py-1 transition-colors"
 						>
-							<span class="mx-2 text-sm text-neutral-12">Details</span>
-							<div class="ml-4 h-[1px] flex-grow rounded-lg bg-neutral-3"></div>
+							<span class="text-neutral-12 mx-2 text-sm">Details</span>
+							<div class="bg-neutral-3 ml-4 h-[1px] flex-grow rounded-lg"></div>
 							<Icon
 								icon={iconIds.chevronRight}
 								width="1.5rem"
 								class="ml-2 {detailsOpen ? 'rotate-90' : ''}"
 							/>
 						</Collapsible.Trigger>
-						<Collapsible.Content class="mx-2 mt-2 text-neutral-11">
+						<Collapsible.Content class="text-neutral-11 mx-2 mt-2">
 							<ul class="flex w-full flex-col">
 								<!-- Collection name. -->
 								<li class="my-2 w-full">
@@ -317,7 +337,7 @@
 											<Control let:attrs>
 												<div class="flex items-center justify-between">
 													<div class="flex items-center">
-														<Label class="ml-2 text-sm font-light text-neutral-11"
+														<Label class="text-neutral-11 ml-2 text-sm font-light"
 															>Name</Label
 														>
 														<Description class="items center flex">
@@ -336,7 +356,7 @@
 															$formData.name = $collectionQuery.data[0].name;
 															debounceFormSubmit();
 														}}
-														class="rounded-md border bg-neutral-1 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-6 focus-visible:ring-offset-2 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6"
+														class="bg-neutral-1 focus-visible:ring-primary-6 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 													/>
 												</div>
 											</Control>
@@ -344,7 +364,7 @@
 									{:else}
 										<div class="flex items-center justify-between">
 											<div class="flex items-center">
-												<span class="ml-2 text-sm font-light text-neutral-11">Name</span
+												<span class="text-neutral-11 ml-2 text-sm font-light">Name</span
 												>
 												<FormInfoPopover
 													description={cultivarFields.cultivar_collection_name
@@ -352,7 +372,7 @@
 												/>
 											</div>
 											<span
-												class="w-auto py-2 text-right text-sm data-[fs-error]:outline-destructive-7"
+												class="data-[fs-error]:outline-destructive-7 w-auto py-2 text-right text-sm"
 												>{$collectionQuery.data[0].name}</span
 											>
 										</div>
@@ -365,7 +385,7 @@
 											<Control let:attrs>
 												<div class="flex items-center justify-between">
 													<div class="flex items-center">
-														<Label class="ml-2 text-sm font-light text-neutral-11"
+														<Label class="text-neutral-11 ml-2 text-sm font-light"
 															>Visibility</Label
 														>
 														<Description class="items center flex">
@@ -399,7 +419,7 @@
 													>
 														<Select.Trigger
 															chevron={editingCollection}
-															class="ml-2 w-32 text-sm font-light text-neutral-11 disabled:cursor-auto"
+															class="text-neutral-11 ml-2 w-32 text-sm font-light disabled:cursor-auto"
 														>
 															<Select.Value placeholder="Private" />
 														</Select.Trigger>
@@ -426,7 +446,7 @@
 									{:else}
 										<div class="flex items-center justify-between">
 											<div class="flex items-center">
-												<span class="ml-2 text-sm font-light text-neutral-11"
+												<span class="text-neutral-11 ml-2 text-sm font-light"
 													>Visibility</span
 												>
 												<FormInfoPopover
@@ -448,7 +468,7 @@
 											<Control let:attrs>
 												<div class="flex items-center justify-between">
 													<div class="flex items-center">
-														<Label class="ml-2 text-sm font-light text-neutral-11"
+														<Label class="text-neutral-11 ml-2 text-sm font-light"
 															>Tags</Label
 														>
 														<Description class="flex items-center">
@@ -476,7 +496,7 @@
 									{:else}
 										<div class="flex items-center justify-between">
 											<div class="flex items-center">
-												<span class="ml-2 text-sm font-light text-neutral-11">Tags</span
+												<span class="text-neutral-11 ml-2 text-sm font-light">Tags</span
 												>
 												<FormInfoPopover
 													description={cultivarFields.cultivar_collection_tags
@@ -484,7 +504,7 @@
 												/>
 											</div>
 											<div
-												class="rounded-lg border border-neutral-4 bg-neutral-1 p-2 text-right text-sm"
+												class="border-neutral-4 bg-neutral-1 rounded-lg border p-2 text-right text-sm"
 											>
 												{#if $collectionQuery.data[0].tags.length > 0}
 													{#each $collectionQuery.data[0].tags as tag}
@@ -494,7 +514,7 @@
 														</span>
 													{/each}
 												{:else}
-													<span class="font-light italic text-neutral-11"> None </span>
+													<span class="text-neutral-11 font-light italic"> None </span>
 												{/if}
 											</div>
 										</div>
@@ -504,11 +524,11 @@
 								{#if $collectionQuery.data[0].parent_ref}
 									<li class="my-2 w-full">
 										<div class="flex items-center justify-between">
-											<span class="ml-2 text-sm font-light text-neutral-11"
+											<span class="text-neutral-11 ml-2 text-sm font-light"
 												>Inherits from</span
 											>
 											<span
-												class="text-md rounded-lg border border-neutral-4 bg-neutral-2 p-2"
+												class="text-md border-neutral-4 bg-neutral-2 rounded-lg border p-2"
 												>TODO</span
 											>
 										</div>
@@ -518,11 +538,11 @@
 								{#if $collectionQuery.data[0].user_ref}
 									<li class="my-2 w-full">
 										<div class="flex items-center justify-between">
-											<span class="ml-2 text-sm font-light text-neutral-11"
+											<span class="text-neutral-11 ml-2 text-sm font-light"
 												>Creator</span
 											>
 											<span
-												class="text-md rounded-lg border border-neutral-4 bg-neutral-2 p-2"
+												class="text-md border-neutral-4 bg-neutral-2 rounded-lg border p-2"
 												>TODO</span
 											>
 										</div>
@@ -532,7 +552,7 @@
 								{#if $collectionQuery.data[0].created_at}
 									<li class="my-2 w-full">
 										<div class="flex items-center justify-between">
-											<span class="ml-2 text-sm font-light text-neutral-11"
+											<span class="text-neutral-11 ml-2 text-sm font-light"
 												>Created at</span
 											>
 											<span class="p-2 text-right text-sm"
@@ -552,11 +572,11 @@
 
 		<!-- Cultivars menu -->
 		<div
-			class="my-3 flex h-8 w-full items-center justify-between rounded-2xl border border-neutral-8 bg-neutral-2"
+			class="border-neutral-8 bg-neutral-2 my-3 flex h-8 w-full items-center justify-between rounded-2xl border"
 		>
 			<Dialog.Root bind:open={cultivarCreateFormOpen}>
 				<Dialog.Trigger
-					class="flex h-full w-auto items-center rounded-l-2xl border-r border-neutral-7 hover:bg-neutral-3"
+					class="border-neutral-7 hover:bg-neutral-3 flex h-full w-auto items-center rounded-l-2xl border-r"
 				>
 					<Icon icon={iconIds.addIcon} width="1rem" class="ml-4 mr-3 sm:ml-6" />
 					<span class="mr-6 hidden sm:block">Add</span>
@@ -575,26 +595,26 @@
 				</Dialog.Content>
 			</Dialog.Root>
 			<div
-				class="group flex h-full w-auto flex-grow items-center border-r border-neutral-7 hover:bg-neutral-3"
+				class="border-neutral-7 hover:bg-neutral-3 group flex h-full w-auto flex-grow items-center border-r"
 			>
 				<Icon icon={iconIds.searchIcon} width="1.25rem" class="ml-6 mr-3" />
 				<input
 					bind:value={cultivarSearch}
 					placeholder="Search"
-					class="mr-6 w-full bg-neutral-2 group-hover:bg-neutral-3"
+					class="bg-neutral-2 group-hover:bg-neutral-3 mr-6 w-full"
 				/>
 				<Button.Root
 					on:click={() => {
 						cultivarSearch = '';
 					}}
-					class="h-full hover:bg-neutral-4"
+					class="hover:bg-neutral-4 h-full"
 				>
 					<Icon icon={iconIds.defaultClose} width="1rem" class="ml-3 mr-3" />
 				</Button.Root>
 			</div>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
-					class="flex h-full w-auto items-center rounded-r-2xl border-l border-neutral-7 hover:bg-neutral-3"
+					class="border-neutral-7 hover:bg-neutral-3 flex h-full w-auto items-center rounded-r-2xl border-l"
 				>
 					<Icon icon={iconIds.sortIcon} width="1rem" class="ml-3 mr-3 sm:ml-6" />
 					<span class="mr-6 hidden sm:block">Sort</span>

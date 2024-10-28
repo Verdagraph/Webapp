@@ -37,7 +37,7 @@
 
 <!-- Top bar -->
 <div
-	class="sticky top-0 z-50 flex h-10 w-full flex-row items-center justify-between overflow-hidden border-b border-neutral-5 bg-neutral-1"
+	class="border-neutral-5 bg-neutral-1 sticky top-0 z-50 flex h-10 w-full flex-row items-center justify-between overflow-hidden border-b"
 >
 	<span class="ml-8">Gardens</span>
 	<ul class="flex h-full flex-row items-center">
@@ -54,7 +54,7 @@
 					<Button variant="ghost" class="rounded-none">
 						<Icon icon={iconIds.gardensInviteIcon} width="1.5rem" class="mx-2" />
 						<span class="mx-2 hidden sm:block">Invites</span>
-						<div class="h-6 w-6 rounded-2xl border border-neutral-9">
+						<div class="border-neutral-9 h-6 w-6 rounded-2xl border">
 							{#if $pendingInvites.status === 'loading'}
 								?
 							{:else if $pendingInvites.status === 'success'}
@@ -100,7 +100,7 @@
 			{label}
 		</span>
 		<GardenThumbnailScrollable gardenPartials={gardens} />
-		<Separator class="mb-4 mt-12 w-full bg-neutral-7" />
+		<Separator class="bg-neutral-7 mb-4 mt-12 w-full" />
 	</div>
 {/snippet}
 
@@ -109,7 +109,7 @@
 	<div class="m-auto my-8">Loading...</div>
 {:else if $associatedPartials.status === 'success'}
 	<!-- Content -->
-	<div class="h-full w-full bg-neutral-1 p-8">
+	<div class="bg-neutral-1 h-full w-full p-8">
 		{#if $associatedPartials.data.favorites.length > 0}
 			{@render gardenCategory(
 				'Favorites',

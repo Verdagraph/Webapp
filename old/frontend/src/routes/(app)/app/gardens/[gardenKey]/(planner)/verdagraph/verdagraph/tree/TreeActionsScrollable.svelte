@@ -5,7 +5,7 @@
 </script>
 
 <TreeScrollable>
-	<Toolbar.Root class="flex items-center justify-center bg-neutral-2 p-1">
+	<Toolbar.Root class="bg-neutral-2 flex items-center justify-center p-1">
 		<ul class="flex h-full items-center justify-center">
 			<li class="flex items-center">
 				<i>
@@ -13,7 +13,7 @@
 				</i>
 			</li>
 			<li>
-				<span class="ml-2 mr-4 text-sm text-neutral-11"> Actions </span>
+				<span class="text-neutral-11 ml-2 mr-4 text-sm"> Actions </span>
 			</li>
 		</ul>
 	</Toolbar.Root>

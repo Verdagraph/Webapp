@@ -106,18 +106,18 @@
 <div class="flex items-center">
 	<button
 		use:melt={$item({ id: cultivar.id, hasChildren: true })}
-		class="flex w-full select-none items-center justify-between rounded-lg py-1 transition-colors hover:bg-neutral-3"
+		class="hover:bg-neutral-3 flex w-full select-none items-center justify-between rounded-lg py-1 transition-colors"
 	>
 		<div class="flex items-center overflow-hidden">
-			<span class="mx-2 truncate text-lg font-bold text-neutral-12">
+			<span class="text-neutral-12 mx-2 truncate text-lg font-bold">
 				{cultivar.name}
 			</span>
 			{#if cultivar.key}
-				<span class="h-l w-1 text-neutral-12">&#183;</span>
+				<span class="h-l text-neutral-12 w-1">&#183;</span>
 				<span class="text-md mx-2 italic">{cultivar.key}</span>
 			{/if}
 		</div>
-		<div class="h-[1px] flex-grow rounded-lg bg-neutral-3"></div>
+		<div class="bg-neutral-3 h-[1px] flex-grow rounded-lg"></div>
 		<Icon
 			icon={iconIds.chevronRight}
 			width="1.5rem"
@@ -164,11 +164,14 @@
 		<!-- Details tree item -->
 		<li class="my-2 w-full">
 			<button
-				use:melt={$item({ id: cultivar.id + 'details', hasChildren: true })}
-				class="flex w-full items-center justify-between rounded-lg py-1 transition-colors hover:bg-neutral-3"
+				use:melt={$item({
+					id: cultivar.id + 'details',
+					hasChildren: true
+				})}
+				class="hover:bg-neutral-3 flex w-full items-center justify-between rounded-lg py-1 transition-colors"
 			>
-				<span class="text-md ml-6 truncate font-medium text-neutral-12"> Details </span>
-				<div class="ml-4 h-[1px] flex-grow rounded-lg bg-neutral-3"></div>
+				<span class="text-md text-neutral-12 ml-6 truncate font-medium"> Details </span>
+				<div class="bg-neutral-3 ml-4 h-[1px] flex-grow rounded-lg"></div>
 				<Icon
 					icon={iconIds.chevronRight}
 					width="1.5rem"
@@ -185,7 +188,7 @@
 								<Control let:attrs>
 									<div class="flex items-center justify-between">
 										<div class="flex items-center">
-											<Label class="ml-10 text-sm font-light text-neutral-11"
+											<Label class="text-neutral-11 ml-10 text-sm font-light"
 												>Names</Label
 											>
 											<Description class="flex items-center">
@@ -212,13 +215,13 @@
 						{:else}
 							<div class="flex items-center justify-between">
 								<div class="flex items-center">
-									<span class="ml-10 text-sm font-light text-neutral-11">Names</span>
+									<span class="text-neutral-11 ml-10 text-sm font-light">Names</span>
 									<FormInfoPopover
 										description={cultivarFields.cultivar_names.description}
 									/>
 								</div>
 								<div
-									class="rounded-lg border border-neutral-4 bg-neutral-1 p-2 text-right text-sm"
+									class="border-neutral-4 bg-neutral-1 rounded-lg border p-2 text-right text-sm"
 								>
 									{#each cultivar.names as name}
 										<span class="first:hidden"> , </span>
@@ -239,7 +242,7 @@
 								<Control let:attrs>
 									<div class="flex items-center justify-between">
 										<div class="flex items-center">
-											<Label class="ml-10 text-sm font-light text-neutral-11">Key</Label
+											<Label class="text-neutral-11 ml-10 text-sm font-light">Key</Label
 											>
 											<Description class="flex items-center">
 												<FormInfoPopover
@@ -256,7 +259,7 @@
 												$formData.key = cultivar.key;
 												debounceFormSubmit();
 											}}
-											class="rounded-md border bg-neutral-1 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-6 focus-visible:ring-offset-2 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6"
+											class="bg-neutral-1 focus-visible:ring-primary-6 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 										/>
 									</div>
 								</Control></Field
@@ -264,14 +267,14 @@
 						{:else}
 							<div class="flex items-center justify-between">
 								<div class="flex items-center">
-									<span class="ml-10 text-sm font-light text-neutral-11">Key</span>
+									<span class="text-neutral-11 ml-10 text-sm font-light">Key</span>
 									<FormInfoPopover
 										description={cultivarFields.cultivar_key.description}
 									/>
 								</div>
 								<div class="p-2 text-right text-sm">
 									<span
-										class="w-auto py-2 text-right text-sm data-[fs-error]:outline-destructive-7"
+										class="data-[fs-error]:outline-destructive-7 w-auto py-2 text-right text-sm"
 										>{cultivar.key}</span
 									>
 								</div>
@@ -286,7 +289,7 @@
 							<Control let:attrs>
 								<div class="flex items-center justify-between">
 									<div class="flex items-center">
-										<Label class="ml-10 text-sm font-light text-neutral-11"
+										<Label class="text-neutral-11 ml-10 text-sm font-light"
 											>Scientific Name</Label
 										>
 										<Description class="flex items-center">
@@ -306,7 +309,7 @@
 											debounceFormSubmit();
 										}}
 										placeholder="None"
-										class="rounded-md border bg-neutral-1 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-6 focus-visible:ring-offset-2 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6"
+										class="bg-neutral-1 focus-visible:ring-primary-6 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 									/>
 								</div>
 							</Control></Field
@@ -314,7 +317,7 @@
 					{:else}
 						<div class="flex items-center justify-between">
 							<div class="flex items-center">
-								<span class="ml-10 text-sm font-light text-neutral-11"
+								<span class="text-neutral-11 ml-10 text-sm font-light"
 									>Scientific Name</span
 								>
 								<FormInfoPopover
@@ -324,11 +327,11 @@
 							<div class="rounded-lg p-2 text-right text-sm">
 								{#if cultivar.scientific_name}
 									<span
-										class="w-auto py-2 text-right text-sm data-[fs-error]:outline-destructive-7"
+										class="data-[fs-error]:outline-destructive-7 w-auto py-2 text-right text-sm"
 										>{cultivar.scientific_name}</span
 									>
 								{:else}
-									<span class="font-light italic text-neutral-11"> None </span>
+									<span class="text-neutral-11 font-light italic"> None </span>
 								{/if}
 							</div>
 						</div>
@@ -341,7 +344,7 @@
 							<Control let:attrs>
 								<div class="flex items-center justify-between">
 									<div class="flex items-center">
-										<Label class="ml-10 text-sm font-light text-neutral-11"
+										<Label class="text-neutral-11 ml-10 text-sm font-light"
 											>Description</Label
 										>
 										<Description class="flex items-center">
@@ -359,7 +362,7 @@
 											debounceFormSubmit();
 										}}
 										placeholder="None"
-										class="rounded-md border bg-neutral-1 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-6 focus-visible:ring-offset-2 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6"
+										class="bg-neutral-1 focus-visible:ring-primary-6 data-[fs-error]:border-destructive-7 data-[fs-error]:outline-destructive-6 rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 									/>
 								</div>
 							</Control></Field
@@ -367,20 +370,20 @@
 					{:else}
 						<div class="flex items-center justify-between">
 							<div class="flex items-center">
-								<span class="ml-10 text-sm font-light text-neutral-11">Description</span
+								<span class="text-neutral-11 ml-10 text-sm font-light">Description</span
 								>
 								<FormInfoPopover
 									description={cultivarFields.cultivar_description.description}
 								/>
 							</div>
-							<div class="rounded-lg border border-neutral-4 p-2 text-right text-sm">
+							<div class="border-neutral-4 rounded-lg border p-2 text-right text-sm">
 								{#if cultivar.description}
 									<span
-										class="w-auto py-2 text-right text-sm data-[fs-error]:outline-destructive-7"
+										class="data-[fs-error]:outline-destructive-7 w-auto py-2 text-right text-sm"
 										>{cultivar.description}</span
 									>
 								{:else}
-									<span class="font-light italic text-neutral-11"> None </span>
+									<span class="text-neutral-11 font-light italic"> None </span>
 								{/if}
 							</div>
 						</div>
@@ -392,9 +395,9 @@
 						use:melt={$item({ id: cultivar.id + 'parent' })}
 						class="flex items-center justify-between"
 					>
-						<span class="ml-10 text-sm font-light text-neutral-11">Inherits from</span>
+						<span class="text-neutral-11 ml-10 text-sm font-light">Inherits from</span>
 						<span
-							class="text-md ml-8 text-wrap rounded-lg border border-neutral-4 bg-neutral-2 p-2 md:ml-16 lg:ml-64"
+							class="text-md border-neutral-4 bg-neutral-2 ml-8 text-wrap rounded-lg border p-2 md:ml-16 lg:ml-64"
 							>todo</span
 						>
 					</div>
@@ -414,14 +417,17 @@
 
 				<li class="my-1">
 					<button
-						use:melt={$item({ id: profileTreeId, hasChildren: hasAttributes })}
-						class="flex w-full items-center justify-between rounded-lg py-1 transition-colors hover:bg-neutral-3"
+						use:melt={$item({
+							id: profileTreeId,
+							hasChildren: hasAttributes
+						})}
+						class="hover:bg-neutral-3 flex w-full items-center justify-between rounded-lg py-1 transition-colors"
 					>
-						<span class="text-md ml-6 truncate font-medium text-neutral-12">
+						<span class="text-md text-neutral-12 ml-6 truncate font-medium">
 							{profileLabel}
 						</span>
 						<FormInfoPopover description={profileDescription} />
-						<div class="ml-4 h-[1px] flex-grow rounded-lg bg-neutral-3"></div>
+						<div class="bg-neutral-3 ml-4 h-[1px] flex-grow rounded-lg"></div>
 						<Icon
 							icon={iconIds.chevronRight}
 							width="1.5rem"
@@ -444,7 +450,7 @@
 											<Control let:attrs>
 												<div class="flex w-full items-center justify-between text-sm">
 													<div class="flex items-center">
-														<Label class="ml-10 text-sm font-light text-neutral-11"
+														<Label class="text-neutral-11 ml-10 text-sm font-light"
 															>{attributeLabel}</Label
 														>
 														<Description class="flex items-center">
@@ -473,7 +479,7 @@
 									{:else}
 										<div class="flex w-full items-center justify-between">
 											<div class="flex items-center">
-												<span class="ml-10 text-sm font-light text-neutral-11"
+												<span class="text-neutral-11 ml-10 text-sm font-light"
 													>{attributeLabel}</span
 												>
 												<FormInfoPopover description={attributeDescription} />

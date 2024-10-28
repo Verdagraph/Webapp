@@ -29,7 +29,10 @@
 	 *  executes success task, and sets server errors on failure.
 	 * - onChange: Reset server errors.
 	 */
-	const initialData = { collection_ref: collectionId, cultivar_id: cultivarId };
+	const initialData = {
+		collection_ref: collectionId,
+		cultivar_id: cultivarId
+	};
 	const form = superForm(defaults(initialData, zod(cultivarDelete.schema)), {
 		SPA: true,
 		validators: zod(cultivarDelete.schema),

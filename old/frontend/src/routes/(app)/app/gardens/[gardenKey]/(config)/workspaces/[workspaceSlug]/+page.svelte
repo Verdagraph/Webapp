@@ -55,7 +55,7 @@
 >
 	{#if activeWorkspace.value.treeEnabled}
 		<Resizable.Pane defaultSize={30} order={0}>
-			<Tree workspace={workspace}/>
+			<Tree {workspace} />
 		</Resizable.Pane>
 	{/if}
 	<Resizable.Handle withHandle={false} />

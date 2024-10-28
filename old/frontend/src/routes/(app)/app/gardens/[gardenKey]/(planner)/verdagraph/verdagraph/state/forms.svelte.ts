@@ -26,12 +26,24 @@ type FormAttributeType = {
 
 const formAttributes: FormAttributeType[] = [
 	{ id: 'add', label: 'Add', content: AddForm },
-	{ id: 'translate', label: 'Translate', content: TranslateForm },
+	{
+		id: 'translate',
+		label: 'Translate',
+		content: TranslateForm
+	},
 	{ id: 'delete', label: 'Delete', content: DeleteForm },
 	{ id: 'observe', label: 'Observe', content: ObserveForm },
-	{ id: 'patterns', label: 'Patterns', content: PatternsForm },
+	{
+		id: 'patterns',
+		label: 'Patterns',
+		content: PatternsForm
+	},
 	{ id: 'plans', label: 'Plans', content: PlansForm },
-	{ id: 'generators', label: 'Generators', content: GeneratorsForm },
+	{
+		id: 'generators',
+		label: 'Generators',
+		content: GeneratorsForm
+	},
 	{ id: 'filter', label: 'Filter', content: FilterForm }
 ];
 

@@ -42,14 +42,14 @@
 					{gardenName}
 				</span>
 				<span
-					class="w-fit break-all rounded-md bg-primary-3 p-1 text-sm italic text-primary-11"
+					class="bg-primary-3 text-primary-11 w-fit break-all rounded-md p-1 text-sm italic"
 				>
 					{gardenKey}
 				</span>
 			</div>
 			<div class="my-0.5">
-				<span class="text-sm text-neutral-11">Invited by:</span>
-				<span class="rounded-lg bg-neutral-4 p-1 text-sm italic text-neutral-11">
+				<span class="text-neutral-11 text-sm">Invited by:</span>
+				<span class="bg-neutral-4 text-neutral-11 rounded-lg p-1 text-sm italic">
 					{#if inviterUsername}
 						inviterUsername
 					{:else}
@@ -58,12 +58,12 @@
 				</span>
 			</div>
 			<div class="my-0.5">
-				<span class="text-sm text-neutral-11">Role:</span>
-				<span class="text-sm italic text-neutral-11">{role}</span>
+				<span class="text-neutral-11 text-sm">Role:</span>
+				<span class="text-neutral-11 text-sm italic">{role}</span>
 			</div>
 			<div class="my-0.5">
-				<span class="text-sm text-neutral-11">Expires in:</span>
-				<span class="text-sm italic text-neutral-11">{expiryCountdownHours} hours</span>
+				<span class="text-neutral-11 text-sm">Expires in:</span>
+				<span class="text-neutral-11 text-sm italic">{expiryCountdownHours} hours</span>
 			</div>
 		</div>
 		<div class="flex flex-col justify-evenly">
@@ -98,7 +98,7 @@
 		</div>
 	</li>
 	<li class="mb-4 mt-2 last:hidden">
-		<Separator class="w-full bg-neutral-5" />
+		<Separator class="bg-neutral-5 w-full" />
 	</li>
 {/snippet}
 <ScrollArea

@@ -52,9 +52,18 @@
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions = [
-		{ value: GardenCreateCommandVisibility.private, label: 'Private' },
-		{ value: GardenCreateCommandVisibility.unlisted, label: 'Unlisted' },
-		{ value: GardenCreateCommandVisibility.public, label: 'Public' }
+		{
+			value: GardenCreateCommandVisibility.private,
+			label: 'Private'
+		},
+		{
+			value: GardenCreateCommandVisibility.unlisted,
+			label: 'Unlisted'
+		},
+		{
+			value: GardenCreateCommandVisibility.public,
+			label: 'Public'
+		}
 	];
 	const defaultVisibility = visibilityOptions[0];
 
@@ -63,7 +72,12 @@
 	 * Required as the value of the superform data can't be bound to the form value type.
 	 */
 	function onVisibilitySelectedChange(
-		value: { value: GardenCreateCommandVisibility; label?: string } | undefined
+		value:
+			| {
+					value: GardenCreateCommandVisibility;
+					label?: string;
+			  }
+			| undefined
 	) {
 		if (value) {
 			$formData.visibility = value.value;
@@ -147,7 +161,7 @@
 						queryClient.invalidateQueries('uniqueGardenKey');
 						keyGenerationLoading = true;
 					}}
-					class="flex items-center rounded-l-none border-l-0 bg-neutral-1 hover:bg-neutral-2 dark:border-neutral-12"
+					class="bg-neutral-1 hover:bg-neutral-2 dark:border-neutral-12 flex items-center rounded-l-none border-l-0"
 				>
 					<Icon
 						icon={iconIds.defaultRefreshIcon}

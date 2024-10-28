@@ -9,6 +9,6 @@
 </script>
 
 <MenubarPrimitive.Separator
-	class={cn('-mx-1 my-1 h-px bg-neutral-3', className)}
+	class={cn('bg-neutral-3 -mx-1 my-1 h-px', className)}
 	{...$$restProps}
 />

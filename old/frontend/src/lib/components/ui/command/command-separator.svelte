@@ -8,6 +8,6 @@
 </script>
 
 <CommandPrimitive.Separator
-	class={cn('-mx-1 h-px bg-neutral-7', className)}
+	class={cn('bg-neutral-7 -mx-1 h-px', className)}
 	{...$$restProps}
 />

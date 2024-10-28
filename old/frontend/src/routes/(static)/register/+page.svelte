@@ -18,7 +18,7 @@
 	<Card.Header>
 		<Card.Title>Create an account</Card.Title>
 		<Card.Description>
-			<Button variant="link" class="p-0 text-neutral-11" href="/login"
+			<Button variant="link" class="text-neutral-11 p-0" href="/login"
 				>Already have one?</Button
 			>
 		</Card.Description>
@@ -36,7 +36,7 @@
 				<Dialog.Description>
 					If you don't receive it, <Button
 						variant="link"
-						class="p-0 text-neutral-11"
+						class="text-neutral-11 p-0"
 						href="/register/request-email-verification"
 						>request another through this link.</Button
 					>

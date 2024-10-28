@@ -2,7 +2,7 @@
 
 First, join the [discord server](https://discord.gg/XH4kQcpz9p). If you have an idea for a contribution to make, talk to other contributors first to establish what the contribution should look like.
 
-A [Github Project](https://github.com/orgs/VerdanTech/projects/1) is used to organize tickets for the web app. Tickets are automatically assigned issues when connected to a repository. Generally, tickets should be made such that we can maintain one branch per ticket and they can be done independently. 
+A [Github Project](https://github.com/orgs/VerdanTech/projects/1) is used to organize tickets for the web app. Tickets are automatically assigned issues when connected to a repository. Generally, tickets should be made such that we can maintain one branch per ticket and they can be done independently.
 
 Code review is required by other contributors before a feature can be merged.
 
@@ -30,6 +30,7 @@ The current workflow for setting up development environments is standardized to 
 The container should display a terminal with no errors.
 
 ### Troubleshooting
+
 - Is Docker Engine running?
 
 ## Windows

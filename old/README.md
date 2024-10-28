@@ -2,9 +2,10 @@
 <!--
 *** I'm using markdown "reference style" links for readability.
 *** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables  
+*** See the bottom of this document for the declaration of the reference variables
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Version][version-shield]][version-url]
 [![Issues][issues-shield]][issues-url]
 [![Pull Requests][prs-shield]][prs-url]
@@ -44,9 +45,10 @@ This repository contains the backend server and frontend application of the Verd
 
 The backend is an async Python HTTP and (eventually) websocket API implemented with a domain-driven architecture. From a technical perspective, the main goal of the backend is to be transparent and extensible to the end of adequately capturing the field of agro-ecology within digital models usable for contextualized application. Python is chosen for its ease of use and wide ecosystem.
 
-The frontend is a statically built SvelteKit application. 
+The frontend is a statically built SvelteKit application.
 
 The key dependencies of the backend are:
+
 - [Litestar](https://litestar.dev/) as an ASGI framework
 - [Taskiq](https://taskiq-python.github.io/) as a task backend
 - [Sqlalchemy](https://www.sqlalchemy.org/) + [Alembic](https://alembic.sqlalchemy.org/en/latest/) + [Postgres](https://www.postgresql.org/) for persistence
@@ -56,6 +58,7 @@ The key dependencies of the backend are:
 - [Passlib](https://pypi.org/project/passlib/) for encryption
 
 The key dependencies of the frontend are:
+
 - [SvelteKit](https://kit.svelte.dev/) as a javascript framework.
 - [Svelte Query](https://sveltequery.vercel.app/) as an async state manager.
 - [Orval](https://orval.dev/) for client SDK generation.
@@ -72,6 +75,7 @@ See the [contributing](./contributing.md) for instructions on contributing and s
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 <!-- IN-REPO -->
+
 [version-shield]: https://img.shields.io/badge/version-0.0.1-blue?style=for-the-badge
 [version-url]: https://github.com/nathanielarking/Autonomous-Agriculture/releases
 [issues-shield]: https://img.shields.io/github/issues/nathanielarking/VerdanTech.svg?style=for-the-badge

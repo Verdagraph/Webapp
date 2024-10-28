@@ -11,7 +11,7 @@
 
 <MenubarPrimitive.Trigger
 	class={cn(
-		'data-[highlighted]:bg-accent-5-5 data-[state=open]:bg-accent-5-5 flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm outline-none hover:bg-neutral-3 data-[highlighted]:text-accent-12 data-[state=open]:text-accent-12',
+		'data-[highlighted]:bg-accent-5-5 data-[state=open]:bg-accent-5-5 hover:bg-neutral-3 data-[highlighted]:text-accent-12 data-[state=open]:text-accent-12 flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm outline-none',
 		className
 	)}
 	on:click

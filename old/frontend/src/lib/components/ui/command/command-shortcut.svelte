@@ -9,7 +9,7 @@
 </script>
 
 <span
-	class={cn('ml-auto text-xs tracking-widest text-neutral-11', className)}
+	class={cn('text-neutral-11 ml-auto text-xs tracking-widest', className)}
 	{...$$restProps}
 >
 	<slot />

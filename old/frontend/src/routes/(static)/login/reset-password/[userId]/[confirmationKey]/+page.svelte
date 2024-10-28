@@ -26,7 +26,7 @@
 			<Dialog.Header>
 				<Dialog.Title>Password has been successfully reset</Dialog.Title>
 				<Dialog.Description>
-					<Button variant="link" class="p-0 text-neutral-11" href="/login"
+					<Button variant="link" class="text-neutral-11 p-0" href="/login"
 						>Proceed to Login</Button
 					>
 				</Dialog.Description>

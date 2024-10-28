@@ -14,7 +14,7 @@
 		<Card.Description>
 			<Button
 				variant="link"
-				class="p-0 text-neutral-11"
+				class="text-neutral-11 p-0"
 				href="/login/request-password-reset">Forgot your password?</Button
 			>
 		</Card.Description>

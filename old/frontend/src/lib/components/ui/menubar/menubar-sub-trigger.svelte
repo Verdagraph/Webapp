@@ -15,7 +15,7 @@
 
 <MenubarPrimitive.SubTrigger
 	class={cn(
-		'flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent-5 data-[state=open]:bg-accent-5 data-[highlighted]:text-accent-12 data-[state=open]:text-accent-12 data-[disabled]:opacity-50',
+		'data-[highlighted]:bg-accent-5 data-[state=open]:bg-accent-5 data-[highlighted]:text-accent-12 data-[state=open]:text-accent-12 flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
 		inset && 'pl-8',
 		className
 	)}

@@ -69,7 +69,7 @@ users in a Garden context.
 
 <!-- Small screens bottom bar. -->
 <nav
-	class="fixed bottom-0 flex h-16 w-full flex-row items-center justify-around border border-neutral-6 bg-neutral-3 lg:h-0 first:lg:hidden"
+	class="border-neutral-6 bg-neutral-3 fixed bottom-0 flex h-16 w-full flex-row items-center justify-around border lg:h-0 first:lg:hidden"
 >
 	{#if profileTab}
 		<PrimaryNavBottomTabDropdown spec={profileTab} />
@@ -88,7 +88,7 @@ users in a Garden context.
 
 <!-- Large screens sidebar. -->
 <nav
-	class="fixed top-0 z-10 hidden h-full w-16 flex-col items-center justify-between border-r border-neutral-6 bg-neutral-3 lg:flex"
+	class="border-neutral-6 bg-neutral-3 fixed top-0 z-10 hidden h-full w-16 flex-col items-center justify-between border-r lg:flex"
 >
 	<!-- Links displayed at the top. -->
 	<ul class="flex w-full flex-col">
@@ -96,7 +96,7 @@ users in a Garden context.
 		<li>
 			<Button.Root
 				href="/"
-				class="inline-flex h-16 w-full items-center justify-center whitespace-nowrap rounded-none bg-neutral-3 transition-colors hover:bg-neutral-4"
+				class="bg-neutral-3 hover:bg-neutral-4 inline-flex h-16 w-full items-center justify-center whitespace-nowrap rounded-none transition-colors"
 			>
 				<Logo size="3rem" />
 			</Button.Root>

@@ -14,7 +14,9 @@
 
 	let workspaces: WorkspacePartialSchema[] = [
 		{
-			garden_ref: { id: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b' },
+			garden_ref: {
+				id: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b'
+			},
 			id: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
 			name: 'Workspace 1',
 			slug: 'workspace-1'
@@ -24,7 +26,7 @@
 
 <!-- Workspaces toolbar -->
 <Menubar.Root
-	class="justify-center border-0 border-b border-neutral-8 md:justify-start"
+	class="border-neutral-8 justify-center border-0 border-b md:justify-start"
 >
 	<!-- Workspaces Menu -->
 	<Menubar.Menu>
@@ -80,7 +82,7 @@
 						<Icon
 							icon={iconIds.endEditingIcon}
 							width="1.25rem"
-							class="mr-2 text-neutral-11"
+							class="text-neutral-11 mr-2"
 						/>
 						<span> End Editing </span>
 					</Menubar.Item>
@@ -93,7 +95,7 @@
 						<Icon
 							icon={iconIds.verdagraphTranslateIcon}
 							width="1.25rem"
-							class="mr-2 text-neutral-11"
+							class="text-neutral-11 mr-2"
 						/>
 						<span> Translate </span>
 					</Menubar.Item>
@@ -101,7 +103,7 @@
 						<Icon
 							icon={iconIds.deleteIcon}
 							width="1.25rem"
-							class="mr-2 text-neutral-11"
+							class="text-neutral-11 mr-2"
 						/>
 						<span> Delete </span>
 					</Menubar.Item>
@@ -115,7 +117,7 @@
 						<Icon
 							icon={iconIds.startEditingIcon}
 							width="1.25rem"
-							class="mr-2 text-neutral-11"
+							class="text-neutral-11 mr-2"
 						/>
 						<span> Start Editing </span>
 					</Menubar.Item>

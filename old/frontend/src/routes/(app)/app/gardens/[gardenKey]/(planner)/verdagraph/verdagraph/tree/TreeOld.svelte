@@ -13,7 +13,7 @@
 	];
 </script>
 
-<div class="flex h-full w-full flex-col bg-neutral-1">
+<div class="bg-neutral-1 flex h-full w-full flex-col">
 	<TreeToolbar bind:scrollable_pane_view_options />
 
 	<div class="overflow-none grow">

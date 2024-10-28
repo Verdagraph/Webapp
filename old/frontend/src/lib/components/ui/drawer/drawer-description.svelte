@@ -11,7 +11,7 @@
 
 <DrawerPrimitive.Description
 	bind:el
-	class={cn('text-sm text-neutral-11', className)}
+	class={cn('text-neutral-11 text-sm', className)}
 	{...$$restProps}
 >
 	<slot />

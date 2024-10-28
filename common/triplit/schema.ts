@@ -1,3 +1,3 @@
-import {roles, schema} from '../src'
+import { roles, schema } from '../src';
 
-export {roles, schema}
+export { roles, schema };

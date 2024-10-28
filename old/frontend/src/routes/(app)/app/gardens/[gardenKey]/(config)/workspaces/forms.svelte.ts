@@ -11,8 +11,16 @@ type FormAttributeType = {
 };
 
 const formAttributes: FormAttributeType[] = [
-	{ id: 'addPlantingArea', label: 'Add Planting Area', content: AddPlantingAreaForm },
-	{ id: 'translate', label: 'Translate', content: TranslateForm }
+	{
+		id: 'addPlantingArea',
+		label: 'Add Planting Area',
+		content: AddPlantingAreaForm
+	},
+	{
+		id: 'translate',
+		label: 'Translate',
+		content: TranslateForm
+	}
 ];
 
 /** Runes */

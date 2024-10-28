@@ -21,14 +21,14 @@ Single tab for navigating between feature domains on the main bottom bar.
 
 <Popover.Root bind:open={popover_open}>
 	<Popover.Trigger
-		class="flex h-full w-full justify-center text-neutral-12 transition-colors {popover_open
+		class="text-neutral-12 flex h-full w-full justify-center transition-colors {popover_open
 			? 'bg-neutral-3'
 			: 'bg-neutral-2'}"
 	>
 		<Icon icon={spec.iconId} width="3rem" class="my-2" />
 	</Popover.Trigger>
 	<Popover.Content
-		class="w-auto max-w-96 -translate-y-2 justify-evenly rounded-lg border border-neutral-6 bg-neutral-3 shadow-sm"
+		class="border-neutral-6 bg-neutral-3 w-auto max-w-96 -translate-y-2 justify-evenly rounded-lg border shadow-sm"
 		transition={flyAndScale}
 		transitionConfig={{
 			duration: 150,
@@ -40,22 +40,21 @@ Single tab for navigating between feature domains on the main bottom bar.
 			<li class="w-full">
 				<Button
 					href={spec.url}
-					class="w-full rounded-none rounded-b-lg bg-neutral-2 text-lg
-						font-bold text-neutral-12 opacity-90 hover:bg-primary-5
-						hover:text-primary-12 {spec.submenuItems === null || spec.submenuItems.length < 1
+					class="bg-neutral-2 text-neutral-12 hover:bg-primary-5 hover:text-primary-12 w-full
+						rounded-none rounded-b-lg text-lg font-bold
+						opacity-90 {spec.submenuItems === null || spec.submenuItems.length < 1
 						? 'rounded-t-lg'
 						: ''}">{spec.label}</Button
 				>
 			</li>
-			<Separator class="w-full bg-neutral-6 opacity-50" />
+			<Separator class="bg-neutral-6 w-full opacity-50" />
 			{#if spec.submenuItems}
 				{#each spec.submenuItems ?? [] as item, index}
 					<li class="flex items-center">
 						<Button
 							href={item.url}
-							class="w-full justify-start truncate rounded-none bg-neutral-2 text-lg
-								text-neutral-12 opacity-80 hover:bg-primary-5 hover:text-primary-12 {index ===
-							spec.submenuItems.length - 1
+							class="bg-neutral-2 text-neutral-12 hover:bg-primary-5 hover:text-primary-12 w-full justify-start
+								truncate rounded-none text-lg opacity-80 {index === spec.submenuItems.length - 1
 								? 'rounded-t-lg'
 								: ''}"
 						>

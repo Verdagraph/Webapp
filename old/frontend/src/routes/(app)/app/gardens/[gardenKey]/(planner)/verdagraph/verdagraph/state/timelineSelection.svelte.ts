@@ -7,7 +7,9 @@ const defaultFocusedDay: () => DateValue = () => today(getLocalTimeZone());
 /** Default offset between selected day and upper and lower selection ranges. */
 export const selectionOffset: DateDuration = { months: 1 };
 /** Default offset between upper and lower selection and range displayed on the slider. */
-export const sliderDisplayOffset: DateDuration = { months: 1 };
+export const sliderDisplayOffset: DateDuration = {
+	months: 1
+};
 /** Minimum offset between the focused day and the selection bounds. */
 export const minSelectOffset: DateDuration = { days: 1 };
 /* Maximum offset between the focused day and the selection bounds. */
@@ -59,8 +61,12 @@ export const timelineSelection = {
 		const deltaDays = calculateDeltaDays(newFocusedDay, _rune.focusedDay);
 
 		/** Apply delta to selection range. */
-		_rune.beginSelectedDays = _rune.beginSelectedDays.add({ days: deltaDays });
-		_rune.endSelectedDays = _rune.endSelectedDays.add({ days: deltaDays });
+		_rune.beginSelectedDays = _rune.beginSelectedDays.add({
+			days: deltaDays
+		});
+		_rune.endSelectedDays = _rune.endSelectedDays.add({
+			days: deltaDays
+		});
 		_rune.beginSliderDisplayedDays = _rune.beginSliderDisplayedDays.add({
 			days: deltaDays
 		});

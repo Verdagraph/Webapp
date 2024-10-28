@@ -20,10 +20,10 @@ Single tab for navigating between feature domains on the main bottom bar.
 -->
 
 <Drawer.Root direction="bottom" bind:open>
-	<Drawer.Trigger class="flex h-full w-full justify-center bg-neutral-2">
+	<Drawer.Trigger class="bg-neutral-2 flex h-full w-full justify-center">
 		<Icon icon={iconIds.gardenDrawerIcon} width="3rem" class="my-2" />
 	</Drawer.Trigger>
-	<Drawer.Content class="flex items-center bg-neutral-3">
+	<Drawer.Content class="bg-neutral-3 flex items-center">
 		<Accordion.Root class="w-full">
 			{#each specs ?? [] as spec}
 				{#if spec !== undefined}
@@ -34,7 +34,7 @@ Single tab for navigating between feature domains on the main bottom bar.
 								{spec.label}
 							</span>
 						</Accordion.Trigger>
-						<Accordion.Content class="mx-4 border-l border-neutral-10">
+						<Accordion.Content class="border-neutral-10 mx-4 border-l">
 							<ul class="px-4">
 								{#if spec.submenuItems}
 									{#each spec.submenuItems ?? [] as item}

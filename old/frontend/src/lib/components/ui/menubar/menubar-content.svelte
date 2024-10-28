@@ -23,7 +23,7 @@
 	{alignOffset}
 	{side}
 	class={cn(
-		'z-50 min-w-[12rem] rounded-md border bg-neutral-2 p-1 text-neutral-11 shadow-md focus:outline-none',
+		'bg-neutral-2 text-neutral-11 z-50 min-w-[12rem] rounded-md border p-1 shadow-md focus:outline-none',
 		className
 	)}
 	{...$$restProps}
