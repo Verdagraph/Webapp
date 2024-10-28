@@ -47,23 +47,21 @@ export const userSchema = {
 			passwordHash: S.String(),
 
 			/** Primary email address. Only verified emails use this attribute. */
-			verifiedEmail: S.Optional(S.String()),
+			verifiedEmail: S.String({ nullable: true }),
 
 			/**
 			 * Secondary email. Used to avoid replacing primary email when switching emails.
 			 * Upon verification, should be nulled and used to set primaryEmail.
 			 */
-			unverifiedEmail: S.Optional(
-				S.Record({
-					/** Address of the email. */
-					address: S.String(),
-					/** JWT confirmation key which is sent to the user for verification. */
-					confirmationKey: S.String()
-				})
-			),
+			unverifiedEmail: S.Record({
+				/** Address of the email. */
+				address: S.String({ nullable: true }),
+				/** JWT confirmation key which is sent to the user for verification. */
+				confirmationKey: S.String({ nullable: true })
+			}),
 
 			/** JWT confirmation key used to confirm a password reset. */
-			passwordResetConfirmationKey: S.Optional(S.String()),
+			passwordResetConfirmationKey: S.String({ nullable: true }),
 
 			/** Set to false for inactive users. */
 			isActive: S.Boolean({ default: true })

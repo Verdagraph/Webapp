@@ -1,4 +1,4 @@
-import { Schema as S, ClientSchema, Entity } from '@triplit/client';
+import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
 
 /**
  * Controls the visibility of the garden.
@@ -52,12 +52,10 @@ export const gardenSchema = {
 			 * Note that the creator has access through an admin membership.
 			 * If undefined, the original creator has left the garden.
 			 */
-			creatorId: S.Optional(S.String()),
-			creator: S.Optional(
-				S.RelationOne('users', {
-					where: [['id', '=', 'creatorId']]
-				})
-			),
+			creatorId: S.String({ nullable: true }),
+			creator: S.RelationOne('users', {
+				where: [['id', '=', 'creatorId']]
+			}),
 
 			/** Set of users which have admin access. */
 			adminIds: S.Set(S.String()),
@@ -81,7 +79,33 @@ export const gardenSchema = {
 			createdAt: S.Date({ default: S.Default.now() })
 		}),
 		permissions: {
-			user: {}
+			anon: {
+				read: {
+					/** Allow anonymous reads if the garden is public. */
+					filter: [['visibility', '!=', 'HIDDEN']]
+				}
+			},
+			user: {
+				read: {
+					/** Allow reads if the garden is public or the user is a member. */
+					filter: [
+						or([
+							['visibility', '!=', 'HIDDEN'],
+							['$role.userId', 'in', 'adminIds'],
+							['$role.userId', 'in', 'editorIds'],
+							['$role.userId', 'in', 'viewerIds']
+						])
+					]
+				},
+				insert: {
+					/** Allow new gardens to be created by creators. */
+					filter: [['creatorId', '=', '$role.userId']]
+				},
+				update: {
+					/** Restrict edit access to admins. */
+					filter: [['$role.userId', 'in', 'adminIds']]
+				}
+			}
 		}
 	},
 
@@ -90,18 +114,17 @@ export const gardenSchema = {
 		schema: S.Schema({
 			id: S.Id(),
 
+			/** Garden the membership is in. */
+			gardenId: S.String(),
+			garden: S.RelationById('gardens', '$gardenId'),
+
 			/** User who is the subject of the membership. */
 			userId: S.String(),
 			user: S.RelationOne('users', { where: [['id', '=', '$userId']] }),
 
 			/** User who created the membership. */
-			inviterId: S.Optional(S.String()),
-			inviter: S.Optional(
-				S.RelationOne('users', { where: [['id', '=', '$inviterId']] })
-			),
-
-			/** The role the membership grants access to. */
-			role: S.String({ enum: GardenMembershipRoleEnum }),
+			inviterId: S.String({ nullable: true }),
+			inviter: S.RelationOne('users', { where: [['id', '=', '$inviterId']] }),
 
 			/** The acceptance status and acceptance date of the membership. */
 			status: S.String({ enum: GardenMembershipStatusEnum }),
@@ -111,7 +134,42 @@ export const gardenSchema = {
 			favorite: S.Boolean()
 		}),
 		permissions: {
-			user: {}
+			anon: {
+				read: {
+					/** Allow anonymous reads if the garden is public. */
+					filter: [['garden.visibility', '!=', 'HIDDEN']]
+				}
+			},
+			user: {
+				read: {
+					/** Allow reads if the garden is public or the user is a member. */
+					filter: [
+						or([
+							['garden.visibility', '!=', 'HIDDEN'],
+							['$role.userId', 'in', 'garden.adminIds'],
+							['$role.userId', 'in', 'garden.editorIds'],
+							['$role.userId', 'in', 'garden.viewerIds']
+						])
+					]
+				},
+				insert: {
+					/** Allow new memberships to be created by admins. */
+					filter: [['$role.userId', 'in', 'garden.adminIds']]
+				},
+				update: {
+					/** Restrict membership updates to admins */
+					filter: [['$role.userId', 'in', 'garden.adminIds']]
+				},
+				delete: {
+					/** Allow the membership to be revoked by an admin or deleted by the subject. */
+					filter: [
+						or([
+							['$role.userId', 'in', 'garden.adminIds'],
+							['userId', '=', '$role.userId']
+						])
+					]
+				}
+			}
 		}
 	}
 } satisfies ClientSchema;

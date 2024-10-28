@@ -1,7 +1,7 @@
 import z from 'zod';
 
-/** User field specifications. */
-const userFields = {
+/** Field specifications. */
+export const userFields = {
 	username: z
 		.string()
 		.min(3, 'Must be at least 3 characters.')
