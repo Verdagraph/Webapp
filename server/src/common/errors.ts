@@ -1,35 +1,15 @@
-import { ServerErrors } from '@vdt-webapp/common/src/errors';
+import { AppErrors, AppError } from '@vdt-webapp/common/src/errors';
 
 /**
  * Base class for all application exceptions raised by the server code.
  */
-export class ServerError extends Error {
+export class ServerError extends AppError {
 	statusCode: number = 400;
-	defaultMessage: string = 'A failure has occurred.';
-	extra: Record<string, Array<string>> = {};
 
-	constructor(message?: string, statusCode?: number, errors?: ServerErrors) {
-		if (message) {
-			super(message);
-		} else {
-			super('');
-			this.message = this.defaultMessage;
-		}
-
+	constructor(message?: string, errors?: AppErrors, statusCode?: number) {
+		super(message, errors);
 		if (statusCode) {
 			this.statusCode = statusCode;
-		}
-
-		if (errors) {
-			if (errors.fieldErrors) {
-				this.extra = errors.fieldErrors;
-			}
-			if (errors.nonFieldErrors) {
-				this.extra['nonFieldErrors'] = errors.nonFieldErrors;
-			}
-			if (errors.nonFormErrrors) {
-				this.extra['nonFormErrors'] = errors.nonFormErrrors;
-			}
 		}
 	}
 }
@@ -61,10 +41,10 @@ export class LoggedApplicationException extends ServerError {
 	constructor(
 		message?: string,
 		statusCode?: number,
-		errors?: ServerErrors,
+		errors?: AppErrors,
 		loggableDetails?: string
 	) {
-		super(message, statusCode, errors);
+		super(message, errors);
 
 		if (loggableDetails) {
 			this.loggableDetails = loggableDetails;
@@ -72,7 +52,7 @@ export class LoggedApplicationException extends ServerError {
 	}
 }
 
-export class DomainIntegrityException extends LoggedApplicationException {
+export class InternalFailureException extends LoggedApplicationException {
 	statusCode = 500;
 	defaultMessage = 'A glitch has occurred in the application logic.';
 }

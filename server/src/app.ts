@@ -1,7 +1,12 @@
 import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import type { FastifyCookieOptions } from '@fastify/cookie';
+import cookie from '@fastify/cookie';
+import registerDiContainer from './dependencies';
 import registerRouters from './router';
 import registerErrorHandler from './errors';
+import registerOpenapi from './openapi';
+import env from 'env';
 
 /** Server settings. */
 // const port = Number(process.env.SERVER_PORT) || 5001;
@@ -10,10 +15,18 @@ import registerErrorHandler from './errors';
 const startServer = async () => {
 	const app = Fastify({ logger: true });
 
-	/** Register middlewares. */
+	/** Dependency injection. */
+	registerDiContainer(app);
+
+	/** Error handling. */
 	registerErrorHandler(app);
+
+	/** ZOD request body handling. */
 	app.setValidatorCompiler(validatorCompiler);
 	app.setSerializerCompiler(serializerCompiler);
+
+	/** OpenAPI schema. */
+	registerOpenapi(app);
 
 	/** Register routes */
 	registerRouters(app);
@@ -27,3 +40,22 @@ const startServer = async () => {
 };
 
 startServer();
+
+// For Fastify CLI swagger generation
+export default function (fastifyInstance: any) {
+	const app = Fastify({ logger: true });
+
+	/** Cookie plugin. */
+	app.register(cookie, {
+		secret: env.COOKIE_SECRET // for cookies signature
+	} as FastifyCookieOptions);
+
+	/** Register middlewares. */
+	registerErrorHandler(app);
+	app.setValidatorCompiler(validatorCompiler);
+	app.setSerializerCompiler(serializerCompiler);
+	registerOpenapi(app);
+
+	/** Register routes */
+	registerRouters(app);
+}
