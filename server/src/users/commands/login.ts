@@ -22,17 +22,14 @@ export type UserLoginResult = {
  * @param container The service locator.
  * @returns The encoded access and refresh tokens and the access expiry time.
  */
-const userLogin = async (
+const login = async (
 	command: z.infer<typeof UserLoginCommand>,
 	container: typeof diContainer
 ): Promise<UserLoginResult> => {
-	const triplit = container.resolve('triplit');
+	const users = container.resolve('userRepo');
 
 	/** Fetch the user from the database. */
-	const user = await triplit.fetchOne({
-		collectionName: 'accounts',
-		where: [['verifiedEmail', '=', command.email]]
-	});
+	const user = await users.getAccountByVerifiedEmail(command.email);
 	if (user == null) {
 		throw new NotFoundError('User does not exist', {
 			fieldErrors: { email: ['This email does not exist.'] }
@@ -40,7 +37,7 @@ const userLogin = async (
 	}
 
 	/** Verify the provided password. */
-	if ((await verifyPassword(command.password, user.hashedPassword)) == false) {
+	if ((await verifyPassword(command.password, user.passwordHash)) == false) {
 		throw new AuthenticationError('Incorrect password', {
 			fieldErrors: { password: ['This password is incorrect.'] }
 		});
@@ -52,4 +49,4 @@ const userLogin = async (
 
 	return { accessToken, refreshToken, expiryTimeSeconds: env.ACCESS_TOKEN_EXPIRY_S };
 };
-export default userLogin;
+export default login;

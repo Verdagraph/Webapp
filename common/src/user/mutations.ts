@@ -58,14 +58,15 @@ export const UserCreateCommand = z
  */
 export const UserUpdateCommand = z
 	.object({
-		email: userFields.email.optional(),
-		password1: userFields.password.optional(),
-		password2: userFields.password.optional(),
-		username: userFields.username.optional()
+		newEmail: userFields.email.optional(),
+		newPassword1: userFields.password.optional(),
+		newPassword2: userFields.password.optional(),
+		newUsername: userFields.username.optional(),
+		password: userFields.password
 	})
-	.refine((data) => data.password1 == data.password2, {
+	.refine((data) => data.newPassword1 == data.newPassword2, {
 		message: 'Passwords must match',
-		path: ['password2']
+		path: ['newPassword2']
 	});
 
 /**
@@ -79,7 +80,7 @@ export const UserRequestEmailConfirmationCommand = z.object({
  * Command to respond to a verification email.
  */
 export const UserConfirmEmailConfirmationCommand = z.object({
-	key: z.string()
+	token: z.string()
 });
 
 /**
@@ -95,7 +96,7 @@ export const UserRequestPasswordResetCommand = z.object({
 export const UserConfirmPasswordResetCommand = z
 	.object({
 		userId: z.string().nanoid(),
-		key: z.string(),
+		token: z.string(),
 		password1: userFields.password,
 		password2: userFields.password
 	})

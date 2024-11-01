@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 const EnvSchema = z.object({
+	EMAIL_VERIFICATION_REQUIRED: z.boolean({
+		description:
+			'If true, users will not be able to log in before confirming their email. If false, the email begins verified.'
+	}),
 	TRIPLIT_URL: z
 		.string({ description: 'The URL of the Triplit database server.' })
 		.url(),
@@ -24,11 +28,23 @@ const EnvSchema = z.object({
 	REFRESH_TOKEN_SECRET: z.string({
 		description: 'The secret used to encode JWT refresh tokens.'
 	}),
+	EMAIL_CONFIRMATION_TOKEN_SECRET: z.string({
+		description: 'The secret used to encode JWT email confirmation tokens.'
+	}),
+	PASSWORD_RESET_TOKEN_SECRET: z.string({
+		description: 'The secret used to encode JWT password reset tokens.'
+	}),
 	ACCESS_TOKEN_EXPIRY_S: z.number({
 		description: 'The expiry duration for JWT access tokens, in seconds.'
 	}),
 	REFRESH_TOKEN_EXPIRY_S: z.number({
 		description: 'The expiry duration for JWT refresh tokens, in seconds.'
+	}),
+	EMAIL_CONFIRMATION_TOKEN_EXPIRY_S: z.number({
+		description: 'The expiry duration for JWT email confirmation tokens, in seconds.'
+	}),
+	PASSWORD_RESET_TOKEN_EXPIRY_S: z.number({
+		description: 'The expiry duration for JWT password reset tokens, in seconds.'
 	}),
 	COOKIE_SECRET: z.string({
 		description: 'The secret used to encode cookie signatures.'

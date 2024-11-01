@@ -56,12 +56,12 @@ export const userSchema = {
 			unverifiedEmail: S.Record({
 				/** Address of the email. */
 				address: S.String({ nullable: true }),
-				/** JWT confirmation key which is sent to the user for verification. */
-				confirmationKey: S.String({ nullable: true })
+				/** JWT confirmation token which is sent to the user for verification. */
+				token: S.String({ nullable: true })
 			}),
 
 			/** JWT confirmation key used to confirm a password reset. */
-			passwordResetConfirmationKey: S.String({ nullable: true }),
+			passwordResetToken: S.String({ nullable: true }),
 
 			/** Set to false for inactive users. */
 			isActive: S.Boolean({ default: true })

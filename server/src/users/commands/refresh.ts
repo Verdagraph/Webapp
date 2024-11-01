@@ -9,11 +9,11 @@ import {
 } from '../auth/tokens';
 import type { UserLoginResult } from './login';
 
-const userRefresh = async (
+const refresh = async (
 	refreshToken: string | null,
 	container: typeof diContainer
 ): Promise<UserLoginResult> => {
-	const triplit = container.resolve('triplit');
+	const users = container.resolve('userRepo');
 
 	/** If no refresh token was provided, false authentication. */
 	if (refreshToken == null) {
@@ -31,7 +31,7 @@ const userRefresh = async (
 	}
 
 	/** Fetch the user represented by the token. */
-	const user = await triplit.fetchById('users', decodedToken.uid);
+	const user = await users.getAccountById(decodedToken.uid);
 	if (user == null) {
 		throw new AuthenticationError('No refresh credential.', {
 			nonFormErrrors: ['Authentication expired. Please login again.']
@@ -55,4 +55,4 @@ const userRefresh = async (
 		expiryTimeSeconds: env.ACCESS_TOKEN_EXPIRY_S
 	};
 };
-export default userRefresh;
+export default refresh;
