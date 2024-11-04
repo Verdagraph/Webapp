@@ -1,0 +1,30 @@
+{
+	"/(static)": [
+		"src/routes/+layout.server.js",
+		"src/routes/+layout.server.js"
+	],
+	"/": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/guides": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/login": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/login/request-password-reset": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/login/reset-password/[userId]/[confirmationKey]": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/register": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/register/request-email-verification": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/register/verify/[confirmationKey]": [
+		"src/routes/+layout.server.js"
+	]
+}
