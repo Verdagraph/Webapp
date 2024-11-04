@@ -42,44 +42,42 @@ export const nodes = [
 export const server_loads = [0];
 
 export const dictionary = {
-	'/(static)': [28, [5]],
-	'/(app)/app': [6, [2]],
-	'/(app)/app/(other)/account': [7, [2]],
-	'/(app)/app/gardens': [10, [2]],
-	'/(app)/app/gardens/create': [22, [2]],
-	'/(app)/app/gardens/discover': [23, [2]],
-	'/(app)/app/gardens/[gardenKey]': [11, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(config)/cultivars': [12, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(garden)/dash': [17, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(config)/environments': [13, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(garden)/members': [18, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(garden)/metrics': [19, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(planner)/verdagraph': [20, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(planner)/workbook': [21, [2, 3]],
-	'/(app)/app/gardens/[gardenKey]/(config)/workspaces': [14, [2, 3, 4]],
-	'/(app)/app/gardens/[gardenKey]/(config)/workspaces/create': [16, [2, 3, 4]],
-	'/(app)/app/gardens/[gardenKey]/(config)/workspaces/[workspaceSlug]': [15, [2, 3, 4]],
-	'/(app)/app/(other)/notifications': [8, [2]],
-	'/(app)/app/(other)/settings': [9, [2]],
-	'/(app)/app/traits': [24, [2]],
-	'/(app)/app/traits/cultivars': [25, [2]],
-	'/(app)/app/traits/environments': [26, [2]],
-	'/(app)/app/traits/workspaces': [27, [2]],
-	'/(static)/guides': [29, [5]],
-	'/(static)/login': [30, [5]],
-	'/(static)/login/request-password-reset': [31, [5]],
-	'/(static)/login/reset-password/[userId]/[confirmationKey]': [32, [5]],
-	'/(static)/register': [33, [5]],
-	'/(static)/register/request-email-verification': [34, [5]],
-	'/(static)/register/verify/[confirmationKey]': [35, [5]]
-};
+		"/(static)": [28,[5]],
+		"/(app)/app": [6,[2]],
+		"/(app)/app/(other)/account": [7,[2]],
+		"/(app)/app/gardens": [10,[2]],
+		"/(app)/app/gardens/create": [22,[2]],
+		"/(app)/app/gardens/discover": [23,[2]],
+		"/(app)/app/gardens/[gardenKey]": [11,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(config)/cultivars": [12,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(garden)/dash": [17,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(config)/environments": [13,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(garden)/members": [18,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(garden)/metrics": [19,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(planner)/verdagraph": [20,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(planner)/workbook": [21,[2,3]],
+		"/(app)/app/gardens/[gardenKey]/(config)/workspaces": [14,[2,3,4]],
+		"/(app)/app/gardens/[gardenKey]/(config)/workspaces/create": [16,[2,3,4]],
+		"/(app)/app/gardens/[gardenKey]/(config)/workspaces/[workspaceSlug]": [15,[2,3,4]],
+		"/(app)/app/(other)/notifications": [8,[2]],
+		"/(app)/app/(other)/settings": [9,[2]],
+		"/(app)/app/traits": [24,[2]],
+		"/(app)/app/traits/cultivars": [25,[2]],
+		"/(app)/app/traits/environments": [26,[2]],
+		"/(app)/app/traits/workspaces": [27,[2]],
+		"/(static)/guides": [29,[5]],
+		"/(static)/login": [30,[5]],
+		"/(static)/login/request-password-reset": [31,[5]],
+		"/(static)/login/reset-password/[userId]/[confirmationKey]": [32,[5]],
+		"/(static)/register": [33,[5]],
+		"/(static)/register/request-email-verification": [34,[5]],
+		"/(static)/register/verify/[confirmationKey]": [35,[5]]
+	};
 
 export const hooks = {
-	handleError: ({ error }) => {
-		console.error(error);
-	},
+	handleError: (({ error }) => { console.error(error) }),
 
-	reroute: () => {}
+	reroute: (() => {})
 };
 
 export { default as root } from '../root.js';

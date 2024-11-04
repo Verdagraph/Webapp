@@ -6,7 +6,7 @@ import env from 'env';
 import { UserRepository } from 'users/repository';
 import { UserAccount } from '@vdt-webapp/common/src/user/schema';
 
-const { fastifyAwilixPlugin } = require('@fastify/awilix');
+import { fastifyAwilixPlugin } from '@fastify/awilix';
 
 /** Declares the types of dependencies available. */
 declare module '@fastify/awilix' {

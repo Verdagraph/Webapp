@@ -35,7 +35,7 @@ const confirmPasswordReset = async (
 	}
 
 	/** Ensure the user has a password reset request with the provided token. */
-	if (user.passwordResetToken != command.token && user.id == command.userId) {
+	if (user.passwordResetToken != command.token || user.id != command.userId) {
 		throw new ValidationError(
 			'Failure while decoding password reset token - token does not exist',
 			{ nonFormErrrors: ['Invalid password reset token.'] }

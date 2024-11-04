@@ -1,26 +1,52 @@
 {
-	"/(static)": ["src/routes/+layout.server.js", "src/routes/+layout.server.js"],
-	"/": ["src/routes/+layout.server.js"],
-	"/(app)/app": ["src/routes/+layout.server.js", "src/routes/+layout.server.js"],
-	"/(app)/app/(other)/account": ["src/routes/+layout.server.js"],
-	"/(app)/app/gardens": ["src/routes/+layout.server.js"],
-	"/(app)/app/gardens/create": ["src/routes/+layout.server.js"],
-	"/(app)/app/gardens/discover": ["src/routes/+layout.server.js"],
+	"/(static)": [
+		"src/routes/+layout.server.js",
+		"src/routes/+layout.server.js"
+	],
+	"/": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app": [
+		"src/routes/+layout.server.js",
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/(other)/account": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/gardens": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/gardens/create": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/gardens/discover": [
+		"src/routes/+layout.server.js"
+	],
 	"/(app)/app/gardens/[gardenKey]": [
 		"src/routes/+layout.server.js",
 		"src/routes/+layout.server.js"
 	],
-	"/(app)/app/gardens/[gardenKey]/(config)/cultivars": ["src/routes/+layout.server.js"],
-	"/(app)/app/gardens/[gardenKey]/(garden)/dash": ["src/routes/+layout.server.js"],
+	"/(app)/app/gardens/[gardenKey]/(config)/cultivars": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/gardens/[gardenKey]/(garden)/dash": [
+		"src/routes/+layout.server.js"
+	],
 	"/(app)/app/gardens/[gardenKey]/(config)/environments": [
 		"src/routes/+layout.server.js"
 	],
-	"/(app)/app/gardens/[gardenKey]/(garden)/members": ["src/routes/+layout.server.js"],
-	"/(app)/app/gardens/[gardenKey]/(garden)/metrics": ["src/routes/+layout.server.js"],
+	"/(app)/app/gardens/[gardenKey]/(garden)/members": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/gardens/[gardenKey]/(garden)/metrics": [
+		"src/routes/+layout.server.js"
+	],
 	"/(app)/app/gardens/[gardenKey]/(planner)/verdagraph": [
 		"src/routes/+layout.server.js"
 	],
-	"/(app)/app/gardens/[gardenKey]/(planner)/workbook": ["src/routes/+layout.server.js"],
+	"/(app)/app/gardens/[gardenKey]/(planner)/workbook": [
+		"src/routes/+layout.server.js"
+	],
 	"/(app)/app/gardens/[gardenKey]/(config)/workspaces": [
 		"src/routes/+layout.server.js",
 		"src/routes/+layout.server.js"
@@ -31,19 +57,43 @@
 	"/(app)/app/gardens/[gardenKey]/(config)/workspaces/[workspaceSlug]": [
 		"src/routes/+layout.server.js"
 	],
-	"/(app)/app/(other)/notifications": ["src/routes/+layout.server.js"],
-	"/(app)/app/(other)/settings": ["src/routes/+layout.server.js"],
-	"/(app)/app/traits": ["src/routes/+layout.server.js"],
-	"/(app)/app/traits/cultivars": ["src/routes/+layout.server.js"],
-	"/(app)/app/traits/environments": ["src/routes/+layout.server.js"],
-	"/(app)/app/traits/workspaces": ["src/routes/+layout.server.js"],
-	"/(static)/guides": ["src/routes/+layout.server.js"],
-	"/(static)/login": ["src/routes/+layout.server.js"],
-	"/(static)/login/request-password-reset": ["src/routes/+layout.server.js"],
+	"/(app)/app/(other)/notifications": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/(other)/settings": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/traits": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/traits/cultivars": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/traits/environments": [
+		"src/routes/+layout.server.js"
+	],
+	"/(app)/app/traits/workspaces": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/guides": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/login": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/login/request-password-reset": [
+		"src/routes/+layout.server.js"
+	],
 	"/(static)/login/reset-password/[userId]/[confirmationKey]": [
 		"src/routes/+layout.server.js"
 	],
-	"/(static)/register": ["src/routes/+layout.server.js"],
-	"/(static)/register/request-email-verification": ["src/routes/+layout.server.js"],
-	"/(static)/register/verify/[confirmationKey]": ["src/routes/+layout.server.js"]
+	"/(static)/register": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/register/request-email-verification": [
+		"src/routes/+layout.server.js"
+	],
+	"/(static)/register/verify/[confirmationKey]": [
+		"src/routes/+layout.server.js"
+	]
 }

@@ -23,7 +23,7 @@ const startServer = async () => {
 	registerErrorHandler(app);
 
 	/** Authentication support. */
-	registerAuth(app);
+	//registerAuth(app);
 
 	/** ZOD request body handling. */
 	app.setValidatorCompiler(validatorCompiler);
