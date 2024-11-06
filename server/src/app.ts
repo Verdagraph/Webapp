@@ -13,7 +13,7 @@ import env from 'env';
 // const port = Number(process.env.SERVER_PORT) || 5001;
 // const host = String(process.env.SERVER_HOST) || 'localhost';
 
-const startServer = async () => {
+export const buildApp = () => {
 	const app = Fastify({ logger: true });
 
 	/** Dependency injection. */
@@ -35,31 +35,17 @@ const startServer = async () => {
 	/** Register routes */
 	registerRouters(app);
 
+	return app
+};
+
+const startServer = async () => {
+	const app = buildApp()
 	try {
 		await app.listen();
 	} catch (err) {
 		app.log.error(err);
 		process.exit(1);
 	}
-};
-
-startServer();
-
-// For Fastify CLI swagger generation
-export default function (fastifyInstance: any) {
-	const app = Fastify({ logger: true });
-
-	/** Cookie plugin. */
-	app.register(cookie, {
-		secret: env.COOKIE_SECRET // for cookies signature
-	} as FastifyCookieOptions);
-
-	/** Register middlewares. */
-	registerErrorHandler(app);
-	app.setValidatorCompiler(validatorCompiler);
-	app.setSerializerCompiler(serializerCompiler);
-	registerOpenapi(app);
-
-	/** Register routes */
-	registerRouters(app);
 }
+
+startServer()

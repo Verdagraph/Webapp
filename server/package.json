@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch src/app.ts",
-		"schema": "tsx fastify generate-swagger src/app.ts > openapi.json"
+		"schema": "tsx generate-openapi.ts; cp openapi.json ../frontend/server.json"
 	},
 	"keywords": [],
 	"author": "",

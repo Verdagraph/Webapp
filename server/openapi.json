@@ -1,0 +1,411 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "VerdanTech Webapp Server",
+    "description": "Server of the VerdanTech web application.",
+    "version": "0.0.1"
+  },
+  "components": {
+    "schemas": {}
+  },
+  "paths": {
+    "/users/login": {
+      "post": {
+        "operationId": "UserLogin",
+        "tags": [
+          "user"
+        ],
+        "description": "Grants an access and refresh token on a correct username and password.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Must be a valid email address."
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/refresh": {
+      "post": {
+        "operationId": "UserRefresh",
+        "tags": [
+          "user"
+        ],
+        "description": "Grants an access and refresh token on a valid refresh token.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/create": {
+      "post": {
+        "operationId": "UserCreate",
+        "tags": [
+          "user"
+        ],
+        "description": "Creates a new user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Must be a valid email address."
+                  },
+                  "password1": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  },
+                  "password2": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  },
+                  "username": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 50,
+                    "pattern": "^[a-zA-Z0-9_]*$",
+                    "description": "Must be between 3 and 50 characters long and contain only alphanumeric characters and underscores. Must be unique."
+                  }
+                },
+                "required": [
+                  "email",
+                  "password1",
+                  "password2",
+                  "username"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "post": {
+        "operationId": "UserUpdate",
+        "tags": [
+          "user"
+        ],
+        "description": "Updates a user's username, email, or password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newEmail": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Must be a valid email address."
+                  },
+                  "newPassword1": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  },
+                  "newPassword2": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  },
+                  "newUsername": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 50,
+                    "pattern": "^[a-zA-Z0-9_]*$",
+                    "description": "Must be between 3 and 50 characters long and contain only alphanumeric characters and underscores. Must be unique."
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  }
+                },
+                "required": [
+                  "password"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/requestEmailConfirmation": {
+      "post": {
+        "operationId": "UserRequestEmailConfirmation",
+        "tags": [
+          "user"
+        ],
+        "description": "Requests an email confirmation be sent to the email address.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Must be a valid email address."
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/confirmEmail": {
+      "post": {
+        "operationId": "UserConfirmEmail",
+        "tags": [
+          "user"
+        ],
+        "description": "Confirms an email confirmation and verifies the email.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/requestPasswordReset": {
+      "post": {
+        "operationId": "UserRequestPasswordReset",
+        "tags": [
+          "user"
+        ],
+        "description": "Requests a password reset confirmation be sent to the email.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Must be a valid email address."
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/confirmPasswordReset": {
+      "post": {
+        "operationId": "UserConfirmPasswordReset",
+        "tags": [
+          "user"
+        ],
+        "description": "Confirms a password reset and changes the user's password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_-]{21}$"
+                  },
+                  "token": {
+                    "type": "string"
+                  },
+                  "password1": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  },
+                  "password2": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 255,
+                    "pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
+                    "description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+                  }
+                },
+                "required": [
+                  "userId",
+                  "token",
+                  "password1",
+                  "password2"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "User endpoints."
+    }
+  ]
+}

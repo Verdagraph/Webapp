@@ -9,11 +9,11 @@
 	"features": {
 		// Used to configure a non-root user.
 		// Disabled for now due to inability to make compatile with uv.
-		"ghcr.io/devcontainers/features/common-utils:2": {
-			"username": "devuser",
-			//"userUid": "1000",
-			//"userGid": "1000"
-		}
+		//"ghcr.io/devcontainers/features/common-utils:2": {
+			//"username": "devuser",
+			//"userUid": "1005",
+			//"userGid": "1005"
+		//}
 	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -22,8 +22,11 @@
 	// Commands to be run after the container is created.
 	"postCreateCommand": {
 		// Give non-root user file permissions. See: (https://github.com/microsoft/vscode-remote-release/issues/4646).
-		//"nonroot_permissions": "chown -R 1000:1000 .",
-		"pnpm": "npm install -g pnpm"
+		//"nonroot_permissions": "chown -R 1005:1005 ."
+		// Make git trust the root user.
+		"enable_git_root_user": "git config --global --add safe.directory /workspaces/VerdanTech-Backend",
+		"pnpm": "npm install -g pnpm",
+		"dependencies": "pnpm install"
 	},
 
 	// Configure tool-specific properties.
@@ -40,5 +43,5 @@
 	},
 
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "devuser"
+	"remoteUser": "root"
 }
