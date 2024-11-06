@@ -1,6 +1,7 @@
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { preprocessMeltUI, sequence } from '@melt-ui/pp';
+import path from 'path';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -15,10 +16,12 @@ const config = {
 		adapter: adapter(),
 		//
 		alias: {
-			$data: 'src/lib/data',
-			$codegen: 'src/lib/codegen',
-			$state: 'src/lib/state',
-			$components: 'src/lib/components'
+			$data: path.resolve('./src/lib/data'),
+			$dataNew: path.resolve('./src/lib/dataNew'),
+			$codegen: path.resolve('./src/lib/codegen'),
+			$codegenNew: path.resolve('./src/lib/codegenNew'),
+			$state: path.resolve('./src/lib/state'),
+			$components: path.resolve('./src/lib/components')
 		}
 	}
 };

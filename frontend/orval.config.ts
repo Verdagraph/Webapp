@@ -4,13 +4,13 @@ export default defineConfig({
 	vdt_frontend: {
 		input: {
 			// Path to the openapi specification.
-			target: './server.json',
+			target: './openapi.yaml',
 			// Whether to apply IBM OpenAPI linter.
 			validation: false
 		},
 		output: {
 			// Path to the generated client code.
-			workspace: 'src/lib/codegen/',
+			workspace: 'src/lib/codegenNew/',
 			// Path relative to workspace to generated client code.
 			target: './client/',
 			schemas: './types/',
@@ -27,7 +27,7 @@ export default defineConfig({
 			prettier: true,
 			override: {
 				mutator: {
-					path: '../data/customAxios.ts',
+					path: '../dataNew/customAxios.ts',
 					name: 'axiosClient'
 				},
 				useNativeEnums: true

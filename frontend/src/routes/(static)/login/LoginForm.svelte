@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { useQueryClient } from '@sveltestack/svelte-query';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userLogin } from '$lib/data/user/auth';
+	import { userLogin } from '$lib/dataNew/user/auth';
 	import { createServerErrors } from '$state/formServerErrors.svelte';
 	import authentication from '$state/authentication.svelte';
+	import type {AxiosError} from 'axios'
 	/* Form mutation. */
-	const queryClient = useQueryClient();
-	const mutation = userLogin.mutation(queryClient);
+	const mutation = userLogin.mutation();
 	/* Server error state. */
 	const serverErrors = createServerErrors();
 
@@ -34,7 +33,7 @@
 						 * It is here because having both onSuccess callbacks
 						 * caused only the first to be run.
 						 */
-						authentication.login(data.expiry_time_seconds);
+						authentication.login();
 						goto('/app');
 					},
 					onError: (error) => {
@@ -53,20 +52,20 @@
 
 <form method="POST" use:enhance>
 	<!-- Email address -->
-	<Form.Field {form} name="email_address">
+	<Form.Field {form} name="email">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userLogin.schema.shape.email_address.description}
-				optional={userLogin.schema.shape.email_address.isOptional()}>Email</Form.Label
+				description={userLogin.schema.shape.email.description}
+				optional={userLogin.schema.shape.email.isOptional()}>Email</Form.Label
 			>
 			<Input
 				{...attrs}
 				type="email"
 				placeholder="email@example.com"
-				bind:value={$formData.email_address}
+				bind:value={$formData.email}
 			/>
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['email_address']} />
+		<Form.FieldErrors serverErrors={serverErrors.errors['email']} />
 	</Form.Field>
 
 	<!-- Password -->

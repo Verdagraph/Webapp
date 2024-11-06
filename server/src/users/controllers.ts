@@ -9,7 +9,7 @@ import {
 	UserConfirmEmailConfirmationCommand,
 	UserRequestPasswordResetCommand,
 	UserConfirmPasswordResetCommand
-} from '@vdt-webapp/common/src/user/mutations';
+} from '@vdt-webapp/common';
 import { setTag } from 'openapi';
 import {
 	login,
@@ -29,15 +29,16 @@ import {
 import { requireAuth } from 'auth';
 
 export const userRouter = async (app: FastifyInstance) => {
-	setTag(app, 'user')
+	setTag(app, 'user');
 
 	/** Login. */
 	app.withTypeProvider<ZodTypeProvider>().route({
 		method: 'POST',
 		url: 'login',
 		schema: {
-			operationId: "UserLogin",
-			description: 'Grants an access and refresh token on a correct username and password.',
+			operationId: 'UserLoginOp',
+			description:
+				'Grants an access and refresh token on a correct username and password.',
 			body: UserLoginCommand,
 			tags: ['user'],
 			response: {
@@ -57,7 +58,7 @@ export const userRouter = async (app: FastifyInstance) => {
 		method: 'POST',
 		url: 'refresh',
 		schema: {
-			operationId: 'UserRefresh',
+			operationId: 'UserRefreshOp',
 			description: 'Grants an access and refresh token on a valid refresh token.',
 			response: {
 				200: z.string()
@@ -77,7 +78,7 @@ export const userRouter = async (app: FastifyInstance) => {
 		method: 'POST',
 		url: 'create',
 		schema: {
-			operationId: 'UserCreate',
+			operationId: 'UserCreateOp',
 			description: 'Creates a new user.',
 			body: UserCreateCommand,
 			response: {
@@ -95,8 +96,8 @@ export const userRouter = async (app: FastifyInstance) => {
 		method: 'POST',
 		url: 'update',
 		schema: {
-			operationId: 'UserUpdate',
-			description: 'Updates a user\'s username, email, or password',
+			operationId: 'UserUpdateOp',
+			description: "Updates a user's username, email, or password",
 			body: UserUpdateCommand,
 			response: {
 				200: z.string()
@@ -112,9 +113,9 @@ export const userRouter = async (app: FastifyInstance) => {
 	/** Request email confirmation. */
 	app.withTypeProvider<ZodTypeProvider>().route({
 		method: 'POST',
-		url: 'requestEmailConfirmation',
+		url: 'requestEmailConfirmationOp',
 		schema: {
-			operationId: 'UserRequestEmailConfirmation',
+			operationId: 'UserRequestEmailConfirmationOp',
 			description: 'Requests an email confirmation be sent to the email address.',
 			body: UserRequestEmailConfirmationCommand,
 			response: {
@@ -132,7 +133,7 @@ export const userRouter = async (app: FastifyInstance) => {
 		method: 'POST',
 		url: 'confirmEmail',
 		schema: {
-			operationId: 'UserConfirmEmail',
+			operationId: 'UserConfirmEmailOp',
 			description: 'Confirms an email confirmation and verifies the email.',
 			body: UserConfirmEmailConfirmationCommand,
 			response: {
@@ -150,7 +151,7 @@ export const userRouter = async (app: FastifyInstance) => {
 		method: 'POST',
 		url: 'requestPasswordReset',
 		schema: {
-			operationId: 'UserRequestPasswordReset',
+			operationId: 'UserRequestPasswordResetOp',
 			description: 'Requests a password reset confirmation be sent to the email.',
 			body: UserRequestPasswordResetCommand,
 			response: {
@@ -168,8 +169,8 @@ export const userRouter = async (app: FastifyInstance) => {
 		method: 'POST',
 		url: 'confirmPasswordReset',
 		schema: {
-			operationId: 'UserConfirmPasswordReset',
-			description: 'Confirms a password reset and changes the user\'s password',
+			operationId: 'UserConfirmPasswordResetOp',
+			description: "Confirms a password reset and changes the user's password",
 			body: UserConfirmPasswordResetCommand,
 			response: {
 				200: z.string()

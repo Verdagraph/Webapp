@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { InternalFailureException } from 'common/errors';
 import env from 'env';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import {ACCESS_TOKEN_EXPIRY_S} from '@vdt-webapp/common/src/settings'
 
 /** The payload information carried by access tokens. */
 type AccessTokenPayload = {
@@ -40,7 +41,7 @@ export const encodeAccessToken = (userId: string): Promise<string> => {
 		jwt.sign(
 			payload,
 			env.ACCESS_TOKEN_SECRET,
-			{ expiresIn: process.env.ACCESS_TOKEN_EXPIRY_S },
+			{ expiresIn: ACCESS_TOKEN_EXPIRY_S },
 			(error, token) => {
 				if (error || !token) {
 					reject(new InternalFailureException());
@@ -61,7 +62,7 @@ export const encodeRefreshToken = (userId: string): Promise<string> => {
 		jwt.sign(
 			payload,
 			env.REFRESH_TOKEN_SECRET,
-			{ expiresIn: process.env.REFRESH_TOKEN_EXPIRY_S },
+			{ expiresIn: env.REFRESH_TOKEN_EXPIRY_S },
 			(error, token) => {
 				if (error || !token) {
 					reject(new InternalFailureException());
@@ -82,7 +83,7 @@ export const encodeEmailConfirmationToken = (userId: string): Promise<string> =>
 		jwt.sign(
 			payload,
 			env.EMAIL_CONFIRMATION_TOKEN_SECRET,
-			{ expiresIn: process.env.EMAIL_CONFIRMATION_TOKEN_EXPIRY_S },
+			{ expiresIn: env.EMAIL_CONFIRMATION_TOKEN_EXPIRY_S },
 			(error, token) => {
 				if (error || !token) {
 					reject(new InternalFailureException());
@@ -103,7 +104,7 @@ export const encodePasswordResetToken = (userId: string): Promise<string> => {
 		jwt.sign(
 			payload,
 			env.PASSWORD_RESET_TOKEN_SECRET,
-			{ expiresIn: process.env.PASSWORD_RESET_TOKEN_EXPIRY_S },
+			{ expiresIn: env.PASSWORD_RESET_TOKEN_EXPIRY_S },
 			(error, token) => {
 				if (error || !token) {
 					reject(new InternalFailureException());

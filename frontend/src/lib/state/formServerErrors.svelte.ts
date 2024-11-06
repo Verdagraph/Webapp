@@ -1,4 +1,4 @@
-import { ValidationException } from '$lib/data/validationException';
+import type { ServerErrorResponse } from '@vdt-webapp/common/src/errors';
 import type { AxiosError } from 'axios';
 
 /**
@@ -12,14 +12,11 @@ export function createServerErrors() {
 	 * Sets the errors returned by the server onto the rune.
 	 * @param error The axios error returned by the server.
 	 */
-	function setErrors(error: AxiosError<ValidationException>) {
+	function setErrors(error: AxiosError<ServerErrorResponse>) {
 		const data = error?.response?.data;
-		if (data && 'extra' in data) {
-			for (const error of data.extra) {
-				if (!serverErrors[error.key]) {
-					serverErrors[error.key] = [];
-				}
-				serverErrors[error.key].push(error.message);
+		if (data && 'details' in data && data.details) {
+			for (const [key, value] of Object.entries(data.details)) {
+				serverErrors[key] = value
 			}
 		}
 	}

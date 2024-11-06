@@ -10,9 +10,9 @@
 		// Used to configure a non-root user.
 		// Disabled for now due to inability to make compatile with uv.
 		//"ghcr.io/devcontainers/features/common-utils:2": {
-			//"username": "devuser",
-			//"userUid": "1005",
-			//"userGid": "1005"
+		//"username": "devuser",
+		//"userUid": "1005",
+		//"userGid": "1005"
 		//}
 	},
 
@@ -37,7 +37,9 @@
 				"1YiB.svelte-bundle",
 				"pmneo.tsimporter",
 				"sidthesloth.html5-boilerplate",
-				"bradlc.vscode-tailwindcss"
+				"bradlc.vscode-tailwindcss",
+				"YoavBls.pretty-ts-errors",
+				"christian-kohler.path-intellisense"
 			]
 		}
 	},

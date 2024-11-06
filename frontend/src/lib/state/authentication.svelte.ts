@@ -1,15 +1,15 @@
-/* Store expiry of access token. 
-Effect on expiry: when it changes, calculate
-the time for the new one. set the timeout.
-cancel the previous requests
-*/
-import { userRefreshCommandOp } from '$codegen';
+import { userRefreshOp } from '$codegenNew';
+import {ACCESS_TOKEN_EXPIRY_S} from '@vdt-webapp/common/src/settings'
 
 /**
  * The number of seconds before the access token expires
  * to request a new access token.
  */
-const refreshExpiryWindowSeconds = 20;
+const REFRESH_EXPIRY_WINDOW_S = 20;
+const REFRESH_SCHEDULE_S = ACCESS_TOKEN_EXPIRY_S - REFRESH_EXPIRY_WINDOW_S
+if (REFRESH_SCHEDULE_S < 0) {
+	throw Error('Invalid access expiry time or refresh configuration.');
+}
 
 type AuthFlowState = {
 	/**
@@ -17,6 +17,7 @@ type AuthFlowState = {
 	 * a valid access token.
 	 */
 	isAuthenticated: boolean;
+
 	/**
 	 * Set to true if any authentication related
 	 * mutations are underway.
@@ -72,10 +73,10 @@ function requestAccessRefresh() {
 	_rune.authPriorityTaskFlag = true;
 
 	/** Call the endpoint. */
-	userRefreshCommandOp()
-		.then((data) => {
+	userRefreshOp()
+		.then(() => {
 			setAccess();
-			scheduleRefreshTask(data.expiry_time_seconds);
+			scheduleRefreshTask();
 		})
 		.catch(() => {
 			removeAccess();
@@ -87,16 +88,8 @@ function requestAccessRefresh() {
 /**
  * Given an access expiry time, schedule a refresh
  * task for before the token expires.
- * @param accessExpirySeconds the number of seconds until
- * the access expries.
  */
-function scheduleRefreshTask(accessExpirySeconds: number) {
-	/** Add a small window between refresh and expiry. */
-	if (accessExpirySeconds - refreshExpiryWindowSeconds <= 0) {
-		throw Error('Invalid access expiry time or refresh configuration.');
-	}
-	const taskTimeout = accessExpirySeconds - refreshExpiryWindowSeconds;
-
+function scheduleRefreshTask() {
 	/** Clear all previously scheduled refresh tasks. */
 	_rune.scheduledRefreshTasks.forEach((value) => {
 		clearTimeout(value);
@@ -105,7 +98,7 @@ function scheduleRefreshTask(accessExpirySeconds: number) {
 	/** Set the task with the timeout in miliseconds. */
 	const taskId = setTimeout(() => {
 		requestAccessRefresh();
-	}, taskTimeout * 1000);
+	}, REFRESH_SCHEDULE_S * 1000);
 	_rune.scheduledRefreshTasks = [taskId];
 }
 
@@ -119,12 +112,10 @@ export const authentication = {
 	/**
 	 * Sets access and schedules the next refresh.
 	 * To be called after the login mutation is successful.
-	 * @param accessExpirySeconds the number of seconds until
-	 * the access expries.
 	 */
-	login(accessExpirySeconds: number) {
+	login() {
 		setAccess();
-		scheduleRefreshTask(accessExpirySeconds);
+		scheduleRefreshTask();
 	},
 	removeAccess,
 	requestAccessRefresh

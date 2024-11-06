@@ -1,3 +1,1 @@
-
-
-type EmailConfirmationRequestedEvent = {}
+type EmailConfirmationRequestedEvent = {};

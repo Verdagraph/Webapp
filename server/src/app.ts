@@ -35,17 +35,17 @@ export const buildApp = () => {
 	/** Register routes */
 	registerRouters(app);
 
-	return app
+	return app;
 };
 
 const startServer = async () => {
-	const app = buildApp()
+	const app = buildApp();
 	try {
 		await app.listen();
 	} catch (err) {
 		app.log.error(err);
 		process.exit(1);
 	}
-}
+};
 
-startServer()
+startServer();

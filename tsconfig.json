@@ -8,7 +8,7 @@
 			"@common/*": ["./common/src/*"],
 			"@vdt-webapp/common": ["./common/src"]
 		},
-		"baseUrl": ".",
+		//"baseUrl": ".",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": false,
