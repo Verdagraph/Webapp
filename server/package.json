@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch src/app.ts",
-		"schema": "tsx ./node_modules/fastify-cli/cli.js generate-swagger src/app.ts"
+		"schema": "tsx fastify generate-swagger src/app.ts > openapi.json"
 	},
 	"keywords": [],
 	"author": "",

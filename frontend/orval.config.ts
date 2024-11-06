@@ -4,7 +4,7 @@ export default defineConfig({
 	vdt_frontend: {
 		input: {
 			// Path to the openapi specification.
-			target: './src/lib/backendSchema/openapi.yaml',
+			target: './openapi.json',
 			// Whether to apply IBM OpenAPI linter.
 			validation: false
 		},

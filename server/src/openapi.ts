@@ -10,7 +10,8 @@ export const registerOpenapi = (app: FastifyInstance) => {
 				title: 'VerdanTech Webapp Server',
 				description: 'Server of the VerdanTech web application.',
 				version: '0.0.1'
-			}
+			},
+			tags: [{name: 'user', description: 'User endpoints.'}]
 		},
 		transform: jsonSchemaTransform
 	});
@@ -20,3 +21,15 @@ export const registerOpenapi = (app: FastifyInstance) => {
 	});
 };
 export default registerOpenapi;
+
+/**
+ * Sets an OpenAPI tag on all routes in a router.
+ * @param app Fastify app instance.
+ * @param tag The tag to set on the router.
+ */
+export const setTag=(app: FastifyInstance, tag: string) => {
+	app.addHook('onRoute', (routeOptions) => {
+		routeOptions.schema = routeOptions.schema || {};
+		routeOptions.schema.tags = [tag];
+	});
+}
