@@ -16,6 +16,9 @@ import type {
 } from '../../types';
 import { axiosClient } from '../../../data/customAxios';
 
+/**
+ * Grants an access and refresh token on a correct username and password.
+ */
 export const userLogin = (userLoginBody: UserLoginBody) => {
 	return axiosClient<string>({
 		url: `/users/login`,
@@ -24,9 +27,15 @@ export const userLogin = (userLoginBody: UserLoginBody) => {
 		data: userLoginBody
 	});
 };
+/**
+ * Grants an access and refresh token on a valid refresh token.
+ */
 export const userRefresh = () => {
 	return axiosClient<string>({ url: `/users/refresh`, method: 'POST' });
 };
+/**
+ * Creates a new user.
+ */
 export const userCreate = (userCreateBody: UserCreateBody) => {
 	return axiosClient<string>({
 		url: `/users/create`,
@@ -35,6 +44,9 @@ export const userCreate = (userCreateBody: UserCreateBody) => {
 		data: userCreateBody
 	});
 };
+/**
+ * Updates a user's username, email, or password
+ */
 export const userUpdate = (userUpdateBody: UserUpdateBody) => {
 	return axiosClient<string>({
 		url: `/users/update`,
@@ -43,6 +55,9 @@ export const userUpdate = (userUpdateBody: UserUpdateBody) => {
 		data: userUpdateBody
 	});
 };
+/**
+ * Requests an email confirmation be sent to the email address.
+ */
 export const userRequestEmailConfirmation = (
 	userRequestEmailConfirmationBody: UserRequestEmailConfirmationBody
 ) => {
@@ -53,6 +68,9 @@ export const userRequestEmailConfirmation = (
 		data: userRequestEmailConfirmationBody
 	});
 };
+/**
+ * Confirms an email confirmation and verifies the email.
+ */
 export const userConfirmEmail = (userConfirmEmailBody: UserConfirmEmailBody) => {
 	return axiosClient<string>({
 		url: `/users/confirmEmail`,
@@ -61,6 +79,9 @@ export const userConfirmEmail = (userConfirmEmailBody: UserConfirmEmailBody) => 
 		data: userConfirmEmailBody
 	});
 };
+/**
+ * Requests a password reset confirmation be sent to the email.
+ */
 export const userRequestPasswordReset = (
 	userRequestPasswordResetBody: UserRequestPasswordResetBody
 ) => {
@@ -71,6 +92,9 @@ export const userRequestPasswordReset = (
 		data: userRequestPasswordResetBody
 	});
 };
+/**
+ * Confirms a password reset and changes the user's password
+ */
 export const userConfirmPasswordReset = (
 	userConfirmPasswordResetBody: UserConfirmPasswordResetBody
 ) => {
