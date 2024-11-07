@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userRequestPasswordReset } from '$lib/data/user/commands';
+	import { userRequestPasswordReset } from '$lib/dataNew/user/commands';
 	import { createServerErrors } from '$state/formServerErrors.svelte';
 
 	type Props = {
@@ -51,21 +51,20 @@
 
 <form method="POST" autocomplete="off" use:enhance>
 	<!-- Email address -->
-	<Form.Field {form} name="email_address">
+	<Form.Field {form} name="email">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userRequestPasswordReset.schema.shape['email_address']?._def
-					.description}
+				description={userRequestPasswordReset.schema.shape['email']?._def.description}
 				optional={false}>Email</Form.Label
 			>
 			<Input
 				{...attrs}
 				type="email"
 				placeholder="email@example.com"
-				bind:value={$formData.email_address}
+				bind:value={$formData.email}
 			/>
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['email_address']} />
+		<Form.FieldErrors serverErrors={serverErrors.errors['email']} />
 	</Form.Field>
 
 	<!-- Submit button -->

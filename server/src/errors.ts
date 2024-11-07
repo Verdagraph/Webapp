@@ -1,13 +1,17 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod';
 import { ServerError } from './common/errors';
-import { ServerErrorResponse, FieldErrors } from '@vdt-webapp/common/src/errors';
+import {
+	ServerErrorResponse,
+	FieldErrors,
+	AppErrors
+} from '@vdt-webapp/common/src/errors';
 
 export const registerErrorHandler = (app: FastifyInstance) => {
 	app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply) => {
 		let statusCode = 500;
 		let errorMessage = '';
-		let errorDetails: Record<string, Array<string>> = {};
+		let errorDetails: AppErrors = {};
 
 		/** If the error resulted from an invalid request body schema. */
 		if (hasZodFastifySchemaValidationErrors(error)) {
@@ -25,7 +29,7 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 
 			statusCode = 400;
 			errorMessage = 'Request body validation failed.';
-			errorDetails = fieldErrors;
+			errorDetails['fieldErrors'] = fieldErrors;
 
 			/** Catch all application exceptions. */
 		} else if (error instanceof ServerError) {

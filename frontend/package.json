@@ -54,6 +54,8 @@
 	"dependencies": {
 		"@internationalized/date": "^3.5.5",
 		"@sveltestack/svelte-query": "^1.6.0",
+		"@triplit/client": "^0.5.8",
+		"@triplit/svelte": "^0.2.14",
 		"@vdt-webapp/common": "workspace:*",
 		"axios": "^1.7.2",
 		"bits-ui": "^0.21.12",

@@ -9,10 +9,8 @@ import { UserLoginCommand } from '@vdt-webapp/common';
 export const userLogin = {
 	schema: UserLoginCommand,
 	mutation: () => {
-		return useMutation(
-			function (data: zod.infer<typeof UserLoginCommand>) {
-				return userLoginOp(data);
-			},
-		);
+		return useMutation(function (data: zod.infer<typeof UserLoginCommand>) {
+			return userLoginOp(data);
+		});
 	}
 };

@@ -42,6 +42,12 @@ importers:
       '@sveltestack/svelte-query':
         specifier: ^1.6.0
         version: 1.6.0
+      '@triplit/client':
+        specifier: ^0.5.8
+        version: 0.5.13
+      '@triplit/svelte':
+        specifier: ^0.2.14
+        version: 0.2.14(svelte@5.1.10)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
@@ -1376,6 +1382,10 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
+  '@triplit/client@0.5.13':
+    resolution: {integrity: sha512-gLacNdojs0iJG2XdeBk3fSnD1YTMcJj+UtN5rCXp2+A/B8Ban1JmAPjFBn5Sv9+qkur9KejYqCmWwm+RPhQFlw==}
+    engines: {node: '>=18.0.0'}
+
   '@triplit/client@0.5.8':
     resolution: {integrity: sha512-DuVVhFQwvcZMlZ+gp9BNF2G3XctPeO64FoOpnUhrqQbDFEuh2WeMWm83KRNIrrU2+p34MPQ36HcKuHyB95MPTg==}
     engines: {node: '>=18.0.0'}
@@ -1383,8 +1393,24 @@ packages:
   '@triplit/db@0.5.0':
     resolution: {integrity: sha512-vsaJhnd+sy4XuNsk1ZGIEHe7vcMs9hK5MI+nHwUwIg+0Yi2ESpuiW+8HLm3+lYOCDVyVeDLYRAKyqmSxgy/Z3A==}
 
+  '@triplit/db@0.5.4':
+    resolution: {integrity: sha512-WdUxsa5r9Jh35+42uyAdiZh8gJsPGi/lhq7/lTH8k6rQ1qng3w+sIunksQAWG2E7+AbXp8wAD9/ZZmbjwtWzVQ==}
+
+  '@triplit/svelte@0.2.14':
+    resolution: {integrity: sha512-Oc15OQgdwhxSMAbqAPqdP210Sk0iIUyXKYqQ00Qt2Zhb+ceceaYM/08FjqEOHhAl+XIq+lnK8/l2tiXp2jqTKA==}
+    peerDependencies:
+      svelte: '*'
+
   '@triplit/tuple-database@2.2.30':
     resolution: {integrity: sha512-88HxW/WAXCldP8s5vu3dc1plSpP8/fR6LgARNJTJC93VFh97kgXlBg+iV4A9zNrmZOWkK1GXrPFFPeocAvt4+g==}
+    peerDependencies:
+      react: '*'
+    peerDependenciesMeta:
+      react:
+        optional: true
+
+  '@triplit/tuple-database@2.2.31':
+    resolution: {integrity: sha512-7fvHhMPacXzWYw7/6Y/xCdTd7IUFj9tH+QFH9FiyzzU6JyH+BousHLxnL516Y3FT38PlJs5Hyb+PGWwc0ef4Rg==}
     peerDependencies:
       react: '*'
     peerDependenciesMeta:
@@ -2839,6 +2865,9 @@ packages:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
 
+  mnemonist@0.40.0-rc1:
+    resolution: {integrity: sha512-38L0xGDezsPweee5i7duiaCRzlkkCJorozW6Rta60iel7ZkT4vF6jDIfr101NxE3rsAsumuOvc8yiTGZD5gG4w==}
+
   mode-watcher@0.4.1:
     resolution: {integrity: sha512-bNC+1NXmwEFZtziCdZSgP7HFQTpqJPcQn9GwwJQGSf6SBF3neEPYV1uRwkYuAQwbsvsXIYtzaqgedDzJ7D1mhg==}
     peerDependencies:
@@ -2977,6 +3006,9 @@ packages:
   object.assign@4.1.5:
     resolution: {integrity: sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==}
     engines: {node: '>= 0.4'}
+
+  obliterator@2.0.4:
+    resolution: {integrity: sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==}
 
   on-exit-leak-free@2.1.2:
     resolution: {integrity: sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA==}
@@ -5084,6 +5116,16 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  '@triplit/client@0.5.13':
+    dependencies:
+      '@sinclair/typebox': 0.32.35
+      '@triplit/db': 0.5.4
+      comlink: 4.4.1
+      rxjs: 7.8.1
+      superjson: 2.2.1
+    transitivePeerDependencies:
+      - react
+
   '@triplit/client@0.5.8':
     dependencies:
       '@sinclair/typebox': 0.32.35
@@ -5106,7 +5148,37 @@ snapshots:
     transitivePeerDependencies:
       - react
 
+  '@triplit/db@0.5.4':
+    dependencies:
+      '@sinclair/typebox': 0.32.35
+      '@triplit/tuple-database': 2.2.31
+      ajv: 8.17.1
+      ajv-formats: 3.0.1(ajv@8.17.1)
+      idb: 7.1.1
+      mnemonist: 0.40.0-rc1
+      nanoid: 3.3.7
+      pino: 8.21.0
+    transitivePeerDependencies:
+      - react
+
+  '@triplit/svelte@0.2.14(svelte@5.1.10)':
+    dependencies:
+      '@triplit/client': 0.5.13
+      svelte: 5.1.10
+    transitivePeerDependencies:
+      - react
+
   '@triplit/tuple-database@2.2.30':
+    dependencies:
+      elen: 1.0.10
+      fractional-indexing: 3.2.0
+      fs-extra: 11.2.0
+      md5: 2.3.0
+      remeda: 2.16.0
+      sorted-btree: 1.8.1
+      uuid: 9.0.1
+
+  '@triplit/tuple-database@2.2.31':
     dependencies:
       elen: 1.0.10
       fractional-indexing: 3.2.0
@@ -6740,6 +6812,10 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
+  mnemonist@0.40.0-rc1:
+    dependencies:
+      obliterator: 2.0.4
+
   mode-watcher@0.4.1(svelte@5.1.10):
     dependencies:
       svelte: 5.1.10
@@ -6882,6 +6958,8 @@ snapshots:
       define-properties: 1.2.1
       has-symbols: 1.0.3
       object-keys: 1.1.1
+
+  obliterator@2.0.4: {}
 
   on-exit-leak-free@2.1.2: {}
 

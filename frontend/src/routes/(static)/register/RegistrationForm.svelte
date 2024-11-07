@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userCreate } from '$lib/data/user/commands';
+	import { userCreate } from '$lib/dataNew/user/commands';
 	import { createServerErrors } from '$state/formServerErrors.svelte';
 
 	type Props = {
@@ -31,15 +31,10 @@
 	 */
 	const form = superForm(defaults(zod(userCreate.schema)), {
 		SPA: true,
-		validators: zod(
-			userCreate.schema.refine((data) => data.password1 == data.password2, {
-				message: 'Passwords must match',
-				path: ['password2']
-			})
-		),
+		validators: zod(userCreate.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				registeredEmail = form.data.email_address;
+				registeredEmail = form.data.email;
 				$mutation.mutate(form.data, {
 					onSuccess: () => {
 						succeeded = true;
@@ -63,13 +58,13 @@
 	<Form.Field {form} name="username">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userCreate.schema.shape.username.description}
-				optional={userCreate.schema.shape.username.isOptional()}>Username</Form.Label
+				description={userCreate.schema.innerType().shape.username.description}
+				optional={userCreate.schema.innerType().shape.username.isOptional()}
+				>Username</Form.Label
 			>
 			<Input
 				{...attrs}
 				type="text"
-				autocomplete="false"
 				placeholder="username"
 				bind:value={$formData.username}
 			/>
@@ -78,28 +73,30 @@
 	</Form.Field>
 
 	<!-- Email address -->
-	<Form.Field {form} name="email_address">
+	<Form.Field {form} name="email">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userCreate.schema.shape.email_address.description}
-				optional={userCreate.schema.shape.email_address.isOptional()}>Email</Form.Label
+				description={userCreate.schema.innerType().shape.email.description}
+				optional={userCreate.schema.innerType().shape.email.isOptional()}
+				>Email</Form.Label
 			>
 			<Input
 				{...attrs}
 				type="email"
 				placeholder="email@example.com"
-				bind:value={$formData.email_address}
+				bind:value={$formData.email}
 			/>
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['email_address']} />
+		<Form.FieldErrors serverErrors={serverErrors.errors['email']} />
 	</Form.Field>
 
 	<!-- Password1 -->
 	<Form.Field {form} name="password1">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userCreate.schema.shape.password1.description}
-				optional={userCreate.schema.shape.password1.isOptional()}>Password</Form.Label
+				description={userCreate.schema.innerType().shape.password1.description}
+				optional={userCreate.schema.innerType().shape.password1.isOptional()}
+				>Password</Form.Label
 			>
 			<Input {...attrs} type="password" bind:value={$formData.password1} />
 		</Form.Control>
@@ -110,8 +107,8 @@
 	<Form.Field {form} name="password2">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userCreate.schema.shape.password2.description}
-				optional={userCreate.schema.shape.password2.isOptional()}
+				description={userCreate.schema.innerType().shape.password2.description}
+				optional={userCreate.schema.innerType().shape.password2.isOptional()}
 				>Confirm Password</Form.Label
 			>
 			<Input {...attrs} type="password" bind:value={$formData.password2} />

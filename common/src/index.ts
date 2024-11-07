@@ -2,8 +2,9 @@ import { ClientSchema } from '@triplit/client';
 import { userSchema, roles } from './user/schema';
 import { gardenSchema } from './garden/schema';
 
-/** Export schema-derived TS types. */
-export type * from './user/schema';
+/** Export common modules. */
+export * from './user/index';
+export * from './garden/index';
 
 /** Export Triplit schemas. */
 export const schema = {
@@ -13,6 +14,3 @@ export const schema = {
 
 /** Export Triplit roles. */
 export { roles };
-
-/** Export all mutation commands. */
-export * from './user/mutations';

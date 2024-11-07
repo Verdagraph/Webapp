@@ -4,6 +4,14 @@ import { GardenVisibilityEnum } from './schema';
 
 /** Field specifications. */
 const gardenFields = {
+	id: z
+		.string()
+		.min(4, 'Must be at least 4 characters.')
+		.max(21, 'May be at most 21 characters.')
+		.regex(/[0-9A-Za-z-]+/, 'Must contain only alphanumeric characters and hyphens.')
+		.describe(
+			'Shorthand name for the garden used in URLs. Must be between 4 and 21 characters long and contain only alphanumeric characters and hyphens.'
+		),
 	name: z
 		.string()
 		.min(2, 'Must be at least 2 characters.')
@@ -12,19 +20,11 @@ const gardenFields = {
 		.describe(
 			'Name of the garden. Must be between 2 and 50 characters long and contain only alphanumeric characters and spaces.'
 		),
-	key: z
-		.string()
-		.min(4, 'Must be at least 4 characters.')
-		.max(16, 'May be at most 16 characters.')
-		.regex(/[0-9A-Za-z-]+/, 'Must contain only alphanumeric characters and hyphens.')
-		.describe(
-			'Shorthand name for the garden used in URLs. Must be between 4 and 16 characters long and contain only alphanumeric characters and hyphens.'
-		),
 	description: z
 		.string()
 		.max(1400, 'May be at most 1400 characters.')
 		.describe('May be at most 1400 characters.'),
-	visibility: z.enum(GardenVisibilityEnum),
+	visibility: z.enum(GardenVisibilityEnum).default('HIDDEN'),
 	usernameInvitesList: z
 		.array(userFields.username)
 		.max(10, 'A maximum of 10 users can be invited at once.')
@@ -34,32 +34,33 @@ const gardenFields = {
  * Command to create a new garden.
  */
 export const GardenCreateCommand = z.object({
+	id: gardenFields.id,
 	name: gardenFields.name,
-	key: gardenFields.key,
-	description: gardenFields.description,
+	description: gardenFields.description.optional(),
 	visibility: gardenFields.visibility,
-	adminInvites: gardenFields.usernameInvitesList.describe(
-		'A list of usernames to invite as admins.'
-	),
-	editorInvites: gardenFields.usernameInvitesList.describe(
-		'A list of usernames to invite as editors.'
-	),
-	viewerInvites: gardenFields.usernameInvitesList.describe(
-		'A list of usernames to invite as viewers.'
-	)
+	adminInvites: gardenFields.usernameInvitesList
+		.describe('A list of usernames to invite as admins.')
+		.optional(),
+	editorInvites: gardenFields.usernameInvitesList
+		.describe('A list of usernames to invite as editors.')
+		.optional(),
+	viewerInvites: gardenFields.usernameInvitesList
+		.describe('A list of usernames to invite as viewers.')
+		.optional()
 });
 
 /**
  * Command to invite a user to a garden.
  */
 export const GardenMembershipCreateCommand = z.object({
+	gardenId: z.string(),
 	adminInvites: gardenFields.usernameInvitesList.describe(
 		'A list of usernames to invite as admins.'
-	),
+	).optional(),
 	editorInvites: gardenFields.usernameInvitesList.describe(
 		'A list of usernames to invite as editors.'
-	),
+	).optional(),
 	viewerInvites: gardenFields.usernameInvitesList.describe(
 		'A list of usernames to invite as viewers.'
-	)
+	).optional()
 });

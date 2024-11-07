@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$components/ui/button';
 	import * as Dialog from '$components/ui/dialog';

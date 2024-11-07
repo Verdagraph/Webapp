@@ -30,13 +30,11 @@ export const gardenSchema = {
 	/** Garden schema. */
 	gardens: {
 		schema: S.Schema({
+			/** URL-friendly shorthand - unique. */
 			id: S.Id(),
 
 			/** Non-unique name of the garden. */
 			name: S.String(),
-
-			/** URL-friendly shorthand - unique. */
-			key: S.String(),
 
 			/** Controls which non-users may view the garden. */
 			visibility: S.String({ enum: GardenVisibilityEnum }),
@@ -120,18 +118,18 @@ export const gardenSchema = {
 
 			/** User who is the subject of the membership. */
 			userId: S.String(),
-			user: S.RelationOne('users', { where: [['id', '=', '$userId']] }),
+			user: S.RelationOne('profiles', { where: [['id', '=', '$userId']] }),
 
 			/** User who created the membership. */
 			inviterId: S.String({ nullable: true }),
-			inviter: S.RelationOne('users', { where: [['id', '=', '$inviterId']] }),
+			inviter: S.RelationOne('profiles', { where: [['id', '=', '$inviterId']] }),
 
 			/** The acceptance status and acceptance date of the membership. */
 			status: S.String({ enum: GardenMembershipStatusEnum }),
 			acceptedAt: S.Date(),
 
 			/** Allows marking gardens as favorites in the menu. */
-			favorite: S.Boolean()
+			favorite: S.Boolean({ default: false })
 		}),
 		permissions: {
 			anon: {

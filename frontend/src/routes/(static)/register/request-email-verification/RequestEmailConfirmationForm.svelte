@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userRequestEmailConfirmation } from '$lib/data/user/commands';
+	import { userRequestEmailConfirmation } from '$lib/dataNew/user/commands';
 	import { createServerErrors } from '$state/formServerErrors.svelte';
 
 	type Props = {
@@ -34,7 +34,7 @@
 		validators: zod(userRequestEmailConfirmation.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				registeredEmail = form.data.email_address;
+				registeredEmail = form.data.email;
 				$mutation.mutate(form.data, {
 					onSuccess: () => {
 						succeeded = true;
@@ -55,22 +55,21 @@
 
 <form method="POST" autocomplete="off" use:enhance>
 	<!-- Email address -->
-	<Form.Field {form} name="email_address">
+	<Form.Field {form} name="email">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userRequestEmailConfirmation.schema.shape.email_address
-					.description}
-				optional={userRequestEmailConfirmation.schema.shape.email_address.isOptional()}
+				description={userRequestEmailConfirmation.schema.shape.email.description}
+				optional={userRequestEmailConfirmation.schema.shape.email.isOptional()}
 				>Email</Form.Label
 			>
 			<Input
 				{...attrs}
 				type="email"
 				placeholder="email@example.com"
-				bind:value={$formData.email_address}
+				bind:value={$formData.email}
 			/>
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['email_address']} />
+		<Form.FieldErrors serverErrors={serverErrors.errors['email']} />
 	</Form.Field>
 
 	<!-- Submit button -->

@@ -33,7 +33,9 @@ export const userCreate = {
 export const userRequestEmailConfirmation = {
 	schema: UserRequestEmailConfirmationCommand,
 	mutation: () => {
-		return useMutation(function (data: z.infer<typeof UserRequestEmailConfirmationCommand>) {
+		return useMutation(function (
+			data: z.infer<typeof UserRequestEmailConfirmationCommand>
+		) {
 			return userRequestEmailConfirmationOp(data);
 		});
 	}
@@ -45,7 +47,9 @@ export const userRequestEmailConfirmation = {
 export const userConfirmEmailConfirmation = {
 	schema: UserConfirmEmailConfirmationCommand,
 	mutation: () => {
-		return useMutation(function (data: z.infer<typeof UserConfirmEmailConfirmationCommand>) {
+		return useMutation(function (
+			data: z.infer<typeof UserConfirmEmailConfirmationCommand>
+		) {
 			return userConfirmEmailOp(data);
 		});
 	}
@@ -57,7 +61,9 @@ export const userConfirmEmailConfirmation = {
 export const userRequestPasswordReset = {
 	schema: UserRequestPasswordResetCommand,
 	mutation: () => {
-		return useMutation(function (data: z.infer<typeof UserRequestPasswordResetCommand>) {
+		return useMutation(function (
+			data: z.infer<typeof UserRequestPasswordResetCommand>
+		) {
 			return userRequestPasswordResetOp(data);
 		});
 	}
@@ -69,7 +75,9 @@ export const userRequestPasswordReset = {
 export const userConfirmPasswordReset = {
 	schema: UserConfirmPasswordResetCommand,
 	mutation: () => {
-		return useMutation(function (data: z.infer<typeof UserConfirmPasswordResetCommand>) {
+		return useMutation(function (
+			data: z.infer<typeof UserConfirmPasswordResetCommand>
+		) {
 			return userConfirmPasswordResetOp(data);
 		});
 	}

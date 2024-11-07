@@ -1,12 +1,12 @@
 import { userRefreshOp } from '$codegenNew';
-import {ACCESS_TOKEN_EXPIRY_S} from '@vdt-webapp/common/src/settings'
+import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 
 /**
  * The number of seconds before the access token expires
  * to request a new access token.
  */
 const REFRESH_EXPIRY_WINDOW_S = 20;
-const REFRESH_SCHEDULE_S = ACCESS_TOKEN_EXPIRY_S - REFRESH_EXPIRY_WINDOW_S
+const REFRESH_SCHEDULE_S = ACCESS_TOKEN_EXPIRY_S - REFRESH_EXPIRY_WINDOW_S;
 if (REFRESH_SCHEDULE_S < 0) {
 	throw Error('Invalid access expiry time or refresh configuration.');
 }

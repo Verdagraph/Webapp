@@ -4,7 +4,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userConfirmPasswordReset } from '$lib/data/user/commands';
+	import { userConfirmPasswordReset } from '$lib/dataNew/user/commands';
 	import { createServerErrors } from '$state/formServerErrors.svelte';
 
 	type Props = {
@@ -28,22 +28,14 @@
 	 * - onChange: Reset server errors.
 	 */
 	const initialData = {
-		key: $page.params.confirmationKey,
-		user_id: $page.params.userId,
-		new_password1: '',
-		new_password2: ''
+		userId: $page.params.userId,
+		token: $page.params.confirmationKey,
+		password1: '',
+		password2: ''
 	};
 	const form = superForm(defaults(initialData, zod(userConfirmPasswordReset.schema)), {
 		SPA: true,
-		validators: zod(
-			userConfirmPasswordReset.schema.refine(
-				(data) => data.new_password1 == data.new_password2,
-				{
-					message: 'Passwords must match',
-					path: ['password2']
-				}
-			)
-		),
+		validators: zod(userConfirmPasswordReset.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
 				$mutation.mutate(form.data, {
@@ -66,29 +58,33 @@
 
 <form method="POST" autocomplete="off" use:enhance>
 	<!-- New Password1 -->
-	<Form.Field {form} name="new_password1">
+	<Form.Field {form} name="password1">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userConfirmPasswordReset.schema.shape.new_password1.description}
-				optional={userConfirmPasswordReset.schema.shape.new_password1.isOptional()}
-				>New Password</Form.Label
+				description={userConfirmPasswordReset.schema.innerType().shape.password1
+					.description}
+				optional={userConfirmPasswordReset.schema
+					.innerType()
+					.shape.password1.isOptional()}>New Password</Form.Label
 			>
-			<Input {...attrs} type="password" bind:value={$formData.new_password1} />
+			<Input {...attrs} type="password" bind:value={$formData.password1} />
 		</Form.Control>
 		<Form.FieldErrors serverErrors={serverErrors.errors['password1']} />
 	</Form.Field>
 
 	<!-- Password2 -->
-	<Form.Field {form} name="new_password2">
+	<Form.Field {form} name="password2">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={userConfirmPasswordReset.schema.shape.new_password2.description}
-				optoinal={userConfirmPasswordReset.schema.shape.new_password2.optional}
-				>Confirm Password</Form.Label
+				description={userConfirmPasswordReset.schema.innerType().shape.password2
+					.description}
+				optional={userConfirmPasswordReset.schema
+					.innerType()
+					.shape.password2.isOptional()}>Confirm Password</Form.Label
 			>
-			<Input {...attrs} type="password" bind:value={$formData.new_password2} />
+			<Input {...attrs} type="password" bind:value={$formData.password2} />
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['new_password2']} />
+		<Form.FieldErrors serverErrors={serverErrors.errors['password2']} />
 	</Form.Field>
 
 	<!-- Submit button -->

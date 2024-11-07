@@ -16,7 +16,7 @@ export function createServerErrors() {
 		const data = error?.response?.data;
 		if (data && 'details' in data && data.details) {
 			for (const [key, value] of Object.entries(data.details)) {
-				serverErrors[key] = value
+				serverErrors[key] = value;
 			}
 		}
 	}

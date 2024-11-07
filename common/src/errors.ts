@@ -22,7 +22,7 @@ type NonFormErrors = Array<string>;
 export type AppErrors = {
 	fieldErrors?: FieldErrors;
 	nonFieldErrors?: NonFieldErrors;
-	nonFormErrrors?: NonFormErrors;
+	nonFormErrors?: NonFormErrors;
 };
 
 /**
@@ -30,8 +30,7 @@ export type AppErrors = {
  */
 export type ServerErrorResponse = {
 	message: string;
-	/** Keys are field names of the request body, 'nonFieldErrors', or 'nonFormErrors'. */
-	details?: Record<string, Array<string>>;
+	details?: AppErrors;
 };
 
 /**
@@ -39,7 +38,7 @@ export type ServerErrorResponse = {
  */
 export class AppError extends Error {
 	defaultMessage: string = 'A failure has occurred.';
-	details: Record<string, Array<string>> = {};
+	details: AppErrors = {};
 
 	constructor(message?: string, errors?: AppErrors) {
 		if (message) {
@@ -51,13 +50,13 @@ export class AppError extends Error {
 
 		if (errors) {
 			if (errors.fieldErrors) {
-				this.details = errors.fieldErrors;
+				this.details['fieldErrors'] = errors.fieldErrors;
 			}
 			if (errors.nonFieldErrors) {
 				this.details['nonFieldErrors'] = errors.nonFieldErrors;
 			}
-			if (errors.nonFormErrrors) {
-				this.details['nonFormErrors'] = errors.nonFormErrrors;
+			if (errors.nonFormErrors) {
+				this.details['nonFormErrors'] = errors.nonFormErrors;
 			}
 		}
 	}

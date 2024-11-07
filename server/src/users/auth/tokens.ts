@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { InternalFailureException } from 'common/errors';
 import env from 'env';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import {ACCESS_TOKEN_EXPIRY_S} from '@vdt-webapp/common/src/settings'
+import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 
 /** The payload information carried by access tokens. */
 type AccessTokenPayload = {

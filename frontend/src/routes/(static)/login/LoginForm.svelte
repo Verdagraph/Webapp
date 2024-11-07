@@ -7,7 +7,7 @@
 	import { userLogin } from '$lib/dataNew/user/auth';
 	import { createServerErrors } from '$state/formServerErrors.svelte';
 	import authentication from '$state/authentication.svelte';
-	import type {AxiosError} from 'axios'
+	import type { AxiosError } from 'axios';
 	/* Form mutation. */
 	const mutation = userLogin.mutation();
 	/* Server error state. */

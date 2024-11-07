@@ -4,6 +4,8 @@ import { goto } from '$app/navigation';
 import { toast } from 'svelte-sonner';
 import authentication from '$state/authentication.svelte';
 import { ServerErrorResponse } from '@vdt-webapp/common/src/errors';
+import triplit from './triplit';
+import accessToken from '$state/access.svelte';
 
 /** Static client configuration. */
 export const AXIOS_INSTANCE = axios.create({
@@ -14,12 +16,20 @@ export const AXIOS_INSTANCE = axios.create({
 /** Dynamic request configuration. */
 AXIOS_INSTANCE.interceptors.request.use((config) => {
 	//config.headers['X-CSRFToken'] = get(csrftoken);
+	config.headers['access'] = accessToken.value;
 	return config;
 });
 
 /** Dynamic response configuration. */
 AXIOS_INSTANCE.interceptors.response.use(
 	(response: AxiosResponse<any>) => {
+		/** Update the access token if it exists. */
+		if (response.headers['access']) {
+			const accessToken = response.headers['access'];
+			triplit.updateToken(accessToken);
+			accessToken.value = accessToken;
+		}
+
 		/** On success, return the data directly.*/
 		return response.data;
 	},
@@ -52,8 +62,8 @@ AXIOS_INSTANCE.interceptors.response.use(
 			 */
 			if (error.response.data.details?.nonFormErrors) {
 				for (const errorMessage in error.response.data.details.nonFormErrors) {
-						/** Toast */
-						toast.error(errorMessage);
+					/** Toast */
+					toast.error(errorMessage);
 				}
 			}
 		}
