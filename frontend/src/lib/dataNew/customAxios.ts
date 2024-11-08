@@ -16,7 +16,7 @@ export const AXIOS_INSTANCE = axios.create({
 /** Dynamic request configuration. */
 AXIOS_INSTANCE.interceptors.request.use((config) => {
 	//config.headers['X-CSRFToken'] = get(csrftoken);
-	config.headers['access'] = accessToken.value;
+	config.headers['access'] = accessToken.value.token;
 	return config;
 });
 
@@ -51,20 +51,6 @@ AXIOS_INSTANCE.interceptors.response.use(
 			} else {
 				authentication.value.retriedRefreshFlag = true;
 				authentication.requestAccessRefresh();
-			}
-
-			/** Handle other errors. */
-		} else {
-			/**
-			 * The backend may send errors meant to be displayed
-			 * outside of a form under the extra.non_form_errors key.
-			 * Display each of these in a toast.
-			 */
-			if (error.response.data.details?.nonFormErrors) {
-				for (const errorMessage in error.response.data.details.nonFormErrors) {
-					/** Toast */
-					toast.error(errorMessage);
-				}
 			}
 		}
 

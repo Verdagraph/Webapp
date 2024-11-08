@@ -54,13 +54,13 @@ export const GardenCreateCommand = z.object({
  */
 export const GardenMembershipCreateCommand = z.object({
 	gardenId: z.string(),
-	adminInvites: gardenFields.usernameInvitesList.describe(
-		'A list of usernames to invite as admins.'
-	).optional(),
-	editorInvites: gardenFields.usernameInvitesList.describe(
-		'A list of usernames to invite as editors.'
-	).optional(),
-	viewerInvites: gardenFields.usernameInvitesList.describe(
-		'A list of usernames to invite as viewers.'
-	).optional()
+	adminInvites: gardenFields.usernameInvitesList
+		.describe('A list of usernames to invite as admins.')
+		.optional(),
+	editorInvites: gardenFields.usernameInvitesList
+		.describe('A list of usernames to invite as editors.')
+		.optional(),
+	viewerInvites: gardenFields.usernameInvitesList
+		.describe('A list of usernames to invite as viewers.')
+		.optional()
 });

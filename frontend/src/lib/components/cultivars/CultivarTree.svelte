@@ -8,7 +8,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import type { CultivarSchema, CultivarUpdateCommand } from '$codegen/types';
 	import { cultivarUpdate } from '$data/cultivar/commands';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { createFormErrors } from '$state/formErrors.svelte';
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import FormErrorPopover from '$components/misc/FormErrorPopover.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -34,7 +34,7 @@
 	/** Form mutations. */
 	const collectionUpdateMutation = cultivarUpdate.mutation();
 	/** Server errors. */
-	const serverErrors = createServerErrors();
+	const formErrors = createFormErrors();
 
 	/**
 	 * Standard form configuration:
@@ -59,13 +59,13 @@
 				$collectionUpdateMutation.mutate(form.data, {
 					onError: (error) => {
 						// @ts-ignore
-						serverErrors.setErrors(error);
+						formErrors.setServerErrors(error);
 					}
 				});
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formErrors.reset();
 		}
 	});
 	const { form: formData, errors, enhance } = form;

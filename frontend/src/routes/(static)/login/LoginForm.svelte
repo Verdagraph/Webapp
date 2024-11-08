@@ -5,13 +5,14 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$lib/dataNew/user/auth';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { createFormErrors } from '$state/formErrors.svelte';
 	import authentication from '$state/authentication.svelte';
 	import type { AxiosError } from 'axios';
+	import type { ServerErrorResponse } from '@vdt-webapp/common/src/errors';
 	/* Form mutation. */
 	const mutation = userLogin.mutation();
-	/* Server error state. */
-	const serverErrors = createServerErrors();
+	/* Form error state. */
+	const formErrors = createFormErrors();
 
 	/**
 	 * Standard form configuration:
@@ -37,14 +38,13 @@
 						goto('/app');
 					},
 					onError: (error) => {
-						// @ts-ignore
-						serverErrors.setErrors(error);
+						formErrors.setServerErrors(error as AxiosError<ServerErrorResponse>);
 					}
 				});
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formErrors.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
@@ -65,7 +65,7 @@
 				bind:value={$formData.email}
 			/>
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['email']} />
+		<Form.FieldErrors serverErrors={formErrors.fieldErrors?.email?} />
 	</Form.Field>
 
 	<!-- Password -->
@@ -77,7 +77,7 @@
 			>
 			<Input {...attrs} type="password" bind:value={$formData.password} />
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['password']} />
+		<Form.FieldErrors serverErrors={formErrors.fieldErrors?.password?} />
 	</Form.Field>
 
 	<!-- Submit button -->

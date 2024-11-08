@@ -55,13 +55,14 @@ type LayoutRouteId =
 	| '/(static)/login/reset-password/[userId]/[confirmationKey]'
 	| '/(static)/register'
 	| '/(static)/register/request-email-verification'
-	| '/(static)/register/verify/[confirmationKey]'
+	| '/(static)/register/verify/[confirmationToken]'
 	| null;
 type LayoutParams = RouteParams & {
 	gardenKey?: string;
 	workspaceSlug?: string;
 	userId?: string;
 	confirmationKey?: string;
+	confirmationToken?: string;
 };
 type LayoutServerParentData = EnsureDefined<{}>;
 type LayoutParentData = EnsureDefined<{}>;

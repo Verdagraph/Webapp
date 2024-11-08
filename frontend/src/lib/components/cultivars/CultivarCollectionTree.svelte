@@ -21,7 +21,7 @@
 		CultivarCollectionUpdateCommand
 	} from '$codegen/types';
 	import { cultivarCollectionUpdate } from '$data/cultivar/commands';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { createFormErrors } from '$state/formErrors.svelte';
 	import CultivarTree from './CultivarTree.svelte';
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import FormErrorPopover from '$components/misc/FormErrorPopover.svelte';
@@ -39,7 +39,7 @@
 	/** Form mutations. */
 	const collectionUpdateMutation = cultivarCollectionUpdate.mutation();
 	/** Server errors. */
-	const serverErrors = createServerErrors();
+	const formErrors = createFormErrors();
 
 	/** Queries. */
 	const collectionQuery = cultivarCollectionQuery({
@@ -72,13 +72,13 @@
 				$collectionUpdateMutation.mutate(form.data, {
 					onError: (error) => {
 						// @ts-ignore
-						serverErrors.setErrors(error);
+						formErrors.setServerErrors(error);
 					}
 				});
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formErrors.reset();
 		}
 	});
 	const { form: formData, enhance } = form;

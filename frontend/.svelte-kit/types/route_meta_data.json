@@ -45,5 +45,5 @@
 	],
 	"/(static)/register": ["src/routes/+layout.server.js"],
 	"/(static)/register/request-email-verification": ["src/routes/+layout.server.js"],
-	"/(static)/register/verify/[confirmationKey]": ["src/routes/+layout.server.js"]
+	"/(static)/register/verify/[confirmationToken]": ["src/routes/+layout.server.js"]
 }

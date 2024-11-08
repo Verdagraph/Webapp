@@ -5,8 +5,9 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userConfirmPasswordReset } from '$lib/dataNew/user/commands';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
-
+	import { createFormErrors } from '$state/formErrors.svelte';
+	import type { AxiosError } from 'axios';
+	import type { ServerErrorResponse } from '@vdt-webapp/common/src/errors';
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
 		succeeded: boolean;
@@ -16,8 +17,8 @@
 
 	/* Form mutation. */
 	const mutation = userConfirmPasswordReset.mutation();
-	/* Server error state. */
-	const serverErrors = createServerErrors();
+	/* Form error state. */
+	const formErrors = createFormErrors();
 
 	/**
 	 * Standard form configuration:
@@ -43,14 +44,13 @@
 						succeeded = true;
 					},
 					onError: (error) => {
-						// @ts-ignore
-						serverErrors.setErrors(error);
+						formErrors.setServerErrors(error as AxiosError<ServerErrorResponse>);
 					}
 				});
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formErrors.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
@@ -69,7 +69,7 @@
 			>
 			<Input {...attrs} type="password" bind:value={$formData.password1} />
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['password1']} />
+		<Form.FieldErrors serverErrors={formErrors.fieldErrors?.password1?} />
 	</Form.Field>
 
 	<!-- Password2 -->
@@ -84,7 +84,7 @@
 			>
 			<Input {...attrs} type="password" bind:value={$formData.password2} />
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['password2']} />
+		<Form.FieldErrors serverErrors={formErrors.fieldErrors?.password2?} />
 	</Form.Field>
 
 	<!-- Submit button -->

@@ -71,7 +71,7 @@ export const dictionary = {
 	'/(static)/login/reset-password/[userId]/[confirmationKey]': [32, [5]],
 	'/(static)/register': [33, [5]],
 	'/(static)/register/request-email-verification': [34, [5]],
-	'/(static)/register/verify/[confirmationKey]': [35, [5]]
+	'/(static)/register/verify/[confirmationToken]': [35, [5]]
 };
 
 export const hooks = {

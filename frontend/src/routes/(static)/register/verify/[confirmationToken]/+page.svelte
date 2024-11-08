@@ -5,12 +5,12 @@
 	import { userConfirmEmailConfirmation } from '$lib/dataNew/user/commands';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { createFormErrors } from '$state/formErrors.svelte';
 
 	/* Initialize the mutation on page load with url parameter. */
 	const confirmationToken = $page.params.confirmationToken;
 	const mutation = userConfirmEmailConfirmation.mutation();
-	const serverErrors = createServerErrors();
+	const formErrors = createFormErrors();
 	$mutation.mutate(
 		{ token: confirmationToken },
 		{
@@ -19,7 +19,7 @@
 			},
 			onError: (error) => {
 				// @ts-ignore
-				serverErrors.setErrors(error);
+				formErrors.setServerErrors(error);
 			}
 		}
 	);

@@ -6,7 +6,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { cultivarCreate } from '$lib/data/cultivar/commands';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { createFormErrors } from '$state/formErrors.svelte';
 	import TagsInput from '$components/ui/TagsInput.svelte';
 	import cultivarFields from '$lib/backendSchema/specs/cultivar';
 	import type { CultivarCreateCommand, CultivarSchema } from '$codegen/types';
@@ -22,8 +22,8 @@
 
 	/* Form mutation. */
 	const mutation = cultivarCreate.mutation();
-	/* Server error state. */
-	const serverErrors = createServerErrors();
+	/* Form error state. */
+	const formErrors = createFormErrors();
 
 	const queryClient = useQueryClient();
 
@@ -54,13 +54,13 @@
 					},
 					onError: (error) => {
 						// @ts-ignore
-						serverErrors.setErrors(error);
+						formErrors.setServerErrors(error);
 					}
 				});
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formErrors.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
