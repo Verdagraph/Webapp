@@ -58,10 +58,10 @@ export function useAsync<TResult = void, TParams = void>(
 	 */
 	function execute(params: TParams) {
 		reset();
+		_rune.isLoading = true
 
 		asyncFn(params)
 			.then((result: TResult) => {
-				_rune.isLoading = false;
 				_rune.isSuccess = true;
 				_rune.result = result;
 				if (options?.onSuccess) {
@@ -69,7 +69,6 @@ export function useAsync<TResult = void, TParams = void>(
 				}
 			})
 			.catch((error: AppError | AxiosError<ServerErrorResponse> | Error) => {
-				_rune.isLoading = false;
 				_rune.isError = true;
 				_rune.errors = convertErrors(error);
 				handleErrors(_rune.errors);
@@ -87,7 +86,7 @@ export function useAsync<TResult = void, TParams = void>(
 	 */
 	function reset() {
 		_rune = {
-			isLoading: true,
+			isLoading: false,
 			isError: false,
 			isSuccess: false,
 			result: null,
@@ -110,6 +109,15 @@ export function useAsync<TResult = void, TParams = void>(
 		},
 		get errors() {
 			return _rune.errors;
+		},
+		get fieldErrors() {
+			return _rune.errors?.fieldErrors
+		},
+		get nonFieldErrors() {
+			return _rune.errors?.nonFieldErrors
+		},
+		get nonFormErrors() {
+			return _rune.errors?.nonFormErrors
 		},
 		execute,
 		reset

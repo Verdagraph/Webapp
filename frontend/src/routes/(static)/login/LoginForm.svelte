@@ -5,46 +5,23 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$lib/dataNew/user/auth';
-	import { createFormErrors } from '$state/formErrors.svelte';
 	import authentication from '$state/authentication.svelte';
-	import type { AxiosError } from 'axios';
-	import type { ServerErrorResponse } from '@vdt-webapp/common/src/errors';
-	/* Form mutation. */
-	const mutation = userLogin.mutation();
-	/* Form error state. */
-	const formErrors = createFormErrors();
+	import useAsync from '$state/asyncHandler.svelte';
 
-	/**
-	 * Standard form configuration:
-	 * - SPA: True disables server-side functionality.
-	 * - validators: Zod schema specifies form validation.
-	 * - onUpdate: Submission handler. Activates svelte-query mutation,
-	 *  executes success task, and sets server errors on failure.
-	 * - onChange: Reset server errors.
-	 */
+	let formHandler = useAsync(userLogin.mutation, {onSuccess: () => {
+		authentication.login();
+		goto('/app');
+	}})
 	const form = superForm(defaults(zod(userLogin.schema)), {
 		SPA: true,
 		validators: zod(userLogin.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				$mutation.mutate(form.data, {
-					onSuccess: (data) => {
-						/**
-						 * TODO: Move this state update to the data layer.
-						 * It is here because having both onSuccess callbacks
-						 * caused only the first to be run.
-						 */
-						authentication.login();
-						goto('/app');
-					},
-					onError: (error) => {
-						formErrors.setServerErrors(error as AxiosError<ServerErrorResponse>);
-					}
-				});
+				formHandler.execute(form.data)
 			}
 		},
 		onChange() {
-			formErrors.reset();
+			formHandler.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
@@ -65,7 +42,7 @@
 				bind:value={$formData.email}
 			/>
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formErrors.fieldErrors?.email?} />
+		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.email} />
 	</Form.Field>
 
 	<!-- Password -->
@@ -77,13 +54,13 @@
 			>
 			<Input {...attrs} type="password" bind:value={$formData.password} />
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formErrors.fieldErrors?.password?} />
+		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.password} />
 	</Form.Field>
 
 	<!-- Submit button -->
 	<Form.Button
 		disabled={false}
-		loading={$mutation.isLoading}
+		loading={formHandler.isLoading}
 		variant="default"
 		class="mt-4 w-full">Submit</Form.Button
 	>
