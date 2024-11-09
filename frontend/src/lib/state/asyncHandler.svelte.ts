@@ -58,7 +58,7 @@ export function useAsync<TResult = void, TParams = void>(
 	 */
 	function execute(params: TParams) {
 		reset();
-		_rune.isLoading = true
+		_rune.isLoading = true;
 
 		asyncFn(params)
 			.then((result: TResult) => {
@@ -111,13 +111,13 @@ export function useAsync<TResult = void, TParams = void>(
 			return _rune.errors;
 		},
 		get fieldErrors() {
-			return _rune.errors?.fieldErrors
+			return _rune.errors?.fieldErrors;
 		},
 		get nonFieldErrors() {
-			return _rune.errors?.nonFieldErrors
+			return _rune.errors?.nonFieldErrors;
 		},
 		get nonFormErrors() {
-			return _rune.errors?.nonFormErrors
+			return _rune.errors?.nonFormErrors;
 		},
 		execute,
 		reset

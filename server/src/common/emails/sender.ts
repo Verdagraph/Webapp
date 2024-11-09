@@ -6,7 +6,14 @@ import * as path from 'path';
 import env from 'env';
 
 const files: Record<string, Record<string, string>> = {
-	emailConfirmation: { path: './emailConfirmation.html', subject: 'SIERT' }
+	emailConfirmation: {
+		path: './emailConfirmation.html',
+		subject: 'VerdanTech - Confirm your Email'
+	},
+	passwordReset: {
+		path: './passwordReset.html',
+		subject: 'VerdanTech - Reset your Password'
+	}
 };
 
 class EmailSender {
@@ -33,6 +40,13 @@ class EmailSender {
 		}
 	}
 
+	/**
+	 * Sends an email confirmation email.
+	 * @param receiver The email address to send to.
+	 * @param username The username of the user to send to.
+	 * @param frontendBaseUrl The URL to the frontend.
+	 * @param frontendVerificationUrl The URL to the verification link on the frontend.
+	 */
 	sendEmailConfirmationEmail = async (
 		receiver: string,
 		username: string,
@@ -50,10 +64,30 @@ class EmailSender {
 			subject: files.emailConfirmation.subject,
 			html: html
 		};
-		const info = await this.transporter.sendMail(mailOptions);
+		await this.transporter.sendMail(mailOptions);
 	};
 
-	sendPasswordResetEmail = async () => {};
+	/**
+	 * Sends a password reset email.
+	 * @param receiver The email address to send to.
+	 * @param frontendVerificationUrl The URL to the verification link on the frontend.
+	 */
+	sendPasswordResetEmail = async (
+		receiver: string,
+		frontendVerificationUrl: string
+	) => {
+		const html = this.templates.passwordReset({
+			frontendVerificationUrl
+		});
+		const mailOptions = {
+			from: env.SMTP_SENDER,
+			to: receiver,
+			subject: files.passwordReset.subject,
+			html: html
+		};
+		await this.transporter.sendMail(mailOptions);
+	};
 
 	sendGardenInviteEmail = async () => {};
 }
+export default EmailSender;

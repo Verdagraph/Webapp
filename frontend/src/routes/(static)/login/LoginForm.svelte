@@ -8,16 +8,18 @@
 	import authentication from '$state/authentication.svelte';
 	import useAsync from '$state/asyncHandler.svelte';
 
-	let formHandler = useAsync(userLogin.mutation, {onSuccess: () => {
-		authentication.login();
-		goto('/app');
-	}})
+	let formHandler = useAsync(userLogin.mutation, {
+		onSuccess: () => {
+			authentication.login();
+			goto('/app');
+		}
+	});
 	const form = superForm(defaults(zod(userLogin.schema)), {
 		SPA: true,
 		validators: zod(userLogin.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				formHandler.execute(form.data)
+				formHandler.execute(form.data);
 			}
 		},
 		onChange() {

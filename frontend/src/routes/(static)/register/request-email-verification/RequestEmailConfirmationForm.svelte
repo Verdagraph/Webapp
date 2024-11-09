@@ -4,7 +4,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestEmailConfirmation } from '$lib/dataNew/user/commands';
-	import useAsync from '$state/asyncHandler.svelte'
+	import useAsync from '$state/asyncHandler.svelte';
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
 		succeeded: boolean;
@@ -15,14 +15,18 @@
 	let { succeeded = $bindable(false), registeredEmail = $bindable('') }: Props =
 		$props();
 
-	let formHandler = useAsync(userRequestEmailConfirmation.mutation, {onSuccess: () => {succeeded = true}})
+	let formHandler = useAsync(userRequestEmailConfirmation.mutation, {
+		onSuccess: () => {
+			succeeded = true;
+		}
+	});
 	const form = superForm(defaults(zod(userRequestEmailConfirmation.schema)), {
 		SPA: true,
 		validators: zod(userRequestEmailConfirmation.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
 				registeredEmail = form.data.email;
-				formHandler.execute(form.data)
+				formHandler.execute(form.data);
 			}
 		},
 		onChange() {

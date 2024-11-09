@@ -16,15 +16,18 @@
 	let { succeeded = $bindable(false), registeredEmail = $bindable('') }: Props =
 		$props();
 
-
-	let formHandler = useAsync(userCreate.mutation, {onSuccess: () => {succeeded = true}})
+	let formHandler = useAsync(userCreate.mutation, {
+		onSuccess: () => {
+			succeeded = true;
+		}
+	});
 	const form = superForm(defaults(zod(userCreate.schema)), {
 		SPA: true,
 		validators: zod(userCreate.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
 				registeredEmail = form.data.email;
-				formHandler.execute(form.data)
+				formHandler.execute(form.data);
 			}
 		},
 		onChange() {

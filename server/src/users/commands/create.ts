@@ -4,6 +4,7 @@ import { diContainer } from '@fastify/awilix';
 import { UserCreateCommand } from '@vdt-webapp/common/src/user/mutations';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from '../auth/passwords';
+import { encodeEmailConfirmationToken } from '../auth/tokens';
 
 /**
  * Creates a new user in the database.
@@ -15,6 +16,7 @@ const create = async (
 	container: typeof diContainer
 ) => {
 	const users = container.resolve('userRepo');
+	const emailSender = container.resolve('emailSender');
 
 	/** Validate command against existing database state. */
 	const emailExists = await users.emailExists(command.email);
@@ -34,18 +36,30 @@ const create = async (
 	const passwordHash = await hashPassword(command.password1);
 
 	/** Create the objects. */
-	await users.create(
+	const result = await users.create(
 		command.username,
 		passwordHash,
 		command.email,
 		env.EMAIL_VERIFICATION_REQUIRED
 	);
 
-	/** Emit the event which sends the email verification. */
-	if (env.EMAIL_VERIFICATION_REQUIRED) {
-		/**
-		 * TODO.
-		 */
+	/** Return if no verification is required. */
+	if (!env.EMAIL_VERIFICATION_REQUIRED) {
+		return;
 	}
+
+	/** Create the verification token. */
+	const token = await encodeEmailConfirmationToken(result.account.id);
+
+	/** Add the verification token to the database. */
+	await users.addEmailVerificationToken(result.account.id, token);
+
+	/** Emit the event which sends the email verification. */
+	await emailSender.sendEmailConfirmationEmail(
+		command.email,
+		command.username,
+		env.CLIENT_BASE_URL,
+		env.CLIENT_BASE_URL + `/register/verify/${token}`
+	);
 };
 export default create;

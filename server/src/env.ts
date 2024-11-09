@@ -1,12 +1,15 @@
 import { z } from 'zod';
 
 const EnvSchema = z.object({
+	/** Email verification. */
 	EMAIL_VERIFICATION_REQUIRED: z
 		.boolean({
 			description:
 				'If true, users will not be able to log in before confirming their email. If false, the email begins verified.'
 		})
 		.default(true),
+
+	/** Triplit. */
 	TRIPLIT_URL: z
 		.string({ description: 'The URL of the Triplit database server.' })
 		.url()
@@ -17,6 +20,11 @@ const EnvSchema = z.object({
 				'The service JWT token provided by triplit for access to the database by the server.'
 		})
 		.default(''),
+
+	/** Networking. */
+	CLIENT_BASE_URL: z
+		.string({ description: 'The base URL which points to the frontend.' })
+		.default('http://localhost:5173'),
 	USING_HTTPS: z
 		.boolean({
 			description: 'True if HTTPS connections are being used with the client.'
@@ -27,6 +35,8 @@ const EnvSchema = z.object({
 			description: 'True if the client is served from the same domain as the server.'
 		})
 		.default(false),
+
+	/** JWTs. */
 	ACCESS_TOKEN_SECRET: z
 		.string({
 			description: 'The secret used to encode JWT access tokens.'
@@ -66,7 +76,27 @@ const EnvSchema = z.object({
 		.string({
 			description: 'The secret used to encode cookie signatures.'
 		})
-		.default('secret')
+		.default('secret'),
+
+	/** Emails. */
+	SMTP_HOST: z
+		.string({ description: 'The host of the SMTP server used for sending emails.' })
+		.default(''),
+	SMTP_PORT: z
+		.number({ description: 'The port of the SMTP server used for sending emails.' })
+		.default(0),
+	SMTP_USERNAME: z
+		.string({ description: "The username of the server's user on the SMTP server" })
+		.default(''),
+	SMTP_PASSWORD: z
+		.string({ description: "The password of the server's user on the SMTP server." })
+		.default(''),
+	SMTP_SENDER: z
+		.string({
+			description: "The email address of the server's user on the SMTP server."
+		})
+		.email()
+		.default('')
 });
 
 const env = EnvSchema.parse(process.env);

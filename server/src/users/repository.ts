@@ -1,5 +1,5 @@
 import { HttpClient as TriplitHttpClient, or } from '@triplit/client';
-import { UserAccount } from '@vdt-webapp/common/src/user/schema';
+import { UserAccount, UserProfile } from '@vdt-webapp/common/src/user/schema';
 import { InternalFailureException } from 'common/errors';
 
 /** Database interface for the user objects. */
@@ -19,6 +19,16 @@ export class UserRepository {
 	getAccountById = async (id: string): Promise<UserAccount | null> => {
 		const user = await this.triplit.fetchById('accounts', id);
 		return (user as UserAccount) || null;
+	};
+
+	/**
+	 * Retrieves a user profile by ID.
+	 * @param id The ID of the profile.
+	 * @returns The retrieved profile, or null if none exists.
+	 */
+	getProfileByid = async (id: string): Promise<UserProfile | null> => {
+		const user = await this.triplit.fetchById('profiles', id);
+		return (user as UserProfile) || null;
 	};
 
 	/**
@@ -87,24 +97,26 @@ export class UserRepository {
 	 * @param email The email address.
 	 * @param verificationRequired If true, the email will be set
 	 * to unverified. If false, the email begins verified.
+	 * @returns The created user account.
 	 */
 	create = async (
 		username: string,
 		passwordHash: string,
 		email: string,
 		verificationRequired: boolean
-	) => {
+	): Promise<{ account: UserAccount; profile: UserProfile }> => {
 		const profile = await this.triplit.insert('profiles', { username });
-		const account: Partial<UserAccount> = {
+		const partialAccount: Partial<UserAccount> = {
 			profileId: profile.id,
 			passwordHash: passwordHash
 		};
 		if (verificationRequired) {
-			account.unverifiedEmail = { address: email, token: null };
+			partialAccount.unverifiedEmail = { address: email, token: null };
 		} else {
-			account.verifiedEmail = email;
+			partialAccount.verifiedEmail = email;
 		}
-		await this.triplit.insert('accounts', account);
+		const account = await this.triplit.insert('accounts', partialAccount);
+		return { account, profile };
 	};
 
 	/**
@@ -151,6 +163,18 @@ export class UserRepository {
 	};
 
 	/**
+	 * Adds an email confirmation token to a user's account.
+	 * Assumes an unverified email exists on the user.
+	 * @param accountId The ID of the user's account object.
+	 * @param token The JWT confirmation token to add.
+	 */
+	addEmailVerificationToken = async (accountId: string, token: string) => {
+		await this.triplit.update('accounts', accountId, async (account) => {
+			account.unverifiedEmail.token = token;
+		});
+	};
+
+	/**
 	 * Moves the user's unverified email to the verified email attribute.
 	 * @param accountId The ID of the user's account object.
 	 */
@@ -165,6 +189,17 @@ export class UserRepository {
 			account.verifiedEmail = newVerifiedEmail;
 			account.unverifiedEmail.address = null;
 			account.unverifiedEmail.token = null;
+		});
+	};
+
+	/**
+	 * Adds a password reset token to a user's account.
+	 * @param accountId The ID of the user's account object.
+	 * @param token The JWT confirmation token to add.
+	 */
+	addPasswordResetToken = async (accountId: string, token: string) => {
+		await this.triplit.update('accounts', accountId, async (account) => {
+			account.passwordResetToken = token;
 		});
 	};
 }

@@ -5,6 +5,7 @@ import { asClass, asValue, Lifetime } from 'awilix';
 import env from 'env';
 import { UserRepository } from 'users/repository';
 import { UserAccount } from '@vdt-webapp/common/src/user/schema';
+import EmailSender from 'common/emails/sender';
 
 import { fastifyAwilixPlugin } from '@fastify/awilix';
 
@@ -13,6 +14,7 @@ declare module '@fastify/awilix' {
 	interface Cradle {
 		triplit: TriplitHttpClient;
 		userRepo: UserRepository;
+		emailSender: EmailSender;
 	}
 	interface RequestCradle {
 		client: UserAccount | null;
@@ -34,6 +36,13 @@ const registerDiContainer = (app: FastifyInstance) => {
 	/** Triplit database */
 	diContainer.register({
 		triplit: asValue(triplit)
+	});
+
+	/** Email. */
+	diContainer.register({
+		emailSender: asClass(EmailSender, {
+			lifetime: Lifetime.SINGLETON
+		})
 	});
 
 	/** Repos. */

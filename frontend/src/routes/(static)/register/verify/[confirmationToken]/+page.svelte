@@ -7,13 +7,19 @@
 	import iconIds from '$lib/assets/icons';
 	import useAsync from '$state/asyncHandler.svelte';
 	import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
-	import z from 'zod'
+	import z from 'zod';
 
 	/* Initialize the mutation on page load with url parameter. */
 	const confirmationToken = $page.params.confirmationToken;
 
-	let formHandler = useAsync(userConfirmEmailConfirmation.mutation, {onSuccess: () => {goto('/login')}})
-	formHandler.execute({token: confirmationToken} satisfies z.infer<typeof UserConfirmEmailConfirmationCommand>)
+	let formHandler = useAsync(userConfirmEmailConfirmation.mutation, {
+		onSuccess: () => {
+			goto('/login');
+		}
+	});
+	formHandler.execute({ token: confirmationToken } satisfies z.infer<
+		typeof UserConfirmEmailConfirmationCommand
+	>);
 </script>
 
 <svelte:head>

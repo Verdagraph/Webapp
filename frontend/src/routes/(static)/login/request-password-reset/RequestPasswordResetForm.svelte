@@ -13,17 +13,21 @@
 
 	let { succeeded = $bindable(false) }: Props = $props();
 
-	let formHandler = useAsync(userRequestPasswordReset.mutation, {onSuccess: () => {succeeded = true}})
+	let formHandler = useAsync(userRequestPasswordReset.mutation, {
+		onSuccess: () => {
+			succeeded = true;
+		}
+	});
 	const form = superForm(defaults(zod(userRequestPasswordReset.schema)), {
 		SPA: true,
 		validators: zod(userRequestPasswordReset.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				formHandler.execute(form.data)
+				formHandler.execute(form.data);
 			}
 		},
 		onChange() {
-			formHandler.reset()
+			formHandler.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
