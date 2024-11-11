@@ -126,7 +126,7 @@ export const gardenSchema = {
 
 			/** The acceptance status and acceptance date of the membership. */
 			status: S.String({ enum: GardenMembershipStatusEnum }),
-			acceptedAt: S.Date({ nullable: true }),
+			acceptedAt: S.Date({ nullable: true, default: null }),
 
 			/** Allows marking gardens as favorites in the menu. */
 			favorite: S.Boolean({ default: false })

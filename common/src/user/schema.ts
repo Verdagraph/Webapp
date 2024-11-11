@@ -24,6 +24,11 @@ export const userSchema = {
 
 		/** Profile objects can only be modified by the server but viewed by anyone. */
 		permissions: {
+			anon: {
+				read: {
+					filter: [true]
+				}
+			},
 			user: {
 				read: {
 					filter: [true]
@@ -55,13 +60,13 @@ export const userSchema = {
 			 */
 			unverifiedEmail: S.Record({
 				/** Address of the email. */
-				address: S.String({ nullable: true }),
+				address: S.String({ nullable: true, default: null }),
 				/** JWT confirmation token which is sent to the user for verification. */
-				token: S.String({ nullable: true })
+				token: S.String({ nullable: true, default: null })
 			}),
 
 			/** JWT confirmation key used to confirm a password reset. */
-			passwordResetToken: S.String({ nullable: true }),
+			passwordResetToken: S.String({ nullable: true, default: null }),
 
 			/** Set to false for inactive users. */
 			isActive: S.Boolean({ default: true })

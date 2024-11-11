@@ -21,7 +21,7 @@ const confirmPasswordReset = async (
 	if (token == null) {
 		throw new ValidationError(
 			'Failure while decoding password reset token - expired or malformed.',
-			{ nonFormErrrors: ['Invalid password reset token.'] }
+			{ nonFormErrors: ['Invalid password reset token.'] }
 		);
 	}
 
@@ -30,7 +30,7 @@ const confirmPasswordReset = async (
 	if (user == null) {
 		throw new ValidationError(
 			'Failure while decoding password reset token - user does not exist.',
-			{ nonFormErrrors: ['Invalid password reset token.'] }
+			{ nonFormErrors: ['Invalid password reset token.'] }
 		);
 	}
 
@@ -38,7 +38,7 @@ const confirmPasswordReset = async (
 	if (user.passwordResetToken != command.token || user.id != command.userId) {
 		throw new ValidationError(
 			'Failure while decoding password reset token - token does not exist',
-			{ nonFormErrrors: ['Invalid password reset token.'] }
+			{ nonFormErrors: ['Invalid password reset token.'] }
 		);
 	}
 
