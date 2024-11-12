@@ -1,6 +1,6 @@
 import z from 'zod';
 import { userFields } from '../user/mutations';
-import { GardenVisibilityEnum } from './schema';
+import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
 
 /** Field specifications. */
 const gardenFields = {
@@ -63,4 +63,35 @@ export const GardenMembershipCreateCommand = z.object({
 	viewerInvites: gardenFields.usernameInvitesList
 		.describe('A list of usernames to invite as viewers.')
 		.optional()
+});
+
+/**
+ * Command to accept a garden membership invite.
+ */
+export const GardenMembershipAcceptCommand = z.object({
+	gardenId: z.string()
+});
+
+/**
+ * Command to leave a garden.
+ */
+export const GardenMembershipDeleteCommand = z.object({
+	gardenId: z.string()
+});
+
+/**
+ * Command to revoke a user's membership.
+ */
+export const GardenMembershipRevokeCommand = z.object({
+	gardenId: z.string(),
+	profileId: z.string()
+});
+
+/**
+ * Command to change the role on a user's membership.
+ */
+export const GardenMembershipRoleChangeCommand = z.object({
+	gardenId: z.string(),
+	profileId: z.string(),
+	newRole: z.enum(GardenMembershipRoleEnum)
 });

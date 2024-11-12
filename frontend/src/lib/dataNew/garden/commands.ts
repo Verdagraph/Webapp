@@ -4,14 +4,45 @@ import { AppError } from '@vdt-webapp/common/src/errors';
 import {
 	GardenCreateCommand,
 	GardenMembershipCreateCommand,
-	isProfileMember
+	isProfileMember,
+	isProfileAdmin,
+	GardenMembershipAcceptCommand,
+	GardenMembershipDeleteCommand,
+	GardenMembershipRevokeCommand,
+	GardenMembershipRoleChangeCommand
 } from '@vdt-webapp/common';
 import type { Garden, GardenMembership } from '@vdt-webapp/common';
 import { gardenFieldSchemas } from './schemas';
 import triplit from '../triplit';
-import { getProfileIdOrError } from '$state/access.svelte';
-import authentication from '$state/authentication.svelte';
-import { access } from 'fs';
+import { getClientOrError } from '$dataNew/user/auth';
+
+/** Helpers */
+
+/**
+ * Given a list of usernames, constructs a set of matching profile IDs
+ * given they are not already members in a garden.
+ * @param usernames The usernames to retrieve profile IDs for.
+ * @param garden The garden to check the user's aren't already members in.
+ * @returns A set of matching profile IDs that aren't already members in the garden.
+ */
+const getNewMembershipIdsFromUsernames = async (usernames: string[] | undefined, garden?: Garden): Promise<Set<string>> => {
+	if (!usernames) {
+		return new Set()
+	}
+
+	const profiles = await triplit.fetch(
+		triplit
+			.query('profiles')
+			.where([['username', 'in', usernames]])
+			.build()
+	);
+	return new Set(
+		profiles
+			.filter((profile) => garden === undefined || !isProfileMember(garden, profile.id))
+			.map((profile) => profile.id)
+	);
+}
+
 
 /**
  * Creates a new garden.
@@ -19,6 +50,9 @@ import { access } from 'fs';
 export const gardenCreate = {
 	schema: GardenCreateCommand,
 	mutation: async (data: zod.infer<typeof GardenCreateCommand>): Promise<Garden> => {
+		/** Retrieve client. */
+		const client = await getClientOrError();
+
 		/** Validate unique key constraint. */
 		const existingGarden = await triplit.fetchOne(
 			triplit
@@ -28,48 +62,18 @@ export const gardenCreate = {
 			{ policy: 'remote-first' }
 		);
 		if (existingGarden) {
-			throw new AppError('Garden key already exists.', {
+			throw new AppError('Garden ID already exists.', {
 				fieldErrors: { id: ['Key already exists.'] }
 			});
 		}
 
-		/** Retrieve all invitee IDs. Add creator's ID. */
-		let adminIds = new Set<string>();
-		let editorIds = new Set<string>();
-		let viewerIds = new Set<string>();
-		if (data.adminInvites) {
-			const adminProfiles = await triplit.fetch(
-				triplit
-					.query('profiles')
-					.where([['username', 'in', data.adminInvites]])
-					.build(),
-				{ policy: 'remote-first' }
-			);
-			adminIds = new Set(adminProfiles.map((profile) => profile.id));
-			adminIds.add(getProfileIdOrError());
-		} else {
-			adminIds.add(getProfileIdOrError());
-		}
-		if (data.editorInvites) {
-			const editorProfiles = await triplit.fetch(
-				triplit
-					.query('profiles')
-					.where([['username', 'in', data.editorInvites]])
-					.build(),
-				{ policy: 'remote-first' }
-			);
-			editorIds = new Set(editorProfiles.map((profile) => profile.id));
-		}
-		if (data.viewerInvites) {
-			const viewerProfiles = await triplit.fetch(
-				triplit
-					.query('profiles')
-					.where([['username', 'in', data.viewerInvites]])
-					.build(),
-				{ policy: 'remote-first' }
-			);
-			viewerIds = new Set(viewerProfiles.map((profile) => profile.id));
-		}
+		/** Retrieve all invitee IDs. */
+		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites)
+		const editorIds = await getNewMembershipIdsFromUsernames(data.editorInvites)
+		const viewerIds = await getNewMembershipIdsFromUsernames(data.viewerInvites)
+
+		/** Add creator's ID. */
+		adminIds.add(client.profile.id)
 
 		/** Persist to db and add memberships. */
 		let garden: Garden | null = null;
@@ -80,7 +84,7 @@ export const gardenCreate = {
 				name: data.name,
 				visibility: data.visibility,
 				description: data.description,
-				creatorId: getProfileIdOrError(),
+				creatorId: client.profile.id,
 				adminIds,
 				editorIds,
 				viewerIds
@@ -89,7 +93,7 @@ export const gardenCreate = {
 			// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 			await transaction.insert('gardenMemberships', {
 				gardenId: garden.id,
-				userId: getProfileIdOrError(),
+				userId: client.profile.id,
 				inviterId: null,
 				status: 'ACCEPTED',
 				acceptedAt: new Date()
@@ -100,7 +104,7 @@ export const gardenCreate = {
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
-					inviterId: getProfileIdOrError(),
+					inviterId: client.profile.id,
 					status: 'CREATED'
 				});
 			}
@@ -119,69 +123,30 @@ export const gardenCreate = {
 export const gardenMembershipCreate = {
 	schema: GardenMembershipCreateCommand,
 	mutation: async (data: zod.infer<typeof GardenMembershipCreateCommand>) => {
+		/** Retrieve client. */
+		const client = await getClientOrError();
+
 		/** Retrieve garden. */
 		const garden = await triplit.fetchOne(
 			triplit.query('gardens').where('id', '=', data.gardenId).build()
 		);
 		if (garden == null) {
 			throw new AppError('Garden key does not exist.', {
-				fieldErrors: { gardenId: ['Key does not exist.'] }
+				nonFormErrors: ['Garden key does not exist.']
 			});
 		}
 
 		/** Ensure client is an admin. */
-		if (!(getProfileIdOrError() in garden.adminIds)) {
+		if (!isProfileAdmin(garden, client.profile.id)) {
 			throw new AppError('Requires admin access.', {
-				nonFieldErrors: ['This action requires the admin role.']
+				nonFormErrors: ['This action requires the admin role.']
 			});
 		}
 
 		/** Retrieve all invitee IDs. Drop all IDs which are already members */
-		let adminIds = new Set<string>();
-		let editorIds = new Set<string>();
-		let viewerIds = new Set<string>();
-		if (data.adminInvites) {
-			const adminProfiles = await triplit.fetch(
-				triplit
-					.query('profiles')
-					.where([['username', 'in', data.adminInvites]])
-					.build(),
-				{ policy: 'remote-first' }
-			);
-			adminIds = new Set(
-				adminProfiles
-					.filter((profile) => !isProfileMember(garden, profile.id))
-					.map((profile) => profile.id)
-			);
-		}
-		if (data.editorInvites) {
-			const editorProfiles = await triplit.fetch(
-				triplit
-					.query('profiles')
-					.where([['username', 'in', data.editorInvites]])
-					.build(),
-				{ policy: 'remote-first' }
-			);
-			editorIds = new Set(
-				editorProfiles
-					.filter((profile) => !isProfileMember(garden, profile.id))
-					.map((profile) => profile.id)
-			);
-		}
-		if (data.viewerInvites) {
-			const viewerProfiles = await triplit.fetch(
-				triplit
-					.query('profiles')
-					.where([['username', 'in', data.viewerInvites]])
-					.build(),
-				{ policy: 'remote-first' }
-			);
-			viewerIds = new Set(
-				viewerProfiles
-					.filter((profile) => !isProfileMember(garden, profile.id))
-					.map((profile) => profile.id)
-			);
-		}
+		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites)
+		const editorIds = await getNewMembershipIdsFromUsernames(data.editorInvites)
+		const viewerIds = await getNewMembershipIdsFromUsernames(data.viewerInvites)
 
 		/** Persist to db and add memberships. */
 		await triplit.transact(async (transaction) => {
@@ -196,7 +161,7 @@ export const gardenMembershipCreate = {
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
-					inviterId: getProfileIdOrError(),
+					inviterId: client.profile.id,
 					status: 'CREATED'
 				});
 			}
@@ -205,29 +170,210 @@ export const gardenMembershipCreate = {
 };
 
 /**
- * Sends a garden membership acceptance request to the backend.
+ * Sends a garden membership acceptance request.
  */
 export const gardenMembershipAccept = {
-	schema: zod.object({
-		key: gardenFieldSchemas.key
-	}),
-	mutation: () => {
-		return useMutation(function (data: GardenMembershipAcceptCommand) {
-			return gardenMembershipAcceptCommandOp(data);
+	schema: GardenMembershipAcceptCommand,
+	mutation: async (data: zod.infer<typeof GardenMembershipAcceptCommand>) => {
+		/** Retrieve client. */
+		const client = await getClientOrError();
+
+		/** Retrieve the membership. */
+		const membership = await triplit.fetchOne(
+			triplit
+				.query('gardenMemberships')
+				.where([
+					['gardenId', '=', data.gardenId],
+					['userId', '=', client.profile.id]
+				])
+				.build()
+		);
+		if (!membership) {
+			throw new AppError('Membership does not exist in the collection.', {
+				nonFormErrors: ['The invite to this garden does not exist.']
+			});
+		}
+
+		/** Ensure the invite isn't already accepted. */
+		if (membership.status === 'ACCEPTED') {
+			throw new AppError('Membership was already accepted.', {
+				nonFormErrors: ['The invite to this garden is already accepted.']
+			});
+		}
+
+		/** Update the membership. */
+		await triplit.update('gardenMemberships', membership.id, async (membership) => {
+			membership.status = 'ACCEPTED';
+			membership.acceptedAt = new Date();
 		});
 	}
 };
 
 /**
- * Sends a garden membership deletion request to the backend.
+ * Deletes a user's own membership in a garden.
  */
 export const gardenMembershipDelete = {
-	schema: zod.object({
-		key: gardenFieldSchemas.key
-	}),
-	mutation: () => {
-		return useMutation(function (data: GardenMembershipDeleteCommand) {
-			return gardenMembershipDeleteCommandOp(data);
+	schema: GardenMembershipDeleteCommand,
+	mutation: async (data: zod.infer<typeof GardenMembershipDeleteCommand>) => {
+		/** Retrieve client. */
+		const client = await getClientOrError();
+
+		/** Retrieve the membership. */
+		const membership = await triplit.fetchOne(
+			triplit
+				.query('gardenMemberships')
+				.where([
+					['gardenId', '=', data.gardenId],
+					['userId', '=', client.profile.id]
+				])
+				.build()
+		);
+		if (!membership) {
+			throw new AppError('Membership does not exist in the collection.', {
+				nonFormErrors: ['The membership in this garden does not exist.']
+			});
+		}
+
+		/**
+		 * Delete the membership.
+		 * Note that the update on the garden (removing the user's ID),
+		 * is handled via event on the server, due to permission constraints.
+		 */
+		await triplit.delete('gardenMemberships', membership.id);
+	}
+};
+
+/**
+ * Revokes a membership of a different user.
+ */
+export const gardenMembershipRevoke = {
+	schema: GardenMembershipRevokeCommand,
+	mutation: async (data: zod.infer<typeof GardenMembershipRevokeCommand>) => {
+		/** Retrieve client. */
+		const client = await getClientOrError();
+
+		/** Ensure the command is valid. */
+		if (client.profile.id === data.profileId) {
+			throw new AppError(
+				"Attempted to revoke one's own membership with the wrong command.",
+				{
+					nonFormErrors: ['Cannot revoke own membership - leave instead.']
+				}
+			);
+		}
+
+		/** Retrieve garden. */
+		const garden = await triplit.fetchOne(
+			triplit.query('gardens').where('id', '=', data.gardenId).build()
+		);
+		if (garden == null) {
+			throw new AppError('Garden key does not exist.', {
+				nonFormErrors: ['Garden key does not exist.']
+			});
+		}
+
+		/** Ensure client is an admin. */
+		if (!isProfileAdmin(garden, client.profile.id)) {
+			throw new AppError('Requires admin access.', {
+				nonFormErrors: ['This action requires the admin role.']
+			});
+		}
+
+		/** Retrieve the membership. */
+		const membership = await triplit.fetchOne(
+			triplit
+				.query('gardenMemberships')
+				.where([
+					['gardenId', '=', data.gardenId],
+					['userId', '=', data.profileId]
+				])
+				.build()
+		);
+		if (!membership) {
+			throw new AppError('Membership does not exist in the collection.', {
+				nonFormErrors: ['The membership in this garden does not exist.']
+			});
+		}
+
+		/**
+		 * Delete the membership.
+		 * Note that the update on the garden (removing the user's ID),
+		 * is handled via event on the server, due to permission constraints.
+		 */
+		await triplit.delete('gardenMemberships', membership.id);
+	}
+};
+
+/**
+ * Revokes a membership of a different user.
+ */
+export const gardenMembershipRoleChange = {
+	schema: GardenMembershipRoleChangeCommand,
+	mutation: async (data: zod.infer<typeof GardenMembershipRoleChangeCommand>) => {
+		/** Retrieve client. */
+		const client = await getClientOrError();
+
+		/** Ensure the command is valid. */
+		if (client.profile.id === data.profileId) {
+			throw new AppError("Attempted to change the role of one's own membership.", {
+				nonFormErrors: ['You cannot change the role of your own membership.']
+			});
+		}
+
+		/** Retrieve garden. */
+		const garden = await triplit.fetchOne(
+			triplit.query('gardens').where('id', '=', data.gardenId).build()
+		);
+		if (garden == null) {
+			throw new AppError('Garden key does not exist.', {
+				nonFormErrors: ['Garden key does not exist.']
+			});
+		}
+
+		/** Ensure client is an admin. */
+		if (!isProfileAdmin(garden, client.profile.id)) {
+			throw new AppError('Requires admin access.', {
+				nonFormErrors: ['This action requires the admin role.']
+			});
+		}
+
+		/** Ensure the subject is not the creator. */
+		if (data.profileId === garden.creatorId) {
+			throw new AppError("Creator's role cannot be changed.", {
+				nonFormErrors: ["You cannot change the role of the garden's creator."]
+			});
+		}
+
+		/** Modify the garden. */
+		await triplit.update('gardens', garden.id, async (garden) => {
+
+			/** Remove existing membership. */
+			if (data.profileId in garden.adminIds) {
+				garden.adminIds.delete(data.profileId);
+			} else if (data.profileId in garden.editorIds) {
+				garden.editorIds.delete(data.profileId);
+			} else if (data.profileId in garden.viewerIds) {
+				garden.viewerIds.delete(data.profileId);
+			/** Should not get here. */
+			} else {
+				throw new AppError('User not in garden when modifying a role despite previous check.', {nonFormErrors: ['Something went wrong.']})
+			}
+
+			/** Add new membership */
+			switch (data.newRole) {
+				case 'ADMIN':
+					garden.adminIds.add(data.profileId)
+					break;
+				case 'EDITOR':
+					garden.editorIds.add(data.profileId);
+					break;
+				case 'VIEWER':
+					garden.viewerIds.add(data.profileId);
+					break;
+				/** Should not get here. */
+				default:
+					throw new AppError('New role not a valid role.', {nonFormErrors: ['Something went wrong.']})
+			}
 		});
 	}
 };

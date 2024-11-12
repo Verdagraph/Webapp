@@ -1,4 +1,10 @@
-import { Schema as S, ClientSchema, Entity, Roles } from '@triplit/client';
+import {
+	Schema as S,
+	ClientSchema,
+	Entity,
+	EntityWithSelection,
+	Roles
+} from '@triplit/client';
 
 export const roles: Roles = {
 	user: {

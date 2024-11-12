@@ -26,3 +26,19 @@ export const isProfileMember = (garden: Garden, profileId: string): boolean => {
 		return false;
 	}
 };
+
+/**
+ * Checks whether a profile is an admin of a garden.
+ * @param garden The garden to check membership of.
+ * @param profileId The ID of the profile to check.
+ * @returns True if the profile is a admin of the garden.
+ */
+export const isProfileAdmin = (garden: Garden, profileId: string): boolean => {
+	if (
+		garden.adminIds.has(profileId) ||
+	) {
+		return true;
+	} else {
+		return false;
+	}
+};

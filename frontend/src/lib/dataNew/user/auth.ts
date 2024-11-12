@@ -1,6 +1,7 @@
+import { QueryResult } from '@triplit/client';
 import { userLoginOp } from '$codegenNew';
 import triplit from '$dataNew/triplit';
-import { UserAccount, UserProfile } from '@vdt-webapp/common';
+import { UserAccount, UserProfile, schema } from '@vdt-webapp/common';
 import { AppError } from '@vdt-webapp/common/src/errors';
 import { UserLoginCommand } from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';

@@ -155,8 +155,13 @@ export const gardenSchema = {
 					filter: [['$role.userId', 'in', 'garden.adminIds']]
 				},
 				update: {
-					/** Restrict membership updates to admins */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					/** Restrict membership updates to admins and subjects. */
+					filter: [
+						or([
+							['$role.userId', 'in', 'garden.adminIds'],
+							['userId', '=', '$role.userId']
+						])
+					]
 				},
 				delete: {
 					/** Allow the membership to be revoked by an admin or deleted by the subject. */

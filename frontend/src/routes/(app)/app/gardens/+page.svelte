@@ -21,7 +21,7 @@
 	const pendingInvites = gardenPendingInvitesQuery();
 
 	/**
-	 * If a non-authenticated user access this page,
+	 * If a non-authenticated user accesses this page,
 	 * redirect to public discovery page.
 	 */
 	onMount(() => {
