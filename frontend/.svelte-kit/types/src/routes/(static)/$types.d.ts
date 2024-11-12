@@ -35,15 +35,11 @@ type LayoutRouteId =
 	| '/(static)/guides'
 	| '/(static)/login'
 	| '/(static)/login/request-password-reset'
-	| '/(static)/login/reset-password/[userId]/[confirmationKey]'
+	| '/(static)/login/reset-password/[userId]/[confirmationToken]'
 	| '/(static)/register'
 	| '/(static)/register/request-email-verification'
 	| '/(static)/register/verify/[confirmationToken]';
-type LayoutParams = RouteParams & {
-	userId?: string;
-	confirmationKey?: string;
-	confirmationToken?: string;
-};
+type LayoutParams = RouteParams & { userId?: string; confirmationToken?: string };
 type LayoutParentData = EnsureDefined<import('../$types.js').LayoutData>;
 
 export type PageServerData = null;

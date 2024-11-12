@@ -1,13 +1,13 @@
 <script>
 	import UnauthStaticNav from '$components/primary_nav/UnauthStaticNav.svelte';
 	import PrimaryNav from '$components/primary_nav/PrimaryNav.svelte';
-	import authentication from '$state/authentication.svelte';
+	import auth from '$state/auth.svelte';
 
 	let { children } = $props();
 </script>
 
 <!-- If the user is authenticated, show the PrimaryNav component. Otherwise, the UnauthStaticNav. -->
-{#if authentication.value.isAuthenticated}
+{#if auth.isAuthenticated}
 	<!-- Wraps the primary nav to provide proper spacing between the nav and content. -->
 	<div class="flex h-screen w-screen flex-col overflow-clip lg:flex-row">
 		<PrimaryNav />

@@ -7,8 +7,8 @@ type MatcherParam<M> = M extends (param: string) => param is infer U
 		? U
 		: string
 	: string;
-type RouteParams = { userId: string; confirmationKey: string };
-type RouteId = '/(static)/login/reset-password/[userId]/[confirmationKey]';
+type RouteParams = { userId: string; confirmationToken: string };
+type RouteId = '/(static)/login/reset-password/[userId]/[confirmationToken]';
 type MaybeWithVoid<T> = {} extends T ? T | void : T;
 export type RequiredKeys<T> = {
 	[K in keyof T]-?: {} extends { [P in K]: T[K] } ? never : K;

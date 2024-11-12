@@ -12,8 +12,6 @@ export type UserLoginResult = {
 	accessToken: string;
 	/** The encoded refresh token. */
 	refreshToken: string;
-	/** The duration of time until access expires, in seconds. */
-	expiryTimeSeconds: number;
 };
 
 /**
@@ -47,6 +45,6 @@ const login = async (
 	const accessToken = await encodeAccessToken(user.id);
 	const refreshToken = await encodeRefreshToken(user.id);
 
-	return { accessToken, refreshToken, expiryTimeSeconds: env.ACCESS_TOKEN_EXPIRY_S };
+	return { accessToken, refreshToken };
 };
 export default login;

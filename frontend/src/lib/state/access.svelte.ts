@@ -34,7 +34,7 @@ export const getProfileIdOrError = (): string => {
 };
 
 /**
- * Retrieves the client's accilmt ID or raises an exception if not authenticated.
+ * Retrieves the client's account ID or raises an exception if not authenticated.
  * @returns The client's account ID.
  */
 export const getAccountIdOrError = (): string => {

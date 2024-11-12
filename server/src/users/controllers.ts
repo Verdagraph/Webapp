@@ -42,14 +42,14 @@ export const userRouter = async (app: FastifyInstance) => {
 			body: UserLoginCommand,
 			tags: ['user'],
 			response: {
-				200: z.string()
+				200: z.string().describe('The access token.')
 			}
 		},
 		handler: async (request, reply) => {
 			const result = await login(request.body, app.diContainer);
 			setRefreshTokenCookie(result.refreshToken, reply);
 			setAccessTokenHeader(result.accessToken, reply);
-			reply.code(200).send('Login successful.');
+			reply.code(200).send(result.accessToken);
 		}
 	});
 
@@ -61,7 +61,7 @@ export const userRouter = async (app: FastifyInstance) => {
 			operationId: 'UserRefreshOp',
 			description: 'Grants an access and refresh token on a valid refresh token.',
 			response: {
-				200: z.string()
+				200: z.string().describe('The access token.')
 			}
 		},
 		handler: async (request, reply) => {
@@ -69,7 +69,7 @@ export const userRouter = async (app: FastifyInstance) => {
 			const result = await refresh(refreshToken, app.diContainer);
 			setRefreshTokenCookie(result.refreshToken, reply);
 			setAccessTokenHeader(result.accessToken, reply);
-			reply.code(200).send('Refresh successful.');
+			reply.code(200).send(result.accessToken);
 		}
 	});
 

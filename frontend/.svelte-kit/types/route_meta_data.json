@@ -40,7 +40,7 @@
 	"/(static)/guides": ["src/routes/+layout.server.js"],
 	"/(static)/login": ["src/routes/+layout.server.js"],
 	"/(static)/login/request-password-reset": ["src/routes/+layout.server.js"],
-	"/(static)/login/reset-password/[userId]/[confirmationKey]": [
+	"/(static)/login/reset-password/[userId]/[confirmationToken]": [
 		"src/routes/+layout.server.js"
 	],
 	"/(static)/register": ["src/routes/+layout.server.js"],

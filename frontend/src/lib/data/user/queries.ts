@@ -1,7 +1,7 @@
-/**
- * Retrieves the client's User object from the backend. Returns an error if not authenticated.
- */
-export const userClientQuery = () => {};
+import triplit from '$dataNew/triplit';
+import { UserAccount, UserProfile } from '@vdt-webapp/common';
+import { AppError } from '@vdt-webapp/common/src/errors';
+import auth from '$state/auth.svelte';
 
 /**
  * Retrieves the requested user profiles.

@@ -5,12 +5,12 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$lib/dataNew/user/auth';
-	import authentication from '$state/authentication.svelte';
+	import auth from '$state/auth.svelte';
 	import useAsync from '$state/asyncHandler.svelte';
 
 	let formHandler = useAsync(userLogin.mutation, {
-		onSuccess: () => {
-			authentication.login();
+		onSuccess: (accessToken) => {
+			auth.setAccess(accessToken);
 			goto('/app');
 		}
 	});
