@@ -20,7 +20,7 @@ export const userLogin = {
  * If unauthenticated, null is returned.
  * @returns The client if it was found, else null.
  */
-const getClient = async (): Promise<{
+export const getClient = async (): Promise<{
 	account: UserAccount;
 	profile: UserProfile;
 } | null> => {
@@ -39,6 +39,7 @@ const getClient = async (): Promise<{
 		return null;
 	}
 
+	setClientGlobalVariables(account.id, account.profile.id, account.profile.username);
 	return { account: account, profile: account.profile };
 };
 
@@ -82,4 +83,22 @@ export const getClientOrError = async (): Promise<{
 			nonFormErrors: ['Authentication failed. A login is required.']
 		});
 	}
+};
+
+/**
+ * Sets some global database variables for conveinence in queries.
+ * @param clientAccountId The ID of the client's account.
+ * @param clientProfileId The ID of the client's profile.
+ * @param clientUsername The username of the client's profile.
+ */
+export const setClientGlobalVariables = (
+	clientAccountId: string,
+	clientProfileId: string,
+	clientUsername: string
+) => {
+	triplit.db.updateGlobalVariables({
+		clientAccountId,
+		clientProfileId,
+		clientUsername
+	});
 };

@@ -9,14 +9,15 @@ import {
 	GardenMembershipAcceptCommand,
 	GardenMembershipDeleteCommand,
 	GardenMembershipRevokeCommand,
-	GardenMembershipRoleChangeCommand
+	GardenMembershipRoleChangeCommand,
+	GardenMembershipStatusEnum
 } from '@vdt-webapp/common';
 import type { Garden, GardenMembership } from '@vdt-webapp/common';
 import { gardenFieldSchemas } from './schemas';
 import triplit from '../triplit';
 import { getClientOrError } from '$dataNew/user/auth';
 
-/** Helpers */
+/** Helpers. */
 
 /**
  * Given a list of usernames, constructs a set of matching profile IDs
@@ -25,9 +26,12 @@ import { getClientOrError } from '$dataNew/user/auth';
  * @param garden The garden to check the user's aren't already members in.
  * @returns A set of matching profile IDs that aren't already members in the garden.
  */
-const getNewMembershipIdsFromUsernames = async (usernames: string[] | undefined, garden?: Garden): Promise<Set<string>> => {
+const getNewMembershipIdsFromUsernames = async (
+	usernames: string[] | undefined,
+	garden?: Garden
+): Promise<Set<string>> => {
 	if (!usernames) {
-		return new Set()
+		return new Set();
 	}
 
 	const profiles = await triplit.fetch(
@@ -41,8 +45,9 @@ const getNewMembershipIdsFromUsernames = async (usernames: string[] | undefined,
 			.filter((profile) => garden === undefined || !isProfileMember(garden, profile.id))
 			.map((profile) => profile.id)
 	);
-}
+};
 
+/** Commands. */
 
 /**
  * Creates a new garden.
@@ -68,17 +73,17 @@ export const gardenCreate = {
 		}
 
 		/** Retrieve all invitee IDs. */
-		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites)
-		const editorIds = await getNewMembershipIdsFromUsernames(data.editorInvites)
-		const viewerIds = await getNewMembershipIdsFromUsernames(data.viewerInvites)
+		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites);
+		const editorIds = await getNewMembershipIdsFromUsernames(data.editorInvites);
+		const viewerIds = await getNewMembershipIdsFromUsernames(data.viewerInvites);
 
 		/** Add creator's ID. */
-		adminIds.add(client.profile.id)
+		adminIds.add(client.profile.id);
 
 		/** Persist to db and add memberships. */
 		let garden: Garden | null = null;
 		await triplit.transact(async (transaction) => {
-			// @ts-ignore - Triplit not recognizing optionality of defaulted types.
+			// @ts-ignore- Triplit not recognizing optionality of defaulted types.
 			garden = await transaction.insert('gardens', {
 				id: data.id,
 				name: data.name,
@@ -90,20 +95,47 @@ export const gardenCreate = {
 				viewerIds
 			});
 
+			/** Add creator membership. */
 			// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 			await transaction.insert('gardenMemberships', {
 				gardenId: garden.id,
 				userId: client.profile.id,
+				role: 'ADMIN',
 				inviterId: null,
-				status: 'ACCEPTED',
-				acceptedAt: new Date()
+				status: 'ACCEPTED'
 			});
 
-			for (const userId in [...adminIds, ...editorIds, ...viewerIds]) {
+			/** Add admin memberships. */
+			for (const userId in adminIds) {
 				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
+					role: 'ADMIN',
+					inviterId: client.profile.id,
+					status: 'CREATED'
+				});
+			}
+
+			/** Add editor memberships. */
+			for (const userId in editorIds) {
+				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
+				await transaction.insert('gardenMemberships', {
+					gardenId: garden.id,
+					userId: userId,
+					role: 'EDITOR',
+					inviterId: client.profile.id,
+					status: 'CREATED'
+				});
+			}
+
+			/** Add editor memberships. */
+			for (const userId in viewerIds) {
+				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
+				await transaction.insert('gardenMemberships', {
+					gardenId: garden.id,
+					userId: userId,
+					role: 'VIEWER',
 					inviterId: client.profile.id,
 					status: 'CREATED'
 				});
@@ -144,9 +176,9 @@ export const gardenMembershipCreate = {
 		}
 
 		/** Retrieve all invitee IDs. Drop all IDs which are already members */
-		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites)
-		const editorIds = await getNewMembershipIdsFromUsernames(data.editorInvites)
-		const viewerIds = await getNewMembershipIdsFromUsernames(data.viewerInvites)
+		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites);
+		const editorIds = await getNewMembershipIdsFromUsernames(data.editorInvites);
+		const viewerIds = await getNewMembershipIdsFromUsernames(data.viewerInvites);
 
 		/** Persist to db and add memberships. */
 		await triplit.transact(async (transaction) => {
@@ -156,11 +188,37 @@ export const gardenMembershipCreate = {
 				viewerIds.forEach((id) => garden.viewerIds.add(id));
 			});
 
-			for (const userId in [...adminIds, ...editorIds, ...viewerIds]) {
+			/** Add admin memberships. */
+			for (const userId in adminIds) {
 				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
+					role: 'ADMIN',
+					inviterId: client.profile.id,
+					status: 'CREATED'
+				});
+			}
+
+			/** Add editor memberships. */
+			for (const userId in editorIds) {
+				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
+				await transaction.insert('gardenMemberships', {
+					gardenId: garden.id,
+					userId: userId,
+					role: 'EDITOR',
+					inviterId: client.profile.id,
+					status: 'CREATED'
+				});
+			}
+
+			/** Add editor memberships. */
+			for (const userId in viewerIds) {
+				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
+				await transaction.insert('gardenMemberships', {
+					gardenId: garden.id,
+					userId: userId,
+					role: 'VIEWER',
 					inviterId: client.profile.id,
 					status: 'CREATED'
 				});
@@ -330,6 +388,22 @@ export const gardenMembershipRoleChange = {
 			});
 		}
 
+		/** Retrieve membership. */
+		const membership = await triplit.fetchOne(
+			triplit
+				.query('gardenMemberships')
+				.where([
+					['gardenId', '=', data.gardenId],
+					['userId', '=', data.profileId]
+				])
+				.build()
+		);
+		if (!membership) {
+			throw new AppError('Membership does not exist in the collection.', {
+				nonFormErrors: ['The membership in this garden does not exist.']
+			});
+		}
+
 		/** Ensure client is an admin. */
 		if (!isProfileAdmin(garden, client.profile.id)) {
 			throw new AppError('Requires admin access.', {
@@ -344,36 +418,58 @@ export const gardenMembershipRoleChange = {
 			});
 		}
 
-		/** Modify the garden. */
-		await triplit.update('gardens', garden.id, async (garden) => {
+		/** Ensure the new role is different. */
+		if (data.newRole === membership.role) {
+			throw new AppError('Role to be changed is not different.', {
+				fieldErrors: { newRole: ['The user already has this role.'] }
+			});
+		}
 
-			/** Remove existing membership. */
-			if (data.profileId in garden.adminIds) {
-				garden.adminIds.delete(data.profileId);
-			} else if (data.profileId in garden.editorIds) {
-				garden.editorIds.delete(data.profileId);
-			} else if (data.profileId in garden.viewerIds) {
-				garden.viewerIds.delete(data.profileId);
-			/** Should not get here. */
-			} else {
-				throw new AppError('User not in garden when modifying a role despite previous check.', {nonFormErrors: ['Something went wrong.']})
-			}
+		await triplit.transact(async (transaction) => {
+			/** Modify the garden. */
+			await transaction.update('gardens', garden.id, async (garden) => {
+				/** Remove existing ID on the garden. */
+				if (data.profileId in garden.adminIds) {
+					garden.adminIds.delete(data.profileId);
+				} else if (data.profileId in garden.editorIds) {
+					garden.editorIds.delete(data.profileId);
+				} else if (data.profileId in garden.viewerIds) {
+					garden.viewerIds.delete(data.profileId);
+					/** Should not get here. */
+				} else {
+					throw new AppError(
+						'User not in garden when modifying a role despite previous check.',
+						{ nonFormErrors: ['Something went wrong.'] }
+					);
+				}
 
-			/** Add new membership */
-			switch (data.newRole) {
-				case 'ADMIN':
-					garden.adminIds.add(data.profileId)
-					break;
-				case 'EDITOR':
-					garden.editorIds.add(data.profileId);
-					break;
-				case 'VIEWER':
-					garden.viewerIds.add(data.profileId);
-					break;
-				/** Should not get here. */
-				default:
-					throw new AppError('New role not a valid role.', {nonFormErrors: ['Something went wrong.']})
-			}
+				/** Add new ID. */
+				switch (data.newRole) {
+					case 'ADMIN':
+						garden.adminIds.add(data.profileId);
+						break;
+					case 'EDITOR':
+						garden.editorIds.add(data.profileId);
+						break;
+					case 'VIEWER':
+						garden.viewerIds.add(data.profileId);
+						break;
+					/** Should not get here. */
+					default:
+						throw new AppError('New role not a valid role.', {
+							nonFormErrors: ['Something went wrong.']
+						});
+				}
+			});
+
+			/** Modify the membership. */
+			await transaction.update(
+				'gardenMemberships',
+				membership.id,
+				async (membership) => {
+					membership.role = data.newRole;
+				}
+			);
 		});
 	}
 };

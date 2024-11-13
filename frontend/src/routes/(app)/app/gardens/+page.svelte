@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
+	import { useQuery } from '@triplit/svelte';
 	import iconIds from '$lib/assets/icons';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
@@ -15,10 +16,24 @@
 		gardenAssociatedPartialsQuery,
 		gardenPendingInvitesQuery
 	} from '$data/garden/queries';
+	import {
+		adminGardensQuery,
+		editorGardensQuery,
+		viewerGardensQuery,
+		favoriteMembershipsQuery,
+		acceptancePendingMembershipsQuery
+	} from '$dataNew/garden/queries';
+	import triplit from '$dataNew/triplit';
 
 	/** Queries */
-	const associatedPartials = gardenAssociatedPartialsQuery();
-	const pendingInvites = gardenPendingInvitesQuery();
+	let adminGardens = useQuery(triplit, adminGardensQuery);
+	let editorGardens = useQuery(triplit, editorGardensQuery);
+	let viewerGardens = useQuery(triplit, viewerGardensQuery);
+
+	let pendingAcceptanceMemberships = useQuery(
+		triplit,
+		acceptancePendingMembershipsQuery
+	);
 
 	/**
 	 * If a non-authenticated user accesses this page,
@@ -55,10 +70,12 @@
 						<Icon icon={iconIds.gardensInviteIcon} width="1.5rem" class="mx-2" />
 						<span class="mx-2 hidden sm:block">Invites</span>
 						<div class="border-neutral-9 h-6 w-6 rounded-2xl border">
-							{#if $pendingInvites.status === 'loading'}
+							{#if pendingAcceptanceMemberships.fetching}
 								?
-							{:else if $pendingInvites.status === 'success'}
-								{$pendingInvites.data.pending_invites.length}
+							{:else if pendingAcceptanceMemberships.error}
+								?
+							{:else if pendingAcceptanceMemberships.results}
+								{pendingAcceptanceMemberships.results.length}
 							{/if}
 						</div>
 					</Button>
@@ -72,14 +89,14 @@
 					}}
 					class="translate-y-2"
 				>
-					{#if $pendingInvites.status === 'loading'}
+					{#if pendingAcceptanceMemberships.fetching}
 						<Icon
 							icon={iconIds.defaultSpinnerIcon}
 							width="1.5rem"
 							class="animate-spin"
 						/>
-					{:else if $pendingInvites.status === 'success'}
-						<GardenInviteScrollable invites={$pendingInvites.data.pending_invites} />
+					{:else if pendingAcceptanceMemberships.results}
+						<GardenInviteScrollable invites={pendingAcceptanceMemberships.results} />
 					{/if}
 				</Popover.Content>
 			</Popover.Root>

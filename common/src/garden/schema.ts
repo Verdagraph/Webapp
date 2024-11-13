@@ -120,6 +120,9 @@ export const gardenSchema = {
 			userId: S.String(),
 			user: S.RelationOne('profiles', { where: [['id', '=', '$userId']] }),
 
+			/** Role of the membership. */
+			role: S.String({ enum: GardenMembershipRoleEnum }),
+
 			/** User who created the membership. */
 			inviterId: S.String({ nullable: true }),
 			inviter: S.RelationOne('profiles', { where: [['id', '=', '$inviterId']] }),

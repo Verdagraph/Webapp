@@ -1,7 +1,11 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
+	import type {QueryResult} from '@triplit/client'
+	import type { GardenMembership } from '@vdt-webapp/common';
+	import type { GardenMembershipRoleEnum } from '@vdt-webapp/common';
 	import { useQueryClient } from '@sveltestack/svelte-query';
+	import {schema} from '@vdt-webapp/common'
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
@@ -13,11 +17,13 @@
 		gardenMembershipAccept,
 		gardenMembershipDelete
 	} from '$data/garden/commands';
+	import type { AcceptancePendingMembershipsQueryResult } from '$dataNew/garden/queries';
+	import GardenInvite from './GardenInvite.svelte';
 
 	const queryClient = useQueryClient();
 
 	type Props = {
-		invites: GardenPendingInviteSchema[];
+		invites: AcceptancePendingMembershipsQueryResult[];
 	};
 
 	let { invites }: Props = $props();
@@ -32,7 +38,7 @@
 	gardenName: string,
 	gardenKey: string,
 	inviterUsername: string | undefined,
-	role: GardenMembershipFullSchemaRole,
+	role: typeof GardenMembershipRoleEnum[number],
 	expiryCountdownHours: number
 )}
 	<li class="flex flex-row">
@@ -108,14 +114,7 @@
 >
 	<ul class="p-4">
 		{#each invites as invite}
-			{@render pendingInvite(
-				invite.garden.name,
-				invite.garden.key,
-				/** TODO: Add a query to get the username of the inviter user. */
-				undefined,
-				invite.invite.role,
-				invite.expiry_countdown_hours
-			)}
+		<GardenInvite invite={invite}>
 		{/each}
 	</ul>
 </ScrollArea>

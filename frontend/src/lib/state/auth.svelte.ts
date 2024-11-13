@@ -2,6 +2,7 @@ import { localStore } from './localStore.svelte';
 import { userRefreshOp } from '$codegenNew';
 import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 import triplit from '$dataNew/triplit';
+import { getClient } from '$dataNew/user/auth';
 
 /**
  * The number of seconds before the access token expires
@@ -80,8 +81,11 @@ export function createAuthContext() {
 		persistedAuthState.value.token = token;
 		temporaryAuthState.retriedRefreshFlag = false;
 
-		/** Also update the Triplit token. */
+		/** Update the Triplit token. */
 		triplit.updateToken(token);
+
+		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
+		getClient().then();
 
 		/** Calculate the time of expiry by adding the expiry duration to the current time. */
 		const now = Date.now();
@@ -158,6 +162,9 @@ export function createAuthContext() {
 
 		/** If the current credentials have not expired, schedule a refresh task. */
 		scheduleRefreshTask(expiresInMs - REFRESH_EXPIRY_WINDOW_S * 1000);
+
+		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
+		getClient().then();
 	}
 
 	/** Initialize the auth context. */

@@ -34,9 +34,7 @@ export const isProfileMember = (garden: Garden, profileId: string): boolean => {
  * @returns True if the profile is a admin of the garden.
  */
 export const isProfileAdmin = (garden: Garden, profileId: string): boolean => {
-	if (
-		garden.adminIds.has(profileId) ||
-	) {
+	if (garden.adminIds.has(profileId)) {
 		return true;
 	} else {
 		return false;
