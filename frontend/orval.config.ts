@@ -10,7 +10,7 @@ export default defineConfig({
 		},
 		output: {
 			// Path to the generated client code.
-			workspace: 'src/lib/codegenNew/',
+			workspace: 'src/lib/codegen/',
 			// Path relative to workspace to generated client code.
 			target: './client/',
 			schemas: './types/',

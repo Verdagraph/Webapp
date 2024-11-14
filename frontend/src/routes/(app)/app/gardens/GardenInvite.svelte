@@ -1,36 +1,31 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
-	import type { QueryResult } from '@triplit/client';
-	import type { GardenMembership } from '@vdt-webapp/common';
-	import type { GardenMembershipRoleEnum } from '@vdt-webapp/common';
-	import { schema } from '@vdt-webapp/common';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
+	import type { AcceptancePendingMembershipsQueryResult } from '$data/garden/queries';
+	import { userProfilesQuery } from '$data/user/queries';
 	import {
 		gardenMembershipAccept,
 		gardenMembershipDelete
 	} from '$data/garden/commands';
-	import type { AcceptancePendingMembershipsQueryResult } from '$dataNew/garden/queries';
-	import { userProfilesQuery } from '$dataNew/users/queries';
 	import { useQuery } from '@triplit/svelte';
-	import triplit from '$dataNew/triplit';
+	import triplit from '$data/triplit';
+	import useAsync from '$state/asyncHandler.svelte';
 
 	type Props = {
 		invite: AcceptancePendingMembershipsQueryResult;
 	};
-
 	let { invite }: Props = $props();
 
 	let inviterProfile = useQuery(
 		triplit,
-		userProfilesQuery.vars({ profileId: invite.inviterId })
+		userProfilesQuery.vars({ profileIds: [invite.inviterId] })
 	);
 
 	/** Mutations. */
-	const inviteAcceptMutation = gardenMembershipAccept.mutation();
-	const inviteDeleteMutation = gardenMembershipDelete.mutation();
+	const gardenMembershipAcceptHandler = useAsync(gardenMembershipAccept.mutation);
+	const gardenMembershipDeleteHandler = useAsync(gardenMembershipDelete.mutation);
 </script>
 
 <li class="flex flex-row">
@@ -53,7 +48,7 @@
 				{:else if inviterProfile.error}
 					<i>unknown</i>
 				{:else if inviterProfile.results}
-					inviterProfile.results.username
+					{inviterProfile.results[0].username}
 				{/if}
 			</span>
 		</div>
@@ -66,14 +61,7 @@
 		<Button
 			variant="default"
 			on:click={() => {
-				$inviteAcceptMutation.mutate(
-					{ garden_key: gardenKey },
-					{
-						onSuccess: () => {
-							queryClient.invalidateQueries('pendingInvites');
-						}
-					}
-				);
+				gardenMembershipAcceptHandler.execute({ gardenId: invite.gardenId });
 			}}
 		>
 			<Icon icon={iconIds.gardenInviteAcceptIcon} width="1.5rem" />
@@ -81,14 +69,7 @@
 		<Button
 			variant="destructive"
 			on:click={() => {
-				$inviteDeleteMutation.mutate(
-					{ garden_key: gardenKey },
-					{
-						onSuccess: () => {
-							queryClient.invalidateQueries('pendingInvites');
-						}
-					}
-				);
+				gardenMembershipDeleteHandler.execute({ gardenId: invite.gardenId });
 			}}><Icon width="1.5rem" icon={iconIds.gardenInviteRejectIcon} /></Button
 		>
 	</div>

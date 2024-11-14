@@ -3,12 +3,8 @@
 		"paths": {
 			"$data": ["../src/lib/data"],
 			"$data/*": ["../src/lib/data/*"],
-			"$dataNew": ["../src/lib/dataNew"],
-			"$dataNew/*": ["../src/lib/dataNew/*"],
 			"$codegen": ["../src/lib/codegen"],
 			"$codegen/*": ["../src/lib/codegen/*"],
-			"$codegenNew": ["../src/lib/codegenNew"],
-			"$codegenNew/*": ["../src/lib/codegenNew/*"],
 			"$state": ["../src/lib/state"],
 			"$state/*": ["../src/lib/state/*"],
 			"$components": ["../src/lib/components"],

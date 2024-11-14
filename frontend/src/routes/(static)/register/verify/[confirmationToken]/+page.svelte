@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import * as Card from '$lib/components/ui/card';
-	import { userConfirmEmailConfirmation } from '$lib/dataNew/user/commands';
+	import { userConfirmEmailConfirmation } from '$data/user/commands';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
 	import useAsync from '$state/asyncHandler.svelte';

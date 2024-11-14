@@ -9,27 +9,23 @@
 	import * as Popover from '$components/ui/popover';
 	import { flyAndScale } from '$lib/utils/shadcn';
 	import auth from '$state/auth.svelte';
-	import type { GardenPartialSchema } from '$codegen/types';
 	import GardenThumbnailScrollable from './GardenThumbnailScrollable.svelte';
 	import GardenInviteScrollable from './GardenInviteScrollable.svelte';
-	import {
-		gardenAssociatedPartialsQuery,
-		gardenPendingInvitesQuery
-	} from '$data/garden/queries';
 	import {
 		adminGardensQuery,
 		editorGardensQuery,
 		viewerGardensQuery,
 		favoriteMembershipsQuery,
 		acceptancePendingMembershipsQuery
-	} from '$dataNew/garden/queries';
-	import triplit from '$dataNew/triplit';
+	} from '$data/garden/queries';
+	import triplit from '$data/triplit';
+	import type { Garden } from '@vdt-webapp/common';
 
 	/** Queries */
+	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
 	let adminGardens = useQuery(triplit, adminGardensQuery);
 	let editorGardens = useQuery(triplit, editorGardensQuery);
 	let viewerGardens = useQuery(triplit, viewerGardensQuery);
-
 	let pendingAcceptanceMemberships = useQuery(
 		triplit,
 		acceptancePendingMembershipsQuery
@@ -110,54 +106,61 @@
 	</ul>
 </div>
 
-{#snippet gardenCategory(label: string, gardens: GardenPartialSchema[])}
+{#snippet gardenCategory(label: string, gardens: Garden[])}
 	<div>
 		<!-- Label -->
 		<span class="text-xl">
 			{label}
 		</span>
-		<GardenThumbnailScrollable gardenPartials={gardens} />
+		<GardenThumbnailScrollable {gardens} />
 		<Separator class="bg-neutral-7 mb-4 mt-12 w-full" />
 	</div>
 {/snippet}
 
-{#if $associatedPartials.status === 'loading'}
-	<!-- TODO: Add skeleton loading -->
-	<div class="m-auto my-8">Loading...</div>
-{:else if $associatedPartials.status === 'success'}
-	<!-- Content -->
-	<div class="bg-neutral-1 h-full w-full p-8">
-		{#if $associatedPartials.data.favorites.length > 0}
-			{@render gardenCategory(
-				'Favorites',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.favorites.includes(garden.id);
-				})
-			)}
-		{/if}
-		{#if $associatedPartials.data.admin_memberships.length > 0}
-			{@render gardenCategory(
-				'Admins',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.admin_memberships.includes(garden.id);
-				})
-			)}
-		{/if}
-		{#if $associatedPartials.data.edit_memberships.length > 0}
-			{@render gardenCategory(
-				'Editable',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.edit_memberships.includes(garden.id);
-				})
-			)}
-		{/if}
-		{#if $associatedPartials.data.view_memberships.length > 0}
-			{@render gardenCategory(
-				'Viewable',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.view_memberships.includes(garden.id);
-				})
-			)}
-		{/if}
-	</div>
-{/if}
+<!-- Content -->
+<div class="bg-neutral-1 h-full w-full p-8">
+	<!-- Favorite gardens. -->
+	{#if favoriteMemberships.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if favoriteMemberships.error}
+		Error!
+	{:else if favoriteMemberships.results}
+		{@render gardenCategory(
+			'Favorites',
+			favoriteMemberships.results
+				.map((membership) => membership.garden)
+				.filter((garden) => garden != null)
+		)}
+	{/if}
+
+	<!-- Admin gardens. -->
+	{#if adminGardens.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if adminGardens.error}
+		Error!
+	{:else if adminGardens.results}
+		{@render gardenCategory('Admins', adminGardens.results)}
+	{/if}
+
+	<!-- Editor gardens. -->
+	{#if editorGardens.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if editorGardens.error}
+		Error!
+	{:else if editorGardens.results}
+		{@render gardenCategory('Editors', editorGardens.results)}
+	{/if}
+
+	<!-- Viewer gardens. -->
+	{#if viewerGardens.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if viewerGardens.error}
+		Error!
+	{:else if viewerGardens.results}
+		{@render gardenCategory('Viewers', viewerGardens.results)}
+	{/if}
+</div>

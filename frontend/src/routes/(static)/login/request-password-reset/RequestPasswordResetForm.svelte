@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userRequestPasswordReset } from '$lib/dataNew/user/commands';
+	import { userRequestPasswordReset } from '$data/user/commands';
 	import useAsync from '$state/asyncHandler.svelte';
 
 	type Props = {

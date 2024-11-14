@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userRequestEmailConfirmation } from '$lib/dataNew/user/commands';
+	import { userRequestEmailConfirmation } from '$data/user/commands';
 	import useAsync from '$state/asyncHandler.svelte';
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */

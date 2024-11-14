@@ -17,9 +17,7 @@ const config = {
 		//
 		alias: {
 			$data: path.resolve('./src/lib/data'),
-			$dataNew: path.resolve('./src/lib/dataNew'),
 			$codegen: path.resolve('./src/lib/codegen'),
-			$codegenNew: path.resolve('./src/lib/codegenNew'),
 			$state: path.resolve('./src/lib/state'),
 			$components: path.resolve('./src/lib/components')
 		}

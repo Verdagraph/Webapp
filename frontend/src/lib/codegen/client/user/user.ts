@@ -13,7 +13,7 @@ import type {
 	UserRequestEmailConfirmationBody,
 	UserRequestPasswordResetOpBody,
 	UserUpdateOpBody
-} from '$codegenNew/types';
+} from '$codegen/types';
 import { axiosClient } from '$data/customAxios';
 
 /**

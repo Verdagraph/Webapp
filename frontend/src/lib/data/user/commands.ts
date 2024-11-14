@@ -1,71 +1,56 @@
-import { z as zod } from 'zod';
+import { z, z as zod } from 'zod';
 import { useMutation } from '@sveltestack/svelte-query';
-import type {
+import {
 	UserCreateCommand,
 	UserConfirmEmailConfirmationCommand,
 	UserRequestEmailConfirmationCommand,
 	UserRequestPasswordResetCommand,
 	UserConfirmPasswordResetCommand
-} from '$codegen/types';
+} from '@vdt-webapp/common';
 import {
-	userCreateCommandOp,
-	userConfirmEmailConfirmationCommandOp,
-	userRequestEmailConfirmationCommandOp,
-	userConfirmPasswordResetCommandOp,
-	userRequestPasswordResetCommandOp
+	userCreateOp,
+	userConfirmEmailOp,
+	userRequestEmailConfirmationOp,
+	userConfirmPasswordResetOp,
+	userRequestPasswordResetOp
 } from '$codegen';
 
 /**
  * Sends an user creation request to the backend.
  */
 export const userCreate = {
-	mutation: () => {
-		return useMutation(function (data: UserCreateCommand) {
-			return userCreateCommandOp(data);
-		});
-	}
+	schema: UserCreateCommand,
+	mutation: userCreateOp
 };
 
 /**
  * Sends an email verification request to the backend.
  */
 export const userRequestEmailConfirmation = {
-	mutation: () => {
-		return useMutation(function (data: UserRequestEmailConfirmationCommand) {
-			return userRequestEmailConfirmationCommandOp(data);
-		});
-	}
+	schema: UserRequestEmailConfirmationCommand,
+	mutation: userRequestEmailConfirmationOp
 };
 
 /**
  * Sends an email verification confirmation to the backend.
  */
 export const userConfirmEmailConfirmation = {
-	mutation: () => {
-		return useMutation(function (data: UserConfirmEmailConfirmationCommand) {
-			return userConfirmEmailCommandOp(data);
-		});
-	}
+	schema: UserConfirmEmailConfirmationCommand,
+	mutation: userConfirmEmailOp
 };
 
 /**
  * Sends a password reset request to the backend.
  */
 export const userRequestPasswordReset = {
-	mutation: () => {
-		return useMutation(function (data: UserRequestPasswordResetCommand) {
-			return userRequestPasswordResetCommandOp(data);
-		});
-	}
+	schema: UserRequestPasswordResetCommand,
+	mutation: userRequestPasswordResetOp
 };
 
 /**
  * Sends a password reset confirmation to the backend.
  */
 export const userConfirmPasswordReset = {
-	mutation: () => {
-		return useMutation(function (data: UserConfirmPasswordResetCommand) {
-			return userConfirmPasswordResetCommandOp(data);
-		});
-	}
+	schema: UserConfirmPasswordResetCommand,
+	mutation: userConfirmPasswordResetOp
 };

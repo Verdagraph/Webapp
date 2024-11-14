@@ -2,11 +2,11 @@
 	import Logo from '$lib/assets/logo.svelte';
 	import { Separator } from '$lib/components/ui/separator/index';
 	import { Button } from 'bits-ui';
+	import { useQuery } from '@triplit/svelte';
 	import PrimaryNavSidebarTab from './PrimaryNavSidebarTab.svelte';
 	import PrimaryNavBottomTabDropdown from './PrimaryNavBottomTab.svelte';
 	import PrimaryNavBottomDrawer from './PrimaryNavBottomDrawer.svelte';
 	import activeGardenKey from '$state/activeGarden.svelte';
-	import { gardenMostRelevantPartialsQuery } from '$data/garden/queries';
 
 	import {
 		getGardenSpecifcTabs,
@@ -15,23 +15,44 @@
 	} from './primaryNavTabs';
 	import type { PrimaryTabSpec } from './primaryNavTabs';
 
+	import {
+		adminGardensQuery,
+		editorGardensQuery,
+		viewerGardensQuery,
+		favoriteMembershipsQuery
+	} from '$data/garden/queries';
+	import triplit from '$data/triplit';
+
 	/* Settings. */
 	const MAX_GARDENS_IN_TAB_SIDEBAR = 10; /* The maximum amount of gardens listed on the Gardens tab. */
 
 	/* Queries */
-	const mostRelevantPartialGardens = gardenMostRelevantPartialsQuery(
-		{ max_gardens: MAX_GARDENS_IN_TAB_SIDEBAR },
-		{
-			onSuccess: updateGardensTab
-		}
-	);
+	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
+	let adminGardens = useQuery(triplit, adminGardensQuery);
+	let editorGardens = useQuery(triplit, editorGardensQuery);
+	let viewerGardens = useQuery(triplit, viewerGardensQuery);
 
 	/* Tab categories. */
+	/* Gives quick access to other gardens. */
+	let gardensTab = $derived.by(() => {
+		const mostRelevantGardens = [];
+		if (favoriteMemberships.results) {
+			mostRelevantGardens.push(
+				favoriteMemberships.results
+					.map((membership) => membership.garden)
+					.filter((garden) => garden != null) ?? []
+			);
+		}
+
+		mostRelevantGardens.push(adminGardens.results ?? []);
+		mostRelevantGardens.push(editorGardens.results ?? []);
+		mostRelevantGardens.push(viewerGardens.results ?? []);
+		mostRelevantGardens.length = MAX_GARDENS_IN_TAB_SIDEBAR;
+		return getGardensTab(mostRelevantGardens);
+	});
+
 	const nonGardenSpecificTabs: PrimaryTabSpec[] =
 		getNonGardenSpecificTabs(); /* Points to static pages. */
-	let gardensTab: PrimaryTabSpec = getGardensTab(
-		[]
-	); /* Gives quick access to other gardens. */
 	let gardenTabs: PrimaryTabSpec[] =
 		[]; /* Allows accessing all features in a Garden. */
 
@@ -39,18 +60,6 @@
 	let traitsTab = nonGardenSpecificTabs.find((t) => t.id === 'traits');
 	let profileTab = nonGardenSpecificTabs.find((t) => t.id === 'profile');
 	let resourcesTab = nonGardenSpecificTabs.find((t) => t.id === 'resources');
-
-	/* Retrieve the gardens tab if the associated partials query is complete. */
-	function updateGardensTab() {
-		if ($mostRelevantPartialGardens.data) {
-			console.log($mostRelevantPartialGardens.data);
-			gardensTab = getGardensTab(
-				/* TODO: change store access when svelte-query is updated to Svelte 5. */
-				$mostRelevantPartialGardens.data
-			);
-		}
-	}
-	updateGardensTab();
 
 	/* Retrieve the garden tabs if there is an active garden. */
 	if (activeGardenKey.value !== null) {

@@ -1,8 +1,8 @@
 import { localStore } from './localStore.svelte';
-import { userRefreshOp } from '$codegenNew';
+import { userRefreshOp } from '$codegen';
 import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
-import triplit from '$dataNew/triplit';
-import { getClient } from '$dataNew/user/auth';
+import triplit from '$data/triplit';
+import { getClient } from '$data/user/auth';
 
 /**
  * The number of seconds before the access token expires
