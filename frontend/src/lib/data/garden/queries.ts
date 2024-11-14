@@ -1,5 +1,6 @@
 import triplit from '$data/triplit';
 import type { QueryResult } from '@triplit/client';
+import {or} from '@triplit/client'
 import { schema } from '@vdt-webapp/common';
 
 export const adminGardensQuery = triplit
@@ -21,7 +22,7 @@ export const favoriteMembershipsQuery = triplit
 		['userId', '=', '$global.clientProfileId']
 	])
 	.include('garden');
-
+	
 export const acceptancePendingMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where([
