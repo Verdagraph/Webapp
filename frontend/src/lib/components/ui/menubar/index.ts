@@ -1,16 +1,15 @@
-import { Menubar as MenubarPrimitive } from 'bits-ui';
-
-import Root from './menubar.svelte';
-import CheckboxItem from './menubar-checkbox-item.svelte';
-import Content from './menubar-content.svelte';
-import Item from './menubar-item.svelte';
-import Label from './menubar-label.svelte';
-import RadioItem from './menubar-radio-item.svelte';
-import Separator from './menubar-separator.svelte';
-import Shortcut from './menubar-shortcut.svelte';
-import SubContent from './menubar-sub-content.svelte';
-import SubTrigger from './menubar-sub-trigger.svelte';
-import Trigger from './menubar-trigger.svelte';
+import { Menubar as MenubarPrimitive } from "bits-ui";
+import Root from "./menubar.svelte";
+import CheckboxItem from "./menubar-checkbox-item.svelte";
+import Content from "./menubar-content.svelte";
+import Item from "./menubar-item.svelte";
+import GroupHeading from "./menubar-group-heading.svelte";
+import RadioItem from "./menubar-radio-item.svelte";
+import Separator from "./menubar-separator.svelte";
+import Shortcut from "./menubar-shortcut.svelte";
+import SubContent from "./menubar-sub-content.svelte";
+import SubTrigger from "./menubar-sub-trigger.svelte";
+import Trigger from "./menubar-trigger.svelte";
 
 const Menu = MenubarPrimitive.Menu;
 const Group = MenubarPrimitive.Group;
@@ -22,7 +21,7 @@ export {
 	CheckboxItem,
 	Content,
 	Item,
-	Label,
+	GroupHeading,
 	RadioItem,
 	Separator,
 	Shortcut,
@@ -38,7 +37,7 @@ export {
 	CheckboxItem as MenubarCheckboxItem,
 	Content as MenubarContent,
 	Item as MenubarItem,
-	Label as MenubarLabel,
+	GroupHeading as MenubarGroupHeading,
 	RadioItem as MenubarRadioItem,
 	Separator as MenubarSeparator,
 	Shortcut as MenubarShortcut,
@@ -48,5 +47,5 @@ export {
 	Menu as MenubarMenu,
 	Group as MenubarGroup,
 	Sub as MenubarSub,
-	RadioGroup as MenubarRadioGroup
+	RadioGroup as MenubarRadioGroup,
 };

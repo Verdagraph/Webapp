@@ -1,51 +1,31 @@
 <script lang="ts">
-	import * as FormPrimitive from 'formsnap';
-	import { cn } from '$lib/utils/shadcn.js';
+	import * as FormPrimitive from "formsnap";
+	import type { WithoutChild } from "bits-ui";
+	import { cn } from "$lib/utils";
 
-	type $$Props = FormPrimitive.FieldErrorsProps & {
+	let {
+		ref = $bindable(null),
+		class: className,
+		errorClasses,
+		children: childrenProp,
+		...restProps
+	}: WithoutChild<FormPrimitive.FieldErrorsProps> & {
 		errorClasses?: string | undefined | null;
-		serverErrors?: string[] | undefined | null;
-	};
-
-	let className: $$Props['class'] = undefined;
-	export { className as class };
-	export let errorClasses: $$Props['class'] = undefined;
-	export let serverErrors: $$Props['serverErrors'] = [];
+	} = $props();
 </script>
 
 <FormPrimitive.FieldErrors
-	class={cn('text-warning-11 text-sm font-medium', className)}
-	{...$$restProps}
-	let:errors
-	let:fieldErrorsAttrs
-	let:errorAttrs
+	bind:ref
+	class={cn("text-destructive-11 text-sm font-medium", className)}
+	{...restProps}
 >
-	<slot {errors} {fieldErrorsAttrs} {errorAttrs}>
-		<ul>
+	{#snippet children({ errors, errorProps })}
+		{#if childrenProp}
+			{@render childrenProp({ errors, errorProps })}
+		{:else}
 			{#each errors as error}
-				<li
-					{...errorAttrs}
-					class={cn(
-						errorClasses,
-						'border-warning-7 bg-warning-3 border-x p-1 first:rounded-t-md first:border-t last:mb-4 last:rounded-b-md last:border-b'
-					)}
-				>
-					{error}
-				</li>
+				<div {...errorProps} class={cn(errorClasses)}>{error}</div>
 			{/each}
-			{#if serverErrors}
-				{#each serverErrors as error}
-					<li
-						{...errorAttrs}
-						class={cn(
-							errorClasses,
-							'border-warning-7 bg-warning-3 border-x p-1 first:rounded-t-md first:border-t last:mb-4 last:rounded-b-md last:border-b'
-						)}
-					>
-						{error}
-					</li>
-				{/each}
-			{/if}
-		</ul>
-	</slot>
+		{/if}
+	{/snippet}
 </FormPrimitive.FieldErrors>

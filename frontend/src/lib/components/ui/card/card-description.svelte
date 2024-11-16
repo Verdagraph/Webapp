@@ -1,13 +1,16 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils/shadcn.js';
+	import type { WithElementRef } from "bits-ui";
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn } from "$lib/utils";
 
-	type $$Props = HTMLAttributes<HTMLParagraphElement>;
-
-	let className: $$Props['class'] = undefined;
-	export { className as class };
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLParagraphElement>> = $props();
 </script>
 
-<p class={cn('text-neutral-11 text-sm', className)} {...$$restProps}>
-	<slot />
+<p bind:this={ref} class={cn("text-neutral-11 text-sm", className)} {...restProps}>
+	{@render children?.()}
 </p>

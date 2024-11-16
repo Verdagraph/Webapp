@@ -1,37 +1,21 @@
 <script lang="ts">
-	import type { Label as LabelPrimitive } from 'bits-ui';
-	import { getFormControl } from 'formsnap';
-	import { cn } from '$lib/utils/shadcn.js';
-	import { Label } from '$lib/components/ui/label/index.js';
+	import type { WithoutChild } from "bits-ui";
+	import * as FormPrimitive from "formsnap";
+	import { Label } from "$lib/components/ui/label/index.js";
+	import { cn } from "$lib/utils";
 
-	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
-
-	type $$Props = LabelPrimitive.Props & {
-		description?: string;
-		optional?: boolean;
-	};
-
-	let className: $$Props['class'] = undefined;
-	export let description: string | undefined = undefined;
-	export let optional: boolean = false;
-	export { className as class };
-
-	const { labelAttrs } = getFormControl();
+	let {
+		ref = $bindable(null),
+		children,
+		class: className,
+		...restProps
+	}: WithoutChild<FormPrimitive.LabelProps> = $props();
 </script>
 
-<Label
-	{...$labelAttrs}
-	class={cn(
-		'decoration-destructive-8 flex items-center underline-offset-4 data-[fs-error]:underline data-[fs-error]:decoration-wavy',
-		className
-	)}
-	{...$$restProps}
->
-	<slot {labelAttrs} />
-	{#if !optional}
-		<span class="mx-1 translate-y-[2px]">*</span>
-	{/if}
-	{#if description}
-		<FormInfoPopover {description} />
-	{/if}
-</Label>
+<FormPrimitive.Label {...restProps} bind:ref>
+	{#snippet child({ props })}
+		<Label {...props} class={cn("data-[fs-error]:text-destructive-11", className)}>
+			{@render children?.()}
+		</Label>
+	{/snippet}
+</FormPrimitive.Label>

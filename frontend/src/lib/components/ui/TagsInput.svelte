@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type Tag from '@melt-ui/svelte';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
-	import { createTagsInput, melt } from '@melt-ui/svelte';
+	import { createTagsInput, melt, type Tag } from '@melt-ui/svelte';
 
 	type Props = {
 		tagsInput: string[] | undefined;
@@ -41,7 +40,7 @@
 			return { id: tag, value: tag };
 		},
 		/** The ID of the tag is the previous ID, the value is the newly set value. */
-		update(tag: Tag.Tag) {
+		update(tag: Tag) {
 			tagsInput = tagsInput.filter((tagId) => {
 				return tagId !== tag.id;
 			});
@@ -50,7 +49,7 @@
 			}
 			return { id: tag.value, value: tag.value };
 		},
-		remove(tag: Tag.Tag) {
+		remove(tag: Tag) {
 			tagsInput = tagsInput.filter((tagId) => {
 				return tagId !== tag.id;
 			});

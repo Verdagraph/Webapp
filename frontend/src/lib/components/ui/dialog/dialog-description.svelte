@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { Dialog as DialogPrimitive } from 'bits-ui';
-	import { cn } from '$lib/utils/shadcn.js';
+	import { Dialog as DialogPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils";
 
-	type $$Props = DialogPrimitive.DescriptionProps;
-
-	let className: $$Props['class'] = undefined;
-	export { className as class };
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: DialogPrimitive.DescriptionProps = $props();
 </script>
 
 <DialogPrimitive.Description
-	class={cn('text-neutral-11 text-sm', className)}
-	{...$$restProps}
->
-	<slot />
-</DialogPrimitive.Description>
+	bind:ref
+	class={cn("text-neutral-11 text-sm", className)}
+	{...restProps}
+/>
