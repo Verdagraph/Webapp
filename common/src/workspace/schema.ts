@@ -18,7 +18,7 @@ export const workspaceSchema = {
 			id: S.Id(),
 			x: S.Number(),
 			y: S.Number(),
-			z: S.Number({ nullable: true, default: null })
+			z: S.Number({ nullable: true, default: 0 })
 		}),
 		permissions: {}
 	},
