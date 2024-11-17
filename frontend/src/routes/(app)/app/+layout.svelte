@@ -1,5 +1,6 @@
 <script>
-	import PrimaryNav from '$components/primary_nav/PrimaryNav.svelte';
+	import * as Sidebar from "$lib/components/ui/sidebar/index.ts";
+	import PrimaryNav from '$components/primaryNav/PrimaryNav.svelte';
 
 	let { children } = $props();
 </script>
@@ -13,3 +14,11 @@
 		{@render children()}
 	</div>
 </div>
+
+<Sidebar.Provider>
+	<PrimaryNav />
+	<main>
+	  <Sidebar.Trigger />
+	  {@render children?.()}
+	</main>
+  </Sidebar.Provider>

@@ -12,6 +12,4 @@
 <!-- Sonner toaster from Shadcn-svelte -->
 <Toaster richColors />
 
-<div class="bg-neutral-1 text-neutral-12">
-	{@render children()}
-</div>
+{@render children()}

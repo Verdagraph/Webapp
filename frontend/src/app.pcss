@@ -18,7 +18,17 @@
 @tailwind utilities;
 
 @layer base {
-	body {
-		@apply bg-neutral-1 text-neutral-12;
-	}
+	:root {
+	  --radius: 1rem;
+  }
+  
 }
+
+@layer base {
+	* {
+	  @apply border-neutral-7;
+	}
+	body {
+	  @apply bg-neutral-1 text-neutral-12;
+	}
+  }
