@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as FormPrimitive from "formsnap";
-	import type { WithoutChild } from "bits-ui";
-	import { cn } from "$lib/utils";
+	import * as FormPrimitive from 'formsnap';
+	import type { WithoutChild } from 'bits-ui';
+	import { cn } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),
@@ -12,6 +12,9 @@
 
 <FormPrimitive.Legend
 	bind:ref
-	class={cn("data-[fs-error]:text-destructive-11 text-sm font-medium leading-none", className)}
+	class={cn(
+		'data-[fs-error]:text-destructive-11 text-sm font-medium leading-none',
+		className
+	)}
 	{...restProps}
 />

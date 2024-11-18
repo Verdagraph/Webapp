@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Drawer as DrawerPrimitive } from "vaul-svelte";
-	import { cn } from "$lib/utils";
+	import { Drawer as DrawerPrimitive } from 'vaul-svelte';
+	import { cn } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),
@@ -11,6 +11,6 @@
 
 <DrawerPrimitive.Description
 	bind:ref
-	class={cn("text-neutral-11 text-sm", className)}
+	class={cn('text-neutral-11 text-sm', className)}
 	{...restProps}
 />

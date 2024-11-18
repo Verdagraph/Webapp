@@ -7,7 +7,7 @@ import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
  * RECTANGLE: a closed shape specified by width and height.
  * POLYGON: a closed shape specified by a set of joined line segments.
  * ELLIPSE: a closed shape specified by a major and minor radius.
- * LINES: an open shape specified by a set of joined line segments.` 
+ * LINES: an open shape specified by a set of joined line segments.`
  */
 export const GeometryTypeEnum = ['RECTANGLE', 'POLYGON', 'ELLIPSE', 'LINES'] as const;
 
@@ -81,7 +81,7 @@ export const workspaceSchema = {
 			coordinate: S.RelationOne('coordinates', {
 				where: [['id', '=', '$coordinateId']]
 			}),
-			date: S.Date(),
+			date: S.Date()
 		})
 	},
 	locationHistories: {
@@ -150,10 +150,10 @@ export const workspaceSchema = {
 		}
 	}
 } satisfies ClientSchema;
-export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>
-export type Geometry = Entity<typeof workspaceSchema, 'geometries'>
-export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'>
-export type Location = Entity<typeof workspaceSchema, 'locations'>
-export type LocationHistory = Entity<typeof workspaceSchema, 'locationHistories'>
-export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'>
-export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>
+export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
+export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
+export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'>;
+export type Location = Entity<typeof workspaceSchema, 'locations'>;
+export type LocationHistory = Entity<typeof workspaceSchema, 'locationHistories'>;
+export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'>;
+export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>;

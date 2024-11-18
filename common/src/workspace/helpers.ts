@@ -1,3 +1,3 @@
-import { Geometry } from "./schema";
+import { Geometry } from './schema';
 
-const narrowGeometryType = (geometry: Geometry) => {}
+const narrowGeometryType = (geometry: Geometry) => {};

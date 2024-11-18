@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Menubar as MenubarPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils";
+	import { Menubar as MenubarPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),
@@ -12,7 +12,7 @@
 <MenubarPrimitive.SubContent
 	bind:ref
 	class={cn(
-		"bg-neutral-2 text-neutral-11 z-50 min-w-max rounded-md border p-1 focus:outline-none",
+		'bg-neutral-2 text-neutral-11 z-50 min-w-max rounded-md border p-1 focus:outline-none',
 		className
 	)}
 	{...restProps}

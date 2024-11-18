@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
+	import { cn } from "$lib/utils";
 	import type { WithElementRef } from "bits-ui";
 	import type { Snippet } from "svelte";
 	import type { HTMLButtonAttributes } from "svelte/elements";
@@ -18,7 +18,7 @@
 
 	const mergedProps = $derived({
 		class: cn(
-			"text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer-hover/menu-button:text-sidebar-accent-foreground absolute right-1 top-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+			"text-neutral-12 ring-neutral-7 hover:bg-accent-3 hover:text-accent-12 peer-hover/menu-button:text-accent-12 absolute right-1 top-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
 			// Increases the hit area of the button on mobile.
 			"after:absolute after:-inset-2 after:md:hidden",
 			"peer-data-[size=sm]/menu-button:top-1",
@@ -26,7 +26,7 @@
 			"peer-data-[size=lg]/menu-button:top-2.5",
 			"group-data-[collapsible=icon]:hidden",
 			showOnHover &&
-				"peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+				"peer-data-[active=true]/menu-button:text-accent-12 group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
 			className
 		),
 		"data-sidebar": "menu-action",

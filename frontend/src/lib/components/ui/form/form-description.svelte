@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as FormPrimitive from "formsnap";
-	import type { WithoutChild } from "bits-ui";
-	import { cn } from "$lib/utils";
+	import * as FormPrimitive from 'formsnap';
+	import type { WithoutChild } from 'bits-ui';
+	import { cn } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),
@@ -12,6 +12,6 @@
 
 <FormPrimitive.Description
 	bind:ref
-	class={cn("text-neutral-11 text-sm", className)}
+	class={cn('text-neutral-11 text-sm', className)}
 	{...restProps}
 />

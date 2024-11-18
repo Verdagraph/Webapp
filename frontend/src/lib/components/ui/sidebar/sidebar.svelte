@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Sheet from "$lib/components/ui/sheet/index.js";
-	import { cn } from "$lib/utils.js";
+	import { cn } from "$lib/utils";
 	import type { WithElementRef } from "bits-ui";
 	import type { HTMLAttributes } from "svelte/elements";
 	import { SIDEBAR_WIDTH_MOBILE } from "./constants.js";
@@ -26,7 +26,7 @@
 {#if collapsible === "none"}
 	<div
 		class={cn(
-			"bg-sidebar text-sidebar-foreground flex h-full w-[--sidebar-width] flex-col",
+			"bg-neutral-1 text-neutral-12 flex h-full w-[--sidebar-width] flex-col",
 			className
 		)}
 		bind:this={ref}
@@ -44,7 +44,7 @@
 		<Sheet.Content
 			data-sidebar="sidebar"
 			data-mobile="true"
-			class="bg-sidebar text-sidebar-foreground w-[--sidebar-width] p-0 [&>button]:hidden"
+			class="bg-neutral-1 text-neutral-12 w-[--sidebar-width] p-0 [&>button]:hidden"
 			style="--sidebar-width: {SIDEBAR_WIDTH_MOBILE};"
 			{side}
 		>
@@ -56,7 +56,7 @@
 {:else}
 	<div
 		bind:this={ref}
-		class="text-sidebar-foreground group peer hidden md:block"
+		class="text-neutral-12 group peer hidden md:block"
 		data-state={sidebar.state}
 		data-collapsible={sidebar.state === "collapsed" ? collapsible : ""}
 		data-variant={variant}
@@ -89,7 +89,7 @@
 		>
 			<div
 				data-sidebar="sidebar"
-				class="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow"
+				class="bg-neutral-1 group-data-[variant=floating]:border-neutral-7 flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow"
 			>
 				{@render children?.()}
 			</div>

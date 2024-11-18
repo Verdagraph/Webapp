@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils";
+	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),
@@ -11,6 +11,6 @@
 
 <DropdownMenuPrimitive.Separator
 	bind:ref
-	class={cn("bg-neutral-3 -mx-1 my-1 h-px", className)}
+	class={cn('bg-neutral-3 -mx-1 my-1 h-px', className)}
 	{...restProps}
 />

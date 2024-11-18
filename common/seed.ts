@@ -3,7 +3,12 @@ import { schema } from './triplit/schema';
 
 export default function seed(): BulkInsert<typeof schema> {
 	return {
-		profiles: [{ id: 'user1', username: 'nathanielarking' }, { id: 'user2', username: 'user2' }, { id: 'user3', username: 'user3' }, { id: 'user4', username: 'user4' }],
+		profiles: [
+			{ id: 'user1', username: 'nathanielarking' },
+			{ id: 'user2', username: 'user2' },
+			{ id: 'user3', username: 'user3' },
+			{ id: 'user4', username: 'user4' }
+		],
 		accounts: [
 			{
 				profileId: 'user1',
@@ -24,14 +29,14 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'edit-garden',
-				name: "Editor Garden.",
+				name: 'Editor Garden.',
 				visibility: 'PUBLIC',
 				creatorId: null,
 				editorIds: new Set('user1')
 			},
 			{
 				id: 'view-garden',
-				name: "Viewer Garden.",
+				name: 'Viewer Garden.',
 				visibility: 'PUBLIC',
 				creatorId: null,
 				viewerIds: new Set('user1')
@@ -62,7 +67,6 @@ export default function seed(): BulkInsert<typeof schema> {
 				status: 'ACCEPTED',
 				acceptedAt: new Date()
 			}
-
 		]
 	};
 }

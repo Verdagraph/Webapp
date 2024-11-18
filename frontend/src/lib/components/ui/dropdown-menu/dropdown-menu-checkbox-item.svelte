@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive, type WithoutChildrenOrChild } from "bits-ui";
-	import Check from "lucide-svelte/icons/check";
-	import Minus from "lucide-svelte/icons/minus";
-	import { cn } from "$lib/utils";
-	import type { Snippet } from "svelte";
+	import {
+		DropdownMenu as DropdownMenuPrimitive,
+		type WithoutChildrenOrChild
+	} from 'bits-ui';
+	import Check from 'lucide-svelte/icons/check';
+	import Minus from 'lucide-svelte/icons/minus';
+	import { cn } from '$lib/utils';
+	import type { Snippet } from 'svelte';
 
 	let {
 		ref = $bindable(null),
@@ -22,7 +25,7 @@
 	bind:checked
 	bind:indeterminate
 	class={cn(
-		"data-[highlighted]:bg-accent-6 data-[highlighted]:text-accent-12 relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+		'data-[highlighted]:bg-accent-6 data-[highlighted]:text-accent-12 relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
 		className
 	)}
 	{...restProps}
@@ -32,7 +35,7 @@
 			{#if indeterminate}
 				<Minus class="size-4" />
 			{:else}
-				<Check class={cn("size-4", !checked && "text-transparent")} />
+				<Check class={cn('size-4', !checked && 'text-transparent')} />
 			{/if}
 		</span>
 		{@render childrenProp?.()}

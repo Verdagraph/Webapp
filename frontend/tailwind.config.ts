@@ -25,7 +25,7 @@ const config: Config = {
 				neutral: getColorScale('olive'),
 				primary: getColorScale('grass'),
 				secondary: getColorScale('teal'),
-				accent: getColorScale('cyan'),
+				accent: getColorScale('lime'),
 				destructive: getColorScale('tomato'),
 				warning: getColorScale('amber'),
 				success: getColorScale('mint')
