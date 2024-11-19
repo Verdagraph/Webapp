@@ -8,7 +8,6 @@
 <Sidebar.Provider>
 	<PrimaryNav />
 	<main>
-		<Sidebar.Trigger />
 		{@render children?.()}
 	</main>
 </Sidebar.Provider>

@@ -2,7 +2,7 @@
 	import { tv, type VariantProps } from "tailwind-variants";
 
 	export const sidebarMenuButtonVariants = tv({
-		base: "peer/menu-button ring-neutral-7 hover:bg-accent-3 hover:text-accent-12 active:bg-accent-3 active:text-accent-3 data-[active=true]:bg-accent-3 data-[active=true]:text-accent-12 data-[state=open]:hover:bg-accent-3 data-[state=open]:hover:text-accent-12 flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none transition-[width,height,padding] focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+		base: "peer/menu-button ring-neutral-7 hover:bg-accent-3 hover:text-accent-12 active:bg-accent-3 active:text-accent-3 data-[active=true]:bg-accent-3 data-[active=true]:text-accent-12 data-[state=open]:hover:bg-accent-3 data-[state=open]:hover:text-accent-12 flex w-full items-center gap-2 overflow-hidden rounded-none text-left text-sm outline-none transition-[width,height,padding] focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-8 h-8 p-2 [&>svg]:shrink-0",
 		variants: {
 			variant: {
 				default: "hover:bg-accent-3 hover:text-acccent-12",

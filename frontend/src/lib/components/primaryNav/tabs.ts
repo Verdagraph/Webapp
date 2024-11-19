@@ -1,86 +1,92 @@
 import iconIds from '$lib/assets/icons';
 import { externalLinks } from '$lib/assets/links';
-import { GardenPartialSchema } from '$codegen';
+import { Garden } from '@vdt-webapp/common';
 
 /**
  * Utility to get the base URL for the active garden.
  */
-const getGardenBaseUrl = (gardenKey: string): string => {
-	return '/app/gardens/' + gardenKey;
+const getGardenBaseUrl = (gardenId: string): string => {
+	return '/app/gardens/' + gardenId;
 };
 
 /**
- * @brief   Specifies the primary navigation tabs between feature domains.
+ * Specifies the primary navigation tabs between feature domains.
  */
 export type PrimaryTabSpec = {
 	id: string;
-	url: string;
 	label: string;
 	iconId: string;
 	submenuItems: PrimaryTabItemSpec[] | null;
 };
 
 /**
- * @brief   Specifies the entries to the submenu of primary navigation tabs.
+ * Specifies the entries to the submenu of primary navigation tabs.
  */
 export type PrimaryTabItemSpec = {
 	url: string;
 	label: string;
-	iconId: string | null;
+	iconId?: string;
+    class?: string;
 };
+
+/* The maximum amount of gardens listed on the Gardens tab. */
+const MAX_GARDENS_IN_TAB_SIDEBAR = 10;
 
 /**
  * Constructs the tab which lists gardens the user has access to.
- * @param gardenPartials list of partial garden schemas associated with the user.
+ * @param gardens list of garden schemas associated with the user.
  * @returns Tab specification for the gardens tab.
  */
 export const getGardensTab = (
-	gardenPartials: GardenPartialSchema[] = []
+	gardens: Garden[] = []
 ): PrimaryTabSpec => {
+    const viewAllSubmenuItem: PrimaryTabItemSpec = {
+        url: getGardenBaseUrl(''),
+        label: 'View All',
+        class: "text-underline"
+    }
+    const gardensSubmenuItems: PrimaryTabItemSpec[] = gardens.slice(0, MAX_GARDENS_IN_TAB_SIDEBAR).map((garden) => ({
+        label: garden.name,
+        url: getGardenBaseUrl(garden.id),
+    }))
 	return {
 		id: 'gardens',
 		label: 'Gardens',
 		iconId: iconIds.gardensIcon,
-		url: getGardenBaseUrl(''),
-		submenuItems: gardenPartials.map((garden) => ({
-			label: garden.name,
-			url: getGardenBaseUrl(garden.key),
-			iconId: null
-		}))
+		submenuItems: [viewAllSubmenuItem, ...gardensSubmenuItems]
 	};
 };
 
 /**
  * Constructs the tabs of pages specific to one garden.
- * @param gardenKey Key of the active garden.
+ * @param garden The active garden.
  * @returns Tab specifications for the garden tabs.
  */
-export const getGardenSpecifcTabs = (gardenKey: string): PrimaryTabSpec[] => {
+export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 	return [
 		{
 			id: 'garden',
 			label: 'Garden',
 			iconId: iconIds.gardenIcon,
-			url: getGardenBaseUrl(gardenKey),
 			submenuItems: [
-				{
-					label: 'Homepage',
-					url: getGardenBaseUrl(gardenKey),
-					iconId: iconIds.gardenIcon
-				},
+                {
+                    label: garden.name,
+                    url: getGardenBaseUrl(garden.id),
+                    class: "truncate"
+                },
 				{
 					label: 'Dashboard',
-					url: getGardenBaseUrl(gardenKey) + '/dash',
+					url: getGardenBaseUrl(garden.id) + '/dash',
 					iconId: iconIds.gardenDashboardIcon
 				},
 				{
 					label: 'Members',
-					url: getGardenBaseUrl(gardenKey) + '/members',
+					url: getGardenBaseUrl(garden.id) + '/members',
 					iconId: iconIds.gardenMembersIcon
 				},
 				{
 					label: 'Metrics',
-					url: getGardenBaseUrl(gardenKey) + '/metrics',
+					url: getGardenBaseUrl(garden.id) + '/metrics',
 					iconId: iconIds.gardenMetricsIcon
 				}
 			]
@@ -89,16 +95,15 @@ export const getGardenSpecifcTabs = (gardenKey: string): PrimaryTabSpec[] => {
 			id: 'planner',
 			label: 'Planner',
 			iconId: iconIds.gardenPlannerIcon,
-			url: getGardenBaseUrl(gardenKey) + '/verdagraph',
 			submenuItems: [
 				{
 					label: 'Verdagraph',
-					url: getGardenBaseUrl(gardenKey) + '/verdagraph',
+					url: getGardenBaseUrl(garden.id) + '/verdagraph',
 					iconId: iconIds.gardenPlannerVerdagraphIcon
 				},
 				{
 					label: 'Workbook',
-					url: getGardenBaseUrl(gardenKey) + '/workbook',
+					url: getGardenBaseUrl(garden.id) + '/workbook',
 					iconId: iconIds.gardenPlannerWorkbookIcon
 				}
 			]
@@ -107,22 +112,21 @@ export const getGardenSpecifcTabs = (gardenKey: string): PrimaryTabSpec[] => {
 			id: 'config',
 			label: 'Configuration',
 			iconId: iconIds.gardenConfigIcon,
-			url: getGardenBaseUrl(gardenKey) + '/cultivars',
 			submenuItems: [
 				{
 					label: 'Cultivars',
 					iconId: iconIds.cultivarIcon,
-					url: getGardenBaseUrl(gardenKey) + '/cultivars'
+					url: getGardenBaseUrl(garden.id) + '/cultivars'
 				},
 				{
 					label: 'Workspaces',
 					iconId: iconIds.workspaceIcon,
-					url: getGardenBaseUrl(gardenKey) + '/workspaces'
+					url: getGardenBaseUrl(garden.id) + '/workspaces'
 				},
 				{
 					label: 'Environments',
 					iconId: iconIds.environmentIcon,
-					url: getGardenBaseUrl(gardenKey) + '/environments'
+					url: getGardenBaseUrl(garden.id) + '/environments'
 				}
 			]
 		}
@@ -139,7 +143,6 @@ export const getNonGardenSpecificTabs = (): PrimaryTabSpec[] => {
 			id: 'traits',
 			label: 'Traits',
 			iconId: iconIds.traitsIcon,
-			url: '/app/traits',
 			submenuItems: [
 				{
 					label: 'Cultivars',
@@ -162,7 +165,6 @@ export const getNonGardenSpecificTabs = (): PrimaryTabSpec[] => {
 			id: 'resources',
 			label: 'Resources',
 			iconId: iconIds.resourcesIcon,
-			url: '/guides',
 			submenuItems: [
 				{
 					label: 'Guides',
@@ -181,28 +183,5 @@ export const getNonGardenSpecificTabs = (): PrimaryTabSpec[] => {
 				}
 			]
 		},
-		{
-			id: 'profileIcon',
-			label: 'ProfileName',
-			iconId: iconIds.profileIcon,
-			url: '/app/account',
-			submenuItems: [
-				{
-					label: 'Notifications',
-					url: '/app/notifications',
-					iconId: iconIds.profileNotificationsIcon
-				},
-				{
-					label: 'Account',
-					url: '/app/account',
-					iconId: iconIds.profileAccountIcon
-				},
-				{
-					label: 'Settings',
-					url: '/app/settings',
-					iconId: iconIds.profileSettingsIcon
-				}
-			]
-		}
 	];
 };

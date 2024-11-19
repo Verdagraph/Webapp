@@ -1,2 +1,2 @@
-import PrimaryNav from './app-sidebar.svelte'
+import PrimaryNav from './Sidebar.svelte'
 export default PrimaryNav
