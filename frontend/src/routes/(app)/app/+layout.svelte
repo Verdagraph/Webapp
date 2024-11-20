@@ -1,13 +1,11 @@
 <script>
-	import * as Sidebar from '$lib/components/ui/sidebar/index.ts';
 	import PrimaryNav from '$components/primaryNav';
 
 	let { children } = $props();
 </script>
 
-<Sidebar.Provider>
-	<PrimaryNav />
-	<main>
-		{@render children?.()}
-	</main>
-</Sidebar.Provider>
+<!-- Wraps the primary nav to provide proper spacing between the nav and content. -->
+		<PrimaryNav />
+		<main>
+		{@render children()}
+    </main>
