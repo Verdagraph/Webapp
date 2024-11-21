@@ -40,64 +40,72 @@
 <form method="POST" autocomplete="off" use:enhance>
 	<!-- Username -->
 	<Form.Field {form} name="username">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.innerType().shape.username.description}
-				optional={userCreate.schema.innerType().shape.username.isOptional()}
-				>Username</Form.Label
-			>
-			<Input
-				{...attrs}
-				type="text"
-				placeholder="username"
-				bind:value={$formData.username}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.username.description}
+					optional={userCreate.schema.innerType().shape.username.isOptional()}
+					>Username</Form.Label
+				>
+				<Input
+					{...props}
+					type="text"
+					placeholder="username"
+					bind:value={$formData.username}
+				/>
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.username} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.username} />
 	</Form.Field>
 
 	<!-- Email address -->
 	<Form.Field {form} name="email">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.innerType().shape.email.description}
-				optional={userCreate.schema.innerType().shape.email.isOptional()}
-				>Email</Form.Label
-			>
-			<Input
-				{...attrs}
-				type="email"
-				placeholder="email@example.com"
-				bind:value={$formData.email}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.email.description}
+					optional={userCreate.schema.innerType().shape.email.isOptional()}
+					>Email</Form.Label
+				>
+				<Input
+					{...props}
+					type="email"
+					placeholder="email@example.com"
+					bind:value={$formData.email}
+				/>
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.email} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.email} />
 	</Form.Field>
 
 	<!-- Password1 -->
 	<Form.Field {form} name="password1">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.innerType().shape.password1.description}
-				optional={userCreate.schema.innerType().shape.password1.isOptional()}
-				>Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password1} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.password1.description}
+					optional={userCreate.schema.innerType().shape.password1.isOptional()}
+					>Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password1} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.password1} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
 	</Form.Field>
 
 	<!-- Password2 -->
 	<Form.Field {form} name="password2">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.innerType().shape.password2.description}
-				optional={userCreate.schema.innerType().shape.password2.isOptional()}
-				>Confirm Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password2} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.password2.description}
+					optional={userCreate.schema.innerType().shape.password2.isOptional()}
+					>Confirm Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password2} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.password2} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password2} />
 	</Form.Field>
 
 	<!-- Submit button -->

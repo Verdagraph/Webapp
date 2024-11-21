@@ -1,7 +1,25 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+	import iconIds from '$lib/assets/icons';
 	import * as Button from '$lib/components/ui/button/index.js';
 
-	let { ref = $bindable(null), ...restProps }: Button.Props = $props();
+	/**
+	 * VerdanTech - Modified to allow loading spinner.
+	 */
+
+	let {
+		ref = $bindable(null),
+		loading = false,
+		...restProps
+	}: Button.Props & {
+		loading?: boolean;
+	} = $props();
 </script>
 
-<Button.Root bind:ref type="submit" {...restProps} />
+{#if loading}
+	<Button.Root type="submit" {...restProps}>
+		<Icon icon={iconIds.defaultSpinnerIcon} width="1.5rem" class="animate-spin" />
+	</Button.Root>
+{:else}
+	<Button.Root bind:ref type="submit" {...restProps} />
+{/if}

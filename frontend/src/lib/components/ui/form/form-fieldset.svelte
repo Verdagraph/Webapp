@@ -22,6 +22,6 @@
 	bind:ref
 	{form}
 	{name}
-	class={cn('space-y-2', className)}
+	class={cn('space-y-', className)}
 	{...restProps}
 />

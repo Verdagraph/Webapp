@@ -42,32 +42,36 @@
 <form method="POST" autocomplete="off" use:enhance>
 	<!-- New Password1 -->
 	<Form.Field {form} name="password1">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userConfirmPasswordReset.schema.innerType().shape.password1
-					.description}
-				optional={userConfirmPasswordReset.schema
-					.innerType()
-					.shape.password1.isOptional()}>New Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password1} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userConfirmPasswordReset.schema.innerType().shape.password1
+						.description}
+					optional={userConfirmPasswordReset.schema
+						.innerType()
+						.shape.password1.isOptional()}>New Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password1} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.password1} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
 	</Form.Field>
 
 	<!-- Password2 -->
 	<Form.Field {form} name="password2">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userConfirmPasswordReset.schema.innerType().shape.password2
-					.description}
-				optional={userConfirmPasswordReset.schema
-					.innerType()
-					.shape.password2.isOptional()}>Confirm Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password2} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userConfirmPasswordReset.schema.innerType().shape.password2
+						.description}
+					optional={userConfirmPasswordReset.schema
+						.innerType()
+						.shape.password2.isOptional()}>Confirm Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password2} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.password2} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password2} />
 	</Form.Field>
 
 	<!-- Submit button -->

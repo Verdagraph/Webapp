@@ -32,31 +32,35 @@
 <form method="POST" use:enhance>
 	<!-- Email address -->
 	<Form.Field {form} name="email">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userLogin.schema.shape.email.description}
-				optional={userLogin.schema.shape.email.isOptional()}>Email</Form.Label
-			>
-			<Input
-				{...attrs}
-				type="email"
-				placeholder="email@example.com"
-				bind:value={$formData.email}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userLogin.schema.shape.email.description}
+					optional={userLogin.schema.shape.email.isOptional()}>Email</Form.Label
+				>
+				<Input
+					{...props}
+					type="email"
+					placeholder="email@example.com"
+					bind:value={$formData.email}
+				/>
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.email} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.email} />
 	</Form.Field>
 
 	<!-- Password -->
 	<Form.Field {form} name="password">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userLogin.schema.shape.password.description}
-				optional={userLogin.schema.shape.password.isOptional()}>Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userLogin.schema.shape.password.description}
+					optional={userLogin.schema.shape.password.isOptional()}>Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.password} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password} />
 	</Form.Field>
 
 	<!-- Submit button -->

@@ -39,20 +39,22 @@
 <form method="POST" autocomplete="off" use:enhance>
 	<!-- Email address -->
 	<Form.Field {form} name="email">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userRequestEmailConfirmation.schema.shape.email.description}
-				optional={userRequestEmailConfirmation.schema.shape.email.isOptional()}
-				>Email</Form.Label
-			>
-			<Input
-				{...attrs}
-				type="email"
-				placeholder="email@example.com"
-				bind:value={$formData.email}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userRequestEmailConfirmation.schema.shape.email.description}
+					optional={userRequestEmailConfirmation.schema.shape.email.isOptional()}
+					>Email</Form.Label
+				>
+				<Input
+					{...props}
+					type="email"
+					placeholder="email@example.com"
+					bind:value={$formData.email}
+				/>
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={formHandler.fieldErrors?.email} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.email} />
 	</Form.Field>
 
 	<!-- Submit button -->

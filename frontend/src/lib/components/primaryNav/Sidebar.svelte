@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Separator } from "$lib/components/ui/separator/index";
+	import { Separator } from '$lib/components/ui/separator/index';
 	import Logo from '$lib/assets/logo.svelte';
 	import Icon from '@iconify/svelte';
 	import { Button } from 'bits-ui';
@@ -18,19 +18,19 @@
 		viewerIds: new Set(),
 		isActive: true,
 		createdAt: new Date()
-	}
+	};
 
-	const gardensTab = getGardensTab([testGarden])
+	const gardensTab = getGardensTab([testGarden]);
 
 	const gardenTabs = getGardenSpecifcTabs(testGarden);
 </script>
 
 {#snippet sidebarTab(spec: PrimaryTabSpec, flipped: boolean = false)}
-	<NavigationMenu.Item class="relative hover:bg-neutral-3">
-		<NavigationMenu.Trigger class="w-full h-full flex items-center p-2">
+	<NavigationMenu.Item class="hover:bg-neutral-3 relative">
+		<NavigationMenu.Trigger class="flex h-full w-full items-center p-2">
 			<Icon icon={spec.iconId} width="2rem" />
 		</NavigationMenu.Trigger>
-		<NavigationMenu.Content class="absolute left-full top-0 z-50 bg-neutral-3">
+		<NavigationMenu.Content class="bg-neutral-3 absolute left-full top-0 z-50">
 			{#each spec.submenuItems ?? [] as item}
 				<NavigationMenu.Link href={item.url}>
 					{#if item.iconId}
@@ -45,7 +45,10 @@
 	</NavigationMenu.Item>
 {/snippet}
 
-<NavigationMenu.Root orientation="vertical" class="top-0 flex flex-col fixed h-full border-neutral-6 bg-neutral-2 border-r">
+<NavigationMenu.Root
+	orientation="vertical"
+	class="border-neutral-6 bg-neutral-2 fixed top-0 flex h-full flex-col border-r"
+>
 	<NavigationMenu.List class="relative">
 		<!-- VerdanTech logo. -->
 		<NavigationMenu.Item class="hover:bg-neutral-3 p-2">
@@ -64,7 +67,5 @@
 			{@render sidebarTab(tab)}
 		{/each}
 	</NavigationMenu.List>
-	<div class="absolute top-0 left-full flex">
-		<NavigationMenu.Viewport class="relative origin-left-center"/>
-	</div>
+	<NavigationMenu.Viewport class="absolute" />
 </NavigationMenu.Root>
