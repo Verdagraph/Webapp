@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte'
-	import * as Popover from '$lib/components/ui/popover/index'
-	import { Separator } from '$lib/components/ui/separator/index'
-	import { Button } from '$lib/components/ui/button'
-	import Logo from '$lib/assets/logo.svelte'
-	import { externalLinks } from '$lib/assets/links'
-	import iconIds from '$lib/assets/icons'
+	import Icon from '@iconify/svelte';
+	import * as Popover from '$lib/components/ui/popover/index';
+	import { Separator } from '$lib/components/ui/separator/index';
+	import { Button } from '$lib/components/ui/button';
+	import Logo from '$lib/assets/logo.svelte';
+	import { externalLinks } from '$lib/assets/links';
+	import iconIds from '$lib/assets/icons';
 
 	let navLinks = [
 		{
@@ -20,7 +20,7 @@
 			url: externalLinks.project,
 			label: 'Project'
 		}
-	]
+	];
 </script>
 
 <!--
@@ -31,10 +31,10 @@ Shown to un-authenticated users everywhere in the app that
 isn't within the context of a Garden.
 -->
 <header
-	class="sticky left-0 top-0 w-full rounded-none border-b-2 border-neutral-7
+	class="border-neutral-7 sticky left-0 top-0 w-full rounded-none border-b-2
 		drop-shadow-md"
 >
-	<nav class="flex items-center justify-around bg-neutral-2 py-4">
+	<nav class="bg-neutral-2 flex items-center justify-around py-4">
 		<!-- 
             Logo and VerdanTech text.
             Logo displayed always. Text displayed on larger screens.
@@ -91,7 +91,7 @@ isn't within the context of a Garden.
 								{@render menuLink(link.url, link.label)}
 							</li>
 						{/each}
-						<Separator class="w-full bg-neutral-6 opacity-50" />
+						<Separator class="bg-neutral-6 w-full opacity-50" />
 						<li>
 							{@render menuLink('/login', 'Login')}
 						</li>

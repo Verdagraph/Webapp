@@ -26,7 +26,7 @@ export type PrimaryTabItemSpec = {
 	url: string;
 	label: string;
 	iconId?: string;
-    class?: string;
+	className?: string;
 };
 
 /* The maximum amount of gardens listed on the Gardens tab. */
@@ -37,18 +37,18 @@ const MAX_GARDENS_IN_TAB_SIDEBAR = 10;
  * @param gardens list of garden schemas associated with the user.
  * @returns Tab specification for the gardens tab.
  */
-export const getGardensTab = (
-	gardens: Garden[] = []
-): PrimaryTabSpec => {
-    const viewAllSubmenuItem: PrimaryTabItemSpec = {
-        url: getGardenBaseUrl(''),
-        label: 'View All',
-        class: "text-underline"
-    }
-    const gardensSubmenuItems: PrimaryTabItemSpec[] = gardens.slice(0, MAX_GARDENS_IN_TAB_SIDEBAR).map((garden) => ({
-        label: garden.name,
-        url: getGardenBaseUrl(garden.id),
-    }))
+export const getGardensTab = (gardens: Garden[] = []): PrimaryTabSpec => {
+	const viewAllSubmenuItem: PrimaryTabItemSpec = {
+		url: getGardenBaseUrl(''),
+		label: 'View All',
+		className: 'underline'
+	};
+	const gardensSubmenuItems: PrimaryTabItemSpec[] = gardens
+		.slice(0, MAX_GARDENS_IN_TAB_SIDEBAR)
+		.map((garden) => ({
+			label: garden.name,
+			url: getGardenBaseUrl(garden.id)
+		}));
 	return {
 		id: 'gardens',
 		label: 'Gardens',
@@ -69,11 +69,11 @@ export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 			label: 'Garden',
 			iconId: iconIds.gardenIcon,
 			submenuItems: [
-                {
-                    label: garden.name,
-                    url: getGardenBaseUrl(garden.id),
-                    class: "truncate"
-                },
+				{
+					label: garden.name,
+					url: getGardenBaseUrl(garden.id),
+					className: 'truncate'
+				},
 				{
 					label: 'Dashboard',
 					url: getGardenBaseUrl(garden.id) + '/dash',
@@ -182,6 +182,6 @@ export const getNonGardenSpecificTabs = (): PrimaryTabSpec[] => {
 					iconId: iconIds.resourcesDonateIcon
 				}
 			]
-		},
+		}
 	];
 };

@@ -1,2 +1,2 @@
-import PrimaryNav from './Sidebar.svelte'
-export default PrimaryNav
+import PrimaryNav from './Sidebar.svelte';
+export default PrimaryNav;

@@ -1,7 +1,7 @@
 <script>
 	import PrimaryNav from '$components/primaryNav';
 	import auth from '$state/auth.svelte';
-	import UnauthStaticNav from './UnauthStaticNav.svelte'
+	import UnauthStaticNav from './UnauthStaticNav.svelte';
 
 	let { children } = $props();
 </script>
