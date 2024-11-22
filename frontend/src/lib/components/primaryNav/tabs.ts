@@ -134,7 +134,7 @@ export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 };
 
 /**
- * Constructs the non-garden specific tabs of static pages.
+ * Constructs the non-garden specific tabs of pages.
  * @returns Tab specifications for non-garden specific tabs.
  */
 export const getNonGardenSpecificTabs = (): PrimaryTabSpec[] => {
@@ -185,3 +185,31 @@ export const getNonGardenSpecificTabs = (): PrimaryTabSpec[] => {
 		}
 	];
 };
+
+/**
+ * @returns Tab specification for the profile tab.
+ */
+export const getProfileTab = (): PrimaryTabSpec => {
+	return {
+		id: 'profile',
+		label: 'Profile',
+		iconId: iconIds.profileIcon,
+		submenuItems: [
+			{
+				label: 'Notifications',
+				url: '/app/notifications',
+				iconId: iconIds.profileNotificationsIcon
+			},
+			{
+				label: 'Account',
+				url: '/app/account',
+				iconId: iconIds.profileAccountIcon
+			},
+			{
+				label: 'Settings',
+				url: '/app/settings',
+				iconId: iconIds.profileSettingsIcon
+			}
+		]
+	}
+}

@@ -2,11 +2,12 @@
 	import { Separator } from '$lib/components/ui/separator/index';
 	import Logo from '$lib/assets/logo.svelte';
 	import Icon from '@iconify/svelte';
+	import * as Avatar from '$components/ui/avatar'
 	import { Button } from 'bits-ui';
-	import { NavigationMenu } from 'bits-ui';
-	import { getGardenSpecifcTabs, getGardensTab } from './tabs';
+	import { getGardenSpecifcTabs, getGardensTab, getNonGardenSpecificTabs, getProfileTab } from './tabs';
 	import type { PrimaryTabSpec } from './tabs';
 	import type { Garden } from '@vdt-webapp/common';
+	import SidebarTab from './SidebarTab.svelte';
 
 	const testGarden: Garden = {
 		id: 'gardenId',
@@ -21,51 +22,48 @@
 	};
 
 	const gardensTab = getGardensTab([testGarden]);
-
 	const gardenTabs = getGardenSpecifcTabs(testGarden);
+	const bottomTabs = getNonGardenSpecificTabs()
+	const profileTab = getProfileTab()
 </script>
 
-{#snippet sidebarTab(spec: PrimaryTabSpec, flipped: boolean = false)}
-	<NavigationMenu.Item class="hover:bg-neutral-3 relative">
-		<NavigationMenu.Trigger class="flex h-full w-full items-center p-2">
-			<Icon icon={spec.iconId} width="2rem" />
-		</NavigationMenu.Trigger>
-		<NavigationMenu.Content class="bg-neutral-3 absolute left-full top-0 z-50">
-			{#each spec.submenuItems ?? [] as item}
-				<NavigationMenu.Link href={item.url}>
-					{#if item.iconId}
-						<Icon icon={item.iconId} width="2rem" />
-					{/if}
-					<span class={item.className}>
-						{item.label}
-					</span>
-				</NavigationMenu.Link>
-			{/each}
-		</NavigationMenu.Content>
-	</NavigationMenu.Item>
+
+{#snippet avatarIcon()}
+<Avatar.Root class="w-[2rem] h-[2rem]">
+	<Avatar.Image src="" alt="" />
+	<Avatar.Fallback>CN</Avatar.Fallback>
+  </Avatar.Root>
 {/snippet}
 
-<NavigationMenu.Root
-	orientation="vertical"
-	class="border-neutral-6 bg-neutral-2 fixed top-0 flex h-full flex-col border-r"
+<nav
+	class="border-neutral-6 bg-neutral-2 fixed top-0 flex h-full flex-col border-r justify-between"
 >
-	<NavigationMenu.List class="relative">
+	<!-- Links displayed at the top. -->
+	<ul>
 		<!-- VerdanTech logo. -->
-		<NavigationMenu.Item class="hover:bg-neutral-3 p-2">
-			<NavigationMenu.Link href="/">
+		<li class="hover:bg-neutral-3 p-2">
+			<Button.Root href="/">
 				<Logo size="2rem" />
-			</NavigationMenu.Link>
-		</NavigationMenu.Item>
+			</Button.Root>
+		</li>
 
 		<!-- Gardens tab. -->
-		{@render sidebarTab(gardensTab)}
+		<SidebarTab spec={gardensTab} />
 
 		<Separator class="bg-neutral-6" />
 
 		<!-- Garden specific links. -->
 		{#each gardenTabs as tab}
-			{@render sidebarTab(tab)}
+			<SidebarTab spec={tab} />
 		{/each}
-	</NavigationMenu.List>
-	<NavigationMenu.Viewport class="absolute" />
-</NavigationMenu.Root>
+	</ul>
+
+	<!-- Links displayed at the bottom. -->
+	<ul>
+		{#each bottomTabs as tab}
+			<SidebarTab spec={tab} flipped={true} />
+		{/each}
+
+		<SidebarTab spec={profileTab} flipped={true} altIcon={avatarIcon}/>
+	</ul>
+</nav>
