@@ -1,6 +1,7 @@
 import iconIds from '$lib/assets/icons';
 import { externalLinks } from '$lib/assets/links';
 import { Garden } from '@vdt-webapp/common';
+import auth from '$state/auth.svelte';
 
 /**
  * Utility to get the base URL for the active garden.
@@ -38,6 +39,11 @@ const MAX_GARDENS_IN_TAB_SIDEBAR = 10;
  * @returns Tab specification for the gardens tab.
  */
 export const getGardensTab = (gardens: Garden[] = []): PrimaryTabSpec => {
+	const discoverSubmenuItem: PrimaryTabItemSpec = {
+		url: getGardenBaseUrl('discover'),
+		label: 'Discover',
+		iconId: iconIds.gardensIcon
+	};
 	const viewAllSubmenuItem: PrimaryTabItemSpec = {
 		url: getGardenBaseUrl(''),
 		label: 'View All',
@@ -47,14 +53,25 @@ export const getGardensTab = (gardens: Garden[] = []): PrimaryTabSpec => {
 		.slice(0, MAX_GARDENS_IN_TAB_SIDEBAR)
 		.map((garden) => ({
 			label: garden.name,
-			url: getGardenBaseUrl(garden.id)
+			url: getGardenBaseUrl(garden.id),
+			className: 'truncate italic'
 		}));
-	return {
-		id: 'gardens',
-		label: 'Gardens',
-		iconId: iconIds.gardensIcon,
-		submenuItems: [viewAllSubmenuItem, ...gardensSubmenuItems]
-	};
+
+	if (auth.isAuthenticated) {
+		return {
+			id: 'gardens',
+			label: 'Gardens',
+			iconId: iconIds.gardensIcon,
+			submenuItems: [...gardensSubmenuItems, viewAllSubmenuItem]
+		};
+	} else {
+		return {
+			id: 'gardens',
+			label: 'Gardens',
+			iconId: iconIds.gardensIcon,
+			submenuItems: [discoverSubmenuItem]
+		};
+	}
 };
 
 /**
@@ -72,7 +89,7 @@ export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 				{
 					label: garden.name,
 					url: getGardenBaseUrl(garden.id),
-					className: 'truncate'
+					className: 'truncate italic'
 				},
 				{
 					label: 'Dashboard',
@@ -134,82 +151,103 @@ export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 };
 
 /**
- * Constructs the non-garden specific tabs of pages.
- * @returns Tab specifications for non-garden specific tabs.
+ * @returns Tab specification for the traits tab.
  */
-export const getNonGardenSpecificTabs = (): PrimaryTabSpec[] => {
-	return [
-		{
-			id: 'traits',
-			label: 'Traits',
-			iconId: iconIds.traitsIcon,
-			submenuItems: [
-				{
-					label: 'Cultivars',
-					iconId: iconIds.cultivarIcon,
-					url: '/app/traits/cultivars'
-				},
-				{
-					label: 'Workspaces',
-					iconId: iconIds.workspaceIcon,
-					url: '/app/traits/workspaces'
-				},
-				{
-					label: 'Environments',
-					iconId: iconIds.environmentIcon,
-					url: '/app/traits/environments'
-				}
-			]
-		},
-		{
-			id: 'resources',
-			label: 'Resources',
-			iconId: iconIds.resourcesIcon,
-			submenuItems: [
-				{
-					label: 'Guides',
-					url: '/guides',
-					iconId: iconIds.resourcesGuidesIcon
-				},
-				{
-					label: 'Project',
-					url: externalLinks.project,
-					iconId: iconIds.resourcesProjectIcon
-				},
-				{
-					label: 'Donate',
-					url: externalLinks.donation,
-					iconId: iconIds.resourcesDonateIcon
-				}
-			]
-		}
-	];
+export const getTraitsTab = (): PrimaryTabSpec => {
+	return {
+		id: 'traits',
+		label: 'Traits',
+		iconId: iconIds.traitsIcon,
+		submenuItems: [
+			{
+				label: 'Cultivars',
+				iconId: iconIds.cultivarIcon,
+				url: '/app/traits/cultivars'
+			},
+			{
+				label: 'Workspaces',
+				iconId: iconIds.workspaceIcon,
+				url: '/app/traits/workspaces'
+			},
+			{
+				label: 'Environments',
+				iconId: iconIds.environmentIcon,
+				url: '/app/traits/environments'
+			}
+		]
+	};
+};
+
+/**
+ * @returns Tab specifications for the resource tab.
+ */
+export const getResourcesTab = (): PrimaryTabSpec => {
+	return {
+		id: 'resources',
+		label: 'Resources',
+		iconId: iconIds.resourcesIcon,
+		submenuItems: [
+			{
+				label: 'Guides',
+				url: '/guides',
+				iconId: iconIds.resourcesGuidesIcon
+			},
+			{
+				label: 'Project',
+				url: externalLinks.project,
+				iconId: iconIds.resourcesProjectIcon
+			},
+			{
+				label: 'Donate',
+				url: externalLinks.donation,
+				iconId: iconIds.resourcesDonateIcon
+			}
+		]
+	};
 };
 
 /**
  * @returns Tab specification for the profile tab.
  */
 export const getProfileTab = (): PrimaryTabSpec => {
-	return {
-		id: 'profile',
-		label: 'Profile',
-		iconId: iconIds.profileIcon,
-		submenuItems: [
-			{
-				label: 'Notifications',
-				url: '/app/notifications',
-				iconId: iconIds.profileNotificationsIcon
-			},
-			{
-				label: 'Account',
-				url: '/app/account',
-				iconId: iconIds.profileAccountIcon
-			},
-			{
-				label: 'Settings',
-				url: '/app/settings',
-				iconId: iconIds.profileSettingsIcon
-			}
-		]
+	if (auth.isAuthenticated) {
+		return {
+			id: 'profile',
+			label: 'Profile',
+			iconId: iconIds.profileIcon,
+			submenuItems: [
+				{
+					label: 'Notifications',
+					url: '/app/notifications',
+					iconId: iconIds.profileNotificationsIcon
+				},
+				{
+					label: 'Account',
+					url: '/app/account',
+					iconId: iconIds.profileAccountIcon
+				},
+				{
+					label: 'Settings',
+					url: '/app/settings',
+					iconId: iconIds.profileSettingsIcon
+				}
+			]
+		};
+	} else {
+		return {
+			id: 'account',
+			label: 'Account',
+			iconId: iconIds.profileIcon,
+			submenuItems: [
+				{
+					label: 'Login',
+					url: '/login'
+				},
+				{
+					label: 'Register',
+					url: '/register'
+				}
+			]
+		};
 	}
-}
+};

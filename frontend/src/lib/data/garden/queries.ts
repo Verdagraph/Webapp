@@ -3,6 +3,8 @@ import type { QueryResult } from '@triplit/client';
 import { or } from '@triplit/client';
 import { schema } from '@vdt-webapp/common';
 
+export const activeGardenQuery = triplit.query('gardens').id('$query.activeGardenId');
+
 export const adminGardensQuery = triplit
 	.query('gardens')
 	.where('adminIds', 'has', '$global.clientProfileId');

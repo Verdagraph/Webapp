@@ -1,6 +1,7 @@
 <script lang="ts">
 	import 'tailwindcss/tailwind.css';
-	import { Toaster } from '$lib/components/ui/sonner';
+	import { Toaster } from '$components/ui/sonner';
+	import * as Tooltip from '$components/ui/tooltip';
 	import { ModeWatcher } from 'mode-watcher';
 	import '../app.pcss';
 
@@ -12,4 +13,6 @@
 <!-- Sonner toaster from Shadcn-svelte -->
 <Toaster richColors />
 
-{@render children()}
+<Tooltip.Provider delayDuration={200}>
+	{@render children()}
+</Tooltip.Provider>
