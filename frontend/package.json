@@ -66,8 +66,8 @@
 	},
 	"dependencies": {
 		"@sveltestack/svelte-query": "^1.6.0",
-		"@triplit/client": "^0.5.17",
-		"@triplit/svelte": "^0.2.14",
+		"@triplit/client": "^0.6.4",
+		"@triplit/svelte": "^0.2.23",
 		"@vdt-webapp/common": "workspace:*",
 		"axios": "^1.7.2"
 	}

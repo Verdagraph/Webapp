@@ -1,3 +1,5 @@
-import { Geometry } from './schema';
+import { Geometry, GeometryTypeEnum } from './schema';
 
-const narrowGeometryType = (geometry: Geometry) => {};
+const getGeometryAttributes = (
+	geometry: Geometry
+): (typeof GeometryTypeEnum)[number] => {};

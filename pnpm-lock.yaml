@@ -40,11 +40,11 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
       '@triplit/client':
-        specifier: ^0.5.17
-        version: 0.5.17
+        specifier: ^0.6.4
+        version: 0.6.4
       '@triplit/svelte':
-        specifier: ^0.2.14
-        version: 0.2.14(svelte@5.1.10)
+        specifier: ^0.2.23
+        version: 0.2.23(svelte@5.1.10)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
@@ -1374,12 +1374,12 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@triplit/client@0.5.17':
-    resolution: {integrity: sha512-Rl9F01r19sK7l749fzLFa3gvOGA36d7DucOy+qC1cx3hkXckZwN65dBVDxjalD695ksyTDgRvo7fJE+1IeWvpw==}
-    engines: {node: '>=18.0.0'}
-
   '@triplit/client@0.5.8':
     resolution: {integrity: sha512-DuVVhFQwvcZMlZ+gp9BNF2G3XctPeO64FoOpnUhrqQbDFEuh2WeMWm83KRNIrrU2+p34MPQ36HcKuHyB95MPTg==}
+    engines: {node: '>=18.0.0'}
+
+  '@triplit/client@0.6.4':
+    resolution: {integrity: sha512-CPYz/eqY1GHocBpnjo4ByUzLSnVAo8TJ/hkeHeFsCDUw4C2iJMy37YOu0aHDNY6w4Zp0x3isTkObZIG6q8Ka8Q==}
     engines: {node: '>=18.0.0'}
 
   '@triplit/db@0.5.0':
@@ -1388,8 +1388,8 @@ packages:
   '@triplit/db@0.5.11':
     resolution: {integrity: sha512-Dfzeast4wYPfy0TUKnt++OCbYfBo9+kk3T+WZlWcRntnF2dQsgVANOcQB9aJfZ60OjNZ5rc+X7QmdN+tAnm/Dw==}
 
-  '@triplit/svelte@0.2.14':
-    resolution: {integrity: sha512-Oc15OQgdwhxSMAbqAPqdP210Sk0iIUyXKYqQ00Qt2Zhb+ceceaYM/08FjqEOHhAl+XIq+lnK8/l2tiXp2jqTKA==}
+  '@triplit/svelte@0.2.23':
+    resolution: {integrity: sha512-hUdjajNPipBCif6GkssR6JEuW7xUcp2IY/1h2BINyHDBpGSRgNrFqkyyNvi1fidNnxV6n/eclFkYtVhpH8nuUg==}
     peerDependencies:
       svelte: '*'
 
@@ -5123,20 +5123,20 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  '@triplit/client@0.5.17':
+  '@triplit/client@0.5.8':
     dependencies:
       '@sinclair/typebox': 0.32.35
-      '@triplit/db': 0.5.11
+      '@triplit/db': 0.5.0
       comlink: 4.4.1
       rxjs: 7.8.1
       superjson: 2.2.1
     transitivePeerDependencies:
       - react
 
-  '@triplit/client@0.5.8':
+  '@triplit/client@0.6.4':
     dependencies:
       '@sinclair/typebox': 0.32.35
-      '@triplit/db': 0.5.0
+      '@triplit/db': 0.5.11
       comlink: 4.4.1
       rxjs: 7.8.1
       superjson: 2.2.1
@@ -5168,9 +5168,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/svelte@0.2.14(svelte@5.1.10)':
+  '@triplit/svelte@0.2.23(svelte@5.1.10)':
     dependencies:
-      '@triplit/client': 0.5.17
+      '@triplit/client': 0.6.4
       svelte: 5.1.10
     transitivePeerDependencies:
       - react

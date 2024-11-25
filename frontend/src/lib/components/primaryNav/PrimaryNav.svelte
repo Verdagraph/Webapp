@@ -57,7 +57,7 @@
 	});
 
 	let gardenTabs = $derived.by(() => {
-		if (activeGarden.results) {
+		if (activeGarden.results && activeGarden.results.length > 0) {
 			return getGardenSpecifcTabs(activeGarden.results[0]);
 		} else {
 			return [];
@@ -73,10 +73,10 @@
 
 {#if isMobile.current}
 	<div class="flex h-screen w-screen flex-col overflow-clip">
-		<Bottombar {gardensTab} {gardenTabs} {traitsTab} {resourcesTab} {profileTab} />
-		<div class="order-last mb-16 ml-0 h-auto w-full grow overflow-auto">
+		<div class="mb-16 ml-0 h-auto w-full grow overflow-auto">
 			{@render children()}
 		</div>
+		<Bottombar {gardensTab} {gardenTabs} {traitsTab} {resourcesTab} {profileTab} />
 	</div>
 {:else}
 	<div class="flex h-screen w-screen flex-row overflow-clip">
@@ -86,7 +86,7 @@
 			bottomTabs={[traitsTab, resourcesTab]}
 			{profileTab}
 		/>
-		<div class="order-first mb-0 ml-16 h-auto w-full grow overflow-auto">
+		<div class="mb-0 ml-14 h-auto w-full grow overflow-auto">
 			{@render children()}
 		</div>
 	</div>

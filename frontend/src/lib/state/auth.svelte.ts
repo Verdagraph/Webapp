@@ -9,8 +9,9 @@ import { getClient } from '$data/user/auth';
  * to request a new access token.
  */
 const REFRESH_EXPIRY_WINDOW_S = 20;
-const REFRESH_SCHEDULE_S = ACCESS_TOKEN_EXPIRY_S - REFRESH_EXPIRY_WINDOW_S;
-if (REFRESH_SCHEDULE_S < 0) {
+export const REFRESH_SCHEDULE_MS =
+	(ACCESS_TOKEN_EXPIRY_S - REFRESH_EXPIRY_WINDOW_S) * 1000;
+if (REFRESH_SCHEDULE_MS < 0) {
 	throw Error('Invalid access expiry time or refresh configuration.');
 }
 
@@ -48,13 +49,6 @@ type TemporaryAuthState = {
 	 * and a login should be required.
 	 */
 	retriedRefreshFlag: boolean;
-
-	/**
-	 * Contains the task IDs returned from the
-	 * setTimeout() function, so that they may
-	 * be cancelled.
-	 */
-	scheduledRefreshTask: ReturnType<typeof setTimeout> | null;
 };
 
 /**
@@ -62,15 +56,14 @@ type TemporaryAuthState = {
  * Used as a singleton initialized in this module.
  * @returns Auth context manager.
  */
-export function createAuthContext() {
+export async function createAuthContext() {
 	let persistedAuthState = localStore<PersistedAuthState>('auth', {
 		token: null,
 		expiresAt: null
 	});
 	let temporaryAuthState = $state<TemporaryAuthState>({
 		authPriorityTaskFlag: false,
-		retriedRefreshFlag: false,
-		scheduledRefreshTask: null
+		retriedRefreshFlag: false
 	});
 
 	/**
@@ -80,9 +73,6 @@ export function createAuthContext() {
 	function setAccess(token: string) {
 		persistedAuthState.value.token = token;
 		temporaryAuthState.retriedRefreshFlag = false;
-
-		/** Update the Triplit token. */
-		triplit.updateToken(token);
 
 		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
 		getClient().then();
@@ -101,27 +91,10 @@ export function createAuthContext() {
 	}
 
 	/**
-	 * Schedules a refresh of the access token.
-	 * @param timeoutMs The length of time to wait before
-	 * refreshing the access token in miliseconds.
-	 */
-	function scheduleRefreshTask(timeoutMs: number) {
-		/** Clear the existing task. */
-		if (temporaryAuthState.scheduledRefreshTask) {
-			clearTimeout(temporaryAuthState.scheduledRefreshTask);
-		}
-
-		/** Set the new task. */
-		const taskId = setTimeout(() => {
-			refreshAccess();
-		}, timeoutMs);
-		temporaryAuthState.scheduledRefreshTask = taskId;
-	}
-
-	/**
 	 * Calls the access refresh endpoint.
+	 * @returns The new access token, if successful.
 	 */
-	function refreshAccess() {
+	function refreshAccess(): string | null {
 		temporaryAuthState.authPriorityTaskFlag = true;
 
 		/** Call the endpoint. */
@@ -130,7 +103,6 @@ export function createAuthContext() {
 				/** Update the access token if it exists. */
 				if (accessToken) {
 					setAccess(accessToken);
-					scheduleRefreshTask(REFRESH_SCHEDULE_S * 1000);
 				} else {
 					removeAccess();
 				}
@@ -140,12 +112,13 @@ export function createAuthContext() {
 			});
 
 		temporaryAuthState.authPriorityTaskFlag = false;
+		return persistedAuthState.value.token;
 	}
 
 	/**
 	 * Initializes the auth context given the persisted context.
 	 */
-	function initialize() {
+	async function initialize() {
 		/** If no credentials exist, attempt a refresh. */
 		if (!persistedAuthState.value.token || !persistedAuthState.value.expiresAt) {
 			refreshAccess();
@@ -160,15 +133,15 @@ export function createAuthContext() {
 			return;
 		}
 
-		/** If the current credentials have not expired, schedule a refresh task. */
-		scheduleRefreshTask(expiresInMs - REFRESH_EXPIRY_WINDOW_S * 1000);
+		/** Add the token to Triplit. */
+		await triplit.startSession(persistedAuthState.value.token);
 
 		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
 		getClient().then();
 	}
 
 	/** Initialize the auth context. */
-	initialize();
+	await initialize();
 
 	return {
 		get token() {
@@ -188,5 +161,5 @@ export function createAuthContext() {
 		refreshAccess
 	};
 }
-const auth = createAuthContext();
+const auth = await createAuthContext();
 export default auth;

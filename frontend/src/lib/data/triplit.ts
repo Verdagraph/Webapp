@@ -9,18 +9,22 @@ const triplit = new TriplitClient({
 	autoConnect: browser,
 	refreshOptions: {
 		refreshHandler: async () => {
-			await auth.refreshAccess()
-			return auth.token
+			const token = await auth.refreshAccess();
+			if (token) {
+				return token;
+			} else {
+				return '';
+			}
 		}
 	},
-	onSessionError: (type) => {
-		await auth.refreshAccess()
-		if (auth.token) {
-			triplit.updateSessionToken(auth.token)
+	onSessionError: () => {
+		const refreshedToken = auth.refreshAccess();
+		if (refreshedToken) {
+			triplit.updateSessionToken(refreshedToken);
 		} else {
 			triplit.endSession();
 			triplit.clear();
-			auth.removeAccess()
+			auth.removeAccess();
 		}
 	}
 });

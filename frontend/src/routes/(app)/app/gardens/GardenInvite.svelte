@@ -60,7 +60,7 @@
 	<div class="flex flex-col justify-evenly">
 		<Button
 			variant="default"
-			on:click={() => {
+			onclick={() => {
 				gardenMembershipAcceptHandler.execute({ gardenId: invite.gardenId });
 			}}
 		>
@@ -68,7 +68,7 @@
 		</Button>
 		<Button
 			variant="destructive"
-			on:click={() => {
+			onclick={() => {
 				gardenMembershipDeleteHandler.execute({ gardenId: invite.gardenId });
 			}}><Icon width="1.5rem" icon={iconIds.gardenInviteRejectIcon} /></Button
 		>

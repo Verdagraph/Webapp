@@ -7,7 +7,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Popover from '$components/ui/popover';
-	import { flyAndScale } from '$lib/utils/shadcn';
 	import auth from '$state/auth.svelte';
 	import GardenThumbnailScrollable from './GardenThumbnailScrollable.svelte';
 	import GardenInviteScrollable from './GardenInviteScrollable.svelte';
@@ -76,15 +75,7 @@
 						</div>
 					</Button>
 				</Popover.Trigger>
-				<Popover.Content
-					transition={flyAndScale}
-					transitionConfig={{
-						duration: 150,
-						y: 10,
-						start: 1
-					}}
-					class="translate-y-2"
-				>
+				<Popover.Content>
 					{#if pendingAcceptanceMemberships.fetching}
 						<Icon
 							icon={iconIds.defaultSpinnerIcon}
