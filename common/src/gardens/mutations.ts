@@ -1,5 +1,5 @@
 import z from 'zod';
-import { userFields } from '../user/mutations';
+import { userFields } from '../users/mutations';
 import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
 
 /** Field specifications. */

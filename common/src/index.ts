@@ -1,10 +1,10 @@
 import { ClientSchema } from '@triplit/client';
-import { userSchema, roles } from './user/schema';
-import { gardenSchema } from './garden/schema';
+import { userSchema, roles } from './users/schema';
+import { gardenSchema } from './gardens/schema';
 
 /** Export common modules. */
-export * from './user/index';
-export * from './garden/index';
+export * from './users/index';
+export * from './gardens/index';
 
 /** Export Triplit schemas. */
 export const schema = {

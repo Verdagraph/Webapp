@@ -40,8 +40,8 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
       '@triplit/client':
-        specifier: ^0.5.8
-        version: 0.5.13
+        specifier: ^0.5.17
+        version: 0.5.17
       '@triplit/svelte':
         specifier: ^0.2.14
         version: 0.2.14(svelte@5.1.10)
@@ -1374,8 +1374,8 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@triplit/client@0.5.13':
-    resolution: {integrity: sha512-gLacNdojs0iJG2XdeBk3fSnD1YTMcJj+UtN5rCXp2+A/B8Ban1JmAPjFBn5Sv9+qkur9KejYqCmWwm+RPhQFlw==}
+  '@triplit/client@0.5.17':
+    resolution: {integrity: sha512-Rl9F01r19sK7l749fzLFa3gvOGA36d7DucOy+qC1cx3hkXckZwN65dBVDxjalD695ksyTDgRvo7fJE+1IeWvpw==}
     engines: {node: '>=18.0.0'}
 
   '@triplit/client@0.5.8':
@@ -1385,8 +1385,8 @@ packages:
   '@triplit/db@0.5.0':
     resolution: {integrity: sha512-vsaJhnd+sy4XuNsk1ZGIEHe7vcMs9hK5MI+nHwUwIg+0Yi2ESpuiW+8HLm3+lYOCDVyVeDLYRAKyqmSxgy/Z3A==}
 
-  '@triplit/db@0.5.4':
-    resolution: {integrity: sha512-WdUxsa5r9Jh35+42uyAdiZh8gJsPGi/lhq7/lTH8k6rQ1qng3w+sIunksQAWG2E7+AbXp8wAD9/ZZmbjwtWzVQ==}
+  '@triplit/db@0.5.11':
+    resolution: {integrity: sha512-Dfzeast4wYPfy0TUKnt++OCbYfBo9+kk3T+WZlWcRntnF2dQsgVANOcQB9aJfZ60OjNZ5rc+X7QmdN+tAnm/Dw==}
 
   '@triplit/svelte@0.2.14':
     resolution: {integrity: sha512-Oc15OQgdwhxSMAbqAPqdP210Sk0iIUyXKYqQ00Qt2Zhb+ceceaYM/08FjqEOHhAl+XIq+lnK8/l2tiXp2jqTKA==}
@@ -1401,8 +1401,8 @@ packages:
       react:
         optional: true
 
-  '@triplit/tuple-database@2.2.31':
-    resolution: {integrity: sha512-7fvHhMPacXzWYw7/6Y/xCdTd7IUFj9tH+QFH9FiyzzU6JyH+BousHLxnL516Y3FT38PlJs5Hyb+PGWwc0ef4Rg==}
+  '@triplit/tuple-database@2.2.33':
+    resolution: {integrity: sha512-Qw9QwAweJpJUQLF4ZW84wW+Jy+DJF9RSpafDWbn1DzZmA5YizvgP9Qhd2bu23MsMjSudvgMUmJD4apRBNfy8+w==}
     peerDependencies:
       react: '*'
     peerDependenciesMeta:
@@ -3372,6 +3372,9 @@ packages:
   remeda@2.16.0:
     resolution: {integrity: sha512-HOymkGg58HW4LT8MBEabQEdW76YsqcRNNFPXPrOrnYm+/9Pmk0b9fm8PKgQxoRPa6WDLnRM/LxTXkHdXf9Ab0w==}
 
+  remeda@2.17.3:
+    resolution: {integrity: sha512-xyi2rCQkz2j4BEWbWxPw6JCapv1yBuSwr4Uf9BX00AkesAJaiKvc6Il6thsBidwVZAtNiSaCIXvslkKL0ybz8w==}
+
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -3848,6 +3851,10 @@ packages:
 
   type-fest@4.26.1:
     resolution: {integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==}
+    engines: {node: '>=16'}
+
+  type-fest@4.28.0:
+    resolution: {integrity: sha512-jXMwges/FVbFRe5lTMJZVEZCrO9kI9c8k0PA/z7nF3bo0JSCCLysvokFjNPIUK/itEMas10MQM+AiHoHt/T/XA==}
     engines: {node: '>=16'}
 
   typed-array-buffer@1.0.2:
@@ -5116,10 +5123,10 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  '@triplit/client@0.5.13':
+  '@triplit/client@0.5.17':
     dependencies:
       '@sinclair/typebox': 0.32.35
-      '@triplit/db': 0.5.4
+      '@triplit/db': 0.5.11
       comlink: 4.4.1
       rxjs: 7.8.1
       superjson: 2.2.1
@@ -5148,10 +5155,10 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/db@0.5.4':
+  '@triplit/db@0.5.11':
     dependencies:
       '@sinclair/typebox': 0.32.35
-      '@triplit/tuple-database': 2.2.31
+      '@triplit/tuple-database': 2.2.33
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
       idb: 7.1.1
@@ -5163,7 +5170,7 @@ snapshots:
 
   '@triplit/svelte@0.2.14(svelte@5.1.10)':
     dependencies:
-      '@triplit/client': 0.5.13
+      '@triplit/client': 0.5.17
       svelte: 5.1.10
     transitivePeerDependencies:
       - react
@@ -5178,13 +5185,13 @@ snapshots:
       sorted-btree: 1.8.1
       uuid: 9.0.1
 
-  '@triplit/tuple-database@2.2.31':
+  '@triplit/tuple-database@2.2.33':
     dependencies:
       elen: 1.0.10
       fractional-indexing: 3.2.0
       fs-extra: 11.2.0
       md5: 2.3.0
-      remeda: 2.16.0
+      remeda: 2.17.3
       sorted-btree: 1.8.1
       uuid: 9.0.1
 
@@ -7299,6 +7306,10 @@ snapshots:
     dependencies:
       type-fest: 4.26.1
 
+  remeda@2.17.3:
+    dependencies:
+      type-fest: 4.28.0
+
   require-directory@2.1.1: {}
 
   require-from-string@2.0.2: {}
@@ -7841,6 +7852,8 @@ snapshots:
     optional: true
 
   type-fest@4.26.1: {}
+
+  type-fest@4.28.0: {}
 
   typed-array-buffer@1.0.2:
     dependencies:
