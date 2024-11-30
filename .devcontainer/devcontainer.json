@@ -15,8 +15,7 @@
 	// Commands to be run after the container is created.
 	"postCreateCommand": {
 		"git": "git config --global --add safe.directory /workspaces/Vdt-Webapp",
-		"pnpm": "npm install -g pnpm",
-		"dependencies": "pnpm i"
+		"pnpm": "npm install -g pnpm"
 	},
 
 	// Configure tool-specific properties.
