@@ -3,7 +3,6 @@ version: '3.9'
 services:
   webapp:
     init: true
-    image: node:23
     expose:
       - 5173
     volumes:
