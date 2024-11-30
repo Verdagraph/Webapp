@@ -40,7 +40,7 @@ export const gardenSchema = {
 			visibility: S.String({ enum: GardenVisibilityEnum }),
 
 			/** Optional description. */
-			description: S.Optional(S.String()),
+			description: S.String({ nullable: true, default: null }),
 
 			/** Set to false for inactive gardens. */
 			isActive: S.Boolean({ default: true }),
@@ -51,7 +51,7 @@ export const gardenSchema = {
 			 * If undefined, the original creator has left the garden.
 			 */
 			creatorId: S.String({ nullable: true }),
-			creator: S.RelationOne('users', {
+			creator: S.RelationOne('profiles', {
 				where: [['id', '=', 'creatorId']]
 			}),
 

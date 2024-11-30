@@ -1,5 +1,5 @@
 import { BulkInsert } from '@triplit/client';
-import { schema } from './triplit/schema';
+import { schema } from '../schema';
 
 export default function seed(): BulkInsert<typeof schema> {
 	return {

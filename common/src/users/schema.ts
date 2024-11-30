@@ -2,7 +2,6 @@ import {
 	Schema as S,
 	ClientSchema,
 	Entity,
-	EntityWithSelection,
 	Roles
 } from '@triplit/client';
 
