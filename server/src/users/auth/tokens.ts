@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { InternalFailureException } from 'common/errors';
 import env from 'env';
 import { FastifyRequest, FastifyReply } from 'fastify';
@@ -39,7 +39,7 @@ export const encodeAccessToken = (userId: string): Promise<string> => {
 	const payload: AccessTokenPayload = { type: 'user', uid: userId };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
-			payload,
+			{ sub: payload },
 			env.ACCESS_TOKEN_SECRET,
 			{ expiresIn: ACCESS_TOKEN_EXPIRY_S },
 			(error, token) => {
@@ -119,14 +119,12 @@ export const encodePasswordResetToken = (userId: string): Promise<string> => {
  * @param token The encoded access token.
  * @returns The payload of the token if it was sucessfully verified, otherwise null.
  */
-export const decodeAccessToken = (
-	token: string
-): Promise<AccessTokenPayload | null> => {
+export const decodeAccessToken = (token: string): Promise<JwtPayload | null> => {
 	return new Promise((resolve) => {
 		jwt.verify(token, env.ACCESS_TOKEN_SECRET, (error, payload) => {
 			if (error) {
 				resolve(null);
-			} else resolve(payload as AccessTokenPayload);
+			} else resolve(payload as { sub: AccessTokenPayload });
 		});
 	});
 };

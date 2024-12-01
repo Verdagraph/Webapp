@@ -25,7 +25,9 @@ AXIOS_INSTANCE.interceptors.response.use(
 	},
 	(error: AxiosError<ServerErrorResponse>) => {
 		if (!error.response) {
-			throw new AppError('Axios error occurred without a response.', {nonFormErrors: ['Something unexpected happened with the server.']});
+			throw new AppError('Axios error occurred without a response.', {
+				nonFormErrors: ['Something unexpected happened with the server.']
+			});
 		}
 
 		/** Handle authentication errors. */
@@ -44,7 +46,7 @@ AXIOS_INSTANCE.interceptors.response.use(
 			}
 		}
 
-		console.log(error)
+		console.log(error);
 
 		throw error;
 	}

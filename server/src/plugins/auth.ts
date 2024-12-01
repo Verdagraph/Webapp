@@ -17,15 +17,15 @@ export const registerAuth = (app: FastifyInstance) => {
 		/** Retrieve the access token. */
 		const encodedAccessToken = getAccessTokenHeader(request);
 		if (encodedAccessToken == null) {
-			request.diScope.register({ client: asValue(null) })
-			return
+			request.diScope.register({ client: asValue(null) });
+			return;
 		}
 
 		/** Decode the token. */
 		const token = await decodeAccessToken(encodedAccessToken);
 		if (token == null) {
-			request.diScope.register({ client: asValue(null) })
-			return
+			request.diScope.register({ client: asValue(null) });
+			return;
 		}
 
 		/** Retrieve the user the token represents. */

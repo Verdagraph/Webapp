@@ -5,7 +5,7 @@ import { InternalFailureException } from 'common/errors';
 /** Database interface for the user objects. */
 export class UserRepository {
 	triplit: TriplitHttpClient;
-	constructor({triplit}: {triplit: TriplitHttpClient}) {
+	constructor({ triplit }: { triplit: TriplitHttpClient }) {
 		this.triplit = triplit;
 	}
 

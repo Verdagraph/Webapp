@@ -88,8 +88,8 @@ export const workspaceSchema = {
 			gardenId: S.String(),
 			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
-			/** 
-			 * Describes the type of the geometry. 
+			/**
+			 * Describes the type of the geometry.
 			 * Each geometry object may be of any type. The type determines
 			 * which of the attributes objects is used in the application.
 			 * For example, if the type is 'ELLIPSE', only the ellipseAttribute
@@ -422,7 +422,7 @@ export const workspaceSchema = {
 			/** The depth of the planting area in meters. Used to calculate volume. */
 			depth: S.Number({ default: 0 }),
 
-			/** 
+			/**
 			 * Whether the planting area can be moved easily.
 			 * For example, may be true for a pot but false for a bed.
 			 */
@@ -473,7 +473,7 @@ export const workspaceSchema = {
 			/** Garden the entity is located within. */
 			gardenId: S.String(),
 			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
-			
+
 			/** Name of the workspace. */
 			name: S.String(),
 

@@ -13,7 +13,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     command: sleep infinity
-  
+
   mailpit:
     image: axllent/mailpit
     restart: unless-stopped
@@ -25,4 +25,4 @@ services:
     environment:
       MP_MAX_MESSAGES: 5000
       MP_DATABASE: /data/mailpit.db
-      MP_SMTP_AUTH: "severSmtpUser:serverSmtpPassword"
+      MP_SMTP_AUTH: 'severSmtpUser:serverSmtpPassword'

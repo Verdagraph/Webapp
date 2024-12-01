@@ -25,7 +25,7 @@ const login = async (
 	container: typeof diContainer
 ): Promise<UserLoginResult> => {
 	const users = container.resolve('userRepo');
-	
+
 	/** Fetch the user from the database. */
 	const user = await users.getAccountByVerifiedEmail(command.email);
 	if (user == null) {
@@ -44,6 +44,7 @@ const login = async (
 	/** Encode both access and refresh tokens. */
 	const accessToken = await encodeAccessToken(user.id);
 	const refreshToken = await encodeRefreshToken(user.id);
+	console.log(accessToken);
 
 	return { accessToken, refreshToken };
 };

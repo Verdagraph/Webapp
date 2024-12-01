@@ -10,8 +10,8 @@
 	let { children } = $props();
 
 	onMount(() => {
-		auth.initialize()
-	})
+		auth.initialize();
+	});
 </script>
 
 <ModeWatcher />

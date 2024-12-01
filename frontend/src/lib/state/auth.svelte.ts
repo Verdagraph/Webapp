@@ -75,6 +75,14 @@ export async function createAuthContext() {
 		persistedAuthState.value.token = token;
 		temporaryAuthState.retriedRefreshFlag = false;
 
+		/** Add the token to Triplit. */
+		console.log(token);
+		try {
+			triplit.startSession(persistedAuthState.value.token).then();
+		} catch (SessionAlreadyActiveError) {
+			triplit.updateSessionToken(persistedAuthState.value.token);
+		}
+
 		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
 		getClient().then();
 
@@ -124,11 +132,13 @@ export async function createAuthContext() {
 		if (!persistedAuthState.value.token || !persistedAuthState.value.expiresAt) {
 			refreshAccess();
 
-		/** If credentials exist but are expired, attempt a refresh. */
+			/** If credentials exist but are expired, attempt a refresh. */
 		} else {
-			console.log(persistedAuthState.value.expiresAt)
+			console.log(persistedAuthState.value.expiresAt);
 			const now = Date.now();
-			const expiresInMs = Math.abs(new Date(persistedAuthState.value.expiresAt).getTime() - now);
+			const expiresInMs = Math.abs(
+				new Date(persistedAuthState.value.expiresAt).getTime() - now
+			);
 			if (expiresInMs < REFRESH_EXPIRY_WINDOW_S * 1000) {
 				refreshAccess();
 			}
@@ -136,20 +146,19 @@ export async function createAuthContext() {
 
 		/** If no credentials exist still, return. */
 		if (!persistedAuthState.value.token || !persistedAuthState.value.expiresAt) {
-			return
+			return;
 		}
 
 		/** Add the token to Triplit. */
 		try {
 			await triplit.startSession(persistedAuthState.value.token);
 		} catch (SessionAlreadyActiveError) {
-			await triplit.updateSessionToken(persistedAuthState.value.token)
+			await triplit.updateSessionToken(persistedAuthState.value.token);
 		}
 
 		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
 		getClient().then();
 	}
-
 
 	return {
 		get token() {

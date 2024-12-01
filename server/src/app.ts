@@ -1,14 +1,22 @@
 import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
-import {registerDiContainer, registerAuth, registerRouters, registerErrorHandler, registerOpenapi, registerCors, registerCookies} from './plugins';
+import {
+	registerDiContainer,
+	registerAuth,
+	registerRouters,
+	registerErrorHandler,
+	registerOpenapi,
+	registerCors,
+	registerCookies
+} from './plugins';
 import env from 'env';
 
 export const buildApp = () => {
 	const app = Fastify({ logger: true });
 
 	/** Basic middlewares. */
-	registerCors(app)
-	registerCookies(app)
+	registerCors(app);
+	registerCookies(app);
 
 	/** Dependency injection. */
 	registerDiContainer(app);
@@ -35,7 +43,7 @@ export const buildApp = () => {
 const startServer = async () => {
 	const app = buildApp();
 	try {
-		await app.listen({port: env.APP_PORT, host: env.APP_HOST});
+		await app.listen({ port: env.APP_PORT, host: env.APP_HOST });
 	} catch (err) {
 		app.log.error(err);
 		process.exit(1);

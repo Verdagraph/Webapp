@@ -6,7 +6,7 @@ import { workspaceSchema } from './workspaces/schema';
 /** Export common modules. */
 export * from './users/index';
 export * from './gardens/index';
-export * from './workspaces/index'
+export * from './workspaces/index';
 
 /** Export Triplit schemas. */
 export const schema = {

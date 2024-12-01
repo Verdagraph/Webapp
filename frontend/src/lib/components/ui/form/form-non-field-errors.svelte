@@ -7,7 +7,7 @@
 
 	let {
 		errorClasses,
-		handlerErrors,
+		handlerErrors
 	}: {
 		errorClasses?: string | undefined | null;
 		handlerErrors?: Array<string>;
@@ -15,7 +15,7 @@
 </script>
 
 {#if handlerErrors}
-<ul class="mt-8">
+	<ul class="mt-8">
 		{#each handlerErrors as error}
 			<li
 				class={cn(

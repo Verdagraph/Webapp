@@ -11,7 +11,9 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 	app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply) => {
 		let statusCode = 500;
 		let errorMessage = 'No error message set on response.';
-		let errorDetails: AppErrors = {nonFormErrors: ['Something unexpected happened on the server.']};
+		let errorDetails: AppErrors = {
+			nonFormErrors: ['Something unexpected happened on the server.']
+		};
 
 		/** If the error resulted from an invalid request body schema. */
 		if (hasZodFastifySchemaValidationErrors(error)) {
@@ -29,7 +31,7 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 
 			statusCode = 400;
 			errorMessage = 'Request body validation failed.';
-			errorDetails = {}
+			errorDetails = {};
 			errorDetails['fieldErrors'] = fieldErrors;
 
 			/** Catch all application exceptions. */
@@ -38,7 +40,7 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 			errorMessage = error.message;
 			errorDetails = error.details;
 		} else {
-			console.log(error)
+			console.log(error);
 		}
 
 		reply.code(statusCode).send({

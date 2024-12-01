@@ -19,7 +19,9 @@ const EnvSchema = z.object({
 			description:
 				'The service JWT token provided by triplit for access to the database by the server.'
 		})
-		.default('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6InNlY3JldCIsIngtdHJpcGxpdC1wcm9qZWN0LWlkIjoibG9jYWwtcHJvamVjdC1pZCJ9.8Z76XXPc9esdlZb2b7NDC7IVajNXKc4eVcPsO7Ve0ug'),
+		.default(
+			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6InNlY3JldCIsIngtdHJpcGxpdC1wcm9qZWN0LWlkIjoibG9jYWwtcHJvamVjdC1pZCJ9.8Z76XXPc9esdlZb2b7NDC7IVajNXKc4eVcPsO7Ve0ug'
+		),
 
 	/** Networking. */
 	CLIENT_BASE_URL: z
@@ -35,8 +37,12 @@ const EnvSchema = z.object({
 			description: 'True if the client is served from the same domain as the server.'
 		})
 		.default(false),
-	APP_HOST: z.string({description: 'The host the server process is running on.'}).default('localhost'),
-	APP_PORT: z.number({description: 'The port the server process is running on'}).default(8000),
+	APP_HOST: z
+		.string({ description: 'The host the server process is running on.' })
+		.default('localhost'),
+	APP_PORT: z
+		.number({ description: 'The port the server process is running on' })
+		.default(8000),
 
 	/** JWTs. */
 	ACCESS_TOKEN_SECRET: z
