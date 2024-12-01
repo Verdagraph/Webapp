@@ -16,7 +16,7 @@
 	"postCreateCommand": {
 		"git": "git config --global --add safe.directory /workspaces/Vdt-Webapp",
 		"pnpm": "npm install -g pnpm",
-		"node": "pnpm i --save-dev @types/node"
+		"node": "pnpm i -w --save-dev @types/node"
 	},
 
 	// Configure tool-specific properties.

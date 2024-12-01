@@ -25,4 +25,4 @@ services:
     environment:
       MP_MAX_MESSAGES: 5000
       MP_DATABASE: /data/mailpit.db
-      MP_SMTP_AUTH="severSmtpUser:serverSmtpPassword"
+      MP_SMTP_AUTH: "severSmtpUser:serverSmtpPassword"
