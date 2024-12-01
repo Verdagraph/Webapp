@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@types/node':
+        specifier: ^22.10.1
+        version: 22.10.1
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -193,6 +196,9 @@ importers:
       '@fastify/cookie':
         specifier: ^11.0.1
         version: 11.0.1
+      '@fastify/cors':
+        specifier: ^10.0.1
+        version: 10.0.1
       '@triplit/client':
         specifier: ^0.5.8
         version: 0.5.8
@@ -921,6 +927,9 @@ packages:
   '@fastify/cookie@11.0.1':
     resolution: {integrity: sha512-n1Ooz4bgQ5LcOlJQboWPfsMNxIrGV0SgU85UkctdpTlCQE0mtA3rlspOPUdqk9ubiiZn053ucnia4DjTquI4/g==}
 
+  '@fastify/cors@10.0.1':
+    resolution: {integrity: sha512-O8JIf6448uQbOgzSkCqhClw6gFTAqrdfeA6R3fc/3gwTJGUp7gl8/3tbNB+6INuu4RmgVOq99BmvdGbtu5pgOA==}
+
   '@fastify/deepmerge@2.0.0':
     resolution: {integrity: sha512-fsaybTGDyQ5KpPsplQqb9yKdCf2x/pbNpMNk8Tvp3rRz7lVcupKysH4b2ELMN2P4Hak1+UqTYdTj/u4FNV2p0g==}
 
@@ -1429,6 +1438,9 @@ packages:
 
   '@types/node@20.17.6':
     resolution: {integrity: sha512-VEI7OdvK2wP7XHnsuXbAJnEpEkF6NjSN45QJlL4VGqZSXsnicpesdTWsg9RISeSdYd3yeRj/y3k5KGjUXYnFwQ==}
+
+  '@types/node@22.10.1':
+    resolution: {integrity: sha512-qKgsUwfHZV2WCWLAnVP1JqnpE6Im6h3Y0+fYgMTasNQ7V++CBX5OT1as0g0f+OyubbFqhf6XVNIsmN4IIhEgGQ==}
 
   '@types/node@22.8.1':
     resolution: {integrity: sha512-k6Gi8Yyo8EtrNtkHXutUu2corfDf9su95VYVP10aGYMMROM6SAItZi0w1XszA6RtWTHSVp5OeFof37w0IEqCQg==}
@@ -2860,6 +2872,9 @@ packages:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
 
+  mnemonist@0.39.8:
+    resolution: {integrity: sha512-vyWo2K3fjrUw8YeeZ1zF0fy6Mu59RHokURlld8ymdUPjMlD9EC9ov1/YPqTgqRvUN9nTr3Gqfz29LYAmu0PHPQ==}
+
   mnemonist@0.40.0-rc1:
     resolution: {integrity: sha512-38L0xGDezsPweee5i7duiaCRzlkkCJorozW6Rta60iel7ZkT4vF6jDIfr101NxE3rsAsumuOvc8yiTGZD5gG4w==}
 
@@ -3898,6 +3913,9 @@ packages:
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
+  undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+
   universalify@0.2.0:
     resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
     engines: {node: '>= 4.0.0'}
@@ -4488,6 +4506,11 @@ snapshots:
     dependencies:
       cookie: 1.0.1
       fastify-plugin: 5.0.1
+
+  '@fastify/cors@10.0.1':
+    dependencies:
+      fastify-plugin: 5.0.1
+      mnemonist: 0.39.8
 
   '@fastify/deepmerge@2.0.0': {}
 
@@ -5199,7 +5222,7 @@ snapshots:
 
   '@types/es-aggregate-error@1.0.6':
     dependencies:
-      '@types/node': 20.17.6
+      '@types/node': 22.10.1
 
   '@types/eslint@8.56.12':
     dependencies:
@@ -5212,11 +5235,15 @@ snapshots:
 
   '@types/jsonwebtoken@9.0.7':
     dependencies:
-      '@types/node': 22.8.1
+      '@types/node': 22.10.1
 
   '@types/node@20.17.6':
     dependencies:
       undici-types: 6.19.8
+
+  '@types/node@22.10.1':
+    dependencies:
+      undici-types: 6.20.0
 
   '@types/node@22.8.1':
     dependencies:
@@ -5224,7 +5251,7 @@ snapshots:
 
   '@types/nodemailer@6.4.16':
     dependencies:
-      '@types/node': 22.8.1
+      '@types/node': 22.10.1
 
   '@types/pug@2.0.10': {}
 
@@ -6820,6 +6847,10 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
+  mnemonist@0.39.8:
+    dependencies:
+      obliterator: 2.0.4
+
   mnemonist@0.40.0-rc1:
     dependencies:
       obliterator: 2.0.4
@@ -7911,6 +7942,8 @@ snapshots:
       which-boxed-primitive: 1.0.2
 
   undici-types@6.19.8: {}
+
+  undici-types@6.20.0: {}
 
   universalify@0.2.0: {}
 

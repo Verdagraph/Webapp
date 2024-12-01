@@ -4,7 +4,7 @@ import { HttpClient as TriplitHttpClient } from '@triplit/client';
 import { asClass, asValue, Lifetime } from 'awilix';
 import env from 'env';
 import { UserRepository } from 'users/repository';
-import { UserAccount } from '@vdt-webapp/common/src/user/schema';
+import { UserAccount } from '@vdt-webapp/common/src/users/schema';
 import EmailSender from 'common/emails/sender';
 
 import { fastifyAwilixPlugin } from '@fastify/awilix';
@@ -27,7 +27,7 @@ const triplit = new TriplitHttpClient({
 	token: env.TRIPLIT_SERVER_TOKEN
 });
 
-const registerDiContainer = (app: FastifyInstance) => {
+export const registerDiContainer = (app: FastifyInstance) => {
 	/** Register the plugin. */
 	app.register(fastifyAwilixPlugin);
 
@@ -52,4 +52,3 @@ const registerDiContainer = (app: FastifyInstance) => {
 		})
 	});
 };
-export default registerDiContainer;

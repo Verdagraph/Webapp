@@ -20,7 +20,6 @@ export const registerOpenapi = (app: FastifyInstance) => {
 		routePrefix: '/docs'
 	});
 };
-export default registerOpenapi;
 
 /**
  * Sets an OpenAPI tag on all routes in a router.

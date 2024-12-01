@@ -210,7 +210,7 @@ export const getRefreshTokenCookie = (request: FastifyRequest): string | null =>
  * @param reply Fastify reply object.
  */
 export const setAccessTokenHeader = (token: string, reply: FastifyReply) => {
-	reply.header('access', token);
+	reply.header('Authorization', token);
 };
 
 /**
@@ -219,7 +219,7 @@ export const setAccessTokenHeader = (token: string, reply: FastifyReply) => {
  * @returns The access token JWT or null.
  */
 export const getAccessTokenHeader = (request: FastifyRequest): string | null => {
-	const header = request.headers['access'];
+	const header = request.headers['Authorization'];
 	if (Array.isArray(header)) {
 		return header[0];
 	} else {

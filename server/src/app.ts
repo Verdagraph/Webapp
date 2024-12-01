@@ -1,20 +1,14 @@
 import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
-import type { FastifyCookieOptions } from '@fastify/cookie';
-import cookie from '@fastify/cookie';
-import registerDiContainer from './dependencies';
-import registerAuth from 'auth';
-import registerRouters from './router';
-import registerErrorHandler from './errors';
-import registerOpenapi from './openapi';
+import {registerDiContainer, registerAuth, registerRouters, registerErrorHandler, registerOpenapi, registerCors, registerCookies} from './plugins';
 import env from 'env';
-
-/** Server settings. */
-// const port = Number(process.env.SERVER_PORT) || 5001;
-// const host = String(process.env.SERVER_HOST) || 'localhost';
 
 export const buildApp = () => {
 	const app = Fastify({ logger: true });
+
+	/** Basic middlewares. */
+	registerCors(app)
+	registerCookies(app)
 
 	/** Dependency injection. */
 	registerDiContainer(app);
@@ -23,7 +17,7 @@ export const buildApp = () => {
 	registerErrorHandler(app);
 
 	/** Authentication support. */
-	//registerAuth(app);
+	registerAuth(app);
 
 	/** ZOD request body handling. */
 	app.setValidatorCompiler(validatorCompiler);
@@ -41,7 +35,7 @@ export const buildApp = () => {
 const startServer = async () => {
 	const app = buildApp();
 	try {
-		await app.listen();
+		await app.listen({port: env.APP_PORT, host: env.APP_HOST});
 	} catch (err) {
 		app.log.error(err);
 		process.exit(1);

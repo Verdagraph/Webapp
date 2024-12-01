@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod';
-import { ServerError } from './common/errors';
+import { ServerError } from '../common/errors';
 import {
 	ServerErrorResponse,
 	FieldErrors,
@@ -10,8 +10,8 @@ import {
 export const registerErrorHandler = (app: FastifyInstance) => {
 	app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply) => {
 		let statusCode = 500;
-		let errorMessage = '';
-		let errorDetails: AppErrors = {};
+		let errorMessage = 'No error message set on response.';
+		let errorDetails: AppErrors = {nonFormErrors: ['Something unexpected happened on the server.']};
 
 		/** If the error resulted from an invalid request body schema. */
 		if (hasZodFastifySchemaValidationErrors(error)) {
@@ -29,6 +29,7 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 
 			statusCode = 400;
 			errorMessage = 'Request body validation failed.';
+			errorDetails = {}
 			errorDetails['fieldErrors'] = fieldErrors;
 
 			/** Catch all application exceptions. */
@@ -36,6 +37,8 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 			statusCode = error.statusCode;
 			errorMessage = error.message;
 			errorDetails = error.details;
+		} else {
+			console.log(error)
 		}
 
 		reply.code(statusCode).send({
@@ -44,4 +47,3 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 		} satisfies ServerErrorResponse);
 	});
 };
-export default registerErrorHandler;

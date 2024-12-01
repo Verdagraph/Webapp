@@ -35,7 +35,7 @@
 						{...errorProps}
 						class={cn(
 							errorClasses,
-							'border-warning-7 bg-warning-3 border-x p-1 first:rounded-t-sm first:border-t last:mb-4 last:rounded-b-sm last:border-b'
+							'border-destructive-7 bg-destructive-3 border-x p-2 first:rounded-t-sm first:border-t last:mb-4 last:rounded-b-sm last:border-b'
 						)}
 					>
 						{error}
@@ -47,7 +47,7 @@
 							{...errorProps}
 							class={cn(
 								errorClasses,
-								'border-warning-7 bg-warning-3 border-x p-1 first:rounded-t-sm first:border-t last:mb-4 last:rounded-b-sm last:border-b'
+								'border-destructive-7 bg-destructive-3 border-x p-2 first:rounded-t-sm first:border-t last:mb-4 last:rounded-b-sm last:border-b'
 							)}
 						>
 							{error}

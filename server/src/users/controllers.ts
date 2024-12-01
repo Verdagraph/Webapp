@@ -10,7 +10,7 @@ import {
 	UserRequestPasswordResetCommand,
 	UserConfirmPasswordResetCommand
 } from '@vdt-webapp/common';
-import { setTag } from 'openapi';
+import { setTag } from 'plugins/openapi';
 import {
 	login,
 	refresh,
@@ -26,7 +26,7 @@ import {
 	getRefreshTokenCookie,
 	setAccessTokenHeader
 } from './auth/tokens';
-import { requireAuth } from 'auth';
+import { requireAuth } from 'plugins/auth';
 
 export const userRouter = async (app: FastifyInstance) => {
 	setTag(app, 'user');

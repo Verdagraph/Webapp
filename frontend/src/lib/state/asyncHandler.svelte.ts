@@ -159,8 +159,11 @@ const convertErrors = (
  * @param errors AppErrors raiesd by the handler function.
  */
 const handleErrors = (errors: AppErrors) => {
-	for (const errorMessage in errors.nonFormErrors) {
-		/** Toast */
-		toast.error(errorMessage);
+	if (errors.nonFormErrors) {
+		for (const errorMessage of errors.nonFormErrors) {
+			console.log(errorMessage)
+			/** Toast */
+			toast.error(errorMessage);
+		}
 	}
 };

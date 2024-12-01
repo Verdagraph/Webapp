@@ -3,6 +3,7 @@ import { userRefreshOp } from '$codegen';
 import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 import triplit from '$data/triplit';
 import { getClient } from '$data/user/auth';
+import { SessionAlreadyActiveError } from '@triplit/client';
 
 /**
  * The number of seconds before the access token expires
@@ -122,26 +123,33 @@ export async function createAuthContext() {
 		/** If no credentials exist, attempt a refresh. */
 		if (!persistedAuthState.value.token || !persistedAuthState.value.expiresAt) {
 			refreshAccess();
-			return;
+
+		/** If credentials exist but are expired, attempt a refresh. */
+		} else {
+			console.log(persistedAuthState.value.expiresAt)
+			const now = Date.now();
+			const expiresInMs = Math.abs(new Date(persistedAuthState.value.expiresAt).getTime() - now);
+			if (expiresInMs < REFRESH_EXPIRY_WINDOW_S * 1000) {
+				refreshAccess();
+			}
 		}
 
-		/** If the current credentials have expired, attempt a refresh. */
-		const now = Date.now();
-		const expiresInMs = Math.abs(persistedAuthState.value.expiresAt.getTime() - now);
-		if (expiresInMs < REFRESH_EXPIRY_WINDOW_S * 1000) {
-			refreshAccess();
-			return;
+		/** If no credentials exist still, return. */
+		if (!persistedAuthState.value.token || !persistedAuthState.value.expiresAt) {
+			return
 		}
 
 		/** Add the token to Triplit. */
-		await triplit.startSession(persistedAuthState.value.token);
+		try {
+			await triplit.startSession(persistedAuthState.value.token);
+		} catch (SessionAlreadyActiveError) {
+			await triplit.updateSessionToken(persistedAuthState.value.token)
+		}
 
 		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
 		getClient().then();
 	}
 
-	/** Initialize the auth context. */
-	await initialize();
 
 	return {
 		get token() {
@@ -156,6 +164,7 @@ export async function createAuthContext() {
 		get isAuthenticated() {
 			return !!persistedAuthState.value.token;
 		},
+		initialize,
 		setAccess,
 		removeAccess,
 		refreshAccess

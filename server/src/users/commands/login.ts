@@ -1,7 +1,7 @@
 import env from 'env';
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserLoginCommand } from '@vdt-webapp/common/src/user/mutations';
+import { UserLoginCommand } from '@vdt-webapp/common/src/users/mutations';
 import { NotFoundError, AuthenticationError } from 'common/errors';
 
 import { verifyPassword } from '../auth/passwords';
@@ -25,7 +25,7 @@ const login = async (
 	container: typeof diContainer
 ): Promise<UserLoginResult> => {
 	const users = container.resolve('userRepo');
-
+	
 	/** Fetch the user from the database. */
 	const user = await users.getAccountByVerifiedEmail(command.email);
 	if (user == null) {

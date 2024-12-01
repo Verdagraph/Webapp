@@ -16,6 +16,7 @@
 	});
 	const form = superForm(defaults(zod(userLogin.schema)), {
 		SPA: true,
+		resetForm: false,
 		validators: zod(userLogin.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
@@ -63,11 +64,14 @@
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password} />
 	</Form.Field>
 
+	<!-- Non-field errors. -->
+	<Form.NonFieldErrors handlerErrors={formHandler.nonFieldErrors} />
+
 	<!-- Submit button -->
 	<Form.Button
 		disabled={false}
 		loading={formHandler.isLoading}
 		variant="default"
-		class="mt-4 w-full">Submit</Form.Button
+		class="mt-2 w-full">Submit</Form.Button
 	>
 </form>

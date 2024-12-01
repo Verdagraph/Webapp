@@ -35,7 +35,7 @@ export const userFields = {
  */
 export const UserLoginCommand = z.object({
 	email: userFields.email,
-	password: userFields.password
+	password: z.string()
 });
 
 /**

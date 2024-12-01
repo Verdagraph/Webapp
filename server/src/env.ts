@@ -13,13 +13,13 @@ const EnvSchema = z.object({
 	TRIPLIT_URL: z
 		.string({ description: 'The URL of the Triplit database server.' })
 		.url()
-		.default('localhost:600'),
+		.default('http://localhost:6543'),
 	TRIPLIT_SERVER_TOKEN: z
 		.string({
 			description:
 				'The service JWT token provided by triplit for access to the database by the server.'
 		})
-		.default(''),
+		.default('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6InNlY3JldCIsIngtdHJpcGxpdC1wcm9qZWN0LWlkIjoibG9jYWwtcHJvamVjdC1pZCJ9.8Z76XXPc9esdlZb2b7NDC7IVajNXKc4eVcPsO7Ve0ug'),
 
 	/** Networking. */
 	CLIENT_BASE_URL: z
@@ -35,6 +35,8 @@ const EnvSchema = z.object({
 			description: 'True if the client is served from the same domain as the server.'
 		})
 		.default(false),
+	APP_HOST: z.string({description: 'The host the server process is running on.'}).default('localhost'),
+	APP_PORT: z.number({description: 'The port the server process is running on'}).default(8000),
 
 	/** JWTs. */
 	ACCESS_TOKEN_SECRET: z
@@ -81,16 +83,16 @@ const EnvSchema = z.object({
 	/** Emails. */
 	SMTP_HOST: z
 		.string({ description: 'The host of the SMTP server used for sending emails.' })
-		.default(''),
+		.default('localhost'),
 	SMTP_PORT: z
 		.number({ description: 'The port of the SMTP server used for sending emails.' })
-		.default(0),
+		.default(1025),
 	SMTP_USERNAME: z
 		.string({ description: "The username of the server's user on the SMTP server" })
-		.default(''),
+		.default('severSmtpUser'),
 	SMTP_PASSWORD: z
 		.string({ description: "The password of the server's user on the SMTP server." })
-		.default(''),
+		.default('serverSmtpPassword'),
 	SMTP_SENDER: z
 		.string({
 			description: "The email address of the server's user on the SMTP server."

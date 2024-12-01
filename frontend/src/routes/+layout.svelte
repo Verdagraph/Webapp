@@ -4,8 +4,14 @@
 	import * as Tooltip from '$components/ui/tooltip';
 	import { ModeWatcher } from 'mode-watcher';
 	import '../app.pcss';
+	import auth from '$state/auth.svelte';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
+
+	onMount(() => {
+		auth.initialize()
+	})
 </script>
 
 <ModeWatcher />

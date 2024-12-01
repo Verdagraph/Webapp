@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import axios from 'axios';
 import { goto } from '$app/navigation';
-import { ServerErrorResponse } from '@vdt-webapp/common/src/errors';
+import { AppError, ServerErrorResponse } from '@vdt-webapp/common/src/errors';
 import auth from '$state/auth.svelte';
 
 /** Static client configuration. */
@@ -13,7 +13,7 @@ export const AXIOS_INSTANCE = axios.create({
 /** Dynamic request configuration. */
 AXIOS_INSTANCE.interceptors.request.use((config) => {
 	//config.headers['X-CSRFToken'] = get(csrftoken);
-	config.headers['access'] = auth.token;
+	config.headers['Authorization'] = auth.token;
 	return config;
 });
 
@@ -25,7 +25,7 @@ AXIOS_INSTANCE.interceptors.response.use(
 	},
 	(error: AxiosError<ServerErrorResponse>) => {
 		if (!error.response) {
-			return;
+			throw new AppError('Axios error occurred without a response.', {nonFormErrors: ['Something unexpected happened with the server.']});
 		}
 
 		/** Handle authentication errors. */
@@ -43,6 +43,8 @@ AXIOS_INSTANCE.interceptors.response.use(
 				auth.refreshAccess();
 			}
 		}
+
+		console.log(error)
 
 		throw error;
 	}

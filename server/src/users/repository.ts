@@ -1,11 +1,11 @@
 import { HttpClient as TriplitHttpClient, or } from '@triplit/client';
-import { UserAccount, UserProfile } from '@vdt-webapp/common/src/user/schema';
+import { UserAccount, UserProfile } from '@vdt-webapp/common/src/users/schema';
 import { InternalFailureException } from 'common/errors';
 
 /** Database interface for the user objects. */
 export class UserRepository {
 	triplit: TriplitHttpClient;
-	constructor(triplit: TriplitHttpClient) {
+	constructor({triplit}: {triplit: TriplitHttpClient}) {
 		this.triplit = triplit;
 	}
 
