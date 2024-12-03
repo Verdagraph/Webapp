@@ -14,7 +14,7 @@ import type {UserLoginOpBody} from '$codegen'
 export async function createAuthContext() {
 	/** The current access token. */
 	let token = localStore<string | null>('auth', null);
-	let isAuthenticated = $derived(!!token)
+	let isAuthenticated = $derived(token.value != null)
 	/** If an auth error is received, and this flag is set to false, a refresh will be attempted. */
 	let retriedRefreshFlag = $state<boolean>(false)
 

@@ -18,7 +18,7 @@ const refresh = async (
 	/** If no refresh token was provided, false authentication. */
 	if (refreshToken == null) {
 		throw new AuthenticationError('No refresh credential.', {
-			nonFormErrrors: ['Authentication expired. Please login again.']
+			nonFormErrors: ['Authentication expired. Please login again.']
 		});
 	}
 
@@ -26,15 +26,17 @@ const refresh = async (
 	const decodedToken = await decodeRefreshToken(refreshToken);
 	if (decodedToken == null) {
 		throw new AuthenticationError('Malformed refresh credential.', {
-			nonFormErrrors: ['Authentication expired. Please login again.']
+			nonFormErrors: ['Authentication expired. Please login again.']
 		});
 	}
 
 	/** Fetch the user represented by the token. */
 	const user = await users.getAccountById(decodedToken.uid);
 	if (user == null) {
+		console.log('here be error')
+		console.log(decodedToken.uid)
 		throw new AuthenticationError('No refresh credential.', {
-			nonFormErrrors: ['Authentication expired. Please login again.']
+			nonFormErrors: ['Authentication expired. Please login again.']
 		});
 	}
 

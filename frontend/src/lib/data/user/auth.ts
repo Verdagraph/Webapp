@@ -95,6 +95,7 @@ export const setClientGlobalVariables = (
 	clientProfileId: string,
 	clientUsername: string
 ) => {
+	console.log(clientProfileId)
 	triplit.db.updateGlobalVariables({
 		clientAccountId,
 		clientProfileId,

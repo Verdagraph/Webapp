@@ -199,6 +199,7 @@ export const setRefreshTokenCookie = (token: string, reply: FastifyReply) => {
  * @returns The refresh token value, or null if none exists.
  */
 export const getRefreshTokenCookie = (request: FastifyRequest): string | null => {
+	console.log(request.cookies.refreshToken)
 	return request.cookies.refreshToken || null;
 };
 
