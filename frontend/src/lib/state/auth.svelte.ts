@@ -1,182 +1,153 @@
 import { localStore } from './localStore.svelte';
 import { userRefreshOp } from '$codegen';
-import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 import triplit from '$data/triplit';
 import { getClient } from '$data/user/auth';
-import { SessionAlreadyActiveError } from '@triplit/client';
+import { SessionAlreadyActiveError, NoActiveSessionError, TokenExpiredError } from '@triplit/client';
+import { userLogin } from '$data/user/auth';
+import type {UserLoginOpBody} from '$codegen'
 
 /**
- * The number of seconds before the access token expires
- * to request a new access token.
- */
-const REFRESH_EXPIRY_WINDOW_S = 20;
-export const REFRESH_SCHEDULE_MS =
-	(ACCESS_TOKEN_EXPIRY_S - REFRESH_EXPIRY_WINDOW_S) * 1000;
-if (REFRESH_SCHEDULE_MS < 0) {
-	throw Error('Invalid access expiry time or refresh configuration.');
-}
-
-/**
- * Authentication information that is persisted across reloads via local storage.
- */
-type PersistedAuthState = {
-	/**
-	 * The current access token.
-	 */
-	token: string | null;
-
-	/**
-	 * The date and time at which the access expires.
-	 */
-	expiresAt: Date | null;
-};
-
-/**
- * Authentication information which may be deleted across reloads.
- */
-type TemporaryAuthState = {
-	/**
-	 * Set to true if any authentication related
-	 * mutations are underway.
-	 * Used to disable queries so they don't use
-	 * old credentials.
-	 */
-	authPriorityTaskFlag: boolean;
-
-	/**
-	 * On a received 401 return code, a
-	 * token refresh is attempted.
-	 * If it fails, this flag is set to true
-	 * and a login should be required.
-	 */
-	retriedRefreshFlag: boolean;
-};
-
-/**
- * Creates a managed persisted and non-persisted rune which controls auth state.
+ * Creates a managed persisted rune which controls auth state.
  * Used as a singleton initialized in this module.
  * @returns Auth context manager.
  */
 export async function createAuthContext() {
-	let persistedAuthState = localStore<PersistedAuthState>('auth', {
-		token: null,
-		expiresAt: null
-	});
-	let temporaryAuthState = $state<TemporaryAuthState>({
-		authPriorityTaskFlag: false,
-		retriedRefreshFlag: false
-	});
+	/** The current access token. */
+	let token = localStore<string | null>('auth', null);
+	/** If an auth error is received, and this flag is set to false, a refresh will be attempted. */
+	let retriedRefreshFlag = $state<boolean>(false)
 
 	/**
-	 * Sets the authentication context given a received access token.
-	 * @param token The access token to set.
+	 * @returns True if the app client is currently authenticated.
 	 */
-	function setAccess(token: string) {
-		persistedAuthState.value.token = token;
-		temporaryAuthState.retriedRefreshFlag = false;
+	function isAuthenticated(): boolean {
+		return !!token.value;
+	}
 
-		/** Add the token to Triplit. */
-		console.log(token);
-		try {
-			triplit.startSession(persistedAuthState.value.token).then();
-		} catch (SessionAlreadyActiveError) {
-			triplit.updateSessionToken(persistedAuthState.value.token);
+	/**
+	 * Calls the login endpoint and updates auth state with the provided token.
+	 * @param data The email and password information.
+	 * @returns The token if auth was successful, otherwise null.
+	 */
+	async function login(data: UserLoginOpBody): Promise< string | null> {
+		/** Don't allow re-logging in. */
+		if (isAuthenticated()) {
+			return token.value
 		}
 
-		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
-		getClient().then();
+		try {
 
-		/** Calculate the time of expiry by adding the expiry duration to the current time. */
-		const now = Date.now();
-		persistedAuthState.value.expiresAt = new Date(now + ACCESS_TOKEN_EXPIRY_S * 1000);
+			/** Fetch the token. */
+			const newToken = await userLogin.mutation(data)
+			token.value = newToken
+			retriedRefreshFlag = false
+
+			/** Start the Triplit session, or update the existing one. */
+			try {
+				await triplit.startSession(token.value);
+			} catch {SessionAlreadyActiveError} {
+				triplit.updateSessionToken(token.value);
+			}
+
+			/** 
+			 * Fetch the client - this has the side effect of populating the 
+			 * Triplit global variables of client and profile ID. 
+			 */
+			await getClient()
+
+			return newToken
+
+		} catch  {
+			token.value = null
+			return null
+		}
 	}
 
 	/**
-	 * De-authenticates the auth context.
+	 * Callss the refresh endpoint and updates auth state with the provided token.
+	 * @returns The token if auth was successful, otherwise null.
 	 */
-	function removeAccess() {
-		persistedAuthState.value.token = null;
-		persistedAuthState.value.expiresAt = null;
+	async function refresh(): Promise<string | null> {
+
+		try {
+			/** Fetch the token. */
+			const newToken = await userRefreshOp()
+			token.value = newToken
+
+			/** Update the Triplit session, or state a new one. */
+			try {
+				triplit.updateSessionToken(token.value);
+			} catch {NoActiveSessionError} {
+				await triplit.startSession(token.value);
+			}
+
+			/** 
+			 * Fetch the client - this has the side effect of populating the 
+			 * Triplit global variables of client and profile ID. 
+			 */
+			await getClient()
+
+			return newToken
+
+		} catch {
+			token.value = null
+			retriedRefreshFlag = true
+			return null
+		}
 	}
 
 	/**
-	 * Calls the access refresh endpoint.
-	 * @returns The new access token, if successful.
+	 * Ends the triplit session.
 	 */
-	function refreshAccess(): string | null {
-		temporaryAuthState.authPriorityTaskFlag = true;
+	async function logout() {
+		/** Don't allow re-logging out. */
+		if (!isAuthenticated()) {
+			return
+		}
 
-		/** Call the endpoint. */
-		userRefreshOp()
-			.then((accessToken) => {
-				/** Update the access token if it exists. */
-				if (accessToken) {
-					setAccess(accessToken);
-				} else {
-					removeAccess();
-				}
-			})
-			.catch(() => {
-				removeAccess();
-			});
-
-		temporaryAuthState.authPriorityTaskFlag = false;
-		return persistedAuthState.value.token;
+		token.value = null
+		await triplit.endSession()
 	}
 
 	/**
-	 * Initializes the auth context given the persisted context.
+	 * Initialize the auth context.
 	 */
 	async function initialize() {
-		/** If no credentials exist, attempt a refresh. */
-		if (!persistedAuthState.value.token || !persistedAuthState.value.expiresAt) {
-			refreshAccess();
 
-			/** If credentials exist but are expired, attempt a refresh. */
-		} else {
-			console.log(persistedAuthState.value.expiresAt);
-			const now = Date.now();
-			const expiresInMs = Math.abs(
-				new Date(persistedAuthState.value.expiresAt).getTime() - now
-			);
-			if (expiresInMs < REFRESH_EXPIRY_WINDOW_S * 1000) {
-				refreshAccess();
+		/** If a access token is present, try to add it to the session. */
+		if (!!token.value) {
+			try {
+				try {
+					await triplit.startSession(token.value);
+				} catch {SessionAlreadyActiveError} {
+					triplit.updateSessionToken(token.value);
+				}
+
+			/** If the token is expired, attempt a refresh. */
+			} catch {TokenExpiredError} {
+				await refresh()
 			}
-		}
 
-		/** If no credentials exist still, return. */
-		if (!persistedAuthState.value.token || !persistedAuthState.value.expiresAt) {
-			return;
+		/** If no access token is present, attempt a refresh. */
+		} else {
+			await refresh()
 		}
-
-		/** Add the token to Triplit. */
-		try {
-			await triplit.startSession(persistedAuthState.value.token);
-		} catch (SessionAlreadyActiveError) {
-			await triplit.updateSessionToken(persistedAuthState.value.token);
-		}
-
-		/** Fetch the client - this has the side effect of populating Triplit's global variables. */
-		getClient().then();
 	}
 
 	return {
 		get token() {
-			return persistedAuthState.value.token;
-		},
-		get retriedRefreshFlag() {
-			return temporaryAuthState.retriedRefreshFlag;
-		},
-		set retriedRefreshFlag(flag: boolean) {
-			temporaryAuthState.retriedRefreshFlag = flag;
+			return token.value;
 		},
 		get isAuthenticated() {
-			return !!persistedAuthState.value.token;
+			return isAuthenticated();
+		},
+		get retriedRefreshFlag() {
+			return retriedRefreshFlag
 		},
 		initialize,
-		setAccess,
-		removeAccess,
-		refreshAccess
+		login,
+		refresh,
+		logout
 	};
 }
 const auth = await createAuthContext();

@@ -20,6 +20,7 @@
 		favoriteMembershipsQuery
 	} from '$data/garden/queries';
 	import activeGardenKey from '$state/activeGarden.svelte';
+	import {gardensTab, gardenTabs, profileTab} from './tabs.svelte'
 
 	let { children } = $props();
 
@@ -34,39 +35,8 @@
 	let viewerGardens = useQuery(triplit, viewerGardensQuery);
 
 	/** Retrieve the tabs. */
-	let gardensTab = $derived.by(() => {
-		/** Include all associated gardens ordered from favorites to viewerships. */
-		const mostRelevantGardens: Garden[] = [];
-		if (favoriteMemberships.results) {
-			mostRelevantGardens.push(
-				...(favoriteMemberships.results
-					.map((membership) => membership.garden)
-					.filter((garden) => garden != null) ?? [])
-			);
-		}
-		if (adminGardens.results) {
-			mostRelevantGardens.push(...adminGardens.results);
-		}
-		if (editorGardens.results) {
-			mostRelevantGardens.push(...editorGardens.results);
-		}
-		if (viewerGardens.results) {
-			mostRelevantGardens.push(...viewerGardens.results);
-		}
-		return getGardensTab(mostRelevantGardens);
-	});
-
-	let gardenTabs = $derived.by(() => {
-		if (activeGarden.results && activeGarden.results.length > 0) {
-			return getGardenSpecifcTabs(activeGarden.results[0]);
-		} else {
-			return [];
-		}
-	});
-
 	const traitsTab = getTraitsTab();
 	const resourcesTab = getResourcesTab();
-	const profileTab = getProfileTab();
 
 	const isMobile = new IsMobile();
 </script>
