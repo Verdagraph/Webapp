@@ -6,22 +6,22 @@ import { schema } from '@vdt-webapp/common';
 export const activeGardenQuery = triplit.query('gardens').id('$query.activeGardenId');
 
 export const adminGardensQuery = triplit
-	.query('gardens')
+	.query('gardens').id('garden1')
 	//.where('adminIds', 'has', '$global.clientProfileId');
 
 export const editorGardensQuery = triplit
 	.query('gardens')
-	.where('editorIds', 'has', '$global.clientProfileId');
+	//.where('editorIds', 'has', '$global.clientProfileId');
 
 export const viewerGardensQuery = triplit
 	.query('gardens')
-	.where('viewerIds', 'has', '$global.clientProfileId');
+	//.where('viewerIds', 'has', '$global.clientProfileId');
 
 export const favoriteMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where([
 		['favorite', '=', true],
-		['userId', '=', '$global.clientProfileId']
+		//['userId', '=', '$global.clientProfileId']
 	])
 	.include('garden');
 
@@ -29,7 +29,7 @@ export const acceptancePendingMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where([
 		['status', '!=', 'ACCEPTEd'],
-		['userId', '=', '$global.clientProfileId']
+		//['userId', '=', '$global.clientProfileId']
 	])
 	.include('garden');
 

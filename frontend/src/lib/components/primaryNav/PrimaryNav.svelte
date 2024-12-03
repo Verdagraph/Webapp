@@ -37,6 +37,7 @@
 
 	/** Retrieve the tabs. */
 	let gardensTab = $derived.by(() => {
+		console.log(adminGardens.results)
 		/** Include all associated gardens ordered from favorites to viewerships. */
 		const mostRelevantGardens: Garden[] = [];
 		if (favoriteMemberships.results) {

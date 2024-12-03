@@ -1,7 +1,18 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$components/ui/button';
 	import LoginForm from './LoginForm.svelte';
+	import auth from '$state/auth.svelte';
+
+	onMount(() => {
+		console.log(auth.token)
+		console.log(auth.isAuthenticated)
+		if (auth.isAuthenticated) {
+			goto('/app');
+		}
+	})
 </script>
 
 <svelte:head>

@@ -11,6 +11,7 @@ export default function seed(): BulkInsert<typeof schema> {
 		],
 		accounts: [
 			{
+				id: '6rc3xPda9UYit0MI36UyE',
 				profileId: 'user1',
 				/** Password is 'password'. */
 				passwordHash: '$argon2i$v=19$m=16,t=2,p=1$MTIzNDU2Nzg5$e7G/IEd63Q/ZrZIiW6FUow',

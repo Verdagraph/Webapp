@@ -23,6 +23,7 @@ export const getClient = async (): Promise<{
 	account: UserAccount;
 	profile: UserProfile;
 } | null> => {
+	console.log('trying to get account')
 	if (!auth.isAuthenticated) {
 		return null;
 	}
@@ -34,6 +35,8 @@ export const getClient = async (): Promise<{
 			.include('profile')
 			.build()
 	);
+	console.log('this is the account')
+	console.log(account)
 	if (!account || !account.profile) {
 		return null;
 	}
@@ -95,7 +98,6 @@ export const setClientGlobalVariables = (
 	clientProfileId: string,
 	clientUsername: string
 ) => {
-	console.log(clientProfileId)
 	triplit.db.updateGlobalVariables({
 		clientAccountId,
 		clientProfileId,

@@ -30,8 +30,6 @@
 		acceptancePendingMembershipsQuery
 	);
 
-	console.log(adminGardens)
-
 	/**
 	 * If a non-authenticated user accesses this page,
 	 * redirect to public discovery page.

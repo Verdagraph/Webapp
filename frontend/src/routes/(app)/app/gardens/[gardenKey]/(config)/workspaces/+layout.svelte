@@ -23,8 +23,6 @@
 			description: ''
 		}
 	];
-
-	console.log(activeGardenKey.value);
 </script>
 
 <!-- Workspaces toolbar -->

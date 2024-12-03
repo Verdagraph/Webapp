@@ -30,19 +30,6 @@ AXIOS_INSTANCE.interceptors.response.use(
 			});
 		}
 
-		/** Handle authentication errors. */
-		if (error.response.status === 401) {
-
-			/** If a refresh has already been attempted, prompt a login. */
-			if (auth.retriedRefreshFlag) {
-				goto('login');
-
-			/** Otherwise, attempt a refresh. */
-			} else {
-				auth.refresh();
-			}
-		}
-
 		console.log(error);
 		throw error;
 	}
