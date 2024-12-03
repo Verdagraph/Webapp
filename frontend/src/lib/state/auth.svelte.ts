@@ -14,15 +14,9 @@ import type {UserLoginOpBody} from '$codegen'
 export async function createAuthContext() {
 	/** The current access token. */
 	let token = localStore<string | null>('auth', null);
+	let isAuthenticated = $derived(!!token)
 	/** If an auth error is received, and this flag is set to false, a refresh will be attempted. */
 	let retriedRefreshFlag = $state<boolean>(false)
-
-	/**
-	 * @returns True if the app client is currently authenticated.
-	 */
-	function isAuthenticated(): boolean {
-		return !!token.value;
-	}
 
 	/**
 	 * Calls the login endpoint and updates auth state with the provided token.
@@ -31,7 +25,7 @@ export async function createAuthContext() {
 	 */
 	async function login(data: UserLoginOpBody): Promise< string | null> {
 		/** Don't allow re-logging in. */
-		if (isAuthenticated()) {
+		if (isAuthenticated) {
 			return token.value
 		}
 
@@ -101,7 +95,7 @@ export async function createAuthContext() {
 	 */
 	async function logout() {
 		/** Don't allow re-logging out. */
-		if (!isAuthenticated()) {
+		if (!isAuthenticated) {
 			return
 		}
 
@@ -139,7 +133,7 @@ export async function createAuthContext() {
 			return token.value;
 		},
 		get isAuthenticated() {
-			return isAuthenticated();
+			return isAuthenticated;
 		},
 		get retriedRefreshFlag() {
 			return retriedRefreshFlag

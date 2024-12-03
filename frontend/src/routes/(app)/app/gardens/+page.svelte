@@ -30,6 +30,8 @@
 		acceptancePendingMembershipsQuery
 	);
 
+	console.log(adminGardens)
+
 	/**
 	 * If a non-authenticated user accesses this page,
 	 * redirect to public discovery page.
@@ -98,6 +100,7 @@
 </div>
 
 {#snippet gardenCategory(label: string, gardens: Garden[])}
+	{#if gardens.length > 0}
 	<div>
 		<!-- Label -->
 		<span class="text-xl">
@@ -106,6 +109,7 @@
 		<GardenThumbnailScrollable {gardens} />
 		<Separator class="bg-neutral-7 mb-4 mt-12 w-full" />
 	</div>
+	{/if}
 {/snippet}
 
 <!-- Content -->

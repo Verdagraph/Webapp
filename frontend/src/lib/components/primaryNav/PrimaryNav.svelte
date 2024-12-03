@@ -5,7 +5,8 @@
 		getGardensTab,
 		getTraitsTab,
 		getResourcesTab,
-		getProfileTab
+		getAuthProfileTab,
+		getAnonProfileTab
 	} from './tabs.svelte';
 	import type { Garden } from '@vdt-webapp/common';
 	import Sidebar from './Sidebar.svelte';
@@ -20,7 +21,7 @@
 		favoriteMembershipsQuery
 	} from '$data/garden/queries';
 	import activeGardenKey from '$state/activeGarden.svelte';
-	import {gardensTab, gardenTabs, profileTab} from './tabs.svelte'
+	import auth from '$state/auth.svelte';
 
 	let { children } = $props();
 
@@ -35,6 +36,45 @@
 	let viewerGardens = useQuery(triplit, viewerGardensQuery);
 
 	/** Retrieve the tabs. */
+	let gardensTab = $derived.by(() => {
+		/** Include all associated gardens ordered from favorites to viewerships. */
+		const mostRelevantGardens: Garden[] = [];
+		if (favoriteMemberships.results) {
+			mostRelevantGardens.push(
+				...(favoriteMemberships.results
+					.map((membership) => membership.garden)
+					.filter((garden) => garden != null) ?? [])
+			);
+		}
+		if (adminGardens.results) {
+			mostRelevantGardens.push(...adminGardens.results);
+		}
+		if (editorGardens.results) {
+			mostRelevantGardens.push(...editorGardens.results);
+		}
+		if (viewerGardens.results) {
+			mostRelevantGardens.push(...viewerGardens.results);
+		}
+		return getGardensTab(mostRelevantGardens);
+	})
+
+	let gardenTabs = $derived.by(() => {
+	if (activeGarden.results && activeGarden.results.length > 0) {
+		return getGardenSpecifcTabs(activeGarden.results[0]);
+	} else {
+		return [];
+	}
+});
+
+	let profileTab = $derived.by(() => {
+		console.log(auth.isAuthenticated)
+		if (auth.isAuthenticated) {
+			return getAuthProfileTab()
+		} else {
+			return getAnonProfileTab()
+		}
+	})
+
 	const traitsTab = getTraitsTab();
 	const resourcesTab = getResourcesTab();
 

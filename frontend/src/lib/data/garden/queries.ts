@@ -7,7 +7,7 @@ export const activeGardenQuery = triplit.query('gardens').id('$query.activeGarde
 
 export const adminGardensQuery = triplit
 	.query('gardens')
-	.where('adminIds', 'has', '$global.clientProfileId');
+	//.where('adminIds', 'has', '$global.clientProfileId');
 
 export const editorGardensQuery = triplit
 	.query('gardens')

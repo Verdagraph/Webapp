@@ -1,17 +1,8 @@
-import { useQuery } from '@triplit/svelte';
+
 import iconIds from '$lib/assets/icons';
 import { externalLinks } from '$lib/assets/links';
 import { Garden } from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
-import triplit from '$data/triplit';
-import {
-	activeGardenQuery,
-	adminGardensQuery,
-	editorGardensQuery,
-	viewerGardensQuery,
-	favoriteMembershipsQuery
-} from '$data/garden/queries';
-import activeGardenKey from '$state/activeGarden.svelte';
 
 /**
  * Utility to get the base URL for the active garden.
@@ -43,15 +34,6 @@ export type PrimaryTabItemSpec = {
 /* The maximum amount of gardens listed on the Gardens tab. */
 const MAX_GARDENS_IN_TAB_SIDEBAR = 10;
 
-/* Queries */
-let activeGarden = useQuery(
-	triplit,
-	activeGardenQuery.vars({ activeGardenId: activeGardenKey })
-);
-let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
-let adminGardens = useQuery(triplit, adminGardensQuery);
-let editorGardens = useQuery(triplit, editorGardensQuery);
-let viewerGardens = useQuery(triplit, viewerGardensQuery);
 
 /**
  * Constructs the tab which lists gardens the user has access to.
@@ -227,33 +209,37 @@ export const getResourcesTab = (): PrimaryTabSpec => {
 };
 
 /**
- * @returns Tab specification for the profile tab.
+ * @returns Tab specification for the profile tab when a user is authenticated.
  */
-export const getProfileTab = (): PrimaryTabSpec => {
-	if (auth.isAuthenticated) {
-		return {
-			id: 'profile',
-			label: 'Profile',
-			iconId: iconIds.profileIcon,
-			submenuItems: [
-				{
-					label: 'Notifications',
-					url: '/app/notifications',
-					iconId: iconIds.profileNotificationsIcon
-				},
-				{
-					label: 'Account',
-					url: '/app/account',
-					iconId: iconIds.profileAccountIcon
-				},
-				{
-					label: 'Settings',
-					url: '/app/settings',
-					iconId: iconIds.profileSettingsIcon
-				}
-			]
-		};
-	} else {
+export const getAuthProfileTab = (): PrimaryTabSpec => {
+	return {
+		id: 'profile',
+		label: 'Profile',
+		iconId: iconIds.profileIcon,
+		submenuItems: [
+			{
+				label: 'Notifications',
+				url: '/app/notifications',
+				iconId: iconIds.profileNotificationsIcon
+			},
+			{
+				label: 'Account',
+				url: '/app/account',
+				iconId: iconIds.profileAccountIcon
+			},
+			{
+				label: 'Settings',
+				url: '/app/settings',
+				iconId: iconIds.profileSettingsIcon
+			}
+		]
+	};
+};
+
+/**
+ * @returns Tab specification for the profile tab when a user is not authenticated.
+ */
+export const getAnonProfileTab = (): PrimaryTabSpec => {{
 		return {
 			id: 'account',
 			label: 'Account',
@@ -271,75 +257,3 @@ export const getProfileTab = (): PrimaryTabSpec => {
 		};
 	}
 };
-
-export let gardensTab = $derived.by(() => {
-		/** Include all associated gardens ordered from favorites to viewerships. */
-		const mostRelevantGardens: Garden[] = [];
-		if (favoriteMemberships.results) {
-			mostRelevantGardens.push(
-				...(favoriteMemberships.results
-					.map((membership) => membership.garden)
-					.filter((garden) => garden != null) ?? [])
-			);
-		}
-		if (adminGardens.results) {
-			mostRelevantGardens.push(...adminGardens.results);
-		}
-		if (editorGardens.results) {
-			mostRelevantGardens.push(...editorGardens.results);
-		}
-		if (viewerGardens.results) {
-			mostRelevantGardens.push(...viewerGardens.results);
-		}
-		return getGardensTab(mostRelevantGardens);
-})
-
-export const gardenTabs = $derived.by(() => {
-	if (activeGarden.results && activeGarden.results.length > 0) {
-		return getGardenSpecifcTabs(activeGarden.results[0]);
-	} else {
-		return [];
-	}
-});
-export const profileTab = $derived.by(() => {
-	if (auth.isAuthenticated) {
-		return {
-			id: 'profile',
-			label: 'Profile',
-			iconId: iconIds.profileIcon,
-			submenuItems: [
-				{
-					label: 'Notifications',
-					url: '/app/notifications',
-					iconId: iconIds.profileNotificationsIcon
-				},
-				{
-					label: 'Account',
-					url: '/app/account',
-					iconId: iconIds.profileAccountIcon
-				},
-				{
-					label: 'Settings',
-					url: '/app/settings',
-					iconId: iconIds.profileSettingsIcon
-				}
-			]
-		};
-	} else {
-		return {
-			id: 'account',
-			label: 'Account',
-			iconId: iconIds.profileIcon,
-			submenuItems: [
-				{
-					label: 'Login',
-					url: '/login'
-				},
-				{
-					label: 'Register',
-					url: '/register'
-				}
-			]
-		};
-	}
-})

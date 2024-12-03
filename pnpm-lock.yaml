@@ -27,15 +27,15 @@ importers:
   common:
     dependencies:
       '@triplit/client':
-        specifier: ^0.5.8
-        version: 0.5.8
+        specifier: ^0.5.17
+        version: 0.5.17
       zod:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
       '@triplit/cli':
-        specifier: ^0.6.8
-        version: 0.6.8
+        specifier: ^0.6.30
+        version: 0.6.30
 
   frontend:
     dependencies:
@@ -43,8 +43,8 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
       '@triplit/client':
-        specifier: ^0.6.4
-        version: 0.6.4
+        specifier: ^0.6.8
+        version: 0.6.8
       '@triplit/svelte':
         specifier: ^0.2.23
         version: 0.2.23(svelte@5.1.10)
@@ -1378,24 +1378,33 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.2.0'
 
+  '@triplit/cli@0.6.30':
+    resolution: {integrity: sha512-sWsJ/d40lVAqKCoRjU/4c4lh46pguXObmMq8HsG1ZFozOe82oJMZGM7gAtS3O6ZjQ7fjJ3tPgNIMZWYai83Fgg==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+
   '@triplit/cli@0.6.8':
     resolution: {integrity: sha512-HYsB1oz3DU/bSrKiZCVsYB+t8mQgkcbxsEm/1YzhctXN+TSaTDTbWtFyt5VG1jjThGnFZwQuzgTzF0107r3UNw==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
+  '@triplit/client@0.5.17':
+    resolution: {integrity: sha512-Rl9F01r19sK7l749fzLFa3gvOGA36d7DucOy+qC1cx3hkXckZwN65dBVDxjalD695ksyTDgRvo7fJE+1IeWvpw==}
+    engines: {node: '>=18.0.0'}
+
   '@triplit/client@0.5.8':
     resolution: {integrity: sha512-DuVVhFQwvcZMlZ+gp9BNF2G3XctPeO64FoOpnUhrqQbDFEuh2WeMWm83KRNIrrU2+p34MPQ36HcKuHyB95MPTg==}
     engines: {node: '>=18.0.0'}
 
-  '@triplit/client@0.6.4':
-    resolution: {integrity: sha512-CPYz/eqY1GHocBpnjo4ByUzLSnVAo8TJ/hkeHeFsCDUw4C2iJMy37YOu0aHDNY6w4Zp0x3isTkObZIG6q8Ka8Q==}
+  '@triplit/client@0.6.8':
+    resolution: {integrity: sha512-TBUMkElk2awDrXKVm3U9PztYcG2Z5JCDyS7wLbUmubiQmW2L8sEPWJT+N3NRs9FXGaxhAXaMo/RXtMspwJlFrw==}
     engines: {node: '>=18.0.0'}
 
   '@triplit/db@0.5.0':
     resolution: {integrity: sha512-vsaJhnd+sy4XuNsk1ZGIEHe7vcMs9hK5MI+nHwUwIg+0Yi2ESpuiW+8HLm3+lYOCDVyVeDLYRAKyqmSxgy/Z3A==}
 
-  '@triplit/db@0.5.11':
-    resolution: {integrity: sha512-Dfzeast4wYPfy0TUKnt++OCbYfBo9+kk3T+WZlWcRntnF2dQsgVANOcQB9aJfZ60OjNZ5rc+X7QmdN+tAnm/Dw==}
+  '@triplit/db@0.5.15':
+    resolution: {integrity: sha512-sTmdRM69NmOwDGn2Pn4rH0pgqR1ve9aipQEg4/+aNVX00v+78O1iNHvUtAd0pBDRAuBri2WGRpjs4D4EH4zmWw==}
 
   '@triplit/svelte@0.2.23':
     resolution: {integrity: sha512-hUdjajNPipBCif6GkssR6JEuW7xUcp2IY/1h2BINyHDBpGSRgNrFqkyyNvi1fidNnxV6n/eclFkYtVhpH8nuUg==}
@@ -2916,6 +2925,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.8:
+    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   nanoid@5.0.8:
     resolution: {integrity: sha512-TcJPw+9RV9dibz1hHUzlLVy8N4X9TnwirAjrU08Juo6BNKggzVfP2ZJ/3ZUSq15Xl5i85i+Z89XBO90pB2PghQ==}
     engines: {node: ^18 || >=20}
@@ -3387,8 +3401,8 @@ packages:
   remeda@2.16.0:
     resolution: {integrity: sha512-HOymkGg58HW4LT8MBEabQEdW76YsqcRNNFPXPrOrnYm+/9Pmk0b9fm8PKgQxoRPa6WDLnRM/LxTXkHdXf9Ab0w==}
 
-  remeda@2.17.3:
-    resolution: {integrity: sha512-xyi2rCQkz2j4BEWbWxPw6JCapv1yBuSwr4Uf9BX00AkesAJaiKvc6Il6thsBidwVZAtNiSaCIXvslkKL0ybz8w==}
+  remeda@2.17.4:
+    resolution: {integrity: sha512-pviU2Ag7Qx9mOCAKO4voxDx/scfLzdhp3v85qDO4xxntQsU76uE9sgrAAdK1ATn4zzaOJqCXYMMNRP+O9F4Wiw==}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -3868,8 +3882,8 @@ packages:
     resolution: {integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==}
     engines: {node: '>=16'}
 
-  type-fest@4.28.0:
-    resolution: {integrity: sha512-jXMwges/FVbFRe5lTMJZVEZCrO9kI9c8k0PA/z7nF3bo0JSCCLysvokFjNPIUK/itEMas10MQM+AiHoHt/T/XA==}
+  type-fest@4.30.0:
+    resolution: {integrity: sha512-G6zXWS1dLj6eagy6sVhOMQiLtJdxQBHIA9Z6HFUNLOlr6MFOgzV8wvmidtPONfPtEUv0uZsy77XJNzTAfwPDaA==}
     engines: {node: '>=16'}
 
   typed-array-buffer@1.0.2:
@@ -5139,12 +5153,29 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.14
 
+  '@triplit/cli@0.6.30':
+    dependencies:
+      esbuild: 0.23.1
+      source-map: 0.7.4
+    optionalDependencies:
+      fsevents: 2.3.3
+
   '@triplit/cli@0.6.8':
     dependencies:
       esbuild: 0.23.1
       source-map: 0.7.4
     optionalDependencies:
       fsevents: 2.3.3
+
+  '@triplit/client@0.5.17':
+    dependencies:
+      '@sinclair/typebox': 0.32.35
+      '@triplit/db': 0.5.15
+      comlink: 4.4.1
+      rxjs: 7.8.1
+      superjson: 2.2.1
+    transitivePeerDependencies:
+      - react
 
   '@triplit/client@0.5.8':
     dependencies:
@@ -5156,10 +5187,10 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/client@0.6.4':
+  '@triplit/client@0.6.8':
     dependencies:
       '@sinclair/typebox': 0.32.35
-      '@triplit/db': 0.5.11
+      '@triplit/db': 0.5.15
       comlink: 4.4.1
       rxjs: 7.8.1
       superjson: 2.2.1
@@ -5178,7 +5209,7 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/db@0.5.11':
+  '@triplit/db@0.5.15':
     dependencies:
       '@sinclair/typebox': 0.32.35
       '@triplit/tuple-database': 2.2.33
@@ -5186,14 +5217,14 @@ snapshots:
       ajv-formats: 3.0.1(ajv@8.17.1)
       idb: 7.1.1
       mnemonist: 0.40.0-rc1
-      nanoid: 3.3.7
+      nanoid: 3.3.8
       pino: 8.21.0
     transitivePeerDependencies:
       - react
 
   '@triplit/svelte@0.2.23(svelte@5.1.10)':
     dependencies:
-      '@triplit/client': 0.6.4
+      '@triplit/client': 0.6.8
       svelte: 5.1.10
     transitivePeerDependencies:
       - react
@@ -5214,7 +5245,7 @@ snapshots:
       fractional-indexing: 3.2.0
       fs-extra: 11.2.0
       md5: 2.3.0
-      remeda: 2.17.3
+      remeda: 2.17.4
       sorted-btree: 1.8.1
       uuid: 9.0.1
 
@@ -6900,6 +6931,8 @@ snapshots:
 
   nanoid@3.3.7: {}
 
+  nanoid@3.3.8: {}
+
   nanoid@5.0.8: {}
 
   natural-compare@1.4.0: {}
@@ -7337,9 +7370,9 @@ snapshots:
     dependencies:
       type-fest: 4.26.1
 
-  remeda@2.17.3:
+  remeda@2.17.4:
     dependencies:
-      type-fest: 4.28.0
+      type-fest: 4.30.0
 
   require-directory@2.1.1: {}
 
@@ -7884,7 +7917,7 @@ snapshots:
 
   type-fest@4.26.1: {}
 
-  type-fest@4.28.0: {}
+  type-fest@4.30.0: {}
 
   typed-array-buffer@1.0.2:
     dependencies:
