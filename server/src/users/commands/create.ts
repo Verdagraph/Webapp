@@ -1,7 +1,7 @@
 import env from 'env';
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserCreateCommand } from '@vdt-webapp/common/src/user/mutations';
+import { UserCreateCommand } from '@vdt-webapp/common';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from '../auth/passwords';
 import { encodeEmailConfirmationToken } from '../auth/tokens';

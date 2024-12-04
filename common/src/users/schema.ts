@@ -4,7 +4,9 @@ export const roles: Roles = {
 	user: {
 		match: {
 			type: 'user',
-			uid: '$userId'
+			accountId: '$accountId',
+			profileId: '$profileId',
+			username: '$username'
 		}
 	}
 };
@@ -74,7 +76,7 @@ export const userSchema = {
 		/** Accounts objects can only be modified by the server and viewed by the user. */
 		permissions: {
 			user: {
-				read: { filter: [['id', '=', '$role.userId']] }
+				read: { filter: [['id', '=', '$role.accountId']] }
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-import env from 'env';
+
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
 import { UserLoginCommand } from '@vdt-webapp/common/src/users/mutations';
@@ -27,24 +27,29 @@ const login = async (
 	const users = container.resolve('userRepo');
 
 	/** Fetch the user from the database. */
-	const user = await users.getAccountByVerifiedEmail(command.email);
-	if (user == null) {
+	const userAccount = await users.getAccountByVerifiedEmail(command.email);
+	if (userAccount == null) {
+		throw new NotFoundError('User does not exist', {
+			fieldErrors: { email: ['This email does not exist.'] }
+		});
+	}
+	const userProfile = await users.getProfileByid(userAccount.profileId)
+	if (userProfile == null) {
 		throw new NotFoundError('User does not exist', {
 			fieldErrors: { email: ['This email does not exist.'] }
 		});
 	}
 
 	/** Verify the provided password. */
-	if ((await verifyPassword(command.password, user.passwordHash)) == false) {
+	if ((await verifyPassword(command.password, userAccount.passwordHash)) == false) {
 		throw new AuthenticationError('Incorrect password', {
 			fieldErrors: { password: ['This password is incorrect.'] }
 		});
 	}
 
 	/** Encode both access and refresh tokens. */
-	const accessToken = await encodeAccessToken(user.id);
-	const refreshToken = await encodeRefreshToken(user.id);
-	console.log(accessToken);
+	const accessToken = await encodeAccessToken(userAccount.id, userProfile.id, userProfile.username);
+	const refreshToken = await encodeRefreshToken(userAccount.id);
 
 	return { accessToken, refreshToken };
 };

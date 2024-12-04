@@ -10,20 +10,20 @@ import {
 import type { UserLoginResult } from './login';
 
 const refresh = async (
-	refreshToken: string | null,
+	oldRefreshToken: string | null,
 	container: typeof diContainer
 ): Promise<UserLoginResult> => {
 	const users = container.resolve('userRepo');
 
 	/** If no refresh token was provided, false authentication. */
-	if (refreshToken == null) {
+	if (oldRefreshToken == null) {
 		throw new AuthenticationError('No refresh credential.', {
 			nonFormErrors: ['Authentication expired. Please login again.']
 		});
 	}
 
 	/** Decode the provided token. */
-	const decodedToken = await decodeRefreshToken(refreshToken);
+	const decodedToken = await decodeRefreshToken(oldRefreshToken);
 	if (decodedToken == null) {
 		throw new AuthenticationError('Malformed refresh credential.', {
 			nonFormErrors: ['Authentication expired. Please login again.']
@@ -31,10 +31,14 @@ const refresh = async (
 	}
 
 	/** Fetch the user represented by the token. */
-	const user = await users.getAccountById(decodedToken.uid);
-	if (user == null) {
-		console.log('here be error')
-		console.log(decodedToken.uid)
+	const userAccount = await users.getAccountById(decodedToken.accountId);
+	if (userAccount == null) {
+		throw new AuthenticationError('No refresh credential.', {
+			nonFormErrors: ['Authentication expired. Please login again.']
+		});
+	}
+	const userProfile = await users.getProfileByid(userAccount.profileId)
+	if (userProfile == null) {
 		throw new AuthenticationError('No refresh credential.', {
 			nonFormErrors: ['Authentication expired. Please login again.']
 		});
@@ -48,13 +52,12 @@ const refresh = async (
 	 */
 
 	/** Encode both new access and refresh tokens. */
-	const newAccessToken = await encodeAccessToken(user.id);
-	const newRefreshToken = await encodeRefreshToken(user.id);
+	const accessToken = await encodeAccessToken(userAccount.id, userProfile.id, userProfile.username);
+	const refreshToken = await encodeRefreshToken(userAccount.id);
 
 	return {
-		accessToken: newAccessToken,
-		refreshToken: newRefreshToken,
-		expiryTimeSeconds: env.ACCESS_TOKEN_EXPIRY_S
+		accessToken,
+		 refreshToken,
 	};
 };
 export default refresh;

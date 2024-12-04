@@ -1,6 +1,6 @@
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserRequestEmailConfirmationCommand } from '@vdt-webapp/common/src/user/mutations';
+import { UserRequestEmailConfirmationCommand } from '@vdt-webapp/common';
 import { InternalFailureException, NotFoundError } from 'common/errors';
 import { encodeEmailConfirmationToken } from 'users/auth/tokens';
 import env from 'env';

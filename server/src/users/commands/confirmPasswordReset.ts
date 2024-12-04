@@ -1,6 +1,6 @@
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserConfirmPasswordResetCommand } from '@vdt-webapp/common/src/user/mutations';
+import { UserConfirmPasswordResetCommand } from '@vdt-webapp/common';
 import { decodePasswordResetToken } from 'users/auth/tokens';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from 'users/auth/passwords';
@@ -26,7 +26,7 @@ const confirmPasswordReset = async (
 	}
 
 	/** Retrieve the user from the token. */
-	const user = await users.getAccountById(token.uid);
+	const user = await users.getAccountById(token.accountId);
 	if (user == null) {
 		throw new ValidationError(
 			'Failure while decoding password reset token - user does not exist.',

@@ -1,6 +1,6 @@
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common/src/user/mutations';
+import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
 import { decodeEmailConfirmationToken } from 'users/auth/tokens';
 import { ValidationError } from 'common/errors';
 
@@ -20,16 +20,16 @@ const confirmEmailConfirmation = async (
 	if (token == null) {
 		throw new ValidationError(
 			'Failure while decoding email confirmation token - expired or malformed.',
-			{ nonFormErrrors: ['Invalid email confirmation token.'] }
+			{ nonFormErrors: ['Invalid email confirmation token.'] }
 		);
 	}
 
 	/** Retrieve the user from the token. */
-	const user = await users.getAccountById(token.uid);
+	const user = await users.getAccountById(token.accountId);
 	if (user == null) {
 		throw new ValidationError(
 			'Failure while decoding email confirmation token - user does not exist.',
-			{ nonFormErrrors: ['Invalid email confirmation token.'] }
+			{ nonFormErrors: ['Invalid email confirmation token.'] }
 		);
 	}
 
@@ -37,7 +37,7 @@ const confirmEmailConfirmation = async (
 	if (user.unverifiedEmail.token != command.token) {
 		throw new ValidationError(
 			'Failure while decoding email confirmation token - token does not exist',
-			{ nonFormErrrors: ['Invalid email confirmation token.'] }
+			{ nonFormErrors: ['Invalid email confirmation token.'] }
 		);
 	}
 

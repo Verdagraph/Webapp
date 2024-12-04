@@ -14,8 +14,8 @@ import { AppError } from '@vdt-webapp/common/src/errors';
  */
 export async function createAuthContext() {
 	/** The current access token. */
-	let token = localStore<string | null>('auth', null);
-	let isAuthenticated = $derived(token.value != null)
+	let token = $state<string | null>(null);
+	let isAuthenticated = $derived(token != null)
 	/** If an auth error is received, and this flag is set to false, a refresh will be attempted. */
 	let retriedRefreshFlag = $state<boolean>(false)
 
@@ -26,37 +26,24 @@ export async function createAuthContext() {
 	 */
 	async function login(data: UserLoginOpBody): Promise< string > {
 		/** Don't allow re-logging in. */
-		if (token.value != null) {
-			return token.value
+		if (token != null) {
+			return token
 		}
 
 		try {
 
 			/** Fetch the token. */
 			const newToken = await userLogin.mutation(data)
-			token.value = newToken
+			token = newToken
 			retriedRefreshFlag = false
 
-			/** Start the Triplit session, or update the existing one. */
-			try {
-				await triplit.startSession(token.value);
-			} catch (error) {
-				console.log('herhere')
-				console.log(error)
-				triplit.updateSessionToken(token.value);
-			}
-
-			/** 
-			 * Fetch the client - this has the side effect of populating the 
-			 * Triplit global variables of client and profile ID. 
-			 */
-			await getClient()
+			/** Start the Triplit session. */
+			await triplit.startSession(token);
 
 			return newToken
 
 		} catch (error) {
-			console.log('is is this one????')
-			token.value = null
+			token = null
 			throw error
 		}
 	}
@@ -70,11 +57,11 @@ export async function createAuthContext() {
 		try {
 			/** Fetch the token. */
 			const newToken = await userRefreshOp()
-			token.value = newToken
+			token = newToken
 			return newToken
 
 		} catch (error) {
-			token.value = null
+			token = null
 			retriedRefreshFlag = true
 			return null
 		}
@@ -89,51 +76,13 @@ export async function createAuthContext() {
 			return
 		}
 
-		token.value = null
+		token = null
 		await triplit.endSession()
-	}
-
-	/**
-	 * Initialize the auth context.
-	 */
-	async function initialize() {
-
-		/** If no access token is present, attempt a refresh. */
-		if (token.value == null) {
-			await refresh()
-		}
-
-		/** If a access token is present, try to add it to the session. */
-		if (token.value != null) {
-		try {
-			console.log('hererer')
-			await triplit.startSession(token.value);
-			console.log('hererer2')
-			/** 
-			 * Fetch the client - this has the side effect of populating the 
-			 * Triplit global variables of client and profile ID. 
-			 */
-			//await getClient()
-			const account = await triplit.fetchOne(
-				triplit
-					.query('accounts')
-					.where([['id', '=', '$role.userId']])
-					.include('profile')
-					.build()
-			);
-			console.log(account)
-		} catch (error) {
-			if (error instanceof SessionAlreadyActiveError) {
-				triplit.updateSessionToken(token.value);
-			}
-		}
-	}
-
 	}
 
 	return {
 		get token() {
-			return token.value;
+			return token;
 		},
 		get isAuthenticated() {
 			return isAuthenticated;
@@ -141,12 +90,10 @@ export async function createAuthContext() {
 		get retriedRefreshFlag() {
 			return retriedRefreshFlag
 		},
-		initialize,
 		login,
 		refresh,
 		logout
 	};
 }
 const auth = await createAuthContext();
-await auth.initialize()
 export default auth;

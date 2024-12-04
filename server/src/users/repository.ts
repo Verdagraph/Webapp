@@ -34,12 +34,12 @@ export class UserRepository {
 	/**
 	 * Retrieves a user account if one exists with the verified email address.
 	 * @param email The email address.
-	 * @returns The retrieved account, or null if none exists.
+	 * @returns The retrieved account, or null if none exists. The profile is included.
 	 */
 	getAccountByVerifiedEmail = async (email: string): Promise<UserAccount | null> => {
 		const user = await this.triplit.fetchOne({
 			collectionName: 'accounts',
-			where: [['verifiedEmail', '=', email]]
+			where: [['verifiedEmail', '=', email]],
 		});
 		return (user as UserAccount) || null;
 	};

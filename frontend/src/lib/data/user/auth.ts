@@ -31,7 +31,7 @@ export const getClient = async (): Promise<{
 	const account = await triplit.fetchOne(
 		triplit
 			.query('accounts')
-			.where([['id', '=', '$role.userId']])
+			.where([['id', '=', '$role.accountId']])
 			.include('profile')
 			.build()
 	);

@@ -43,9 +43,9 @@ export const workspaceSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
@@ -53,8 +53,8 @@ export const workspaceSchema = {
 					/** Allow new coordinates to be created by admins and editors. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -62,8 +62,8 @@ export const workspaceSchema = {
 					/** Restrict coordinates updates to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -71,8 +71,8 @@ export const workspaceSchema = {
 					/** Restrict coordinates deletes to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				}
@@ -165,9 +165,9 @@ export const workspaceSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
@@ -175,8 +175,8 @@ export const workspaceSchema = {
 					/** Allow new geometries to be created by admins and editors. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -184,8 +184,8 @@ export const workspaceSchema = {
 					/** Restrict geometry updates to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -193,8 +193,8 @@ export const workspaceSchema = {
 					/** Restrict geometry deletes to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				}
@@ -229,9 +229,9 @@ export const workspaceSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
@@ -239,8 +239,8 @@ export const workspaceSchema = {
 					/** Allow new geometry history to be created by admins and editors. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -248,8 +248,8 @@ export const workspaceSchema = {
 					/** Restrict geometry history updates to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -257,8 +257,8 @@ export const workspaceSchema = {
 					/** Restrict geometry histories deletes to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				}
@@ -300,9 +300,9 @@ export const workspaceSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
@@ -310,8 +310,8 @@ export const workspaceSchema = {
 					/** Allow new locations to be created by admins and editors. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -319,8 +319,8 @@ export const workspaceSchema = {
 					/** Restrict locations updates to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -328,8 +328,8 @@ export const workspaceSchema = {
 					/** Restrict locations deletes to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				}
@@ -362,9 +362,9 @@ export const workspaceSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
@@ -372,8 +372,8 @@ export const workspaceSchema = {
 					/** Allow new location history to be created by admins and editors. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -381,8 +381,8 @@ export const workspaceSchema = {
 					/** Restrict location history updates to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				},
@@ -390,8 +390,8 @@ export const workspaceSchema = {
 					/** Restrict location histories deletes to admins. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds']
 						])
 					]
 				}
@@ -444,23 +444,23 @@ export const workspaceSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
 				insert: {
 					/** Allow new planting areas to be created by admins. */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					filter: [['$role.accountId', 'in', 'garden.adminIds']]
 				},
 				update: {
 					/** Restrict planting area updates to admins. */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					filter: [['$role.accountId', 'in', 'garden.adminIds']]
 				},
 				delete: {
 					/** Restrict planting area deletes to admins. */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					filter: [['$role.accountId', 'in', 'garden.adminIds']]
 				}
 			}
 		}
@@ -496,23 +496,23 @@ export const workspaceSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
 				insert: {
 					/** Allow new workspaces to be created by admins. */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					filter: [['$role.accountId', 'in', 'garden.adminIds']]
 				},
 				update: {
 					/** Restrict workspace updates to admins. */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					filter: [['$role.accountId', 'in', 'garden.adminIds']]
 				},
 				delete: {
 					/** Restrict workspace deletes to admins. */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					filter: [['$role.accountId', 'in', 'garden.adminIds']]
 				}
 			}
 		}

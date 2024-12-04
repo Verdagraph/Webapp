@@ -52,7 +52,7 @@ export const gardenSchema = {
 			 */
 			creatorId: S.String({ nullable: true }),
 			creator: S.RelationOne('profiles', {
-				where: [['id', '=', 'creatorId']]
+				where: [['id', '=', '$creatorId']]
 			}),
 
 			/** Set of users which have admin access. */
@@ -89,19 +89,19 @@ export const gardenSchema = {
 					filter: [
 						or([
 							['visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'adminIds'],
-							['$role.userId', 'in', 'editorIds'],
-							['$role.userId', 'in', 'viewerIds']
+							['$role.accountId', 'in', 'adminIds'],
+							['$role.accountId', 'in', 'editorIds'],
+							['$role.accountId', 'in', 'viewerIds']
 						])
 					]
 				},
 				insert: {
 					/** Allow new gardens to be created by creators. */
-					filter: [['creatorId', '=', '$role.userId']]
+					filter: [['creatorId', '=', '$role.accountId']]
 				},
 				update: {
 					/** Restrict edit access to admins. */
-					filter: [['$role.userId', 'in', 'adminIds']]
+					filter: [['$role.accountId', 'in', 'adminIds']]
 				}
 			}
 		}
@@ -147,22 +147,22 @@ export const gardenSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.userId', 'in', 'garden.adminIds'],
-							['$role.userId', 'in', 'garden.editorIds'],
-							['$role.userId', 'in', 'garden.viewerIds']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['$role.accountId', 'in', 'garden.editorIds'],
+							['$role.accountId', 'in', 'garden.viewerIds']
 						])
 					]
 				},
 				insert: {
 					/** Allow new memberships to be created by admins. */
-					filter: [['$role.userId', 'in', 'garden.adminIds']]
+					filter: [['$role.accountId', 'in', 'garden.adminIds']]
 				},
 				update: {
 					/** Restrict membership updates to admins and subjects. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['userId', '=', '$role.userId']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['userId', '=', '$role.accountId']
 						])
 					]
 				},
@@ -170,8 +170,8 @@ export const gardenSchema = {
 					/** Allow the membership to be revoked by an admin or deleted by the subject. */
 					filter: [
 						or([
-							['$role.userId', 'in', 'garden.adminIds'],
-							['userId', '=', '$role.userId']
+							['$role.accountId', 'in', 'garden.adminIds'],
+							['userId', '=', '$role.accountId']
 						])
 					]
 				}

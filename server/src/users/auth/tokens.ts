@@ -4,42 +4,51 @@ import env from 'env';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 
+const ACCESS_HEADER_KEY = 'Authorization'
+const REFRESH_COOKIE_KEY = 'refresh'
+
 /** The payload information carried by access tokens. */
 type AccessTokenPayload = {
 	/** The type of role the user has access to. */
 	type: string;
-	/** The ID of the user. */
-	uid: string;
+	/** The ID of the user's account. */
+	accountId: string;
+	/** The ID of the user's profile. */
+	profileId: string;
+	/** The username of the user. */
+	username: string;
 };
 
 /** The payload information carried by refresh tokens. */
 type RefreshTokenPayload = {
-	/** The ID of the user. */
-	uid: string;
+	/** The ID of the user's account. */
+	accountId: string;
 };
 
 /** The payload information carried by email confirmation tokens. */
 type EmailConfirmationTokenPayload = {
-	/** The ID of the user. */
-	uid: string;
+	/** The ID of the user's account. */
+	accountId: string;
 };
 
 /** The payload information carried by password reset tokens. */
 type PasswordResetTokenPayload = {
-	/** The ID of the user. */
-	uid: string;
+	/** The ID of the user's account. */
+	accountId: string;
 };
 
 /**
  * Encodes an access JWT token for a user.
- * @param userId The ID of the user to encode.
+ * @param accountId The account ID of the user to encode.
+ * @param profileId The profile ID of the user to encode.
+ * @param username The username of the user to encode.
  * @returns The encoded token.
  */
-export const encodeAccessToken = (userId: string): Promise<string> => {
-	const payload: AccessTokenPayload = { type: 'user', uid: userId };
+export const encodeAccessToken = (accountId: string, profileId: string, username: string): Promise<string> => {
+	const payload: AccessTokenPayload = { type: 'user', accountId, profileId, username };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
-			{ sub: payload },
+			payload,
 			env.ACCESS_TOKEN_SECRET,
 			{ expiresIn: ACCESS_TOKEN_EXPIRY_S },
 			(error, token) => {
@@ -53,11 +62,11 @@ export const encodeAccessToken = (userId: string): Promise<string> => {
 
 /**
  * Encodes a refresh JWT token for a user.
- * @param userId The ID of the user to encode.
+ * @param accountId The ID of the user's account to encode.
  * @returns The encoded token.
  */
-export const encodeRefreshToken = (userId: string): Promise<string> => {
-	const payload: RefreshTokenPayload = { uid: userId };
+export const encodeRefreshToken = (accountId: string): Promise<string> => {
+	const payload: RefreshTokenPayload = { accountId };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
 			payload,
@@ -74,11 +83,11 @@ export const encodeRefreshToken = (userId: string): Promise<string> => {
 
 /**
  * Encodes an email verification JWT token for a user.
- * @param userId The ID of the user to encode.
+ * @param accountId The ID of the user's account to encode.
  * @returns The encoded token.
  */
-export const encodeEmailConfirmationToken = (userId: string): Promise<string> => {
-	const payload: EmailConfirmationTokenPayload = { uid: userId };
+export const encodeEmailConfirmationToken = (accountId: string): Promise<string> => {
+	const payload: EmailConfirmationTokenPayload = { accountId };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
 			payload,
@@ -95,11 +104,11 @@ export const encodeEmailConfirmationToken = (userId: string): Promise<string> =>
 
 /**
  * Encodes a password reset JWT token for a user.
- * @param userId The ID of the user to encode.
+ * @param accountId The ID of the user's account to encode.
  * @returns The encoded token.
  */
-export const encodePasswordResetToken = (userId: string): Promise<string> => {
-	const payload: PasswordResetTokenPayload = { uid: userId };
+export const encodePasswordResetToken = (accountId: string): Promise<string> => {
+	const payload: PasswordResetTokenPayload = { accountId };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
 			payload,
@@ -119,12 +128,12 @@ export const encodePasswordResetToken = (userId: string): Promise<string> => {
  * @param token The encoded access token.
  * @returns The payload of the token if it was sucessfully verified, otherwise null.
  */
-export const decodeAccessToken = (token: string): Promise<JwtPayload | null> => {
+export const decodeAccessToken = (token: string): Promise<AccessTokenPayload | null> => {
 	return new Promise((resolve) => {
 		jwt.verify(token, env.ACCESS_TOKEN_SECRET, (error, payload) => {
 			if (error) {
 				resolve(null);
-			} else resolve(payload as { sub: AccessTokenPayload });
+			} else resolve(payload as AccessTokenPayload );
 		});
 	});
 };
@@ -186,7 +195,7 @@ export const decodePasswordResetToken = (
  * @param reply Fastify reply object.
  */
 export const setRefreshTokenCookie = (token: string, reply: FastifyReply) => {
-	reply.cookie('refreshToken', token, {
+	reply.cookie(REFRESH_COOKIE_KEY, token, {
 		secure: env.USING_HTTPS,
 		httpOnly: true,
 		sameSite: env.CLIENT_SAMESITE
@@ -199,8 +208,7 @@ export const setRefreshTokenCookie = (token: string, reply: FastifyReply) => {
  * @returns The refresh token value, or null if none exists.
  */
 export const getRefreshTokenCookie = (request: FastifyRequest): string | null => {
-	console.log(request.cookies.refreshToken)
-	return request.cookies.refreshToken || null;
+	return request.cookies[REFRESH_COOKIE_KEY] || null;
 };
 
 /**
@@ -209,7 +217,7 @@ export const getRefreshTokenCookie = (request: FastifyRequest): string | null =>
  * @param reply Fastify reply object.
  */
 export const setAccessTokenHeader = (token: string, reply: FastifyReply) => {
-	reply.header('Authorization', token);
+	reply.header(ACCESS_HEADER_KEY, token);
 };
 
 /**
@@ -218,7 +226,7 @@ export const setAccessTokenHeader = (token: string, reply: FastifyReply) => {
  * @returns The access token JWT or null.
  */
 export const getAccessTokenHeader = (request: FastifyRequest): string | null => {
-	const header = request.headers['Authorization'];
+	const header = request.headers[ACCESS_HEADER_KEY];
 	if (Array.isArray(header)) {
 		return header[0];
 	} else {
