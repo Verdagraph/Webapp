@@ -1,6 +1,11 @@
 import { Schema as S, ClientSchema, Entity, Roles } from '@triplit/client';
 
 export const roles: Roles = {
+	anon: {
+		match: {
+			'x-triplit-token-type': 'anon'
+		}
+	},
 	user: {
 		match: {
 			type: 'user',

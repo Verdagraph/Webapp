@@ -4,8 +4,8 @@ import env from 'env';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 
-const ACCESS_HEADER_KEY = 'Authorization'
-const REFRESH_COOKIE_KEY = 'refresh'
+const ACCESS_HEADER_KEY = 'Authorization';
+const REFRESH_COOKIE_KEY = 'refresh';
 
 /** The payload information carried by access tokens. */
 type AccessTokenPayload = {
@@ -44,7 +44,11 @@ type PasswordResetTokenPayload = {
  * @param username The username of the user to encode.
  * @returns The encoded token.
  */
-export const encodeAccessToken = (accountId: string, profileId: string, username: string): Promise<string> => {
+export const encodeAccessToken = (
+	accountId: string,
+	profileId: string,
+	username: string
+): Promise<string> => {
 	const payload: AccessTokenPayload = { type: 'user', accountId, profileId, username };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
@@ -128,12 +132,14 @@ export const encodePasswordResetToken = (accountId: string): Promise<string> => 
  * @param token The encoded access token.
  * @returns The payload of the token if it was sucessfully verified, otherwise null.
  */
-export const decodeAccessToken = (token: string): Promise<AccessTokenPayload | null> => {
+export const decodeAccessToken = (
+	token: string
+): Promise<AccessTokenPayload | null> => {
 	return new Promise((resolve) => {
 		jwt.verify(token, env.ACCESS_TOKEN_SECRET, (error, payload) => {
 			if (error) {
 				resolve(null);
-			} else resolve(payload as AccessTokenPayload );
+			} else resolve(payload as AccessTokenPayload);
 		});
 	});
 };

@@ -7,12 +7,10 @@
 	import auth from '$state/auth.svelte';
 
 	onMount(() => {
-		console.log(auth.token)
-		console.log(auth.isAuthenticated)
 		if (auth.isAuthenticated) {
 			goto('/app');
 		}
-	})
+	});
 </script>
 
 <svelte:head>

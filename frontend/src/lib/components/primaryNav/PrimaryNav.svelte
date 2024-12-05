@@ -37,7 +37,6 @@
 
 	/** Retrieve the tabs. */
 	let gardensTab = $derived.by(() => {
-		console.log(adminGardens.results)
 		/** Include all associated gardens ordered from favorites to viewerships. */
 		const mostRelevantGardens: Garden[] = [];
 		if (favoriteMemberships.results) {
@@ -57,24 +56,23 @@
 			mostRelevantGardens.push(...viewerGardens.results);
 		}
 		return getGardensTab(mostRelevantGardens);
-	})
+	});
 
 	let gardenTabs = $derived.by(() => {
-	if (activeGarden.results && activeGarden.results.length > 0) {
-		return getGardenSpecifcTabs(activeGarden.results[0]);
-	} else {
-		return [];
-	}
-});
+		if (activeGarden.results && activeGarden.results.length > 0) {
+			return getGardenSpecifcTabs(activeGarden.results[0]);
+		} else {
+			return [];
+		}
+	});
 
 	let profileTab = $derived.by(() => {
-		console.log(auth.isAuthenticated)
 		if (auth.isAuthenticated) {
-			return getAuthProfileTab()
+			return getAuthProfileTab();
 		} else {
-			return getAnonProfileTab()
+			return getAnonProfileTab();
 		}
-	})
+	});
 
 	const traitsTab = getTraitsTab();
 	const resourcesTab = getResourcesTab();

@@ -1,4 +1,3 @@
-
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
 import { UserLoginCommand } from '@vdt-webapp/common/src/users/mutations';
@@ -33,7 +32,7 @@ const login = async (
 			fieldErrors: { email: ['This email does not exist.'] }
 		});
 	}
-	const userProfile = await users.getProfileByid(userAccount.profileId)
+	const userProfile = await users.getProfileByid(userAccount.profileId);
 	if (userProfile == null) {
 		throw new NotFoundError('User does not exist', {
 			fieldErrors: { email: ['This email does not exist.'] }
@@ -48,7 +47,11 @@ const login = async (
 	}
 
 	/** Encode both access and refresh tokens. */
-	const accessToken = await encodeAccessToken(userAccount.id, userProfile.id, userProfile.username);
+	const accessToken = await encodeAccessToken(
+		userAccount.id,
+		userProfile.id,
+		userProfile.username
+	);
 	const refreshToken = await encodeRefreshToken(userAccount.id);
 
 	return { accessToken, refreshToken };

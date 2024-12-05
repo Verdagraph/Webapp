@@ -3,6 +3,7 @@ import axios from 'axios';
 import { goto } from '$app/navigation';
 import { AppError, ServerErrorResponse } from '@vdt-webapp/common/src/errors';
 import auth from '$state/auth.svelte';
+import triplit from './triplit';
 
 /** Static client configuration. */
 export const AXIOS_INSTANCE = axios.create({
@@ -13,7 +14,7 @@ export const AXIOS_INSTANCE = axios.create({
 /** Dynamic request configuration. */
 AXIOS_INSTANCE.interceptors.request.use((config) => {
 	//config.headers['X-CSRFToken'] = get(csrftoken);
-	config.headers['Authorization'] = auth.token;
+	config.headers['Authorization'] = triplit.token;
 	return config;
 });
 
@@ -30,7 +31,6 @@ AXIOS_INSTANCE.interceptors.response.use(
 			});
 		}
 
-		console.log(error);
 		throw error;
 	}
 );

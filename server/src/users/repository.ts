@@ -39,7 +39,7 @@ export class UserRepository {
 	getAccountByVerifiedEmail = async (email: string): Promise<UserAccount | null> => {
 		const user = await this.triplit.fetchOne({
 			collectionName: 'accounts',
-			where: [['verifiedEmail', '=', email]],
+			where: [['verifiedEmail', '=', email]]
 		});
 		return (user as UserAccount) || null;
 	};

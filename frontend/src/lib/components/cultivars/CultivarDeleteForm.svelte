@@ -37,7 +37,6 @@
 		SPA: true,
 		validators: zod(cultivarDelete.schema),
 		onUpdate({ form }) {
-			console.log(form.data);
 			if (form.valid) {
 				$mutation.mutate(form.data, {
 					onSuccess: () => {

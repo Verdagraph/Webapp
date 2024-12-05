@@ -203,7 +203,6 @@
 											maxTags={cultivarFields.cultivar_names.max_length.value}
 											placeholder="Enter a name"
 											onChange={() => {
-												console.log(cultivar.names);
 												$formData.names = cultivar.names;
 												debounceFormSubmit();
 											}}
@@ -468,9 +467,6 @@
 															$formData.attributes[profileKey][attributeKey] =
 																cultivar.attributes[profileKey][attributeKey];
 															debounceFormSubmit();
-															console.log(profileKey);
-															console.log(attributeKey);
-															console.log($formData);
 														}}
 													/>
 												</div>

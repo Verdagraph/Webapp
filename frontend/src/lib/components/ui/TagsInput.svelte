@@ -33,7 +33,6 @@
 		/** Sync the bindable input prop and Melt's writable store. */
 		add(tag: string) {
 			tagsInput.push(tag);
-			console.log(tag);
 			if (onChange) {
 				onChange();
 			}

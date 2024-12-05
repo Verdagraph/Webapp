@@ -23,7 +23,6 @@
 	<Select.Root
 		selected={selectedValue}
 		onSelectedChange={(newSelected) => {
-			console.log(newSelected);
 			if (newSelected) {
 				value = newSelected.value;
 				selectedValue = newSelected;

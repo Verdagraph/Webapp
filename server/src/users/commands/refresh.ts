@@ -37,7 +37,7 @@ const refresh = async (
 			nonFormErrors: ['Authentication expired. Please login again.']
 		});
 	}
-	const userProfile = await users.getProfileByid(userAccount.profileId)
+	const userProfile = await users.getProfileByid(userAccount.profileId);
 	if (userProfile == null) {
 		throw new AuthenticationError('No refresh credential.', {
 			nonFormErrors: ['Authentication expired. Please login again.']
@@ -52,12 +52,16 @@ const refresh = async (
 	 */
 
 	/** Encode both new access and refresh tokens. */
-	const accessToken = await encodeAccessToken(userAccount.id, userProfile.id, userProfile.username);
+	const accessToken = await encodeAccessToken(
+		userAccount.id,
+		userProfile.id,
+		userProfile.username
+	);
 	const refreshToken = await encodeRefreshToken(userAccount.id);
 
 	return {
 		accessToken,
-		 refreshToken,
+		refreshToken
 	};
 };
 export default refresh;

@@ -8,8 +8,7 @@
 	import auth from '$state/auth.svelte';
 	import useAsync from '$state/asyncHandler.svelte';
 
-
-	let formHandler = useAsync(auth.login, {
+	let formHandler = useAsync(userLogin.mutation, {
 		onSuccess: () => {
 			goto('/app');
 		}
@@ -28,7 +27,6 @@
 		}
 	});
 	const { form: formData, enhance } = form;
-
 </script>
 
 <form method="POST" use:enhance>

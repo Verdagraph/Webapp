@@ -1,4 +1,3 @@
-
 import iconIds from '$lib/assets/icons';
 import { externalLinks } from '$lib/assets/links';
 import { Garden } from '@vdt-webapp/common';
@@ -33,7 +32,6 @@ export type PrimaryTabItemSpec = {
 
 /* The maximum amount of gardens listed on the Gardens tab. */
 const MAX_GARDENS_IN_TAB_SIDEBAR = 10;
-
 
 /**
  * Constructs the tab which lists gardens the user has access to.
@@ -239,7 +237,8 @@ export const getAuthProfileTab = (): PrimaryTabSpec => {
 /**
  * @returns Tab specification for the profile tab when a user is not authenticated.
  */
-export const getAnonProfileTab = (): PrimaryTabSpec => {{
+export const getAnonProfileTab = (): PrimaryTabSpec => {
+	{
 		return {
 			id: 'account',
 			label: 'Account',

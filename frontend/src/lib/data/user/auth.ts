@@ -1,17 +1,58 @@
-import { userLoginOp } from '$codegen';
+import { userLoginOp, UserLoginOpBody, userRefreshOp } from '$codegen';
 import triplit from '$data/triplit';
 import { UserAccount, UserProfile } from '@vdt-webapp/common';
 import { AppError } from '@vdt-webapp/common/src/errors';
 import { UserLoginCommand } from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
-import { goto } from '$app/navigation';
+import { z } from 'zod';
+
+const TRIPLIT_ANON_TOKEN =
+	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.JzN7Erur8Y-MlFdCaZtovQwxN_m_fSyOIWNzYQ3uVcc';
 
 /**
  * Sends an authentication request to the backend.
  */
 export const userLogin = {
 	schema: UserLoginCommand,
-	mutation: userLoginOp
+	mutation: async (data: z.infer<typeof UserLoginCommand>) => {
+		/** Don't allow re-logging in. */
+		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
+			return;
+		}
+
+		/** Fetch the token. */
+		const token = await userLoginOp(data);
+
+		/** Start the Triplit session. */
+		await triplit.startSession(token);
+		auth.isAuthenticated = true;
+	}
+};
+
+/**
+ * Sends an authentication refresh request to the backend
+ */
+export const userRefresh = {
+	mutation: async () => {
+		const token = await userRefreshOp();
+		auth.isAuthenticated = true;
+		return token;
+	}
+};
+
+/**
+ * Ends the triplit session.
+ */
+export const userLogout = {
+	mutation: async () => {
+		/** Don't allow re-logging out. */
+		if (triplit.token == null || triplit.token == TRIPLIT_ANON_TOKEN) {
+			return;
+		}
+
+		await triplit.endSession();
+		auth.isAuthenticated = false;
+	}
 };
 
 /**
@@ -23,7 +64,6 @@ export const getClient = async (): Promise<{
 	account: UserAccount;
 	profile: UserProfile;
 } | null> => {
-	console.log('trying to get account')
 	if (!auth.isAuthenticated) {
 		return null;
 	}
@@ -35,14 +75,11 @@ export const getClient = async (): Promise<{
 			.include('profile')
 			.build()
 	);
-	console.log('this is the account')
-	console.log(account)
 	if (!account || !account.profile) {
 		return null;
 	}
 
-	setClientGlobalVariables(account.id, account.profile.id, account.profile.username);
-	return { account: account, profile: account.profile };
+	return { account, profile: account.profile };
 };
 
 /**
@@ -61,46 +98,7 @@ export const getClientOrError = async (): Promise<{
 		return client;
 	}
 
-	/** If a refresh has already been attempted, prompt a login. */
-	if (auth.retriedRefreshFlag) {
-		auth.removeAccess();
-		goto('login');
-		throw new AppError('Authentication failed.', {
-			nonFormErrors: ['Authentication failed. A login is required.']
-		});
-	}
-
-	/** Attempt a refresh. */
-	auth.retriedRefreshFlag = true;
-	auth.refreshAccess();
-
-	/** Attempt to retrieve the client again. */
-	client = await getClient();
-	if (client) {
-		return client;
-	} else {
-		auth.removeAccess();
-		goto('login');
-		throw new AppError('Authentication failed.', {
-			nonFormErrors: ['Authentication failed. A login is required.']
-		});
-	}
-};
-
-/**
- * Sets some global database variables for conveinence in queries.
- * @param clientAccountId The ID of the client's account.
- * @param clientProfileId The ID of the client's profile.
- * @param clientUsername The username of the client's profile.
- */
-export const setClientGlobalVariables = (
-	clientAccountId: string,
-	clientProfileId: string,
-	clientUsername: string
-) => {
-	triplit.db.updateGlobalVariables({
-		clientAccountId,
-		clientProfileId,
-		clientUsername
+	throw new AppError('Authentication failed.', {
+		nonFormErrors: ['Authentication failed. A login is required.']
 	});
 };

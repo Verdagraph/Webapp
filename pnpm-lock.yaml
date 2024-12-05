@@ -46,8 +46,8 @@ importers:
         specifier: ^0.6.8
         version: 0.6.8
       '@triplit/svelte':
-        specifier: ^0.2.23
-        version: 0.2.23(svelte@5.1.10)
+        specifier: ^0.2.27
+        version: 0.2.27(svelte@5.1.10)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
@@ -1406,8 +1406,8 @@ packages:
   '@triplit/db@0.5.15':
     resolution: {integrity: sha512-sTmdRM69NmOwDGn2Pn4rH0pgqR1ve9aipQEg4/+aNVX00v+78O1iNHvUtAd0pBDRAuBri2WGRpjs4D4EH4zmWw==}
 
-  '@triplit/svelte@0.2.23':
-    resolution: {integrity: sha512-hUdjajNPipBCif6GkssR6JEuW7xUcp2IY/1h2BINyHDBpGSRgNrFqkyyNvi1fidNnxV6n/eclFkYtVhpH8nuUg==}
+  '@triplit/svelte@0.2.27':
+    resolution: {integrity: sha512-/KNfaFdM3kuI4F9jPzOaB5JLEjS6dVYiHcaLy/dvlUizFA5y9cYlDU2kLVybPq9wbBI3HFw4mjV4Ukfn8dBLTg==}
     peerDependencies:
       svelte: '*'
 
@@ -5222,7 +5222,7 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/svelte@0.2.23(svelte@5.1.10)':
+  '@triplit/svelte@0.2.27(svelte@5.1.10)':
     dependencies:
       '@triplit/client': 0.6.8
       svelte: 5.1.10
