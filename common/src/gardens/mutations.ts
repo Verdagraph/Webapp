@@ -3,9 +3,10 @@ import { userFields } from '../users/mutations';
 import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
 
 /** Field specifications. */
-const gardenFields = {
+export const gardenFields = {
 	id: z
 		.string()
+		.trim()
 		.min(4, 'Must be at least 4 characters.')
 		.max(21, 'May be at most 21 characters.')
 		.regex(/[0-9A-Za-z-]+/, 'Must contain only alphanumeric characters and hyphens.')
@@ -14,6 +15,7 @@ const gardenFields = {
 		),
 	name: z
 		.string()
+		.trim()
 		.min(2, 'Must be at least 2 characters.')
 		.max(50, 'May be at most 50 characters.')
 		.regex(/[0-9A-Za-z ]+/, 'Must contain only alphanumeric characters and spaces.')
@@ -22,6 +24,7 @@ const gardenFields = {
 		),
 	description: z
 		.string()
+		.trim()
 		.max(1400, 'May be at most 1400 characters.')
 		.describe('May be at most 1400 characters.'),
 	visibility: z.enum(GardenVisibilityEnum).default('HIDDEN'),

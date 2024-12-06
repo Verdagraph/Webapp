@@ -10,6 +10,6 @@ export * from './userConfirmEmailOpBody';
 export * from './userConfirmPasswordResetOpBody';
 export * from './userCreateOpBody';
 export * from './userLoginOpBody';
-export * from './userRequestEmailConfirmationBody';
+export * from './userRequestEmailConfirmationOpBody';
 export * from './userRequestPasswordResetOpBody';
 export * from './userUpdateOpBody';

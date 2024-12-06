@@ -89,19 +89,19 @@ export const gardenSchema = {
 					filter: [
 						or([
 							['visibility', '!=', 'HIDDEN'],
-							['$role.accountId', 'in', 'adminIds'],
-							['$role.accountId', 'in', 'editorIds'],
-							['$role.accountId', 'in', 'viewerIds']
+							['adminIds', 'has', '$role.profileId'],
+							['editorIds', 'has', '$role.profileId'],
+							['viewerIds', 'has', '$role.profileId']
 						])
 					]
 				},
 				insert: {
 					/** Allow new gardens to be created by creators. */
-					filter: [['creatorId', '=', '$role.accountId']]
+					filter: [['creatorId', '=', '$role.profileId']]
 				},
 				update: {
 					/** Restrict edit access to admins. */
-					filter: [['$role.accountId', 'in', 'adminIds']]
+					filter: [['adminIds', 'has', '$role.profileId']]
 				}
 			}
 		}
@@ -147,22 +147,22 @@ export const gardenSchema = {
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
-							['$role.accountId', 'in', 'garden.adminIds'],
-							['$role.accountId', 'in', 'garden.editorIds'],
-							['$role.accountId', 'in', 'garden.viewerIds']
+							['garden.adminIds', 'has', '$role.profileId'],
+							['garden.editorIds', 'has', '$role.profileId'],
+							['garden.viewerIds', 'has', '$role.profileId']
 						])
 					]
 				},
 				insert: {
 					/** Allow new memberships to be created by admins. */
-					filter: [['$role.accountId', 'in', 'garden.adminIds']]
+					filter: [['garden.adminIds', 'has', '$role.profileId']]
 				},
 				update: {
 					/** Restrict membership updates to admins and subjects. */
 					filter: [
 						or([
-							['$role.accountId', 'in', 'garden.adminIds'],
-							['userId', '=', '$role.accountId']
+							['garden.adminIds', 'has', '$role.profileId'],
+							['userId', '=', '$role.profileId']
 						])
 					]
 				},
@@ -170,7 +170,7 @@ export const gardenSchema = {
 					/** Allow the membership to be revoked by an admin or deleted by the subject. */
 					filter: [
 						or([
-							['$role.accountId', 'in', 'garden.adminIds'],
+							['garden.adminIds', 'has', '$role.profileId'],
 							['userId', '=', '$role.accountId']
 						])
 					]

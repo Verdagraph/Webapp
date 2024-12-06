@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
-	import type { AcceptancePendingMembershipsQueryResult } from '$data/garden/queries';
+	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
 	import GardenInvite from './GardenInvite.svelte';
 
 	type Props = {

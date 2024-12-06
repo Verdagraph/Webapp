@@ -3,12 +3,12 @@
 	import iconIds from '$lib/assets/icons';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
-	import type { AcceptancePendingMembershipsQueryResult } from '$data/garden/queries';
-	import { userProfilesQuery } from '$data/user/queries';
+	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
+	import { userProfilesQuery } from '$data/users/queries';
 	import {
 		gardenMembershipAccept,
 		gardenMembershipDelete
-	} from '$data/garden/commands';
+	} from '$data/gardens/commands';
 	import { useQuery } from '@triplit/svelte';
 	import triplit from '$data/triplit';
 	import useAsync from '$state/asyncHandler.svelte';

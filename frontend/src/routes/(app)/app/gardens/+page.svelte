@@ -16,7 +16,7 @@
 		viewerGardensQuery,
 		favoriteMembershipsQuery,
 		acceptancePendingMembershipsQuery
-	} from '$data/garden/queries';
+	} from '$data/gardens/queries';
 	import triplit from '$data/triplit';
 	import type { Garden } from '@vdt-webapp/common';
 

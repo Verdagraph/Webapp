@@ -10,11 +10,11 @@ import type {
 	UserConfirmPasswordResetOpBody,
 	UserCreateOpBody,
 	UserLoginOpBody,
-	UserRequestEmailConfirmationBody,
+	UserRequestEmailConfirmationOpBody,
 	UserRequestPasswordResetOpBody,
 	UserUpdateOpBody
-} from '$codegen/types';
-import { axiosClient } from '$data/customAxios';
+} from '../../types';
+import { axiosClient } from '../../../data/customAxios';
 
 /**
  * Grants an access and refresh token on a correct username and password.
@@ -59,13 +59,13 @@ export const userUpdateOp = (userUpdateOpBody: UserUpdateOpBody) => {
  * Requests an email confirmation be sent to the email address.
  */
 export const userRequestEmailConfirmationOp = (
-	userRequestEmailConfirmationBody: UserRequestEmailConfirmationBody
+	userRequestEmailConfirmationOpBody: UserRequestEmailConfirmationOpBody
 ) => {
 	return axiosClient<string>({
 		url: `/users/requestEmailConfirmationOp`,
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		data: userRequestEmailConfirmationBody
+		data: userRequestEmailConfirmationOpBody
 	});
 };
 /**
@@ -111,8 +111,8 @@ export type UserRefreshOpResult = NonNullable<
 >;
 export type UserCreateOpResult = NonNullable<Awaited<ReturnType<typeof userCreateOp>>>;
 export type UserUpdateOpResult = NonNullable<Awaited<ReturnType<typeof userUpdateOp>>>;
-export type UserRequestEmailConfirmationResult = NonNullable<
-	Awaited<ReturnType<typeof userRequestEmailConfirmation>>
+export type UserRequestEmailConfirmationOpResult = NonNullable<
+	Awaited<ReturnType<typeof userRequestEmailConfirmationOp>>
 >;
 export type UserConfirmEmailOpResult = NonNullable<
 	Awaited<ReturnType<typeof userConfirmEmailOp>>

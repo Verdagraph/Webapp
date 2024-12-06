@@ -8,11 +8,11 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { gardenCreate } from '$data/garden/commands';
+	import { gardenCreate } from '$data/gardens/commands';
 	import iconIds from '$lib/assets/icons';
 	import { GardenVisibilityEnum } from '@vdt-webapp/common';
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
-	import { generateGardenId } from '$data/garden/utils';
+	import { generateGardenId } from '$data/gardens/utils';
 	import useAsync from '$state/asyncHandler.svelte';
 
 	/* Defines the labels for the visibility enum options. */

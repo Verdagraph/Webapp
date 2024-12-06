@@ -1,39 +1,59 @@
 import { z as zod } from 'zod';
-import { useMutation } from '@sveltestack/svelte-query';
-import type {
-	WorkspaceCreateCommand,
-	WorkspaceUpdateCommand,
-	WorkspaceDeleteCommand,
-	PlantingAreaCreateCommand,
-	PlantingAreaUpdateCommand,
-	PlantingAreaDeleteCommand
-} from '$codegen/types';
-import {
-	workspaceCreateCommandOp,
-	workspaceDeleteCommandOp,
-	workspaceUpdateCommandOp,
-	plantingAreaCreateCommandOp,
-	plantingAreaUpdateCommandOp,
-	plantingAreaDeleteCommandOp
-} from '$codegen';
-import { workspaceFieldSchemas } from './schemas';
-import { gardenFieldSchemas } from '$lib/data/garden/schemas';
+import { WorkspaceCreateCommand, type Workspace } from '@vdt-webapp/common';
+import { getClientOrError } from '$data/users/auth';
+import { slugify } from '$lib/utils';
+import triplit from '$data/triplit';
+import { AppError } from '@vdt-webapp/common/src/errors';
+import { exists } from '@triplit/client';
+import { requireRole } from '$data/gardens/commands';
 
 /** Creates a new workspace in a garden. */
 export const workspaceCreate = {
-	schema: zod.object({
-		garden_key: gardenFieldSchemas.key,
-		name: workspaceFieldSchemas.workspace_name,
-		description: workspaceFieldSchemas.workspace_description.optional()
-	}),
-	mutation: () => {
-		return useMutation(function (data: WorkspaceCreateCommand) {
-			return workspaceCreateCommandOp(data);
+	schema: WorkspaceCreateCommand,
+	mutation: async function (
+		data: zod.infer<typeof WorkspaceCreateCommand>
+	): Promise<Workspace> {
+		/** Retrieve client and authorize. */
+		await requireRole(data.gardenId, 'ADMIN');
+
+		/** Generate workspace slug from name. */
+		const workspaceSlug = slugify(data.name);
+
+		/** Validate garden-scoped unique workspace slug requirement. */
+		const existingWorkspace = await triplit.fetchOne(
+			triplit
+				.query('workspaces')
+				.where([
+					['gardenId', '=', data.gardenId],
+					['slug', '=', workspaceSlug]
+				])
+				.build()
+		);
+		if (existingWorkspace) {
+			throw new AppError('Workspace slug already exists.', {
+				fieldErrors: { name: ['This workspace name already exists in this garden.'] }
+			});
+		}
+
+		/** Add the workspace */
+		const result = await triplit.insert('workspaces', {
+			gardenId: data.gardenId,
+			name: data.name,
+			slug: workspaceSlug,
+			description: data.description
 		});
+		if (result.output == null) {
+			throw new AppError('Failed to create workspace.', {
+				nonFieldErrors: ['Failed to create workspace.']
+			});
+		}
+		return result.output;
 	}
 };
 
 /** Updates a workspace. */
+/**
+ * 
 export const workspaceUpdate = {
 	schema: zod.object({
 		workspace_ref: zod.string().uuid(),
@@ -46,8 +66,11 @@ export const workspaceUpdate = {
 		});
 	}
 };
+*/
 
 /** Deletes a workspace. */
+/**
+ * 
 export const workspaceDelete = {
 	schema: zod.object({
 		workspace_ref: zod.string().uuid()
@@ -59,7 +82,10 @@ export const workspaceDelete = {
 	}
 };
 
+*/
 /** Creates a new planting area in a workspace. */
+/**
+ * 
 export const plantingAreaCreate = {
 	schema: zod.object({
 		workspace_ref: zod.string().uuid(),
@@ -73,7 +99,10 @@ export const plantingAreaCreate = {
 	}
 };
 
+*/
 /** Updates a planting area. */
+/**
+ * 
 export const plantingAreaUpdate = {
 	schema: zod.object({
 		workspace_ref: zod.string().uuid(),
@@ -88,7 +117,10 @@ export const plantingAreaUpdate = {
 	}
 };
 
+*/
 /** Deletes a planting area. */
+/**
+ * 
 export const plantingAreaDelete = {
 	schema: zod.object({
 		workspace_ref: zod.string().uuid(),
@@ -100,3 +132,4 @@ export const plantingAreaDelete = {
 		});
 	}
 };
+*/

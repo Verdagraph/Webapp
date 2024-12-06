@@ -3,7 +3,7 @@
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
 	import { createTagsInput, melt } from '@melt-ui/svelte';
-	import { usernamesExistQueries } from '$data/user/queries';
+	import { usernamesExistQueries } from '$data/users/queries';
 	import gardenFields from '$lib/backendSchema/specs/garden';
 
 	type Props = {

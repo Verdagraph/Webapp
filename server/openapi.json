@@ -26,11 +26,7 @@
 										"description": "Must be a valid email address."
 									},
 									"password": {
-										"type": "string",
-										"minLength": 6,
-										"maxLength": 255,
-										"pattern": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$",
-										"description": "Must be between 6 and 255 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character."
+										"type": "string"
 									}
 								},
 								"required": ["email", "password"],
@@ -42,11 +38,12 @@
 				},
 				"responses": {
 					"200": {
-						"description": "Default Response",
+						"description": "The access token.",
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"type": "string",
+									"description": "The access token."
 								}
 							}
 						}
@@ -61,11 +58,12 @@
 				"description": "Grants an access and refresh token on a valid refresh token.",
 				"responses": {
 					"200": {
-						"description": "Default Response",
+						"description": "The access token.",
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"type": "string",
+									"description": "The access token."
 								}
 							}
 						}
@@ -200,7 +198,7 @@
 		},
 		"/users/requestEmailConfirmationOp": {
 			"post": {
-				"operationId": "UserRequestEmailConfirmation",
+				"operationId": "UserRequestEmailConfirmationOp",
 				"tags": ["user"],
 				"description": "Requests an email confirmation be sent to the email address.",
 				"requestBody": {

@@ -4,7 +4,7 @@ export default defineConfig({
 	vdt_frontend: {
 		input: {
 			// Path to the openapi specification.
-			target: './openapi.yaml',
+			target: './server.json',
 			// Whether to apply IBM OpenAPI linter.
 			validation: false
 		},
@@ -26,7 +26,7 @@ export default defineConfig({
 			prettier: true,
 			override: {
 				mutator: {
-					path: '../dataNew/customAxios.ts',
+					path: '../data/customAxios.ts',
 					name: 'axiosClient'
 				},
 				useNativeEnums: true

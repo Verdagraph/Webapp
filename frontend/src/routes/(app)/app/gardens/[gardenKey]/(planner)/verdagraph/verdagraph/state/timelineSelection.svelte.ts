@@ -32,7 +32,7 @@ type SliderTickType = 'currentDay' | 'firstOfWeek' | 'firstOfMonth' | 'firstOfYe
 
 /** State. */
 const focusedDay = defaultFocusedDay();
-let _rune = $state<TimelineSelection>({
+const _rune = $state<TimelineSelection>({
 	focusedDay: focusedDay,
 	beginSelectedDays: focusedDay.subtract(selectionOffset),
 	endSelectedDays: focusedDay.add(selectionOffset),
@@ -42,7 +42,7 @@ let _rune = $state<TimelineSelection>({
 	endSliderDisplayedDays: focusedDay.add(selectionOffset).add(sliderDisplayOffset)
 });
 /** The difference in days between the first and last slider displayed dates. */
-let _numSliderDisplayedDays: number = $derived(
+const _numSliderDisplayedDays: number = $derived(
 	calculateDeltaDays(_rune.endSliderDisplayedDays, _rune.beginSliderDisplayedDays)
 );
 //let _sliderDisplayedTickTypes: SliderTickType[] = $derived()

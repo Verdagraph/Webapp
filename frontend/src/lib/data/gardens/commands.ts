@@ -1,23 +1,56 @@
-import { date, z as zod } from 'zod';
-import { useMutation } from '@sveltestack/svelte-query';
+import { z as zod } from 'zod';
 import { AppError } from '@vdt-webapp/common/src/errors';
 import {
 	GardenCreateCommand,
 	GardenMembershipCreateCommand,
 	isProfileMember,
-	isProfileAdmin,
+	isUserAuthorized,
 	GardenMembershipAcceptCommand,
 	GardenMembershipDeleteCommand,
 	GardenMembershipRevokeCommand,
-	GardenMembershipRoleChangeCommand,
-	GardenMembershipStatusEnum
+	GardenMembershipRoleChangeCommand
 } from '@vdt-webapp/common';
-import type { Garden, GardenMembership } from '@vdt-webapp/common';
-import { gardenFieldSchemas } from './schemas';
+import type {
+	Garden,
+	GardenMembershipRoleEnum,
+	UserAccount,
+	UserProfile
+} from '@vdt-webapp/common';
 import triplit from '../triplit';
-import { getClientOrError } from '$data/user/auth';
+import { getClientOrError } from '$data/users/auth';
 
 /** Helpers. */
+
+export async function requireRole(
+	gardenId: string,
+	role: (typeof GardenMembershipRoleEnum)[number]
+): Promise<{
+	client: {
+		account: UserAccount;
+		profile: UserProfile;
+	};
+	garden: Garden;
+}> {
+	/** Retrieve client. */
+	const client = await getClientOrError();
+
+	/** Retrieve garden. */
+	const garden = await triplit.fetchOne(triplit.query('gardens').id(gardenId).build());
+	if (garden == null) {
+		throw new AppError('Garden key does not exist.', {
+			nonFormErrors: ['Garden key does not exist.']
+		});
+	}
+
+	/** Ensure client is of the specified role. */
+	if (!isUserAuthorized(garden, client.profile.id, role)) {
+		throw new AppError(`Requires ${role} access.`, {
+			nonFormErrors: [`This action requires the ${role} role.`]
+		});
+	}
+
+	return { client, garden };
+}
 
 /**
  * Given a list of usernames, constructs a set of matching profile IDs
@@ -26,10 +59,10 @@ import { getClientOrError } from '$data/user/auth';
  * @param garden The garden to check the user's aren't already members in.
  * @returns A set of matching profile IDs that aren't already members in the garden.
  */
-const getNewMembershipIdsFromUsernames = async (
+async function getNewMembershipIdsFromUsernames(
 	usernames: string[] | undefined,
 	garden?: Garden
-): Promise<Set<string>> => {
+): Promise<Set<string>> {
 	if (!usernames) {
 		return new Set();
 	}
@@ -45,7 +78,7 @@ const getNewMembershipIdsFromUsernames = async (
 			.filter((profile) => garden === undefined || !isProfileMember(garden, profile.id))
 			.map((profile) => profile.id)
 	);
-};
+}
 
 /** Commands. */
 
@@ -54,17 +87,15 @@ const getNewMembershipIdsFromUsernames = async (
  */
 export const gardenCreate = {
 	schema: GardenCreateCommand,
-	mutation: async (data: zod.infer<typeof GardenCreateCommand>): Promise<Garden> => {
+	mutation: async function (
+		data: zod.infer<typeof GardenCreateCommand>
+	): Promise<Garden> {
 		/** Retrieve client. */
 		const client = await getClientOrError();
 
 		/** Validate unique key constraint. */
 		const existingGarden = await triplit.fetchOne(
-			triplit
-				.query('gardens')
-				.where([['id', '=', data.id]])
-				.build(),
-			{ policy: 'remote-first' }
+			triplit.query('gardens').id(data.id).build()
 		);
 		if (existingGarden) {
 			throw new AppError('Garden ID already exists.', {
@@ -83,7 +114,6 @@ export const gardenCreate = {
 		/** Persist to db and add memberships. */
 		let garden: Garden | null = null;
 		await triplit.transact(async (transaction) => {
-			// @ts-ignore- Triplit not recognizing optionality of defaulted types.
 			garden = await transaction.insert('gardens', {
 				id: data.id,
 				name: data.name,
@@ -96,7 +126,6 @@ export const gardenCreate = {
 			});
 
 			/** Add creator membership. */
-			// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 			await transaction.insert('gardenMemberships', {
 				gardenId: garden.id,
 				userId: client.profile.id,
@@ -107,7 +136,6 @@ export const gardenCreate = {
 
 			/** Add admin memberships. */
 			for (const userId in adminIds) {
-				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
@@ -119,7 +147,6 @@ export const gardenCreate = {
 
 			/** Add editor memberships. */
 			for (const userId in editorIds) {
-				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
@@ -131,7 +158,6 @@ export const gardenCreate = {
 
 			/** Add editor memberships. */
 			for (const userId in viewerIds) {
-				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
@@ -154,26 +180,9 @@ export const gardenCreate = {
  */
 export const gardenMembershipCreate = {
 	schema: GardenMembershipCreateCommand,
-	mutation: async (data: zod.infer<typeof GardenMembershipCreateCommand>) => {
-		/** Retrieve client. */
-		const client = await getClientOrError();
-
-		/** Retrieve garden. */
-		const garden = await triplit.fetchOne(
-			triplit.query('gardens').where('id', '=', data.gardenId).build()
-		);
-		if (garden == null) {
-			throw new AppError('Garden key does not exist.', {
-				nonFormErrors: ['Garden key does not exist.']
-			});
-		}
-
-		/** Ensure client is an admin. */
-		if (!isProfileAdmin(garden, client.profile.id)) {
-			throw new AppError('Requires admin access.', {
-				nonFormErrors: ['This action requires the admin role.']
-			});
-		}
+	mutation: async function (data: zod.infer<typeof GardenMembershipCreateCommand>) {
+		/** Retrieve client and authorize. */
+		const { client, garden } = await requireRole(data.gardenId, 'ADMIN');
 
 		/** Retrieve all invitee IDs. Drop all IDs which are already members */
 		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites);
@@ -190,7 +199,6 @@ export const gardenMembershipCreate = {
 
 			/** Add admin memberships. */
 			for (const userId in adminIds) {
-				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
@@ -202,7 +210,6 @@ export const gardenMembershipCreate = {
 
 			/** Add editor memberships. */
 			for (const userId in editorIds) {
-				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
@@ -214,7 +221,6 @@ export const gardenMembershipCreate = {
 
 			/** Add editor memberships. */
 			for (const userId in viewerIds) {
-				// @ts-ignore - Triplit not recognizing optionality of defaulted types.
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,
@@ -232,7 +238,7 @@ export const gardenMembershipCreate = {
  */
 export const gardenMembershipAccept = {
 	schema: GardenMembershipAcceptCommand,
-	mutation: async (data: zod.infer<typeof GardenMembershipAcceptCommand>) => {
+	mutation: async function (data: zod.infer<typeof GardenMembershipAcceptCommand>) {
 		/** Retrieve client. */
 		const client = await getClientOrError();
 
@@ -272,7 +278,7 @@ export const gardenMembershipAccept = {
  */
 export const gardenMembershipDelete = {
 	schema: GardenMembershipDeleteCommand,
-	mutation: async (data: zod.infer<typeof GardenMembershipDeleteCommand>) => {
+	mutation: async function (data: zod.infer<typeof GardenMembershipDeleteCommand>) {
 		/** Retrieve client. */
 		const client = await getClientOrError();
 
@@ -306,9 +312,9 @@ export const gardenMembershipDelete = {
  */
 export const gardenMembershipRevoke = {
 	schema: GardenMembershipRevokeCommand,
-	mutation: async (data: zod.infer<typeof GardenMembershipRevokeCommand>) => {
-		/** Retrieve client. */
-		const client = await getClientOrError();
+	mutation: async function (data: zod.infer<typeof GardenMembershipRevokeCommand>) {
+		/** Retrieve client and authorize. */
+		const { client } = await requireRole(data.gardenId, 'ADMIN');
 
 		/** Ensure the command is valid. */
 		if (client.profile.id === data.profileId) {
@@ -318,23 +324,6 @@ export const gardenMembershipRevoke = {
 					nonFormErrors: ['Cannot revoke own membership - leave instead.']
 				}
 			);
-		}
-
-		/** Retrieve garden. */
-		const garden = await triplit.fetchOne(
-			triplit.query('gardens').where('id', '=', data.gardenId).build()
-		);
-		if (garden == null) {
-			throw new AppError('Garden key does not exist.', {
-				nonFormErrors: ['Garden key does not exist.']
-			});
-		}
-
-		/** Ensure client is an admin. */
-		if (!isProfileAdmin(garden, client.profile.id)) {
-			throw new AppError('Requires admin access.', {
-				nonFormErrors: ['This action requires the admin role.']
-			});
 		}
 
 		/** Retrieve the membership. */
@@ -367,9 +356,9 @@ export const gardenMembershipRevoke = {
  */
 export const gardenMembershipRoleChange = {
 	schema: GardenMembershipRoleChangeCommand,
-	mutation: async (data: zod.infer<typeof GardenMembershipRoleChangeCommand>) => {
-		/** Retrieve client. */
-		const client = await getClientOrError();
+	mutation: async function (data: zod.infer<typeof GardenMembershipRoleChangeCommand>) {
+		/** Retrieve client and authorize. */
+		const { client, garden } = await requireRole(data.gardenId, 'ADMIN');
 
 		/** Ensure the command is valid. */
 		if (client.profile.id === data.profileId) {
@@ -377,14 +366,9 @@ export const gardenMembershipRoleChange = {
 				nonFormErrors: ['You cannot change the role of your own membership.']
 			});
 		}
-
-		/** Retrieve garden. */
-		const garden = await triplit.fetchOne(
-			triplit.query('gardens').where('id', '=', data.gardenId).build()
-		);
-		if (garden == null) {
-			throw new AppError('Garden key does not exist.', {
-				nonFormErrors: ['Garden key does not exist.']
+		if (data.profileId === garden.creatorId) {
+			throw new AppError("Creator's role cannot be changed.", {
+				nonFormErrors: ["You cannot change the role of the garden's creator."]
 			});
 		}
 
@@ -401,20 +385,6 @@ export const gardenMembershipRoleChange = {
 		if (!membership) {
 			throw new AppError('Membership does not exist in the collection.', {
 				nonFormErrors: ['The membership in this garden does not exist.']
-			});
-		}
-
-		/** Ensure client is an admin. */
-		if (!isProfileAdmin(garden, client.profile.id)) {
-			throw new AppError('Requires admin access.', {
-				nonFormErrors: ['This action requires the admin role.']
-			});
-		}
-
-		/** Ensure the subject is not the creator. */
-		if (data.profileId === garden.creatorId) {
-			throw new AppError("Creator's role cannot be changed.", {
-				nonFormErrors: ["You cannot change the role of the garden's creator."]
 			});
 		}
 

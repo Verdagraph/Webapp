@@ -11,7 +11,7 @@
 	import type { Garden } from '@vdt-webapp/common';
 	import Sidebar from './Sidebar.svelte';
 	import Bottombar from './Bottombar.svelte';
-	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
+	import { IsMobile } from '$lib/state/isMobile.svelte';
 	import triplit from '$data/triplit';
 	import {
 		activeGardenQuery,
@@ -19,7 +19,7 @@
 		editorGardensQuery,
 		viewerGardensQuery,
 		favoriteMembershipsQuery
-	} from '$data/garden/queries';
+	} from '$data/gardens/queries';
 	import activeGardenKey from '$state/activeGarden.svelte';
 	import auth from '$state/auth.svelte';
 

@@ -14,7 +14,7 @@ const TRIPLIT_ANON_TOKEN =
  */
 export const userLogin = {
 	schema: UserLoginCommand,
-	mutation: async (data: z.infer<typeof UserLoginCommand>) => {
+	mutation: async function (data: z.infer<typeof UserLoginCommand>) {
 		/** Don't allow re-logging in. */
 		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
 			return;
@@ -33,7 +33,7 @@ export const userLogin = {
  * Sends an authentication refresh request to the backend
  */
 export const userRefresh = {
-	mutation: async () => {
+	mutation: async function () {
 		const token = await userRefreshOp();
 		auth.isAuthenticated = true;
 		return token;
@@ -44,7 +44,7 @@ export const userRefresh = {
  * Ends the triplit session.
  */
 export const userLogout = {
-	mutation: async () => {
+	mutation: async function () {
 		/** Don't allow re-logging out. */
 		if (triplit.token == null || triplit.token == TRIPLIT_ANON_TOKEN) {
 			return;
@@ -93,7 +93,7 @@ export const getClientOrError = async (): Promise<{
 	profile: UserProfile;
 }> => {
 	/** Return the client if authenticated. */
-	let client = await getClient();
+	const client = await getClient();
 	if (client) {
 		return client;
 	}

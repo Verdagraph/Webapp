@@ -6,7 +6,7 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export type UserRequestEmailConfirmationBody = {
+export type UserRequestEmailConfirmationOpBody = {
 	/** Must be a valid email address. */
 	email: string;
 };

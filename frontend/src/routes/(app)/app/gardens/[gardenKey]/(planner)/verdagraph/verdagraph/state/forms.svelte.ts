@@ -54,11 +54,11 @@ let activeFormIds = $state<VerdagraphFormType[]>([]);
 /** Stores the ID of the last activated form. */
 let lastActivatedId = $state<VerdagraphFormType | undefined>();
 /** Presents the attributes of the active forms. */
-let activeForms = $derived(
+const activeForms = $derived(
 	formAttributes.filter((attributes) => activeFormIds.includes(attributes.id))
 );
 /** Presents true if any forms are active. */
-let anyFormsActive = $derived(activeFormIds.length > 0);
+const anyFormsActive = $derived(activeFormIds.length > 0);
 
 /**
  * Form management for the Verdagraph.

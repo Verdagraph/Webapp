@@ -4,7 +4,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userLogin } from '$data/user/auth';
+	import { userLogin } from '$data/users/auth';
 	import auth from '$state/auth.svelte';
 	import useAsync from '$state/asyncHandler.svelte';
 

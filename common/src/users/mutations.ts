@@ -4,6 +4,7 @@ import z from 'zod';
 export const userFields = {
 	username: z
 		.string()
+		.trim()
 		.min(3, 'Must be at least 3 characters.')
 		.max(50, 'May be at most 50 characters.')
 		.regex(
