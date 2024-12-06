@@ -12,7 +12,7 @@
 <MenubarPrimitive.Root
 	bind:ref
 	class={cn(
-		'bg-neutral-2 flex h-8 w-full items-center space-x-1 rounded-none border-b p-1',
+		'bg-neutral-2 flex h-8 w-full items-center rounded-none border-b p-0',
 		className
 	)}
 	{...restProps}

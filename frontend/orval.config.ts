@@ -17,10 +17,9 @@ export default defineConfig({
 			// What type of client to generate.
 			client: 'axios-functions',
 			// Generates a folder for every unique openapi tag
-			// and a seperate file for real and mocked client code.
 			mode: 'tags-split',
 			// Whether to generate Mock Service Worker mocked code.
-			mock: true,
+			mock: false,
 			// Generates comment headers on client code.
 			headers: true,
 			// Formats generated code.
