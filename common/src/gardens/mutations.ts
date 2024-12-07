@@ -7,6 +7,7 @@ export const gardenFields = {
 	id: z
 		.string()
 		.trim()
+		.toLowerCase()
 		.min(4, 'Must be at least 4 characters.')
 		.max(21, 'May be at most 21 characters.')
 		.regex(/[0-9A-Za-z-]+/, 'Must contain only alphanumeric characters and hyphens.')

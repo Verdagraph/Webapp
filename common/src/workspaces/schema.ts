@@ -59,7 +59,7 @@ export const workspaceSchema = {
 					]
 				},
 				update: {
-					/** Restrict coordinates updates to admins. */
+					/** Restrict coordinates updates to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -68,7 +68,7 @@ export const workspaceSchema = {
 					]
 				},
 				delete: {
-					/** Restrict coordinates deletes to admins. */
+					/** Restrict coordinates deletes to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -181,7 +181,7 @@ export const workspaceSchema = {
 					]
 				},
 				update: {
-					/** Restrict geometry updates to admins. */
+					/** Restrict geometry updates to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -190,7 +190,7 @@ export const workspaceSchema = {
 					]
 				},
 				delete: {
-					/** Restrict geometry deletes to admins. */
+					/** Restrict geometry deletes to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -245,7 +245,7 @@ export const workspaceSchema = {
 					]
 				},
 				update: {
-					/** Restrict geometry history updates to admins. */
+					/** Restrict geometry history updates to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -254,7 +254,7 @@ export const workspaceSchema = {
 					]
 				},
 				delete: {
-					/** Restrict geometry histories deletes to admins. */
+					/** Restrict geometry histories deletes to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -316,7 +316,7 @@ export const workspaceSchema = {
 					]
 				},
 				update: {
-					/** Restrict locations updates to admins. */
+					/** Restrict locations updates to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -325,7 +325,7 @@ export const workspaceSchema = {
 					]
 				},
 				delete: {
-					/** Restrict locations deletes to admins. */
+					/** Restrict locations deletes to admins and editors. */
 					filter: [
 						or([
 							['garden.adminIds', 'has', '$role.profileId'],
@@ -347,7 +347,10 @@ export const workspaceSchema = {
 
 			/** A set of locations which describe a history of locational change. */
 			locationIds: S.Set(S.String()),
-			locations: S.RelationMany('locations', { where: [['id', 'in', '$locationIds']] })
+			locations: S.RelationMany('locations', { where: [['id', 'in', '$locationIds']] }),
+
+			/** Denormalized set of workspace IDs that are represented by the locations. */
+			workspaceIds: S.Set(S.String())
 		}),
 		permissions: {
 			anon: {

@@ -12,6 +12,7 @@
 		/** Update the active workspace upon loading a new workspace. */
 		if (activeWorkspace.id != $page.params.workspaceSlug) {
 			activeWorkspace.id = $page.params.workspaceSlug;
+			activeWorkspace.editing = false;
 		}
 	});
 

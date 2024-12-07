@@ -4,6 +4,7 @@
 	import * as Tooltip from '$components/ui/tooltip';
 	import { ModeWatcher } from 'mode-watcher';
 	import '../app.pcss';
+	import * as utils from '$data/gardens/utils';
 
 	let { children } = $props();
 </script>
