@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { melt, createTreeView, type TreeView } from '@melt-ui/svelte';
 	//import type { WorkspaceFullSchema } from '$codegen';
-	import activeWorkspace from '../activeWorkspace.svelte';
+	//import activeWorkspace from '../activeWorkspace.svelte';
 
 	type Props = {
 		//workspace: WorkspaceFullSchema;
