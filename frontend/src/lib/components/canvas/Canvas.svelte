@@ -1,48 +1,41 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Konva from 'konva';
+	import type { Snippet } from 'svelte';
+	import { setContext } from 'svelte';
+	import { getColor } from '$lib/utils';
+	import { mode } from 'mode-watcher';
+	import createCanvasContext, { type CanvasContext } from './context.svelte';
 
-	let stageRef: HTMLDivElement;
-	let stage: Konva.Stage | null = null;
-	let containerWidth = $state(0);
-	let containerHeight = $state(0);
+	/** Props. */
+	type Props = {
+		canvasId: string;
+		children: Snippet<[]>;
+	};
+	let { canvasId, children }: Props = $props();
 
+	/** Create the context. */
+	const canvas = createCanvasContext(canvasId, getColor('neutral', 1, $mode));
+	setContext<CanvasContext>(canvasId, canvas);
+
+	let containerRef: HTMLDivElement;
 	onMount(() => {
-		stage = new Konva.Stage({
-			container: stageRef,
-			width: containerWidth,
-			height: containerHeight
-		});
-		const layer = new Konva.Layer();
-		stage.add(layer);
-		// Add rectangle in bottom right
-		const rect = new Konva.Rect({
-			fill: 'green',
-			x: 0,
-			y: 0,
-			width: stage.width(),
-			height: stage.height()
-		});
-		layer.add(rect);
+		canvas.initializeCanvas();
 
-		const resizeObserver = new ResizeObserver(function () {
-			console.log(containerWidth);
-			console.log(containerHeight);
-			layer.batchDraw();
-			stage?.width(containerWidth);
-			stage?.height(containerHeight);
-			rect.width(stage?.width());
-			rect.height(stage?.height());
-		});
-		resizeObserver.observe(stageRef);
+		const resizeObserver = new ResizeObserver(canvas.onResize);
+		resizeObserver.observe(containerRef);
 
-		return () => resizeObserver.unobserve(stageRef);
+		return () => resizeObserver.unobserve(containerRef);
 	});
 </script>
 
 <div
-	bind:this={stageRef}
-	bind:clientWidth={containerWidth}
-	bind:clientHeight={containerHeight}
+	id={canvasId}
+	bind:this={containerRef}
+	bind:clientWidth={canvas.reactive.containerWidth}
+	bind:clientHeight={canvas.reactive.containerHeight}
 	class="h-full w-full"
-></div>
+>
+	{#if canvas.reactive.initialized}
+		{@render children()}
+	{/if}
+</div>

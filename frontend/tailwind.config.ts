@@ -2,6 +2,7 @@ import { fontFamily } from 'tailwindcss/defaultTheme';
 import type { Config } from 'tailwindcss';
 import tailwindcssAnimate from 'tailwindcss-animate';
 import containerQueries from '@tailwindcss/container-queries';
+import colors, { type Color } from './src/lib/colors.config';
 
 const config: Config = {
 	darkMode: 'selector',
@@ -16,19 +17,14 @@ const config: Config = {
 			}
 		},
 		extend: {
-			/**
-			 * Colors used are from Radix-UI.
-			 * Note that colors used here must be imported as CSS variables
-			 * within src/app.pcss
-			 */
 			colors: {
-				neutral: getColorScale('olive'),
-				primary: getColorScale('grass'),
-				secondary: getColorScale('teal'),
-				accent: getColorScale('lime'),
-				destructive: getColorScale('tomato'),
-				warning: getColorScale('amber'),
-				success: getColorScale('mint')
+				neutral: getColorScale('neutral'),
+				primary: getColorScale('primary'),
+				secondary: getColorScale('secondary'),
+				accent: getColorScale('accent'),
+				destructive: getColorScale('destructive'),
+				warning: getColorScale('warning'),
+				success: getColorScale('success')
 			},
 			borderRadius: {
 				xl: 'calc(var(--radius) + 4px)',
@@ -71,7 +67,8 @@ const config: Config = {
  * @param name - The base name of the color scale from Radix-UI.
  * @returns An object representing the color scale, with keys from 1 to 12 and corresponding CSS variable values.
  */
-function getColorScale(name: string): Record<string, string> {
+function getColorScale(color: Color): Record<string, string> {
+	const name = colors[color].radixId;
 	const scale = {};
 	for (let i = 1; i <= 12; i++) {
 		scale[i] = `var(--${name}-${i})`;
