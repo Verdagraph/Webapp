@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
-	import type { CanvasContext } from './context.svelte';
+	import type { CanvasContext } from './state/context.svelte';
+	import { getColor } from '$lib/utils';
 	import Konva from 'konva';
+	import { mode } from 'mode-watcher';
 	/** Props. */
 	type Props = {
 		canvasId: string;
@@ -10,13 +12,5 @@
 
 	let canvas = getContext<CanvasContext>(canvasId);
 
-	let rect = new Konva.Rect({ x: 0, y: 0, width: 500, height: 500, fill: 'white' });
-
-	console.log('retrieving');
-	const backgroundLayer = canvas.getLayer('background');
-	if (backgroundLayer) {
-		console.log('adding');
-		console.log(backgroundLayer);
-		backgroundLayer.add(rect);
-	}
+	canvas.grid.initialize();
 </script>

@@ -4,7 +4,7 @@
 	import { setContext } from 'svelte';
 	import { getColor } from '$lib/utils';
 	import { mode } from 'mode-watcher';
-	import createCanvasContext, { type CanvasContext } from './context.svelte';
+	import { createCanvasContext, type CanvasContext } from './state';
 
 	/** Props. */
 	type Props = {
@@ -14,28 +14,31 @@
 	let { canvasId, children }: Props = $props();
 
 	/** Create the context. */
-	const canvas = createCanvasContext(canvasId, getColor('neutral', 1, $mode));
+	const canvas = createCanvasContext(canvasId);
 	setContext<CanvasContext>(canvasId, canvas);
 
 	let containerRef: HTMLDivElement;
 	onMount(() => {
-		canvas.initializeCanvas();
+		canvas.container.initialize();
 
-		const resizeObserver = new ResizeObserver(canvas.onResize);
+		const resizeObserver = new ResizeObserver(canvas.container.onResize);
 		resizeObserver.observe(containerRef);
 
-		return () => resizeObserver.unobserve(containerRef);
+		return () => {
+			resizeObserver.unobserve(containerRef);
+			resizeObserver.disconnect();
+		};
 	});
 </script>
 
 <div
 	id={canvasId}
 	bind:this={containerRef}
-	bind:clientWidth={canvas.reactive.containerWidth}
-	bind:clientHeight={canvas.reactive.containerHeight}
+	bind:clientWidth={canvas.container.width}
+	bind:clientHeight={canvas.container.height}
 	class="h-full w-full"
 >
-	{#if canvas.reactive.initialized}
+	{#if canvas.container.initialized}
 		{@render children()}
 	{/if}
 </div>

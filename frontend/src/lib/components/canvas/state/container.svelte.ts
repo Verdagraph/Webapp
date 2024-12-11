@@ -1,25 +1,18 @@
 import { AppError } from '@vdt-webapp/common/src/errors';
 import Konva from 'konva';
+import { getColor } from '$lib/utils';
+import mode from '$state/theme.svelte';
 
-type CanvasReactiveState = {
-	initialized: boolean;
-	containerWidth: number;
-	containerHeight: number;
-};
-
-export function createCanvasContext(canvasId: string, backgroundColor: string) {
+export function createCanvasContainer(canvasId: string) {
 	/** Konva elements. */
 	const containerId = canvasId;
 	let stage: Konva.Stage | null = null;
-	let backgroundLayer;
 	let layers: Record<string, Konva.Layer> = {};
 
 	/** Runes. */
-	let reactive = $state<CanvasReactiveState>({
-		initialized: false,
-		containerWidth: 0,
-		containerHeight: 0
-	});
+	let initialized = $state(false);
+	let height = $state(0);
+	let width = $state(0);
 
 	/**
 	 * An array of functions which, when the canvas is resized, are called.
@@ -28,8 +21,8 @@ export function createCanvasContext(canvasId: string, backgroundColor: string) {
 		/** Update the stage upon container resize. */
 		() => {
 			if (stage) {
-				stage.width(reactive.containerWidth);
-				stage.height(reactive.containerHeight);
+				stage.width(width);
+				stage.height(height);
 			}
 		}
 	];
@@ -82,18 +75,18 @@ export function createCanvasContext(canvasId: string, backgroundColor: string) {
 	/**
 	 * Initializes the canvas.
 	 */
-	function initializeCanvas() {
+	function initialize() {
 		/** Initialize the stage. */
 		stage = new Konva.Stage({
 			container: containerId,
-			width: reactive.containerWidth,
-			height: reactive.containerHeight
+			width: width,
+			height: height
 		});
 
 		/** Initialize the background*/
 		const backgroundLayer = addLayer('background');
 		const backgroundRect = new Konva.Rect({
-			fill: backgroundColor,
+			fill: getColor('neutral', 1, mode.value),
 			x: 0,
 			y: 0,
 			width: stage.width(),
@@ -101,13 +94,14 @@ export function createCanvasContext(canvasId: string, backgroundColor: string) {
 		});
 		backgroundLayer.add(backgroundRect);
 		addResizeFunction(() => {
+			console.log(`width: ${width} height: ${height}`);
 			if (stage && backgroundRect) {
 				backgroundRect.width(stage.width());
 				backgroundRect.height(stage.height());
 			}
 		});
 
-		reactive.initialized = true;
+		initialized = true;
 	}
 
 	return {
@@ -117,23 +111,29 @@ export function createCanvasContext(canvasId: string, backgroundColor: string) {
 		get stage() {
 			return stage;
 		},
-		get reactive() {
-			return reactive;
+		get initialized() {
+			return initialized;
 		},
-		set reactive(newVal: CanvasReactiveState) {
-			reactive = newVal;
+		get width() {
+			return width;
 		},
-		get backgroundLayer() {
-			return backgroundLayer;
+		get height() {
+			return height;
+		},
+		set width(newVal: number) {
+			width = newVal;
+		},
+		set height(newVal: number) {
+			height = newVal;
 		},
 
-		initializeCanvas,
+		initialize,
 		addLayer,
 		getLayer,
 		onResize,
 		addResizeFunction
 	};
 }
-export default createCanvasContext;
+export default createCanvasContainer;
 
-export type CanvasContext = ReturnType<typeof createCanvasContext>;
+export type CanvasContainer = ReturnType<typeof createCanvasContainer>;
