@@ -1,7 +1,7 @@
 /**
  * Stores the active garden's key
  */
-let _rune: string | null = $state('aisent');
+let _rune: string | null = $state(null);
 
 /* Exported state methods. */
 export const activeGardenKey = {

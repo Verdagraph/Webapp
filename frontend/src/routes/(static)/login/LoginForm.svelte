@@ -1,51 +1,29 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { useQueryClient } from '@sveltestack/svelte-query';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userLogin } from '$lib/data/user/auth';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
-	import authentication from '$state/authentication.svelte';
-	/* Form mutation. */
-	const queryClient = useQueryClient();
-	const mutation = userLogin.mutation(queryClient);
-	/* Server error state. */
-	const serverErrors = createServerErrors();
+	import { userLogin } from '$data/users/auth';
+	import auth from '$state/auth.svelte';
+	import useAsync from '$state/asyncHandler.svelte';
 
-	/**
-	 * Standard form configuration:
-	 * - SPA: True disables server-side functionality.
-	 * - validators: Zod schema specifies form validation.
-	 * - onUpdate: Submission handler. Activates svelte-query mutation,
-	 *  executes success task, and sets server errors on failure.
-	 * - onChange: Reset server errors.
-	 */
+	let formHandler = useAsync(userLogin.mutation, {
+		onSuccess: () => {
+			goto('/app');
+		}
+	});
 	const form = superForm(defaults(zod(userLogin.schema)), {
 		SPA: true,
+		resetForm: false,
 		validators: zod(userLogin.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				$mutation.mutate(form.data, {
-					onSuccess: (data) => {
-						/**
-						 * TODO: Move this state update to the data layer.
-						 * It is here because having both onSuccess callbacks
-						 * caused only the first to be run.
-						 */
-						authentication.login(data.expiry_time_seconds);
-						goto('/app');
-					},
-					onError: (error) => {
-						// @ts-ignore
-						serverErrors.setErrors(error);
-					}
-				});
+				formHandler.execute(form.data);
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formHandler.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
@@ -53,39 +31,46 @@
 
 <form method="POST" use:enhance>
 	<!-- Email address -->
-	<Form.Field {form} name="email_address">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userLogin.schema.shape.email_address.description}
-				optional={userLogin.schema.shape.email_address.isOptional()}>Email</Form.Label
-			>
-			<Input
-				{...attrs}
-				type="email"
-				placeholder="email@example.com"
-				bind:value={$formData.email_address}
-			/>
+	<Form.Field {form} name="email">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userLogin.schema.shape.email.description}
+					optional={userLogin.schema.shape.email.isOptional()}>Email</Form.Label
+				>
+				<Input
+					{...props}
+					type="email"
+					placeholder="email@example.com"
+					bind:value={$formData.email}
+				/>
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['email_address']} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.email} />
 	</Form.Field>
 
 	<!-- Password -->
 	<Form.Field {form} name="password">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userLogin.schema.shape.password.description}
-				optional={userLogin.schema.shape.password.isOptional()}>Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userLogin.schema.shape.password.description}
+					optional={userLogin.schema.shape.password.isOptional()}>Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['password']} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password} />
 	</Form.Field>
+
+	<!-- Non-field errors. -->
+	<Form.NonFieldErrors handlerErrors={formHandler.nonFieldErrors} />
 
 	<!-- Submit button -->
 	<Form.Button
 		disabled={false}
-		loading={$mutation.isLoading}
+		loading={formHandler.isLoading}
 		variant="default"
-		class="mt-4 w-full">Submit</Form.Button
+		class="mt-2 w-full">Submit</Form.Button
 	>
 </form>

@@ -13,7 +13,7 @@
 		<Icon
 			icon={iconIds.formFieldDescriptionIcon}
 			width="1rem"
-			class="ml-2 text-destructive-9 hover:text-destructive-10"
+			class="text-destructive-9 hover:text-destructive-10 ml-2"
 		/>
 	</Popover.Trigger>
 	<Popover.Content {...errorAttrs} class="max-w-2xl">

@@ -3,8 +3,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { userCreate } from '$lib/data/user/commands';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { userCreate } from '$data/users/commands';
+	import useAsync from '$state/asyncHandler.svelte';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -16,43 +16,22 @@
 	let { succeeded = $bindable(false), registeredEmail = $bindable('') }: Props =
 		$props();
 
-	/* Form mutation. */
-	const mutation = userCreate.mutation();
-	/* Server error state. */
-	const serverErrors = createServerErrors();
-
-	/**
-	 * Standard form configuration:
-	 * - SPA: True disables server-side functionality.
-	 * - validators: Zod schema specifies form validation.
-	 * - onUpdate: Submission handler. Activates svelte-query mutation,
-	 *  executes success task, and sets server errors on failure.
-	 * - onChange: Reset server errors.
-	 */
+	let formHandler = useAsync(userCreate.mutation, {
+		onSuccess: () => {
+			succeeded = true;
+		}
+	});
 	const form = superForm(defaults(zod(userCreate.schema)), {
 		SPA: true,
-		validators: zod(
-			userCreate.schema.refine((data) => data.password1 == data.password2, {
-				message: 'Passwords must match',
-				path: ['password2']
-			})
-		),
+		validators: zod(userCreate.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				registeredEmail = form.data.email_address;
-				$mutation.mutate(form.data, {
-					onSuccess: () => {
-						succeeded = true;
-					},
-					onError: (error) => {
-						// @ts-ignore
-						serverErrors.setErrors(error);
-					}
-				});
+				registeredEmail = form.data.email;
+				formHandler.execute(form.data);
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formHandler.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
@@ -61,68 +40,78 @@
 <form method="POST" autocomplete="off" use:enhance>
 	<!-- Username -->
 	<Form.Field {form} name="username">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.shape.username.description}
-				optional={userCreate.schema.shape.username.isOptional()}>Username</Form.Label
-			>
-			<Input
-				{...attrs}
-				type="text"
-				autocomplete="false"
-				placeholder="username"
-				bind:value={$formData.username}
-			/>
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.username.description}
+					optional={userCreate.schema.innerType().shape.username.isOptional()}
+					>Username</Form.Label
+				>
+				<Input
+					{...props}
+					type="text"
+					placeholder="username"
+					bind:value={$formData.username}
+				/>
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['username']} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.username} />
 	</Form.Field>
 
 	<!-- Email address -->
-	<Form.Field {form} name="email_address">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.shape.email_address.description}
-				optional={userCreate.schema.shape.email_address.isOptional()}>Email</Form.Label
-			>
-			<Input
-				{...attrs}
-				type="email"
-				placeholder="email@example.com"
-				bind:value={$formData.email_address}
-			/>
+	<Form.Field {form} name="email">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.email.description}
+					optional={userCreate.schema.innerType().shape.email.isOptional()}
+					>Email</Form.Label
+				>
+				<Input
+					{...props}
+					type="email"
+					placeholder="email@example.com"
+					bind:value={$formData.email}
+				/>
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['email_address']} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.email} />
 	</Form.Field>
 
 	<!-- Password1 -->
 	<Form.Field {form} name="password1">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.shape.password1.description}
-				optional={userCreate.schema.shape.password1.isOptional()}>Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password1} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.password1.description}
+					optional={userCreate.schema.innerType().shape.password1.isOptional()}
+					>Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password1} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['password1']} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
 	</Form.Field>
 
 	<!-- Password2 -->
 	<Form.Field {form} name="password2">
-		<Form.Control let:attrs>
-			<Form.Label
-				description={userCreate.schema.shape.password2.description}
-				optional={userCreate.schema.shape.password2.isOptional()}
-				>Confirm Password</Form.Label
-			>
-			<Input {...attrs} type="password" bind:value={$formData.password2} />
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={userCreate.schema.innerType().shape.password2.description}
+					optional={userCreate.schema.innerType().shape.password2.isOptional()}
+					>Confirm Password</Form.Label
+				>
+				<Input {...props} type="password" bind:value={$formData.password2} />
+			{/snippet}
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['password2']} />
+		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password2} />
 	</Form.Field>
 
 	<!-- Submit button -->
 	<Form.Button
 		disabled={false}
-		loading={$mutation.isLoading}
+		loading={formHandler.isLoading}
 		variant="default"
 		class="mt-4 w-full">Submit</Form.Button
 	>

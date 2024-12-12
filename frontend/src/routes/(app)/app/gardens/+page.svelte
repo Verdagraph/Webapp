@@ -2,30 +2,40 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
+	import { useQuery } from '@triplit/svelte';
 	import iconIds from '$lib/assets/icons';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Popover from '$components/ui/popover';
-	import { flyAndScale } from '$lib/utils/shadcn';
-	import authentication from '$state/authentication.svelte';
-	import type { GardenPartialSchema } from '$codegen/types';
+	import auth from '$state/auth.svelte';
 	import GardenThumbnailScrollable from './GardenThumbnailScrollable.svelte';
 	import GardenInviteScrollable from './GardenInviteScrollable.svelte';
 	import {
-		gardenAssociatedPartialsQuery,
-		gardenPendingInvitesQuery
-	} from '$data/garden/queries';
+		adminGardensQuery,
+		editorGardensQuery,
+		viewerGardensQuery,
+		favoriteMembershipsQuery,
+		acceptancePendingMembershipsQuery
+	} from '$data/gardens/queries';
+	import triplit from '$data/triplit';
+	import type { Garden } from '@vdt-webapp/common';
 
 	/** Queries */
-	const associatedPartials = gardenAssociatedPartialsQuery();
-	const pendingInvites = gardenPendingInvitesQuery();
+	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
+	let adminGardens = useQuery(triplit, adminGardensQuery);
+	let editorGardens = useQuery(triplit, editorGardensQuery);
+	let viewerGardens = useQuery(triplit, viewerGardensQuery);
+	let pendingAcceptanceMemberships = useQuery(
+		triplit,
+		acceptancePendingMembershipsQuery
+	);
 
 	/**
-	 * If a non-authenticated user access this page,
+	 * If a non-authenticated user accesses this page,
 	 * redirect to public discovery page.
 	 */
 	onMount(() => {
-		if (!authentication.value.isAuthenticated) {
+		if (!auth.isAuthenticated) {
 			goto('gardens/discover');
 		}
 	});
@@ -37,7 +47,7 @@
 
 <!-- Top bar -->
 <div
-	class="sticky top-0 z-50 flex h-10 w-full flex-row items-center justify-between overflow-hidden border-b border-neutral-5 bg-neutral-1"
+	class="border-neutral-5 bg-neutral-1 sticky top-0 z-50 flex h-10 w-full flex-row items-center justify-between overflow-hidden border-b"
 >
 	<span class="ml-8">Gardens</span>
 	<ul class="flex h-full flex-row items-center">
@@ -54,32 +64,26 @@
 					<Button variant="ghost" class="rounded-none">
 						<Icon icon={iconIds.gardensInviteIcon} width="1.5rem" class="mx-2" />
 						<span class="mx-2 hidden sm:block">Invites</span>
-						<div class="h-6 w-6 rounded-2xl border border-neutral-9">
-							{#if $pendingInvites.status === 'loading'}
+						<div class="border-neutral-9 h-6 w-6 rounded-2xl border">
+							{#if pendingAcceptanceMemberships.fetching}
 								?
-							{:else if $pendingInvites.status === 'success'}
-								{$pendingInvites.data.pending_invites.length}
+							{:else if pendingAcceptanceMemberships.error}
+								?
+							{:else if pendingAcceptanceMemberships.results}
+								{pendingAcceptanceMemberships.results.length}
 							{/if}
 						</div>
 					</Button>
 				</Popover.Trigger>
-				<Popover.Content
-					transition={flyAndScale}
-					transitionConfig={{
-						duration: 150,
-						y: 10,
-						start: 1
-					}}
-					class="translate-y-2"
-				>
-					{#if $pendingInvites.status === 'loading'}
+				<Popover.Content>
+					{#if pendingAcceptanceMemberships.fetching}
 						<Icon
 							icon={iconIds.defaultSpinnerIcon}
 							width="1.5rem"
 							class="animate-spin"
 						/>
-					{:else if $pendingInvites.status === 'success'}
-						<GardenInviteScrollable invites={$pendingInvites.data.pending_invites} />
+					{:else if pendingAcceptanceMemberships.results}
+						<GardenInviteScrollable invites={pendingAcceptanceMemberships.results} />
 					{/if}
 				</Popover.Content>
 			</Popover.Root>
@@ -93,54 +97,63 @@
 	</ul>
 </div>
 
-{#snippet gardenCategory(label: string, gardens: GardenPartialSchema[])}
-	<div>
-		<!-- Label -->
-		<span class="text-xl">
-			{label}
-		</span>
-		<GardenThumbnailScrollable gardenPartials={gardens} />
-		<Separator class="mb-4 mt-12 w-full bg-neutral-7" />
-	</div>
+{#snippet gardenCategory(label: string, gardens: Garden[])}
+	{#if gardens.length > 0}
+		<div>
+			<!-- Label -->
+			<span class="text-xl">
+				{label}
+			</span>
+			<GardenThumbnailScrollable {gardens} />
+			<Separator class="bg-neutral-7 mb-4 mt-12 w-full" />
+		</div>
+	{/if}
 {/snippet}
 
-{#if $associatedPartials.status === 'loading'}
-	<!-- TODO: Add skeleton loading -->
-	<div class="m-auto my-8">Loading...</div>
-{:else if $associatedPartials.status === 'success'}
-	<!-- Content -->
-	<div class="h-full w-full bg-neutral-1 p-8">
-		{#if $associatedPartials.data.favorites.length > 0}
-			{@render gardenCategory(
-				'Favorites',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.favorites.includes(garden.id);
-				})
-			)}
-		{/if}
-		{#if $associatedPartials.data.admin_memberships.length > 0}
-			{@render gardenCategory(
-				'Admins',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.admin_memberships.includes(garden.id);
-				})
-			)}
-		{/if}
-		{#if $associatedPartials.data.edit_memberships.length > 0}
-			{@render gardenCategory(
-				'Editable',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.edit_memberships.includes(garden.id);
-				})
-			)}
-		{/if}
-		{#if $associatedPartials.data.view_memberships.length > 0}
-			{@render gardenCategory(
-				'Viewable',
-				$associatedPartials.data.gardens.filter((garden) => {
-					return $associatedPartials.data.view_memberships.includes(garden.id);
-				})
-			)}
-		{/if}
-	</div>
-{/if}
+<!-- Content -->
+<div class="bg-neutral-1 h-full w-full p-8">
+	<!-- Favorite gardens. -->
+	{#if favoriteMemberships.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if favoriteMemberships.error}
+		Error!
+	{:else if favoriteMemberships.results}
+		{@render gardenCategory(
+			'Favorites',
+			favoriteMemberships.results
+				.map((membership) => membership.garden)
+				.filter((garden) => garden != null)
+		)}
+	{/if}
+
+	<!-- Admin gardens. -->
+	{#if adminGardens.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if adminGardens.error}
+		Error!
+	{:else if adminGardens.results}
+		{@render gardenCategory('Admins', adminGardens.results)}
+	{/if}
+
+	<!-- Editor gardens. -->
+	{#if editorGardens.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if editorGardens.error}
+		Error!
+	{:else if editorGardens.results}
+		{@render gardenCategory('Editors', editorGardens.results)}
+	{/if}
+
+	<!-- Viewer gardens. -->
+	{#if viewerGardens.fetching}
+		<!-- TODO: Skeleton loading. -->
+		Loading...
+	{:else if viewerGardens.error}
+		Error!
+	{:else if viewerGardens.results}
+		{@render gardenCategory('Viewers', viewerGardens.results)}
+	{/if}
+</div>

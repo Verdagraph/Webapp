@@ -3,7 +3,7 @@
 	import SliderBar from './SliderBar.svelte';
 </script>
 
-<div class="flex h-auto w-full flex-col border-t border-neutral-6">
+<div class="border-neutral-6 flex h-auto w-full flex-col border-t">
 	<DatePickerBar />
 	<SliderBar />
 </div>

@@ -1,37 +1,42 @@
 <script lang="ts">
-	import type { Label as LabelPrimitive } from 'bits-ui';
-	import { getFormControl } from 'formsnap';
-	import { cn } from '$lib/utils/shadcn.js';
+	import type { WithoutChild } from 'bits-ui';
+	import * as FormPrimitive from 'formsnap';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import { cn } from '$lib/utils';
+	import FormInfoPopover from './form-info-popover.svelte';
 
-	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
-
-	type $$Props = LabelPrimitive.Props & {
+	/**
+	 * VerdanTech - Adds a description and optional marker.
+	 */
+	let {
+		ref = $bindable(null),
+		children,
+		class: className,
+		description,
+		optional,
+		...restProps
+	}: WithoutChild<FormPrimitive.LabelProps> & {
 		description?: string;
 		optional?: boolean;
-	};
-
-	let className: $$Props['class'] = undefined;
-	export let description: string | undefined = undefined;
-	export let optional: boolean = false;
-	export { className as class };
-
-	const { labelAttrs } = getFormControl();
+	} = $props();
 </script>
 
-<Label
-	{...$labelAttrs}
-	class={cn(
-		'flex items-center decoration-destructive-8 underline-offset-4 data-[fs-error]:underline data-[fs-error]:decoration-wavy',
-		className
-	)}
-	{...$$restProps}
->
-	<slot {labelAttrs} />
-	{#if !optional}
-		<span class="mx-1 translate-y-[2px]">*</span>
-	{/if}
-	{#if description}
-		<FormInfoPopover {description} />
-	{/if}
-</Label>
+<FormPrimitive.Label {...restProps} bind:ref>
+	{#snippet child({ props })}
+		<Label {...props} class={cn('flex items-center justify-between', className)}>
+			<div
+				class=" decoration-destructive-8 underline-offset-4 data-[fs-error]:underline data-[fs-error]:decoration-wavy"
+			>
+				{@render children?.()}
+			</div>
+			<div class="flex items-center">
+				{#if !optional}
+					<span class="translate-y-[2px]">*</span>
+				{/if}
+				{#if description}
+					<FormInfoPopover {description} />
+				{/if}
+			</div>
+		</Label>
+	{/snippet}
+</FormPrimitive.Label>

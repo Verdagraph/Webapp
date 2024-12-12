@@ -4,7 +4,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { cultivarDelete } from '$lib/data/cultivar/commands';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { createFormErrors } from '$state/formErrors.svelte';
 
 	type Props = {
 		collectionId: string;
@@ -16,8 +16,8 @@
 
 	/* Form mutation. */
 	const mutation = cultivarDelete.mutation();
-	/* Server error state. */
-	const serverErrors = createServerErrors();
+	/* Form error state. */
+	const formErrors = createFormErrors();
 
 	const queryClient = useQueryClient();
 
@@ -29,12 +29,14 @@
 	 *  executes success task, and sets server errors on failure.
 	 * - onChange: Reset server errors.
 	 */
-	const initialData = { collection_ref: collectionId, cultivar_id: cultivarId };
+	const initialData = {
+		collection_ref: collectionId,
+		cultivar_id: cultivarId
+	};
 	const form = superForm(defaults(initialData, zod(cultivarDelete.schema)), {
 		SPA: true,
 		validators: zod(cultivarDelete.schema),
 		onUpdate({ form }) {
-			console.log(form.data);
 			if (form.valid) {
 				$mutation.mutate(form.data, {
 					onSuccess: () => {
@@ -45,13 +47,13 @@
 					},
 					onError: (error) => {
 						// @ts-ignore
-						serverErrors.setErrors(error);
+						formErrors.setServerErrors(error);
 					}
 				});
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			formErrors.reset();
 		}
 	});
 	const { form: formData, enhance } = form;

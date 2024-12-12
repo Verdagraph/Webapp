@@ -2,9 +2,10 @@
 <!--
 *** I'm using markdown "reference style" links for readability.
 *** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables  
+*** See the bottom of this document for the declaration of the reference variables
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Version][version-shield]][version-url]
 [![Issues][issues-shield]][issues-url]
 [![Pull Requests][prs-shield]][prs-url]
@@ -40,24 +41,15 @@
 
 See the [main project readme](https://github.com/VerdanTech) for background on this repository.
 
-This repository contains the backend server and frontend application of the VerdanTech web application.
+This repository contains the frontend web application, backend server, and common database schemas of the VerdanTech web application.
 
-The backend is an async Python HTTP and (eventually) websocket API implemented with a domain-driven architecture. From a technical perspective, the main goal of the backend is to be transparent and extensible to the end of adequately capturing the field of agro-ecology within digital models usable for contextualized application. Python is chosen for its ease of use and wide ecosystem.
+The database in use is the [Triplit](https://www.triplit.dev/) project, which provides a full-stack database with built-in multi-client sync and real-time queries. The frontend is a statically built SvelteKit application. The backend is a Fastisy server.
 
-The frontend is a statically built SvelteKit application. 
+The key dependencies of the project are:
 
-The key dependencies of the backend are:
-- [Litestar](https://litestar.dev/) as an ASGI framework
-- [Taskiq](https://taskiq-python.github.io/) as a task backend
-- [Sqlalchemy](https://www.sqlalchemy.org/) + [Alembic](https://alembic.sqlalchemy.org/en/latest/) + [Postgres](https://www.postgresql.org/) for persistence
-- [NATS](https://nats.io/) as an event stream
-- [Shapely](https://shapely.readthedocs.io/en/stable/) for geometry
-- [Attrs](https://www.attrs.org/en/stable/), [Cattrs](https://catt.rs/en/stable/), and [Pydantic](https://docs.pydantic.dev/latest/) for object modelling
-- [Passlib](https://pypi.org/project/passlib/) for encryption
-
-The key dependencies of the frontend are:
+- [Triplit](https://www.triplit.dev/) as a full-stack database.
 - [SvelteKit](https://kit.svelte.dev/) as a javascript framework.
-- [Svelte Query](https://sveltequery.vercel.app/) as an async state manager.
+- [Fastify](https://fastify.dev/) for the backend service.
 - [Orval](https://orval.dev/) for client SDK generation.
 - [Tailwind](https://tailwindcss.com/) for styling.
 - [Shadcn-svelete](https://www.shadcn-svelte.com/) along with related libraries for components.
@@ -66,12 +58,13 @@ The key dependencies of the frontend are:
 
 # Contributing
 
-See the [contributing](./contributing.md) for instructions on contributing and setting up the development environment. The [backend README](./backend/README.md) and [frontend README](./frontend/README.md) contain instructions for how to view each project's documentation.
+See the [contributing](./contributing.md) for instructions on contributing and setting up the development environment.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 <!-- IN-REPO -->
+
 [version-shield]: https://img.shields.io/badge/version-0.0.1-blue?style=for-the-badge
 [version-url]: https://github.com/nathanielarking/Autonomous-Agriculture/releases
 [issues-shield]: https://img.shields.io/github/issues/nathanielarking/VerdanTech.svg?style=for-the-badge

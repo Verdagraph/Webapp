@@ -7,5 +7,7 @@
 </svelte:head>
 
 <div class="">
-	<CultivarCollectionTree collectionId={'osaenr'} />
+	<!--
+		<CultivarCollectionTree collectionId={'osaenr'} />
+	-->
 </div>

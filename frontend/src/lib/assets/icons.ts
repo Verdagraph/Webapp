@@ -13,6 +13,7 @@ const iconIds = {
 	caretLeftIcon: '',
 	caretRightIcon: '',
 	caretUpDownIcon: 'radix-icons:caret-sort',
+	chevronLeft: 'material-symbols:chevron-left-rounded',
 	chevronRight: 'material-symbols:chevron-right-rounded',
 	dotIcon: 'mdi:circle',
 	addIcon: 'mdi:plus-circle-outline',

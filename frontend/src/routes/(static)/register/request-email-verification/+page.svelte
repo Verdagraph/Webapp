@@ -41,7 +41,7 @@
 				<Dialog.Description>
 					If the email remains unsent, <Button
 						variant="link"
-						class="inline p-0 text-neutral-11"
+						class="text-neutral-11 inline p-0"
 						href={externalLinks.discord}>try reaching out to our community.</Button
 					>
 				</Dialog.Description>

@@ -1,36 +1,36 @@
 <script lang="ts">
-	import { today, getLocalTimeZone } from '@internationalized/date'
-	import Icon from '@iconify/svelte'
-	import type { DateValue, DateDuration } from '@internationalized/date'
-	import DatePicker from './DatePicker.svelte'
-	import { Button } from '$lib/components/ui/button'
-	import * as Tooltip from '$lib/components/ui/tooltip'
+	import { today, getLocalTimeZone } from '@internationalized/date';
+	import Icon from '@iconify/svelte';
+	import type { DateValue, DateDuration } from '@internationalized/date';
+	import DatePicker from './DatePicker.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
-	import iconIds from '$lib/assets/icons'
+	import iconIds from '$lib/assets/icons';
 
 	import {
 		timelineSelection,
 		minSelectOffset,
 		maxSelectOffset
-	} from '../state/timelineSelection.svelte'
+	} from '../state/timelineSelection.svelte';
 </script>
 
 <!-- Timeline selection translation buttons. -->
 {#snippet button(tooltipDescription: string, iconId: string, onclick: () => void)}
-<Tooltip.Root group="timelineSelector">
-    <Tooltip.Trigger> 
-        <Button
-            variant="secondary"
-            class="p-0 rounded-2xl h-fit flex items-center mx-1 outline outline-1"
-            on:click={onclick}
-            >
-                <Icon icon={iconId} width="1.5rem" class="m-1"/>
-            </Button>
-    </Tooltip.Trigger>
-    <Tooltip.Content>
-        {tooltipDescription}
-    </Tooltip.Content>
-  </Tooltip.Root>
+	<Tooltip.Root group="timelineSelector">
+		<Tooltip.Trigger>
+			<Button
+				variant="secondary"
+				class="mx-1 flex h-fit items-center rounded-2xl p-0 outline outline-1"
+				on:click={onclick}
+			>
+				<Icon icon={iconId} width="1.5rem" class="m-1" />
+			</Button>
+		</Tooltip.Trigger>
+		<Tooltip.Content>
+			{tooltipDescription}
+		</Tooltip.Content>
+	</Tooltip.Root>
 {/snippet}
 
 <div class="flex flex-row items-center justify-between px-4 py-2">
@@ -50,12 +50,18 @@
 		{@render button(
 			'Rewind selection one month',
 			iconIds.verdagraphMonthReverseIcon,
-			() => timelineSelection.pushSelectionBackward({ months: 1 })
+			() =>
+				timelineSelection.pushSelectionBackward({
+					months: 1
+				})
 		)}
 		{@render button(
 			'Rewind selection one week',
 			iconIds.verdagraphWeekReverseIcon,
-			() => timelineSelection.pushSelectionBackward({ weeks: 1 })
+			() =>
+				timelineSelection.pushSelectionBackward({
+					weeks: 1
+				})
 		)}
 		{@render button('Rewind selection one day', iconIds.verdagraphDayReverseIcon, () =>
 			timelineSelection.pushSelectionBackward({ days: 1 })
@@ -67,7 +73,7 @@
 						bind:value={timelineSelection.value.focusedDay}
 						onValueChange={(newDate: DateValue | undefined) => {
 							if (newDate != undefined) {
-								timelineSelection.focusedDayOnValueChange(newDate)
+								timelineSelection.focusedDayOnValueChange(newDate);
 							}
 						}}
 					/>
@@ -86,7 +92,10 @@
 		{@render button(
 			'Forward selection one month',
 			iconIds.verdagraphMonthForwardIcon,
-			() => timelineSelection.pushSelectionForward({ months: 1 })
+			() =>
+				timelineSelection.pushSelectionForward({
+					months: 1
+				})
 		)}
 	</div>
 	<div>
@@ -96,7 +105,7 @@
 					bind:value={timelineSelection.value.endSelectedDays}
 					onValueChange={(newDate: DateValue | undefined) => {
 						if (newDate != undefined) {
-							timelineSelection.endSelectedDaysOnValueChange(newDate)
+							timelineSelection.endSelectedDaysOnValueChange(newDate);
 						}
 					}}
 					minValue={timelineSelection.value.focusedDay.add(minSelectOffset)}

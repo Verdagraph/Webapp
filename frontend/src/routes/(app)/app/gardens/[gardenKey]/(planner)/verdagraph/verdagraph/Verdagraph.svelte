@@ -14,7 +14,7 @@
 	setContext('viewSettings', viewSettings);
 </script>
 
-<div class="flex h-full flex-col bg-neutral-1">
+<div class="bg-neutral-1 flex h-full flex-col">
 	<Toolbar />
 
 	<div class="overflow-none grow">

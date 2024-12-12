@@ -18,8 +18,13 @@ export class LocalStore<T> {
 			if (item) this._rune = this.deserialize(item);
 		}
 
-		$effect(() => {
-			this.persist();
+		/** Effect.root allows creation outside of a component. */
+		$effect.root(() => {
+			$effect(() => {
+				this.persist();
+			});
+
+			return () => {};
 		});
 	}
 

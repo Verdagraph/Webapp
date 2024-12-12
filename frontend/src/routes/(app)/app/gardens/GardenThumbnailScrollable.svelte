@@ -1,20 +1,19 @@
 <script lang="ts">
-	import type { GardenPartialSchema } from '$codegen/types';
+	import type { Garden } from '@vdt-webapp/common';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import GardenThumbnail from './GardenThumbnail.svelte';
 
 	type Props = {
-		gardenPartials: GardenPartialSchema[];
+		gardens: Garden[];
 	};
 
-	let { gardenPartials }: Props = $props();
-	console.log(gardenPartials);
+	let { gardens }: Props = $props();
 </script>
 
 <ScrollArea type="auto" orientation="horizontal" class="mt-8 h-auto w-full pb-4">
 	<div class="flex flex-row">
-		{#each gardenPartials as garden}
-			<GardenThumbnail gardenKey={garden.key} gardenName={garden.name} />
+		{#each gardens as garden}
+			<GardenThumbnail {garden} />
 		{/each}
 	</div>
 </ScrollArea>

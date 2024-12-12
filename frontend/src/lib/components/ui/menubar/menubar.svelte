@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { Menubar as MenubarPrimitive } from 'bits-ui';
-	import { cn } from '$lib/utils/shadcn.js';
+	import { cn } from '$lib/utils';
 
-	type $$Props = MenubarPrimitive.Props;
-
-	let className: $$Props['class'] = undefined;
-	export { className as class };
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: MenubarPrimitive.RootProps = $props();
 </script>
 
 <MenubarPrimitive.Root
+	bind:ref
 	class={cn(
-		'flex h-10 items-center space-x-1 rounded-none border bg-neutral-2 p-1',
+		'bg-neutral-2 flex h-8 w-full items-center rounded-none border-b p-0',
 		className
 	)}
-	{...$$restProps}
->
-	<slot />
-</MenubarPrimitive.Root>
+	{...restProps}
+/>

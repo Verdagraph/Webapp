@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { useQueryClient } from '@sveltestack/svelte-query';
-	import type { AxiosResponse, AxiosError } from 'axios';
 	import Icon from '@iconify/svelte';
 	import * as Form from '$lib/components/ui/form';
 	import * as Select from '$lib/components/ui/select';
@@ -10,51 +8,30 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { gardenCreate } from '$lib/data/garden/commands';
-	import { createServerErrors } from '$state/formServerErrors.svelte';
+	import { gardenCreate } from '$data/gardens/commands';
 	import iconIds from '$lib/assets/icons';
-	import { GardenCreateCommandVisibility } from '$codegen/types';
-	import { gardenGenerateUniqueKeyQuery } from '$data/garden/queries';
+	import { GardenVisibilityEnum } from '@vdt-webapp/common';
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
-
-	const queryClient = useQueryClient();
-
-	/* Form mutation. */
-	const mutation = gardenCreate.mutation();
-	/* Server error state. */
-	const serverErrors = createServerErrors();
-
-	/** Key generation query.*/
-	/** Manage the loading state ourselves as for some reason the svelte-query one doesn't work correctly with the form. */
-	let keyGenerationLoading = $state(true);
-	const gardenGenerateUniqueKey = gardenGenerateUniqueKeyQuery({
-		onSuccess: (data) => {
-			if (!data) {
-				return;
-			}
-			keyGenerationLoading = false;
-			// @ts-ignore
-			$formData.key = data.key;
-		},
-		onError: (error) => {
-			if (!error) {
-				return;
-			}
-			keyGenerationLoading = false;
-			// @ts-ignore
-			serverErrors.setErrors(error);
-		},
-		/** Don't re-request keys. */
-		staleTime: Infinity
-	});
-	/* Request the query. */
-	$gardenGenerateUniqueKey;
+	import { generateGardenId } from '$data/gardens/utils';
+	import useAsync from '$state/asyncHandler.svelte';
 
 	/* Defines the labels for the visibility enum options. */
-	const visibilityOptions = [
-		{ value: GardenCreateCommandVisibility.private, label: 'Private' },
-		{ value: GardenCreateCommandVisibility.unlisted, label: 'Unlisted' },
-		{ value: GardenCreateCommandVisibility.public, label: 'Public' }
+	const visibilityOptions: {
+		value: (typeof GardenVisibilityEnum)[number];
+		label: string;
+	}[] = [
+		{
+			value: 'HIDDEN',
+			label: 'Hidden'
+		},
+		{
+			value: 'UNLISTED',
+			label: 'Unlisted'
+		},
+		{
+			value: 'PUBLIC',
+			label: 'Public'
+		}
 	];
 	const defaultVisibility = visibilityOptions[0];
 
@@ -63,47 +40,45 @@
 	 * Required as the value of the superform data can't be bound to the form value type.
 	 */
 	function onVisibilitySelectedChange(
-		value: { value: GardenCreateCommandVisibility; label?: string } | undefined
+		value:
+			| {
+					value: (typeof GardenVisibilityEnum)[number];
+					label?: string;
+			  }
+			| undefined
 	) {
 		if (value) {
 			$formData.visibility = value.value;
 		}
 	}
 
-	/**
-	 * Standard form configuration:
-	 * - SPA: True disables server-side functionality.
-	 * - validators: Zod schema specifies form validation.
-	 * - onUpdate: Submission handler. Activates svelte-query mutation,
-	 *  executes success task, and sets server errors on failure.
-	 * - onChange: Reset server errors.
-	 */
+	/** Garden creation form. */
+	let gardenCreateHandler = useAsync(gardenCreate.mutation, {
+		onSuccess: (data) => {
+			goto('/app/gardens/' + data.id);
+		}
+	});
 	const form = superForm(defaults(zod(gardenCreate.schema)), {
 		SPA: true,
 		validators: zod(gardenCreate.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				$mutation.mutate(form.data, {
-					onSuccess: () => {
-						/**
-						 * TODO: Move this state update to the data layer.
-						 * It is here because having both onSuccess callbacks
-						 * caused only the first to be run.
-						 */
-						goto('/app/gardens/' + form.data.key);
-					},
-					onError: (error) => {
-						// @ts-ignore
-						serverErrors.setErrors(error);
-					}
-				});
+				gardenCreateHandler.execute(form.data);
 			}
 		},
 		onChange() {
-			serverErrors.reset();
+			gardenCreateHandler.reset();
 		}
 	});
 	const { form: formData, enhance } = form;
+
+	/** Garden ID generation handler. */
+	let gardenIdGenerationHandler = useAsync(generateGardenId, {
+		onSuccess: (generatedId) => {
+			$formData.id = generatedId;
+		}
+	});
+	gardenIdGenerationHandler.execute();
 </script>
 
 <form method="POST" use:enhance>
@@ -121,44 +96,41 @@
 				bind:value={$formData.name}
 			/>
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['name']} />
+		<Form.FieldErrors serverErrors={gardenCreateHandler.errors?.fieldErrors?.name} />
 	</Form.Field>
 
 	<!-- Garden key -->
-	<Form.Field {form} name="key">
+	<Form.Field {form} name="id">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={gardenCreate.schema.shape.key.description}
-				optional={gardenCreate.schema.shape.key.isOptional()}>Key</Form.Label
+				description={gardenCreate.schema.shape.id.description}
+				optional={gardenCreate.schema.shape.id.isOptional()}>Key</Form.Label
 			>
 			<span class="flex">
-				<!--
-				-->
 				<Input
 					{...attrs}
 					type="text"
 					placeholder="lettuce123"
 					class="rounded-r-none"
-					bind:value={$formData.key}
+					bind:value={$formData.id}
 				/>
 				<Button
 					variant="outline"
 					on:click={() => {
-						queryClient.invalidateQueries('uniqueGardenKey');
-						keyGenerationLoading = true;
+						gardenIdGenerationHandler.execute();
 					}}
-					class="flex items-center rounded-l-none border-l-0 bg-neutral-1 hover:bg-neutral-2 dark:border-neutral-12"
+					class="bg-neutral-1 hover:bg-neutral-2 dark:border-neutral-12 flex items-center rounded-l-none border-l-0"
 				>
 					<Icon
 						icon={iconIds.defaultRefreshIcon}
 						width="1.5rem"
-						class={keyGenerationLoading ? 'animate-spin' : ''}
+						class={gardenIdGenerationHandler.isLoading ? 'animate-spin' : ''}
 					/>
 				</Button>
 			</span>
 		</Form.Control>
 		<Form.Description>Readable identifier, used in URLs.</Form.Description>
-		<Form.FieldErrors serverErrors={serverErrors.errors['key']} />
+		<Form.FieldErrors serverErrors={gardenCreateHandler.errors?.fieldErrors?.id} />
 	</Form.Field>
 
 	<!-- Garden visibility -->
@@ -197,7 +169,9 @@
 			>Private gardens can only be viewed by members. Unlisted gardens can be viewed by
 			anyone with a link. Public gardens are searchable.</Form.Description
 		>
-		<Form.FieldErrors serverErrors={serverErrors.errors['visibility']} />
+		<Form.FieldErrors
+			serverErrors={gardenCreateHandler.errors?.fieldErrors?.visibility}
+		/>
 	</Form.Field>
 
 	<!-- Garden description -->
@@ -210,68 +184,76 @@
 			>
 			<Textarea {...attrs} bind:value={$formData.description} />
 		</Form.Control>
-		<Form.FieldErrors serverErrors={serverErrors.errors['description']} />
+		<Form.FieldErrors
+			serverErrors={gardenCreateHandler.errors?.fieldErrors?.description}
+		/>
 	</Form.Field>
 
 	<!-- Admins to invite -->
-	<Form.Field {form} name="admin_usernames">
+	<Form.Field {form} name="adminInvites">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={gardenCreate.schema.shape.admin_usernames.description}
-				optional={gardenCreate.schema.shape.admin_usernames.isOptional()}
+				description={gardenCreate.schema.shape.adminInvites.description}
+				optional={gardenCreate.schema.shape.adminInvites.isOptional()}
 				>Admin Invites</Form.Label
 			>
 			<GardenCreateFormUserTagsInput
-				bind:tagsInput={$formData.admin_usernames}
+				bind:tagsInput={$formData.adminInvites}
 				formAttrs={attrs}
 			/>
 		</Form.Control>
 		<Form.Description>Admins have full control over the garden.</Form.Description>
-		<Form.FieldErrors serverErrors={serverErrors.errors['admin_usernames']} />
+		<Form.FieldErrors
+			serverErrors={gardenCreateHandler.errors?.fieldErrors?.adminInvites}
+		/>
 	</Form.Field>
 
 	<!-- Editors to invite -->
-	<Form.Field {form} name="editor_usernames">
+	<Form.Field {form} name="editorInvites">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={gardenCreate.schema.shape.editor_usernames.description}
-				optional={gardenCreate.schema.shape.editor_usernames.isOptional()}
+				description={gardenCreate.schema.shape.editorInvites.description}
+				optional={gardenCreate.schema.shape.editorInvites.isOptional()}
 				>Editor Invites</Form.Label
 			>
 			<GardenCreateFormUserTagsInput
-				bind:tagsInput={$formData.editor_usernames}
+				bind:tagsInput={$formData.editorInvites}
 				formAttrs={attrs}
 			/>
 		</Form.Control>
 		<Form.Description
 			>Editors have limited write access but cannot change garden configuration.</Form.Description
 		>
-		<Form.FieldErrors serverErrors={serverErrors.errors['editor_usernames']} />
+		<Form.FieldErrors
+			serverErrors={gardenCreateHandler.errors?.fieldErrors?.editorInvites}
+		/>
 	</Form.Field>
 
 	<!-- Viewers to invite -->
-	<Form.Field {form} name="viewer_usernames">
+	<Form.Field {form} name="viewerInvites">
 		<Form.Control let:attrs>
 			<Form.Label
-				description={gardenCreate.schema.shape.viewer_usernames.description}
-				optional={gardenCreate.schema.shape.viewer_usernames.isOptional()}
+				description={gardenCreate.schema.shape.viewerInvites.description}
+				optional={gardenCreate.schema.shape.viewerInvites.isOptional()}
 				>Viewer Invites</Form.Label
 			>
 			<GardenCreateFormUserTagsInput
-				bind:tagsInput={$formData.viewer_usernames}
+				bind:tagsInput={$formData.viewerInvites}
 				formAttrs={attrs}
 			/>
 		</Form.Control>
 		<Form.Description
 			>Viewers can make no changes but can view everything.</Form.Description
 		>
-		<Form.FieldErrors serverErrors={serverErrors.errors['viewer_usernames']} />
+		<Form.FieldErrors
+			serverErrors={gardenCreateHandler.errors?.fieldErrors?.viewerInvites}
+		/>
 	</Form.Field>
 
 	<!-- Submit button -->
 	<Form.Button
 		disabled={false}
-		loading={$mutation.isLoading}
+		loading={gardenCreateHandler.isLoading}
 		variant="default"
 		class="mt-4 w-full">Create</Form.Button
 	>

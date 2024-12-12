@@ -15,17 +15,33 @@
 	export let scrollable_pane_view_options: string[] | undefined;
 
 	let content_toggles: ToolSpec[] = [
-		{ label: 'Toggle Planting Windows', on_click: () => {}, icon: icons.windows },
-		{ label: 'Toggle Plants', on_click: () => {}, icon: icons.plants },
-		{ label: 'Toggle Actions', on_click: () => {}, icon: icons.actions }
+		{
+			label: 'Toggle Planting Windows',
+			on_click: () => {},
+			icon: icons.windows
+		},
+		{
+			label: 'Toggle Plants',
+			on_click: () => {},
+			icon: icons.plants
+		},
+		{
+			label: 'Toggle Actions',
+			on_click: () => {},
+			icon: icons.actions
+		}
 	];
 
 	let options: ToolSpec[] = [
-		{ label: 'Filter', on_click: () => activate_form(), icon: undefined }
+		{
+			label: 'Filter',
+			on_click: () => activate_form(),
+			icon: undefined
+		}
 	];
 </script>
 
-<Toolbar.Root class="flex items-center justify-center bg-neutral-3">
+<Toolbar.Root class="bg-neutral-3 flex items-center justify-center">
 	<ul class="flex h-full items-center justify-center">
 		<li class="flex items-center">
 			<i>
@@ -34,12 +50,12 @@
 					class="text-md text-primary-10"
 				/>
 			</i>
-			<span class="text-md ml-2 mr-4 text-neutral-11"> Tree </span>
+			<span class="text-md text-neutral-11 ml-2 mr-4"> Tree </span>
 		</li>
 
 		<Separator.Root
 			orientation={'vertical'}
-			class="h-full w-[1px] self-stretch bg-neutral-7"
+			class="bg-neutral-7 h-full w-[1px] self-stretch"
 		/>
 
 		<!-- Content pane (calendar, layout, list) toggles -->

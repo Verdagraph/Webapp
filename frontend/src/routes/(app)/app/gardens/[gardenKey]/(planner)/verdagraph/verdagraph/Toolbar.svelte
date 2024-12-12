@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { getContext } from 'svelte'
-	import Icon from '@iconify/svelte'
-	import { Separator, Toolbar } from 'bits-ui'
-	import * as Menubar from '$components/ui/menubar/index.js'
-	import iconIds from '$lib/assets/icons'
-	import type { VerdagraphViewSettings } from './state/viewSettings.svelte'
-	import forms from './state/forms.svelte'
+	import { getContext } from 'svelte';
+	import Icon from '@iconify/svelte';
+	import { Separator, Toolbar } from 'bits-ui';
+	import * as Menubar from '$components/ui/menubar/index.js';
+	import iconIds from '$lib/assets/icons';
+	import type { VerdagraphViewSettings } from './state/viewSettings.svelte';
+	import forms from './state/forms.svelte';
 
-	let viewSettings: { value: VerdagraphViewSettings } = getContext('viewSettings')
+	let viewSettings: { value: VerdagraphViewSettings } = getContext('viewSettings');
 </script>
 
 {#snippet menuButton(label: string, iconId: string, onclick: () => void)}
@@ -18,12 +18,16 @@
 		</div>
 	</Menubar.Item>
 {/snippet}
-<Menubar.Root class="justify-center md:justify-start border-0 border-b border-neutral-8">
+<Menubar.Root
+	class="border-neutral-8 justify-center border-0 border-b md:justify-start"
+>
 	<!-- Select Menu -->
 	<Menubar.Menu>
 		<Menubar.Trigger>Select</Menubar.Trigger>
 		<Menubar.Content>
-			{@render menuButton('Filter', iconIds.verdagraphFilterSelectIcon, () => forms.activateForm('filter'))}
+			{@render menuButton('Filter', iconIds.verdagraphFilterSelectIcon, () =>
+				forms.activateForm('filter')
+			)}
 		</Menubar.Content>
 	</Menubar.Menu>
 
@@ -32,14 +36,20 @@
 		<Menubar.Trigger>Edit</Menubar.Trigger>
 		<Menubar.Content>
 			<Menubar.Group>
-				{@render menuButton('Add', iconIds.verdagraphAddIcon, () => forms.activateForm('add'))}
+				{@render menuButton('Add', iconIds.verdagraphAddIcon, () =>
+					forms.activateForm('add')
+				)}
 			</Menubar.Group>
 			<Menubar.Group>
 				{@render menuButton('Group', iconIds.verdagraphGroupIcon, () => {})}
 				{@render menuButton('Ungroup', iconIds.verdagraphUngroupIcon, () => {})}
 			</Menubar.Group>
-			{@render menuButton('Translate', iconIds.verdagraphTranslateIcon, () => forms.activateForm('translate'))}
-			{@render menuButton('Delete', iconIds.verdagraphDeleteIcon, () => forms.activateForm('delete'))}
+			{@render menuButton('Translate', iconIds.verdagraphTranslateIcon, () =>
+				forms.activateForm('translate')
+			)}
+			{@render menuButton('Delete', iconIds.verdagraphDeleteIcon, () =>
+				forms.activateForm('delete')
+			)}
 		</Menubar.Content>
 	</Menubar.Menu>
 
@@ -47,12 +57,24 @@
 	<Menubar.Menu>
 		<Menubar.Trigger>Observe</Menubar.Trigger>
 		<Menubar.Content>
-			{@render menuButton('Seed', iconIds.verdagraphRecordSeedIcon, () => forms.activateForm('observe'))}
-			{@render menuButton('Germination', iconIds.verdagraphRecorcGerminationicon, () => forms.activateForm('observe'))}
-			{@render menuButton('Harvest', iconIds.verdagraphRecordHarvestIcon, () => forms.activateForm('observe'))}
-			{@render menuButton('Expire', iconIds.verdagraphRecordExpireIcon, () => forms.activateForm('observe'))}
-			{@render menuButton('Transplant', iconIds.verdagraphRecordTransplantIcon, () => forms.activateForm('observe'))}
-			{@render menuButton('Note', iconIds.verdagraphRecordNoteIcon, () => forms.activateForm('observe'))}
+			{@render menuButton('Seed', iconIds.verdagraphRecordSeedIcon, () =>
+				forms.activateForm('observe')
+			)}
+			{@render menuButton('Germination', iconIds.verdagraphRecorcGerminationicon, () =>
+				forms.activateForm('observe')
+			)}
+			{@render menuButton('Harvest', iconIds.verdagraphRecordHarvestIcon, () =>
+				forms.activateForm('observe')
+			)}
+			{@render menuButton('Expire', iconIds.verdagraphRecordExpireIcon, () =>
+				forms.activateForm('observe')
+			)}
+			{@render menuButton('Transplant', iconIds.verdagraphRecordTransplantIcon, () =>
+				forms.activateForm('observe')
+			)}
+			{@render menuButton('Note', iconIds.verdagraphRecordNoteIcon, () =>
+				forms.activateForm('observe')
+			)}
 		</Menubar.Content>
 	</Menubar.Menu>
 
@@ -60,9 +82,15 @@
 	<Menubar.Menu>
 		<Menubar.Trigger>Tools</Menubar.Trigger>
 		<Menubar.Content>
-			{@render menuButton('Plans', iconIds.verdagraphPlansIcon,  () => forms.activateForm('plans'))}
-			{@render menuButton('Patterns', iconIds.verdagraphPatternsIcon, () => forms.activateForm('patterns'))}
-			{@render menuButton('Generators', iconIds.verdagraphGeneratorsIcon, () => forms.activateForm('generators'))}
+			{@render menuButton('Plans', iconIds.verdagraphPlansIcon, () =>
+				forms.activateForm('plans')
+			)}
+			{@render menuButton('Patterns', iconIds.verdagraphPatternsIcon, () =>
+				forms.activateForm('patterns')
+			)}
+			{@render menuButton('Generators', iconIds.verdagraphGeneratorsIcon, () =>
+				forms.activateForm('generators')
+			)}
 		</Menubar.Content>
 	</Menubar.Menu>
 

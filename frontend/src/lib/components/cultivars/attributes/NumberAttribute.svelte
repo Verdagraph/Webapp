@@ -22,9 +22,9 @@
 		class="w-auto"
 	/>
 {:else if value}
-	<span class="rounded-lg border border-neutral-4 bg-neutral-2 px-4 py-2">
+	<span class="border-neutral-4 bg-neutral-2 rounded-lg border px-4 py-2">
 		{value}
 	</span>
 {:else}
-	<span class="px-4 py-2 font-light italic text-neutral-11"> None </span>
+	<span class="text-neutral-11 px-4 py-2 font-light italic"> None </span>
 {/if}

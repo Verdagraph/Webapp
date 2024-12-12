@@ -7,7 +7,9 @@ const defaultFocusedDay: () => DateValue = () => today(getLocalTimeZone());
 /** Default offset between selected day and upper and lower selection ranges. */
 export const selectionOffset: DateDuration = { months: 1 };
 /** Default offset between upper and lower selection and range displayed on the slider. */
-export const sliderDisplayOffset: DateDuration = { months: 1 };
+export const sliderDisplayOffset: DateDuration = {
+	months: 1
+};
 /** Minimum offset between the focused day and the selection bounds. */
 export const minSelectOffset: DateDuration = { days: 1 };
 /* Maximum offset between the focused day and the selection bounds. */
@@ -30,7 +32,7 @@ type SliderTickType = 'currentDay' | 'firstOfWeek' | 'firstOfMonth' | 'firstOfYe
 
 /** State. */
 const focusedDay = defaultFocusedDay();
-let _rune = $state<TimelineSelection>({
+const _rune = $state<TimelineSelection>({
 	focusedDay: focusedDay,
 	beginSelectedDays: focusedDay.subtract(selectionOffset),
 	endSelectedDays: focusedDay.add(selectionOffset),
@@ -40,7 +42,7 @@ let _rune = $state<TimelineSelection>({
 	endSliderDisplayedDays: focusedDay.add(selectionOffset).add(sliderDisplayOffset)
 });
 /** The difference in days between the first and last slider displayed dates. */
-let _numSliderDisplayedDays: number = $derived(
+const _numSliderDisplayedDays: number = $derived(
 	calculateDeltaDays(_rune.endSliderDisplayedDays, _rune.beginSliderDisplayedDays)
 );
 //let _sliderDisplayedTickTypes: SliderTickType[] = $derived()
@@ -59,8 +61,12 @@ export const timelineSelection = {
 		const deltaDays = calculateDeltaDays(newFocusedDay, _rune.focusedDay);
 
 		/** Apply delta to selection range. */
-		_rune.beginSelectedDays = _rune.beginSelectedDays.add({ days: deltaDays });
-		_rune.endSelectedDays = _rune.endSelectedDays.add({ days: deltaDays });
+		_rune.beginSelectedDays = _rune.beginSelectedDays.add({
+			days: deltaDays
+		});
+		_rune.endSelectedDays = _rune.endSelectedDays.add({
+			days: deltaDays
+		});
 		_rune.beginSliderDisplayedDays = _rune.beginSliderDisplayedDays.add({
 			days: deltaDays
 		});

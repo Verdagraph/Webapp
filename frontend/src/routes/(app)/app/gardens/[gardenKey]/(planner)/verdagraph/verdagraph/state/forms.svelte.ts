@@ -26,12 +26,24 @@ type FormAttributeType = {
 
 const formAttributes: FormAttributeType[] = [
 	{ id: 'add', label: 'Add', content: AddForm },
-	{ id: 'translate', label: 'Translate', content: TranslateForm },
+	{
+		id: 'translate',
+		label: 'Translate',
+		content: TranslateForm
+	},
 	{ id: 'delete', label: 'Delete', content: DeleteForm },
 	{ id: 'observe', label: 'Observe', content: ObserveForm },
-	{ id: 'patterns', label: 'Patterns', content: PatternsForm },
+	{
+		id: 'patterns',
+		label: 'Patterns',
+		content: PatternsForm
+	},
 	{ id: 'plans', label: 'Plans', content: PlansForm },
-	{ id: 'generators', label: 'Generators', content: GeneratorsForm },
+	{
+		id: 'generators',
+		label: 'Generators',
+		content: GeneratorsForm
+	},
 	{ id: 'filter', label: 'Filter', content: FilterForm }
 ];
 
@@ -42,11 +54,11 @@ let activeFormIds = $state<VerdagraphFormType[]>([]);
 /** Stores the ID of the last activated form. */
 let lastActivatedId = $state<VerdagraphFormType | undefined>();
 /** Presents the attributes of the active forms. */
-let activeForms = $derived(
+const activeForms = $derived(
 	formAttributes.filter((attributes) => activeFormIds.includes(attributes.id))
 );
 /** Presents true if any forms are active. */
-let anyFormsActive = $derived(activeFormIds.length > 0);
+const anyFormsActive = $derived(activeFormIds.length > 0);
 
 /**
  * Form management for the Verdagraph.

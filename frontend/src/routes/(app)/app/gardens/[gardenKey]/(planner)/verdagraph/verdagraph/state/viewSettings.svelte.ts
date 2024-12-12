@@ -19,7 +19,7 @@ export type VerdagraphViewSettings = {
 };
 
 export default function createViewSettings() {
-	let _store = localStore<VerdagraphViewSettings>('verdagraphViewSettings', {
+	const _store = localStore<VerdagraphViewSettings>('verdagraphViewSettings', {
 		treeEnabled: true,
 		calendarEnabled: true,
 		layoutEnabled: true,
