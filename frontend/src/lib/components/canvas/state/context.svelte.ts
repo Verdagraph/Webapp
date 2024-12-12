@@ -5,7 +5,7 @@ import createCanvasGrid from './grid.svelte';
 export function createCanvasContext(canvasId: string) {
 	/** Sub-contexts. */
 	const container = createCanvasContainer(canvasId);
-	const transform = createCanvasTransform(container)
+	const transform = createCanvasTransform(container);
 	const grid = createCanvasGrid(container);
 
 	return {

@@ -9,6 +9,4 @@
 	let { canvasId }: Props = $props();
 
 	let canvas = getContext<CanvasContext>(canvasId);
-
-	canvas.grid.initialize();
 </script>
