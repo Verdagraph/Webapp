@@ -10,8 +10,9 @@
 	type Props = {
 		canvasId: string;
 		children: Snippet<[]>;
+		overlay: Snippet<[]>;
 	};
-	let { canvasId, children }: Props = $props();
+	let { canvasId, children, overlay }: Props = $props();
 
 	/** Create the context. */
 	const canvas = createCanvasContext(canvasId);
@@ -32,13 +33,17 @@
 </script>
 
 <div
-	id={canvasId}
-	bind:this={containerRef}
 	bind:clientWidth={canvas.container.width}
 	bind:clientHeight={canvas.container.height}
-	class="h-full w-full"
+	class="relative h-full w-full"
 >
-	{#if canvas.container.initialized}
-		{@render children()}
-	{/if}
+	<div class="absolute z-50 h-full w-full">
+		{@render overlay()}
+	</div>
+
+	<div id={canvasId} bind:this={containerRef}>
+		{#if canvas.container.initialized}
+			{@render children()}
+		{/if}
+	</div>
 </div>

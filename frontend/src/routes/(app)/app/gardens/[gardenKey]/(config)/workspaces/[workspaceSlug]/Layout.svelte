@@ -1,7 +1,13 @@
 <script lang="ts">
 	import * as Canvas from '$components/canvas/';
+
+	const canvasId = 'workspace';
 </script>
 
-<Canvas.Root canvasId="workspace">
-	<Canvas.Gridlines canvasId="workspace" />
+{#snippet overlay()}
+	<Canvas.TransformControls {canvasId} />
+{/snippet}
+
+<Canvas.Root {canvasId} {overlay}>
+	<Canvas.Gridlines {canvasId} />
 </Canvas.Root>

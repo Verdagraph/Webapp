@@ -26,7 +26,8 @@ export function createCanvasGrid(container: CanvasContainer) {
 					new Konva.Line({
 						points: [0, y, container.width, y],
 						stroke: getColor('neutral', 3, mode.value),
-						strokeWidth: 1
+						strokeWidth: 1,
+						strokeScaleEnabled: false
 					})
 				);
 			}
@@ -38,7 +39,8 @@ export function createCanvasGrid(container: CanvasContainer) {
 					new Konva.Line({
 						points: [x, 0, x, container.height],
 						stroke: getColor('neutral', 3, mode.value),
-						strokeWidth: 1
+						strokeWidth: 1,
+						strokeScaleEnabled: false
 					})
 				);
 			}

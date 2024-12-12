@@ -2,6 +2,8 @@ import createCanvasContainer from './container.svelte';
 import createCanvasTransform from './transform.svelte';
 import createCanvasGrid from './grid.svelte';
 
+export * from './transform.svelte';
+
 export function createCanvasContext(canvasId: string) {
 	/** Sub-contexts. */
 	const container = createCanvasContainer(canvasId);
