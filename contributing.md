@@ -12,9 +12,7 @@ A specific versioning system has not yet been put in place, but will sometime be
 
 # Environment Setup
 
-The development environment consits of the frontend and backend togethher and contains the backend ASGI application process, task backend application process, frontend vite server, and external services, including Postgres server, NATs server, etc. This allows the execution of tests against live versions of services, and is achieved using Docker containers.
-
-The current workflow for setting up development environments is standardized to use [Development Containers](https://containers.dev/). This makes reproduction of the environment very easy. The cost is that while the devcontainer tool is an open standard, IDE support on IDEs other than VSCode or Neovim is minimal. If you wish to use different IDE, manual installation instructions will need to be created.
+The development environment consists of a docker-compose setup with one container for the frontend, server, and database to run in, and other containers for related services. The current workflow for setting up development environments is standardized to use [Development Containers](https://containers.dev/). This makes reproduction of the environment very easy. The cost is that while the devcontainer tool is an open standard, IDE support on IDEs other than VSCode or Neovim is minimal. If you wish to use different IDE, manual installation instructions will need to be created.
 
 # Devcontainer
 
