@@ -20,7 +20,7 @@
 
 	let containerRef: HTMLDivElement;
 	onMount(() => {
-		canvas.container.initialize();
+		canvas.initialize();
 
 		const resizeObserver = new ResizeObserver(canvas.container.onResize);
 		resizeObserver.observe(containerRef);

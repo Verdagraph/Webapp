@@ -94,7 +94,6 @@ export function createCanvasContainer(canvasId: string) {
 		});
 		backgroundLayer.add(backgroundRect);
 		addResizeFunction(() => {
-			console.log(`width: ${width} height: ${height}`);
 			if (stage && backgroundRect) {
 				backgroundRect.width(stage.width());
 				backgroundRect.height(stage.height());

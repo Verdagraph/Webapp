@@ -1,9 +1,13 @@
 import Konva from 'konva';
 import { CanvasContainer } from './container.svelte';
+import { CanvasTransform } from './transform.svelte';
 import { getColor } from '$lib/utils';
 import mode from '$state/theme.svelte';
 
-export function createCanvasGrid(container: CanvasContainer) {
+export function createCanvasGrid(
+	container: CanvasContainer,
+	transform: CanvasTransform
+) {
 	/** Konva elements. */
 	let gridlinesLayer: Konva.Layer | null = null;
 
@@ -50,6 +54,7 @@ export function createCanvasGrid(container: CanvasContainer) {
 	function initialize() {
 		gridlinesLayer = container.addLayer('gridlines');
 		container.addResizeFunction(renderGridlines);
+		transform.addTransformFunction(renderGridlines);
 		renderGridlines();
 	}
 

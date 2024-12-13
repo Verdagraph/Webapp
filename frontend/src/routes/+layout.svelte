@@ -20,6 +20,6 @@
 <!-- Sonner toaster from Shadcn-svelte -->
 <Toaster richColors />
 
-<Tooltip.Provider delayDuration={200}>
+<Tooltip.Provider delayDuration={500}>
 	{@render children()}
 </Tooltip.Provider>
