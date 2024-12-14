@@ -3,8 +3,14 @@ import { CanvasContainer } from './container.svelte';
 import { CanvasTransform } from './transform.svelte';
 import { getColor } from '$lib/utils';
 import mode from '$state/theme.svelte';
+import { localStore } from '$state/localStore.svelte';
 
-export function createCanvasGrid(
+type GridManagerPersistedState = {
+	snapToGrid: boolean;
+	rightAngleConstraint: boolean;
+};
+
+export function createCanvasGridManager(
 	container: CanvasContainer,
 	transform: CanvasTransform
 ) {
@@ -17,6 +23,11 @@ export function createCanvasGrid(
 	let pixelsPerGridline = $derived(pixelsPerMeter * metersPerGridline);
 	let xGridlineCount = $derived(container.height / pixelsPerGridline);
 	let yGridlineCount = $derived(container.width / pixelsPerGridline);
+
+	let config = localStore<GridManagerPersistedState>('layoutGridState', {
+		snapToGrid: true,
+		rightAngleConstraint: false
+	});
 
 	/** Functions. */
 	function renderGridlines() {
@@ -59,9 +70,15 @@ export function createCanvasGrid(
 	}
 
 	return {
+		get config() {
+			return config.value;
+		},
+		set config(newVal) {
+			config.value = newVal;
+		},
 		initialize
 	};
 }
-export default createCanvasGrid;
+export default createCanvasGridManager;
 
-export type CanvasGrid = ReturnType<typeof createCanvasGrid>;
+export type CanvasGridManager = ReturnType<typeof createCanvasGridManager>;

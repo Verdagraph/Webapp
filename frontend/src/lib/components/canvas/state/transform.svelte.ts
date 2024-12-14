@@ -37,11 +37,28 @@ export function createCanvasTransform(container: CanvasContainer) {
 	}
 
 	/**
-	 * Scales the current scale factor.
-	 * @param factor Multiplied to the current scale factor.
+	 * Adds to the current scale factor.
+	 * Scales from the center.
+	 * @param scale Adds to the current scale factor.
 	 */
-	function scale(factor: number) {
-		scaleFactor *= factor;
+	function addScale(scale: number) {
+		/** The center of the canvas without considering translation or scaling. */
+		const preTransformedCenter = { x: container.width / 2, y: container.width / 2 };
+
+		/** The center of the canvas considering translation and scaling. */
+		const transformedCenter = {
+			x: (preTransformedCenter.x - position.x) / scaleFactor,
+			y: (preTransformedCenter.y - position.y) / scaleFactor
+		};
+
+		/** Add to the scale factor. */
+		scaleFactor += scale;
+
+		/** Set the position such that the center of the canvas before and after scaling is the same. */
+		position = {
+			x: preTransformedCenter.x - transformedCenter.x * scaleFactor,
+			y: preTransformedCenter.y - transformedCenter.y * scaleFactor
+		};
 	}
 
 	/**
@@ -77,7 +94,7 @@ export function createCanvasTransform(container: CanvasContainer) {
 			position = newVal;
 		},
 		translate,
-		scale,
+		addScale,
 		reset,
 		addTransformFunction,
 		initialize

@@ -185,7 +185,7 @@
 							<Tooltip.Trigger>
 								<Button
 									onclick={() => {
-										canvas.transform.scale(0.9);
+										canvas.transform.addScale(-0.1);
 									}}
 									variant="outline"
 									size="xsm"
@@ -217,7 +217,7 @@
 							<Tooltip.Trigger>
 								<Button
 									onclick={() => {
-										canvas.transform.scale(1.1);
+										canvas.transform.addScale(0.1);
 									}}
 									variant="outline"
 									size="xsm"
@@ -250,7 +250,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: 10, y: 0 });
+											canvas.transform.translate({ x: 100, y: 0 });
 										}}
 										variant="outline"
 										size="xsm"
@@ -277,7 +277,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: 0, y: 10 });
+											canvas.transform.translate({ x: 0, y: 100 });
 										}}
 										variant="outline"
 										size="xsm"
@@ -304,7 +304,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: -10, y: 0 });
+											canvas.transform.translate({ x: -100, y: 0 });
 										}}
 										variant="outline"
 										size="xsm"
@@ -331,7 +331,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: 0, y: -10 });
+											canvas.transform.translate({ x: 0, y: -100 });
 										}}
 										variant="outline"
 										size="xsm"
@@ -375,9 +375,15 @@
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								<Button
+									onclick={() => {
+										canvas.gridManager.config.snapToGrid =
+											!canvas.gridManager.config.snapToGrid;
+									}}
 									variant="outline"
 									size="xsm"
-									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex rotate-180 items-center justify-center"
+									class="{canvas.gridManager.config.snapToGrid
+										? 'bg-secondary-5 border-secondary-6 hover:bg-neutral-3 hover:border-neutral-8'
+										: 'bg-neutral-1 hover:bg-secondary-5'} hover:text-secondary-12 flex rotate-180 items-center justify-center transition-colors"
 								>
 									<Icon
 										icon={'iconoir:magnet-solid'}
@@ -395,9 +401,15 @@
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								<Button
+									onclick={() => {
+										canvas.gridManager.config.rightAngleConstraint =
+											!canvas.gridManager.config.rightAngleConstraint;
+									}}
 									variant="outline"
 									size="xsm"
-									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex items-center justify-center"
+									class="{canvas.gridManager.config.rightAngleConstraint
+										? 'bg-secondary-5 border-secondary-6 hover:bg-neutral-3 hover:border-neutral-8'
+										: 'bg-neutral-1 hover:bg-secondary-5'} hover:text-secondary-12 flex items-center justify-center transition-colors"
 								>
 									<Icon icon={'mdi:parallel'} width="3rem" class="text-neutral-11" />
 								</Button>
