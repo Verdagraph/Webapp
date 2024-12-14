@@ -250,7 +250,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: 100, y: 0 });
+											canvas.transform.translate({ x: 120, y: 0 });
 										}}
 										variant="outline"
 										size="xsm"
@@ -277,7 +277,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: 0, y: 100 });
+											canvas.transform.translate({ x: 0, y: 120 });
 										}}
 										variant="outline"
 										size="xsm"
@@ -304,7 +304,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: -100, y: 0 });
+											canvas.transform.translate({ x: -120, y: 0 });
 										}}
 										variant="outline"
 										size="xsm"
@@ -331,7 +331,7 @@
 								<Tooltip.Trigger>
 									<Button
 										onclick={() => {
-											canvas.transform.translate({ x: 0, y: -100 });
+											canvas.transform.translate({ x: 0, y: -120 });
 										}}
 										variant="outline"
 										size="xsm"
