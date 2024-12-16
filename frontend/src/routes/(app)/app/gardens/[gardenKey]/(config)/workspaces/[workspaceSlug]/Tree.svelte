@@ -9,7 +9,7 @@
 
 	//let { workspace }: Props = $props();
 
-	const treeView = createTreeView();
+	//const treeView = createTreeView();
 </script>
 
 Tree

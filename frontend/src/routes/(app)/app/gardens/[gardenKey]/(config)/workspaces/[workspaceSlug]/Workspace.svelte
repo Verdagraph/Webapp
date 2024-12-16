@@ -24,19 +24,19 @@
 
 <Resizable.PaneGroup direction={activeWorkspace.contentPaneDirection}>
 	{#if activeWorkspace.treeEnabled}
-		<Resizable.Pane defaultSize={30} order={0} minSize={10}>
+		<Resizable.Pane defaultSize={30} order={1} minSize={10}>
 			<Tree />
 		</Resizable.Pane>
 		<Resizable.Handle withHandle={false} />
 	{/if}
 	{#if toolbox.isActive}
-		<Resizable.Pane defaultSize={20} order={1} minSize={10}>
+		<Resizable.Pane defaultSize={20} order={2} minSize={10}>
 			<TabToolbox {toolbox} />
 		</Resizable.Pane>
 		<Resizable.Handle withHandle={false} />
 	{/if}
 	{#if activeWorkspace.layoutEnabled}
-		<Resizable.Pane defaultSize={70} order={2} minSize={10}>
+		<Resizable.Pane defaultSize={70} order={3} minSize={10}>
 			<Layout />
 		</Resizable.Pane>
 	{/if}

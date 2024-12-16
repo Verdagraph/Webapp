@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import iconIds from '$lib/assets/icons';
 	import { getContext } from 'svelte';
 	import type { CanvasContext } from './state';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
@@ -19,39 +18,31 @@
 
 	/**
 	 * Indicates a corner of the canvas.
-	 * tl - top left.
-	 * tr - top right.
-	 * br - bottom right.
-	 * bl - bottom left.
+	 * Same as tailwind class names.
 	 */
 	type CanvasCorner = 'tl' | 'tr' | 'br' | 'bl';
 	type Direction = 'horizontal' | 'vertical';
 
+	/** Config for the controls. */
 	type TransformControlsPersistedState = {
-		showButtons: boolean;
+		/** The open state of the buttons collapsible. */
 		buttonsExpanded: boolean;
+		/** The position of the buttons on the screen. */
 		buttonsPosition: CanvasCorner;
-		showScale: boolean;
-		scalePosition: CanvasCorner;
-		showOriginIndicator: boolean;
 	};
 
-	const defaultButtonPosition: CanvasCorner = isMobile() ? 'br' : 'bl';
-	const defaultScalePosition: CanvasCorner = isMobile() ? 'bl' : 'br';
+	/** The width of the container to switch between vertical and horizontal buttons. */
 	const buttonDirectionBreakpoint = 400;
-
-	let config = new LocalStore<TransformControlsPersistedState>('layoutControls', {
-		showButtons: true,
-		buttonsExpanded: true,
-		buttonsPosition: defaultButtonPosition,
-		showScale: true,
-		scalePosition: defaultScalePosition,
-		showOriginIndicator: true
-	});
-
+	const defaultButtonPosition: CanvasCorner = isMobile() ? 'br' : 'bl';
+	
 	let buttonsDirection = $derived<Direction>(
 		canvas.container.width < buttonDirectionBreakpoint ? 'vertical' : 'horizontal'
 	);
+	let config = new LocalStore<TransformControlsPersistedState>('layoutControls', {
+		buttonsExpanded: true,
+		buttonsPosition: defaultButtonPosition,
+	});
+
 
 	/**
 	 * Controls the position of the toolbar within the layout container.
