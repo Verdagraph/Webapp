@@ -4,10 +4,12 @@ import { getColor } from '$lib/utils';
 import mode from '$state/theme.svelte';
 
 export function createCanvasContainer(canvasId: string) {
-	/** Konva elements. */
-	const containerId = canvasId;
+	/** Konva. */
+	const containerId = canvasId; /** ID of the container HTML element. */
 	let stage: Konva.Stage | null = null;
-	let layers: Record<string, Konva.Layer> = {};
+	let layers: Record<string, Konva.Layer> =
+		{}; /** Record to track references to layers. */
+	const pixelsPerMeter = 50; /** The initial scale of rendering, pre-scaling. */
 
 	/** Runes. */
 	let initialized = $state(false);
@@ -109,6 +111,9 @@ export function createCanvasContainer(canvasId: string) {
 		},
 		get stage() {
 			return stage;
+		},
+		get pixelsPerMeter() {
+			return pixelsPerMeter;
 		},
 		get initialized() {
 			return initialized;

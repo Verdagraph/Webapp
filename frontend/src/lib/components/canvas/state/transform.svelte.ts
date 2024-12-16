@@ -6,6 +6,9 @@ import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
 
+const minScaleFactor = 0.1;
+const maxScaleFactor = 10;
+
 export function createCanvasTransform(container: CanvasContainer) {
 	/** Runes. */
 
@@ -42,6 +45,15 @@ export function createCanvasTransform(container: CanvasContainer) {
 	 * @param scale Adds to the current scale factor.
 	 */
 	function addScale(scale: number) {
+		if (scale == 0) {
+			return;
+		}
+
+		/** Cap scaling. */
+		if (scaleFactor <= minScaleFactor || scaleFactor >= maxScaleFactor) {
+			return;
+		}
+
 		/** The center of the canvas without considering translation or scaling. */
 		const preTransformedCenter = { x: container.width / 2, y: container.width / 2 };
 
@@ -52,7 +64,11 @@ export function createCanvasTransform(container: CanvasContainer) {
 		};
 
 		/** Add to the scale factor. */
-		scaleFactor += scale;
+		if (scale < 0) {
+			scaleFactor = Math.max(scaleFactor + scale, minScaleFactor);
+		} else {
+			scaleFactor = Math.min(scaleFactor + scale, maxScaleFactor);
+		}
 
 		/** Set the position such that the center of the canvas before and after scaling is the same. */
 		position = {
