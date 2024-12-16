@@ -24,7 +24,7 @@
 		}
 	];
 
-	console.log(activeWorkspace.treeEnabled)
+	console.log(activeWorkspace.treeEnabled);
 </script>
 
 <div class="flex h-full w-full flex-col overflow-clip">
@@ -176,13 +176,19 @@
 				<Menubar.Content>
 					<!-- Content pane toggles. -->
 					<Menubar.Group>
-						<Menubar.CheckboxItem bind:checked={activeWorkspace.treeEnabled} disabled={!activeWorkspace.layoutEnabled}>
+						<Menubar.CheckboxItem
+							bind:checked={activeWorkspace.treeEnabled}
+							disabled={!activeWorkspace.layoutEnabled}
+						>
 							<div class="flex w-full items-center justify-between">
 								<span> Tree </span>
 								<Icon icon={iconIds.verdagraphTreeIcon} width="1rem" />
 							</div>
 						</Menubar.CheckboxItem>
-						<Menubar.CheckboxItem bind:checked={activeWorkspace.layoutEnabled} disabled={!activeWorkspace.treeEnabled}>
+						<Menubar.CheckboxItem
+							bind:checked={activeWorkspace.layoutEnabled}
+							disabled={!activeWorkspace.treeEnabled}
+						>
 							<div class="flex w-full items-center justify-between">
 								<span> Layout </span>
 								<Icon icon={iconIds.verdagraphLayoutIcon} width="1rem" />
@@ -192,15 +198,15 @@
 
 					<!-- Content pane direction. -->
 					{#if activeWorkspace.layoutEnabled && activeWorkspace.treeEnabled}
-					<Menubar.Sub>
-						<Menubar.SubTrigger>Direction</Menubar.SubTrigger>
-						<Menubar.SubContent>
-							<Menubar.RadioGroup bind:value={activeWorkspace.contentPaneDirection}>
-								<Menubar.RadioItem value="horizontal">Horizontal</Menubar.RadioItem>
-								<Menubar.RadioItem value="vertical">Vertical</Menubar.RadioItem>
-							</Menubar.RadioGroup>
-						</Menubar.SubContent>
-					</Menubar.Sub>
+						<Menubar.Sub>
+							<Menubar.SubTrigger>Direction</Menubar.SubTrigger>
+							<Menubar.SubContent>
+								<Menubar.RadioGroup bind:value={activeWorkspace.contentPaneDirection}>
+									<Menubar.RadioItem value="horizontal">Horizontal</Menubar.RadioItem>
+									<Menubar.RadioItem value="vertical">Vertical</Menubar.RadioItem>
+								</Menubar.RadioGroup>
+							</Menubar.SubContent>
+						</Menubar.Sub>
 					{/if}
 				</Menubar.Content>
 			</Menubar.Menu>

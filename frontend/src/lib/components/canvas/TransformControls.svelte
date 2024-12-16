@@ -34,15 +34,14 @@
 	/** The width of the container to switch between vertical and horizontal buttons. */
 	const buttonDirectionBreakpoint = 400;
 	const defaultButtonPosition: CanvasCorner = isMobile() ? 'br' : 'bl';
-	
+
 	let buttonsDirection = $derived<Direction>(
 		canvas.container.width < buttonDirectionBreakpoint ? 'vertical' : 'horizontal'
 	);
 	let config = new LocalStore<TransformControlsPersistedState>('layoutControls', {
 		buttonsExpanded: true,
-		buttonsPosition: defaultButtonPosition,
+		buttonsPosition: defaultButtonPosition
 	});
-
 
 	/**
 	 * Controls the position of the toolbar within the layout container.
