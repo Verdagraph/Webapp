@@ -1,4 +1,5 @@
 import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
+import userSettings from '$state/userSettings.svelte';
 
 type UnitInfo = {
 	symbols: Record<UnitSystem, string>;
@@ -51,7 +52,7 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
 	volume: {
 		symbols: {
 			metric: 'L',
-			imperial: 'gal (US)'
+			imperial: 'gal(US)'
 		},
 		conversions: {
 			metric: (liters: number) => {
@@ -66,15 +67,15 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
 
 /**
  * Retrieve the string symbol for a unit.
+ * @param unitSystem The unit system.
  * @param quantityType The type of quantity being represented.
- * @param unit The unit system.
  * @returns The unit symbol as a string.
  */
-export function quantityToUnitSymbol(
+function quantityToUnitSymbol(
+	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity,
-	unit: UnitSystem
 ): string {
-	return units[quantityType].symbols[unit];
+	return units[quantityType].symbols[unitSystem];
 }
 
 /**
@@ -82,21 +83,21 @@ export function quantityToUnitSymbol(
  * @param unitSystem The unit system to swap.
  * @returns The opposite unit system.
  */
-export function swapUnit(unitSystem: UnitSystem): UnitSystem {
+function swapUnit(unitSystem: UnitSystem): UnitSystem {
 	return unitSystem === 'metric' ? 'imperial' : 'metric';
 }
 
 /**
  * Convert a quantity to the other unit system.
  * @param quantity The quantity to convert.
- * @param quantityType The type of the quantity
  * @param unitSystem The unit system the quanity is currently in.
+ * @param quantityType The type of the quantity
  * @returns The quantity represented in the other unit system.
  */
-export function convertQuantity(
+function convertQuantity(
 	quantity: number,
+	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity,
-	unitSystem: UnitSystem
 ): number {
 	return units[quantityType].conversions[unitSystem](quantity);
 }
@@ -105,34 +106,69 @@ export function convertQuantity(
  * Converts a quantity to the metric system.
  * If it is already in the metric system, it is returned unchanged.
  * @param quantity The quantity to convert.
- * @param quantityType The type of the quantity
  * @param unitSystem The unit system the quanity is currently in.
+ * @param quantityType The type of the quantity
  * @returns The quantity represented in the metric system.
  */
-export function convertQuantityToMetric(
+function convertQuantityToMetric(
 	quantity: number,
+	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity,
-	unitSystem: UnitSystem
 ): number {
 	return unitSystem === 'metric'
 		? quantity
-		: convertQuantity(quantity, quantityType, unitSystem);
+		: convertQuantity(quantity, unitSystem, quantityType);
 }
 
 /**
- * Converts a quantity to the imperial system.
- * If it is already in the imperial system, it is returned unchanged.
- * @param quantity The quantity to convert.
- * @param quantityType The type of the quantity
- * @param unitSystem The unit system the quanity is currently in.
- * @returns The quantity represented in the imperial system.
+ * Creates a set of runes for tracking and changing the unit system of value. 
+ * @param quantityType The type of quantity to represent.
+ * @param initialValueMetric The initial value of the quantity, in metric.
+ * @returns A unit aware value.
  */
-export function convertQuantityToImperial(
-	quantity: number,
-	quantityType: UnitAwareQuantity,
-	unitSystem: UnitSystem
-): number {
-	return unitSystem === 'imperial'
-		? quantity
-		: convertQuantity(quantity, quantityType, unitSystem);
+export function createUnitAwareValue(quantityType: UnitAwareQuantity, initialValueMetric: number) {
+	/** The current unit system for this value. Defaults to user preferences. */
+	let unitSystem = $state(userSettings.value.units[quantityType]);
+
+	/** The value displayed in the component. */
+	let value = $state(
+		userSettings.value.units[quantityType] === 'metric'
+			? initialValueMetric
+			: convertQuantity(initialValueMetric, 'metric', quantityType)
+	);
+
+	/** A version of the value guarnteed to be metric. */
+	let metricValue = $derived(convertQuantityToMetric(value, unitSystem, quantityType))
+
+	/** The symbol displayed in the component.*/
+	let unitSymbol = $derived(quantityToUnitSymbol(unitSystem, quantityType));
+
+	/**
+	 * When the units are swapped, the intermediate quantity is converted
+	 * to the other unit system and the unit system is swapped.
+	 */
+	function swapUnits() {
+		const oldUnitSystem = unitSystem
+		unitSystem = swapUnit(unitSystem);
+		value = convertQuantity(value, oldUnitSystem, quantityType);
+	}
+
+	return {
+		get unitSystem() {
+			return unitSystem
+		},
+		get value() {
+			return value
+		},
+		get metricValue() {
+			return metricValue
+		},
+		get unitSymbol() {
+			return unitSymbol
+		},
+		set value(newVal) {
+			value = newVal
+		},
+		swapUnits
+	}
 }
