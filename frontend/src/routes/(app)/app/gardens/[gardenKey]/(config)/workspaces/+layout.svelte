@@ -194,20 +194,29 @@
 								<Icon icon={iconIds.verdagraphLayoutIcon} width="1rem" />
 							</div>
 						</Menubar.CheckboxItem>
+						<!-- Content pane direction. -->
+						{#if activeWorkspace.layoutEnabled && activeWorkspace.treeEnabled}
+							<Menubar.Sub>
+								<Menubar.SubTrigger>Direction</Menubar.SubTrigger>
+								<Menubar.SubContent>
+									<Menubar.RadioGroup bind:value={activeWorkspace.contentPaneDirection}>
+										<Menubar.RadioItem value="horizontal">Horizontal</Menubar.RadioItem>
+										<Menubar.RadioItem value="vertical">Vertical</Menubar.RadioItem>
+									</Menubar.RadioGroup>
+								</Menubar.SubContent>
+							</Menubar.Sub>
+						{/if}
 					</Menubar.Group>
 
-					<!-- Content pane direction. -->
-					{#if activeWorkspace.layoutEnabled && activeWorkspace.treeEnabled}
-						<Menubar.Sub>
-							<Menubar.SubTrigger>Direction</Menubar.SubTrigger>
-							<Menubar.SubContent>
-								<Menubar.RadioGroup bind:value={activeWorkspace.contentPaneDirection}>
-									<Menubar.RadioItem value="horizontal">Horizontal</Menubar.RadioItem>
-									<Menubar.RadioItem value="vertical">Vertical</Menubar.RadioItem>
-								</Menubar.RadioGroup>
-							</Menubar.SubContent>
-						</Menubar.Sub>
-					{/if}
+					<Menubar.Separator />
+
+					<Menubar.Item
+						onclick={() => {
+							toolbox.activate('layoutConfig');
+						}}
+					>
+						Layout Config
+					</Menubar.Item>
 				</Menubar.Content>
 			</Menubar.Menu>
 		{/if}

@@ -86,23 +86,6 @@ export function createCanvasContainer(canvasId: string) {
 			height: height
 		});
 
-		/** Initialize the background*/
-		const backgroundLayer = addLayer('background');
-		const backgroundRect = new Konva.Rect({
-			fill: getColor('neutral', 1, mode.value),
-			x: 0,
-			y: 0,
-			width: stage.width(),
-			height: stage.height()
-		});
-		backgroundLayer.add(backgroundRect);
-		addResizeFunction(() => {
-			if (stage && backgroundRect) {
-				backgroundRect.width(stage.width());
-				backgroundRect.height(stage.height());
-			}
-		});
-
 		initialized = true;
 	}
 

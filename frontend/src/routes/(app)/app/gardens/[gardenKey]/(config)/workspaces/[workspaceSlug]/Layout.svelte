@@ -1,13 +1,16 @@
 <script lang="ts">
 	import * as Canvas from '$components/canvas/';
 
-	const canvasId = 'workspace';
+	type Props = {
+		canvasId: string;
+	};
+	let { canvasId }: Props = $props();
 </script>
 
 {#snippet overlay()}
 	<Canvas.TransformControls {canvasId} />
 {/snippet}
 
-<Canvas.Root {canvasId} {overlay}>
+<Canvas.Root initializeContext={false} {canvasId} {overlay}>
 	<Canvas.Gridlines {canvasId} />
 </Canvas.Root>

@@ -5,6 +5,12 @@
 	import activeWorkspace from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
 	import Workspace from './Workspace.svelte';
+	import type { Snippet } from 'svelte';
+	import { setContext, getContext } from 'svelte';
+	import { createCanvasContext, type CanvasContext } from '$components/canvas';
+
+	const layoutCanvas = createCanvasContext('workspaceLayout');
+	setContext<CanvasContext>('workspaceLayout', layoutCanvas);
 
 	onMount(() => {
 		/** Update the active workspace upon loading a new workspace. */

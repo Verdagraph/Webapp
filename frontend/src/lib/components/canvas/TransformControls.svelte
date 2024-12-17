@@ -8,6 +8,8 @@
 	import { LocalStore } from '$state/localStore.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
+	type Direction = 'horizontal' | 'vertical';
+
 	/** Props. */
 	type Props = {
 		canvasId: string;
@@ -16,38 +18,18 @@
 
 	let canvas = getContext<CanvasContext>(canvasId);
 
-	/**
-	 * Indicates a corner of the canvas.
-	 * Same as tailwind class names.
-	 */
-	type CanvasCorner = 'tl' | 'tr' | 'br' | 'bl';
-	type Direction = 'horizontal' | 'vertical';
-
-	/** Config for the controls. */
-	type TransformControlsPersistedState = {
-		/** The open state of the buttons collapsible. */
-		buttonsExpanded: boolean;
-		/** The position of the buttons on the screen. */
-		buttonsPosition: CanvasCorner;
-	};
-
 	/** The width of the container to switch between vertical and horizontal buttons. */
 	const buttonDirectionBreakpoint = 400;
-	const defaultButtonPosition: CanvasCorner = isMobile() ? 'br' : 'bl';
 
 	let buttonsDirection = $derived<Direction>(
 		canvas.container.width < buttonDirectionBreakpoint ? 'vertical' : 'horizontal'
 	);
-	let config = new LocalStore<TransformControlsPersistedState>('layoutControls', {
-		buttonsExpanded: true,
-		buttonsPosition: defaultButtonPosition
-	});
 
 	/**
 	 * Controls the position of the toolbar within the layout container.
 	 */
 	let collapsibleFlexPositioning = $derived.by(() => {
-		switch (config.value.buttonsPosition) {
+		switch (canvas.transform.config.buttonsPosition) {
 			case 'bl':
 				return 'justify-start items-end';
 			case 'br':
@@ -63,7 +45,7 @@
 	let collapsibleFlexDirection = $derived.by(() => {
 		switch (buttonsDirection) {
 			case 'horizontal':
-				switch (config.value.buttonsPosition) {
+				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
 						return 'flex-row';
 					case 'br':
@@ -74,7 +56,7 @@
 						return 'flex-row-reverse';
 				}
 			case 'vertical':
-				switch (config.value.buttonsPosition) {
+				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
 						return 'flex-col-reverse';
 					case 'br':
@@ -91,7 +73,7 @@
 	let collapsibleFlexAlignment = $derived.by(() => {
 		switch (buttonsDirection) {
 			case 'horizontal':
-				switch (config.value.buttonsPosition) {
+				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
 						return 'items-end';
 					case 'br':
@@ -102,7 +84,7 @@
 						return 'items-start';
 				}
 			case 'vertical':
-				switch (config.value.buttonsPosition) {
+				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
 						return 'items-start';
 					case 'br':
@@ -119,26 +101,26 @@
 	let collapsibleTriggerRotation = $derived.by(() => {
 		switch (buttonsDirection) {
 			case 'horizontal':
-				switch (config.value.buttonsPosition) {
+				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
-						return config.value.buttonsExpanded ? 'rotate-180' : 'rotate-10';
+						return canvas.transform.config.buttonsExpanded ? 'rotate-180' : 'rotate-10';
 					case 'br':
-						return config.value.buttonsExpanded ? 'rotate-0' : 'rotate-180';
+						return canvas.transform.config.buttonsExpanded ? 'rotate-0' : 'rotate-180';
 					case 'tl':
-						return config.value.buttonsExpanded ? 'rotate-180' : 'rotate-0';
+						return canvas.transform.config.buttonsExpanded ? 'rotate-180' : 'rotate-0';
 					case 'tr':
-						return config.value.buttonsExpanded ? 'rotate-0' : 'rotate-180';
+						return canvas.transform.config.buttonsExpanded ? 'rotate-0' : 'rotate-180';
 				}
 			case 'vertical':
-				switch (config.value.buttonsPosition) {
+				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
-						return config.value.buttonsExpanded ? '-rotate-90' : 'rotate-90';
+						return canvas.transform.config.buttonsExpanded ? '-rotate-90' : 'rotate-90';
 					case 'br':
-						return config.value.buttonsExpanded ? '-rotate-90' : 'rotate-90';
+						return canvas.transform.config.buttonsExpanded ? '-rotate-90' : 'rotate-90';
 					case 'tl':
-						return config.value.buttonsExpanded ? 'rotate-90' : '-rotate-90';
+						return canvas.transform.config.buttonsExpanded ? 'rotate-90' : '-rotate-90';
 					case 'tr':
-						return config.value.buttonsExpanded ? 'rotate-90' : '-rotate-90';
+						return canvas.transform.config.buttonsExpanded ? 'rotate-90' : '-rotate-90';
 				}
 		}
 	});
@@ -147,7 +129,7 @@
 <div class="flex h-full w-full p-2 {collapsibleFlexPositioning}">
 	<Tooltip.Root delayDuration={800}>
 		<Collapsible.Root
-			bind:open={config.value.buttonsExpanded}
+			bind:open={canvas.transform.config.buttonsExpanded}
 			class="z-50 flex {collapsibleFlexDirection} {collapsibleFlexAlignment} justify-start gap-2"
 		>
 			<Tooltip.Trigger class="order-last">

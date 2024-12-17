@@ -9,11 +9,30 @@ import type { Vector2d } from 'konva/lib/types';
 const minScaleFactor = 0.1;
 const maxScaleFactor = 10;
 
+/**
+ * Indicates a corner of the canvas.
+ * Same as tailwind class names.
+ */
+type CanvasCorner = 'tl' | 'tr' | 'br' | 'bl';
+
+/** Config for the controls. */
+type TransformControlsPersistedState = {
+	/** The open state of the buttons collapsible. */
+	buttonsExpanded: boolean;
+	/** The position of the buttons on the screen. */
+	buttonsPosition: CanvasCorner;
+};
+
+const defaultButtonPosition: CanvasCorner = isMobile() ? 'br' : 'bl';
+
 export function createCanvasTransform(container: CanvasContainer) {
 	/** Runes. */
-
 	let scaleFactor = $state(1);
 	let position = $state<Vector2d>({ x: 0, y: 0 });
+	let config = new LocalStore<TransformControlsPersistedState>('layoutControls', {
+		buttonsExpanded: true,
+		buttonsPosition: defaultButtonPosition
+	});
 
 	/**
 	 * An array of functions which, when the canvas is transformed, are called.
@@ -97,6 +116,9 @@ export function createCanvasTransform(container: CanvasContainer) {
 	}
 
 	return {
+		get config() {
+			return config.value;
+		},
 		get scaleFactor() {
 			return scaleFactor;
 		},
@@ -105,6 +127,9 @@ export function createCanvasTransform(container: CanvasContainer) {
 		},
 		get position() {
 			return position;
+		},
+		set config(newVal: TransformControlsPersistedState) {
+			config.value = newVal;
 		},
 		set position(newVal) {
 			position = newVal;

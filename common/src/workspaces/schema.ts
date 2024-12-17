@@ -5,9 +5,9 @@ import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
  * Each geometry type is associated with a different record type
  * describing its features.
  * RECTANGLE: a closed shape specified by width and height.
- * POLYGON: a closed shape specified by a set of joined line segments.
+ * POLYGON: a closed shape specified by a number of sides and their length.
  * ELLIPSE: a closed shape specified by a major and minor radius.
- * LINES: an open shape specified by a set of joined line segments.`
+ * LINES: a closed or open shape specified by a set of joined line segments.`
  */
 export const GeometryTypeEnum = ['RECTANGLE', 'POLYGON', 'ELLIPSE', 'LINES'] as const;
 
@@ -122,22 +122,21 @@ export const workspaceSchema = {
 			/** Polygon geometry attributes. */
 			polygonAttributes: S.Optional(
 				S.Record({
-					/** A set of coordinates which describe a closed shape of line segments. */
-					shellCoordinateIds: S.Set(S.String()),
-					shellCoordinates: S.RelationMany('coordinates', {
-						where: [['id', 'in', '$polygonAttributes.shellCoordinateIds']]
-					})
+					/** Number of sides to the polygon. */
+					numSides: S.Number(),
+					/** Length of each side. */
+					sideLength: S.Number()
 				})
 			),
 
 			/** Ellipe geometry attributes. */
 			ellipseAttributes: S.Optional(
 				S.Record({
-					/** The length of the horizontal radius in meters. */
-					lengthRadius: S.Number(),
+					/** The length of the horizontal diameter in meters. */
+					lengthDiameter: S.Number(),
 
-					/** The width of the vertical radius in meters. */
-					widthRadius: S.Number()
+					/** The width of the vertical diameter in meters. */
+					widthDiameter: S.Number()
 				})
 			),
 
@@ -410,11 +409,22 @@ export const workspaceSchema = {
 			gardenId: S.String(),
 			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
-			/** The geometric history of the planting area. */
-			geometryHistoryId: S.String(),
-			geometryHistory: S.RelationOne('geometryHistories', {
-				where: [['id', '=', '$geometryHistoryId']]
+			/** The geometry of the planting area. */
+			geometryId: S.String(),
+			geometry: S.RelationOne('geometries', {
+				where: [['id', '=', '$geometryId']]
 			}),
+
+			/**
+			 * Describes a grid overlaid onto the geometry.
+			 * Used for placing plants.
+			 */
+			grid: S.Optional(
+				S.Record({
+					numRows: S.Number(),
+					numColumns: S.Number()
+				})
+			),
 
 			/** The location history of the planting area. */
 			locationHistoryId: S.String(),

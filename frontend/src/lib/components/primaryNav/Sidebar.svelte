@@ -25,7 +25,7 @@
 Large screens sidebar.
 -->
 <nav
-	class="border-neutral-6 bg-neutral-2 fixed top-0 flex h-full flex-col justify-between border-r"
+	class="border-neutral-8 bg-neutral-2 fixed top-0 flex h-full flex-col justify-between border-r"
 >
 	<!-- Links displayed at the top. -->
 	<ul>
