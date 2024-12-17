@@ -65,6 +65,7 @@ export function createCanvasContainer(canvasId: string) {
 	 */
 	function onResize() {
 		resizeFunctions.forEach((func) => func());
+		console.log(`width: ${width} height: ${height}`);
 	}
 	/**
 	 * Adds a new side-effect to resizing the canvas container.

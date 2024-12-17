@@ -37,13 +37,28 @@
 	bind:clientHeight={canvas.container.height}
 	class="relative h-full w-full"
 >
-	<div class="absolute z-50 h-full w-full">
-		{@render overlay()}
-	</div>
-
-	<div id={canvasId} bind:this={containerRef}>
+	<div
+		id={canvasId}
+		bind:this={containerRef}
+		class="absolute left-0 top-0 h-full w-full"
+	>
 		{#if canvas.container.initialized}
 			{@render children()}
 		{/if}
 	</div>
+	<div class="absolute left-0 top-0 z-10 h-full w-full">
+		{@render overlay()}
+	</div>
 </div>
+
+<style>
+	.container {
+		display: grid;
+		grid-template-columns: 1fr;
+	}
+	.container div {
+		grid-area: 1 / 1 / 2 / 2;
+		width: 100%;
+		height: 100%;
+	}
+</style>

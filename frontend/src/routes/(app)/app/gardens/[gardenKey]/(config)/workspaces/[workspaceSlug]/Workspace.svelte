@@ -20,24 +20,34 @@
 		description:
 			"Jokester began sneaking into the castle in the middle of the night and leaving jokes all over the place: under the king's pillow, in his soup, even in the royal toilet. The king was furious, but he couldn't seem to stop Jokester. And then, one day, the people of the kingdom discovered that the jokes left by Jokester were so funny that they couldn't help but laugh. And once they started laughing, they couldn't stop."
 	};
+
+	/** Force a re-render of the PaneGroup if the direction is changed. */
+	let initialized = $state(true);
+	$effect(() => {
+		activeWorkspace.contentPaneDirection;
+		initialized = false;
+		initialized = true;
+	});
 </script>
 
-<Resizable.PaneGroup direction={activeWorkspace.contentPaneDirection}>
-	{#if activeWorkspace.treeEnabled}
-		<Resizable.Pane defaultSize={30} order={1} minSize={10}>
-			<Tree />
-		</Resizable.Pane>
-		<Resizable.Handle withHandle={false} />
-	{/if}
-	{#if toolbox.isActive}
-		<Resizable.Pane defaultSize={20} order={2} minSize={10}>
-			<TabToolbox {toolbox} />
-		</Resizable.Pane>
-		<Resizable.Handle withHandle={false} />
-	{/if}
-	{#if activeWorkspace.layoutEnabled}
-		<Resizable.Pane defaultSize={70} order={3} minSize={10}>
-			<Layout />
-		</Resizable.Pane>
-	{/if}
-</Resizable.PaneGroup>
+{#if initialized}
+	<Resizable.PaneGroup direction={activeWorkspace.contentPaneDirection}>
+		{#if activeWorkspace.layoutEnabled}
+			<Resizable.Pane defaultSize={70} order={1} minSize={10}>
+				<Layout />
+			</Resizable.Pane>
+			<Resizable.Handle withHandle={false} />
+		{/if}
+		{#if toolbox.isActive}
+			<Resizable.Pane defaultSize={20} order={2} minSize={10}>
+				<TabToolbox {toolbox} />
+			</Resizable.Pane>
+			<Resizable.Handle withHandle={false} />
+		{/if}
+		{#if activeWorkspace.treeEnabled}
+			<Resizable.Pane defaultSize={30} order={3} minSize={10}>
+				<Tree />
+			</Resizable.Pane>
+		{/if}
+	</Resizable.PaneGroup>
+{/if}
