@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Tabs } from 'bits-ui';
+	//import { Tabs } from 'bits-ui';
+	import * as Tabs from '$components/ui/tabs'
 	import { Button } from '$lib/components/ui/button';
 	import iconIds from '$lib/assets/icons';
 	import createToolbox from './tools.svelte';
@@ -12,14 +13,14 @@
 </script>
 
 <Tabs.Root bind:value={toolbox.lastActivatedId} class="bg-neutral-1 h-full">
-	<Tabs.List class="flex w-full flex-row justify-evenly overflow-auto">
+	<Tabs.List class="">
 		{#each toolbox.activeTools as tool}
 			<Tabs.Trigger
 				value={tool.id}
 				class="border-neutral-5 text-neutral-11 flex w-full items-center justify-between border-b p-0 px-8 py-1 {toolbox.lastActivatedId ===
 				tool.id
-					? 'bg-neutral-1 hover:bg-neutral-2'
-					: 'bg-neutral-2 hover:bg-neutral-3'}"
+					? 'bg-neutral-2 hover:bg-neutral-3'
+					: 'bg-neutral-1 hover:bg-neutral-2'}"
 			>
 				<span>
 					{tool.label}

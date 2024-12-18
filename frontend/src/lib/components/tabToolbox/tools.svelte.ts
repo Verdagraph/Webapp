@@ -72,6 +72,9 @@ export function createToolbox<ToolId extends string>(
 		get isActive(): boolean {
 			return isActive;
 		},
+		set lastActivatedId(newVal) {
+			lastActivatedId = newVal
+		},
 		activate,
 		deactivate
 	};

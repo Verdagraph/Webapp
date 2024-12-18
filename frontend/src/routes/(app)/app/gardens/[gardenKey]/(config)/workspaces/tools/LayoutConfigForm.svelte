@@ -34,7 +34,7 @@
 			type="single"
 			bind:value={layoutCanvas.transform.config.buttonsPosition}
 		>
-			<Select.Trigger class="">{currentButtonsPositionLabel}</Select.Trigger>
+			<Select.Trigger>{currentButtonsPositionLabel}</Select.Trigger>
 			<Select.Content>
 				{#each buttonsPositionOptions as option}
 					<Select.Item value={option.value}>{option.label}</Select.Item>
@@ -50,6 +50,6 @@
 				description="Sets the distance between gridlines on the background grid."
 			/>
 		</div>
-		<UnitAwareInput quantityType="distance" bind:value></UnitAwareInput>
+		<UnitAwareInput bind:value quantityType="distance"></UnitAwareInput>
 	</div>
 </div>

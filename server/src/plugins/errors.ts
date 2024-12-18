@@ -21,7 +21,7 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 
 			/** For each error, put the error message in the array of field errors in the response */
 			for (const validationError of error.validation) {
-				const fieldName = validationError.instancePath.split('/').pop() || '';
+				const fieldName = validationError.instancePath.split('/').join('.');
 				if (fieldErrors[fieldName]) {
 					fieldErrors[fieldName].push(validationError.message);
 				} else {

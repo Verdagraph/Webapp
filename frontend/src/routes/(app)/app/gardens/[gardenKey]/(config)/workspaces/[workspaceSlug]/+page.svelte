@@ -2,15 +2,15 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
-	import activeWorkspace from '../activeWorkspace.svelte';
+	import activeWorkspace, {workspaceLayoutCanvasId} from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
 	import Workspace from './Workspace.svelte';
 	import type { Snippet } from 'svelte';
 	import { setContext, getContext } from 'svelte';
 	import { createCanvasContext, type CanvasContext } from '$components/canvas';
 
-	const layoutCanvas = createCanvasContext('workspaceLayout');
-	setContext<CanvasContext>('workspaceLayout', layoutCanvas);
+	const layoutCanvas = createCanvasContext(workspaceLayoutCanvasId);
+	setContext<CanvasContext>(workspaceLayoutCanvasId, layoutCanvas);
 
 	onMount(() => {
 		/** Update the active workspace upon loading a new workspace. */

@@ -6,6 +6,7 @@
 	import TabToolbox from '$components/tabToolbox';
 	import Tree from './Tree.svelte';
 	import Layout from './Layout.svelte';
+	import { workspaceLayoutCanvasId } from '../activeWorkspace.svelte';
 	import { setContext, getContext } from 'svelte';
 	import { createCanvasContext, type CanvasContext } from '$components/canvas';
 
@@ -14,9 +15,8 @@
 	};
 	let { workspaceSlug }: Props = $props();
 
-	const workspaceCanvasId = 'workspaceLayout';
-	const layoutCanvas = createCanvasContext('workspaceLayout');
-	setContext<CanvasContext>('workspaceLayout', layoutCanvas);
+	const layoutCanvas = createCanvasContext(workspaceLayoutCanvasId);
+	setContext<CanvasContext>(workspaceLayoutCanvasId, layoutCanvas);
 
 	let workspace: Workspace = {
 		gardenId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
@@ -40,7 +40,7 @@
 	<Resizable.PaneGroup direction={activeWorkspace.contentPaneDirection}>
 		{#if activeWorkspace.layoutEnabled}
 			<Resizable.Pane defaultSize={70} order={1} minSize={10}>
-				<Layout canvasId={workspaceCanvasId} />
+				<Layout canvasId={workspaceLayoutCanvasId} />
 			</Resizable.Pane>
 			<Resizable.Handle withHandle={false} />
 		{/if}

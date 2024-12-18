@@ -7,7 +7,7 @@ import { toast } from 'svelte-sonner';
 /**
  * Options which may be set on the async handler.
  */
-type HandlerOptions<ResultType = any> = {
+export type HandlerOptions<ResultType = any> = {
 	/** Called after a successful call to the async function. */
 	onSuccess?: (result: ResultType) => void;
 	/** Called after an error is raised by the async function. */
@@ -39,7 +39,7 @@ type AsyncState<TResult> = {
  * @param options Handler options.
  * @returns An async handler rune.
  */
-export function useAsync<TResult = void, TParams = void>(
+export function useAsync<TParams = void, TResult = void>(
 	asyncFn: (params: TParams) => Promise<TResult>,
 	options?: HandlerOptions<TResult>
 ) {

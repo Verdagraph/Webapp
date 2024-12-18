@@ -24,7 +24,6 @@
 		}
 	];
 
-	console.log(activeWorkspace.treeEnabled);
 </script>
 
 <div class="flex h-full w-full flex-col overflow-clip">
