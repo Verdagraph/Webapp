@@ -73,7 +73,7 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
  */
 function quantityToUnitSymbol(
 	unitSystem: UnitSystem,
-	quantityType: UnitAwareQuantity,
+	quantityType: UnitAwareQuantity
 ): string {
 	return units[quantityType].symbols[unitSystem];
 }
@@ -97,7 +97,7 @@ function swapUnit(unitSystem: UnitSystem): UnitSystem {
 function convertQuantity(
 	quantity: number,
 	unitSystem: UnitSystem,
-	quantityType: UnitAwareQuantity,
+	quantityType: UnitAwareQuantity
 ): number {
 	return units[quantityType].conversions[unitSystem](quantity);
 }
@@ -113,7 +113,7 @@ function convertQuantity(
 function convertQuantityToMetric(
 	quantity: number,
 	unitSystem: UnitSystem,
-	quantityType: UnitAwareQuantity,
+	quantityType: UnitAwareQuantity
 ): number {
 	return unitSystem === 'metric'
 		? quantity
@@ -121,12 +121,15 @@ function convertQuantityToMetric(
 }
 
 /**
- * Creates a set of runes for tracking and changing the unit system of value. 
+ * Creates a set of runes for tracking and changing the unit system of value.
  * @param quantityType The type of quantity to represent.
  * @param initialValueMetric The initial value of the quantity, in metric.
  * @returns A unit aware value.
  */
-export function createUnitAwareValue(quantityType: UnitAwareQuantity, initialValueMetric: number) {
+export function createUnitAwareValue(
+	quantityType: UnitAwareQuantity,
+	initialValueMetric: number
+) {
 	/** The current unit system for this value. Defaults to user preferences. */
 	let unitSystem = $state(userSettings.value.units[quantityType]);
 
@@ -138,7 +141,7 @@ export function createUnitAwareValue(quantityType: UnitAwareQuantity, initialVal
 	);
 
 	/** A version of the value guarnteed to be metric. */
-	let metricValue = $derived(convertQuantityToMetric(value, unitSystem, quantityType))
+	let metricValue = $derived(convertQuantityToMetric(value, unitSystem, quantityType));
 
 	/** The symbol displayed in the component.*/
 	let unitSymbol = $derived(quantityToUnitSymbol(unitSystem, quantityType));
@@ -148,27 +151,27 @@ export function createUnitAwareValue(quantityType: UnitAwareQuantity, initialVal
 	 * to the other unit system and the unit system is swapped.
 	 */
 	function swapUnits() {
-		const oldUnitSystem = unitSystem
+		const oldUnitSystem = unitSystem;
 		unitSystem = swapUnit(unitSystem);
 		value = convertQuantity(value, oldUnitSystem, quantityType);
 	}
 
 	return {
 		get unitSystem() {
-			return unitSystem
+			return unitSystem;
 		},
 		get value() {
-			return value
+			return value;
 		},
 		get metricValue() {
-			return metricValue
+			return metricValue;
 		},
 		get unitSymbol() {
-			return unitSymbol
+			return unitSymbol;
 		},
 		set value(newVal) {
-			value = newVal
+			value = newVal;
 		},
 		swapUnits
-	}
+	};
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	//import { Tabs } from 'bits-ui';
-	import * as Tabs from '$components/ui/tabs'
+	import * as Tabs from '$components/ui/tabs';
 	import { Button } from '$lib/components/ui/button';
 	import iconIds from '$lib/assets/icons';
 	import createToolbox from './tools.svelte';

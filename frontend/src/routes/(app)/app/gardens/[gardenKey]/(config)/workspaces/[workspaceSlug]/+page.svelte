@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
-	import activeWorkspace, {workspaceLayoutCanvasId} from '../activeWorkspace.svelte';
+	import activeWorkspace, { workspaceLayoutCanvasId } from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
 	import Workspace from './Workspace.svelte';
 	import type { Snippet } from 'svelte';
