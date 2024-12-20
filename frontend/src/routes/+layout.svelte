@@ -20,6 +20,8 @@
 <!-- Sonner toaster from Shadcn-svelte -->
 <Toaster richColors />
 
-<Tooltip.Provider delayDuration={500}>
-	{@render children()}
-</Tooltip.Provider>
+<div class="h-screen w-screen overflow-hidden">
+	<Tooltip.Provider delayDuration={500}>
+		{@render children()}
+	</Tooltip.Provider>
+</div>

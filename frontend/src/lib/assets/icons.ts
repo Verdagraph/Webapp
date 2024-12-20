@@ -70,6 +70,10 @@ const iconIds = {
 
 	/* Workspaces */
 	plantingAreaIcon: 'fluent:plant-cattail-24-regular',
+	rectangleIcon: 'material-symbols:square-outline-rounded',
+	polygonIcon: 'material-symbols:pentagon-outline-rounded',
+	ellipseIcon: 'material-symbols:circle-outline',
+	linesIcon: 'ph:polygon',
 
 	/* Verdagraph */
 	verdagraphPointerSelectIcon: 'mdi:cursor-default-outline',

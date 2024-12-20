@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 	//import { Tabs } from 'bits-ui';
 	import * as Tabs from '$components/ui/tabs';
+	import { ScrollArea } from 'bits-ui';
 	import { Button } from '$lib/components/ui/button';
 	import iconIds from '$lib/assets/icons';
 	import createToolbox from './tools.svelte';
@@ -10,10 +11,25 @@
 		toolbox: ReturnType<typeof createToolbox<any>>;
 	};
 	let { toolbox }: Props = $props();
+
+	/** For some reason, need to calculate tab height manually or it extends its parent. */
+	let root = $state<HTMLElement | null>(null);
+	let list = $state<HTMLElement | null>(null);
+	let contentHeight = $derived.by(() => {
+		if (root && list) {
+			return root.offsetHeight - list.offsetHeight;
+		} else {
+			return 0;
+		}
+	});
 </script>
 
-<Tabs.Root bind:value={toolbox.lastActivatedId} class="bg-neutral-1 h-full">
-	<Tabs.List class="">
+<Tabs.Root
+	bind:ref={root}
+	bind:value={toolbox.lastActivatedId}
+	class="bg-neutral-1 flex h-full flex-col"
+>
+	<Tabs.List bind:ref={list} class="h-8">
 		{#each toolbox.activeTools as tool}
 			<Tabs.Trigger
 				value={tool.id}
@@ -36,8 +52,21 @@
 		{/each}
 	</Tabs.List>
 	{#each toolbox.activeTools as tool}
-		<Tabs.Content value={tool.id}>
-			<tool.ToolComponent />
+		<Tabs.Content
+			value={tool.id}
+			class="mt-0 overflow-hidden {`h-[${contentHeight}px]`}"
+		>
+			<ScrollArea.Root class="relative h-full">
+				<ScrollArea.Viewport class="h-full max-h-full w-full">
+					<tool.ToolComponent />
+				</ScrollArea.Viewport>
+				<ScrollArea.Scrollbar
+					orientation="vertical"
+					class="bg-neutral-2 hover:bg-dark-10 data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out-0 data-[state=visible]:fade-in-0 flex w-2.5 touch-none select-none rounded-none border-l border-l-transparent p-px transition-all duration-200 hover:w-3"
+				>
+					<ScrollArea.Thumb class="bg-neutral-5 flex-1 rounded-full" />
+				</ScrollArea.Scrollbar>
+			</ScrollArea.Root>
 		</Tabs.Content>
 	{/each}
 </Tabs.Root>

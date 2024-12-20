@@ -1,5 +1,9 @@
 import { z as zod } from 'zod';
-import { WorkspaceCreateCommand, type Workspace } from '@vdt-webapp/common';
+import {
+	WorkspaceCreateCommand,
+	PlantingAreaCreateCommand,
+	type Workspace
+} from '@vdt-webapp/common';
 import { getClientOrError } from '$data/users/auth';
 import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
@@ -82,24 +86,12 @@ export const workspaceDelete = {
 	}
 };
 
-*/
 /** Creates a new planting area in a workspace. */
-/**
- * 
 export const plantingAreaCreate = {
-	schema: zod.object({
-		workspace_ref: zod.string().uuid(),
-		name: workspaceFieldSchemas.planting_area_name,
-		description: workspaceFieldSchemas.planting_area_description.optional()
-	}),
-	mutation: () => {
-		return useMutation(function (data: PlantingAreaCreateCommand) {
-			return plantingAreaCreateCommandOp(data);
-		});
-	}
+	schema: PlantingAreaCreateCommand,
+	mutation: async (data: zod.infer<typeof PlantingAreaCreateCommand>) => {}
 };
 
-*/
 /** Updates a planting area. */
 /**
  * 

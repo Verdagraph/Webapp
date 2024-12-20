@@ -6,7 +6,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$data/users/auth';
 	import auth from '$state/auth.svelte';
-	import useAsync from '$state/asyncHandler.svelte';
+	import { useAsync } from '$components/forms';
 
 	let formHandler = useAsync(userLogin.mutation, {
 		onSuccess: () => {

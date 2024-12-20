@@ -8,19 +8,22 @@ import useAsync, { type HandlerOptions } from './asyncHandler.svelte';
 type FormOptions<TSchema extends z.ZodObject<any>, TResult> = {
 	/** The initial data to have in the form. */
 	initialData?: Partial<z.infer<TSchema>>;
+	onInput?: boolean;
 	/** The options to pass down to the handler. */
-	handlerOptions?: HandlerOptions<TResult>;
+	handler?: HandlerOptions<TResult>;
 };
 
 /**
  * Provides a rune and handler function which allows
  * storing form data before handing execution to a handler function.
  * @param schema A zod schema which describes the form data and the parameters of the async function.
+ * @param id A string to identify the form.
  * @param asyncFn An async function to create a handler for.
  * @param options Form options.
  * @returns A form handler rune.
  */
 export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
+	id: string,
 	schema: TSchema,
 	asyncFn: (params: z.infer<TSchema>) => Promise<TResult>,
 	options?: FormOptions<TSchema, TResult>
@@ -30,7 +33,7 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 	/** Stores the result of zod validation. */
 	let validationErrors: FieldErrors | null = $state(null);
 	/** Used to execute the async function. */
-	let handler = useAsync(asyncFn, options?.handlerOptions);
+	let handler = useAsync(asyncFn, options?.handler);
 	/** All validation errors and those returned by the handler. */
 	let errors = $derived.by(() => {
 		if (validationErrors == null) {
@@ -41,13 +44,22 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 			return mergeErrors({ fieldErrors: validationErrors }, handler.errors);
 		}
 	});
+	$inspect(errors);
 
 	/** Update the validation errors on updating data. */
 	$effect(() => {
+		if (options?.onInput) {
+			return;
+		}
+
 		if (!handler.isLoading) {
 			handler.reset();
 		}
 
+		validatePartialData();
+	});
+
+	function validatePartialData() {
 		/** Validate all existing fields in the data. */
 		const parseResult = schema.partial().safeParse(data);
 		if (parseResult.success) {
@@ -56,7 +68,7 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 		}
 
 		validationErrors = unpackZodValidationError(parseResult.error);
-	});
+	}
 
 	/**
 	 * Submits the form and calls the handler function.
@@ -82,6 +94,9 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 	}
 
 	return {
+		get id() {
+			return id;
+		},
 		get data() {
 			return data;
 		},
@@ -100,11 +115,15 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 		set data(newVal) {
 			data = newVal;
 		},
+		validatePartialData,
 		submit,
 		reset,
 		handler
 	};
 }
+export type FormHandler<TSchema extends z.ZodObject<any>> = ReturnType<
+	typeof createForm<TSchema>
+>;
 
 /**
  * Merges two app error objects.

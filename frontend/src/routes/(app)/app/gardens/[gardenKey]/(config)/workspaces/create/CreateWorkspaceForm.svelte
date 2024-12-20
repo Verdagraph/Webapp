@@ -7,7 +7,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { workspaceCreate } from '$data/workspaces/commands';
-	import useAsync from '$state/asyncHandler.svelte';
+	import { useAsync } from '$components/forms';
 
 	let formHandler = useAsync(workspaceCreate.mutation, {
 		onSuccess: (workspace) => {

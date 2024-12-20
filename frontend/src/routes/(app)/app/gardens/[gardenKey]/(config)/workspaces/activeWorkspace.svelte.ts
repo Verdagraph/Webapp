@@ -3,6 +3,7 @@ import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
 
 export const workspaceLayoutCanvasId = 'workspaceLayout';
+export const plantingAreaCreateFormId = 'plantingAreaCreate';
 
 /** Disable the tree by default on small devices. */
 const defaultTreeEnabled = isMobile() ? false : true;

@@ -4,7 +4,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userCreate } from '$data/users/commands';
-	import useAsync from '$state/asyncHandler.svelte';
+	import { useAsync } from '$components/forms';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */

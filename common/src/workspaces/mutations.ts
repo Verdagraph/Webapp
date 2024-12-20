@@ -75,7 +75,28 @@ export const workspaceFields = {
 		.string()
 		.trim()
 		.max(700, 'May be at most 1400 characters.')
-		.describe('May be at most 1400 characters.')
+		.describe('May be at most 1400 characters.'),
+	plantingAreaDepth: z
+		.number()
+		.min(0, 'May not be negative')
+		.max(1000, 'May be at most 1000m.')
+		.describe('The depth of the planting area.'),
+	plantingAreaMovable: z
+		.boolean()
+		.default(false)
+		.describe('If true the planting area may change location.'),
+	plantingAreaGrid: z.object({
+		numRows: z
+			.number()
+			.min(2)
+			.max(100)
+			.describe('The number of rows in the grid. Must be between 2 and 100.'),
+		numColumns: z
+			.number()
+			.min(2)
+			.max(100)
+			.describe('The number of columns in the grid. Must be between 2 and 100.')
+	})
 };
 
 function validateGeometryAttributes(
@@ -97,6 +118,13 @@ function validateGeometryAttributes(
 	return true;
 }
 
+const LocationCreateCommand = z.object({
+	gardenId: z.string(),
+	workspaceId: z.string(),
+	coordinate: workspaceFields.coordinate,
+	date: z.date()
+});
+
 const RectangleAttributesCreateUpdateCommand = z.object({
 	length: z
 		.number()
@@ -104,7 +132,9 @@ const RectangleAttributesCreateUpdateCommand = z.object({
 		.max(1000, 'May be at most 1000m')
 		.describe(
 			'The horizontal, or x-axis length of the rectangle. Must be between 0 and 1000 meters.'
-		),
+		)
+		.optional()
+		.default(0),
 	width: z
 		.number()
 		.min(0, 'May not be negative.')
@@ -112,6 +142,8 @@ const RectangleAttributesCreateUpdateCommand = z.object({
 		.describe(
 			'The vertical, or y-axis width of the rectangle. Must be between 0 and 1000 meters.'
 		)
+		.optional()
+		.default(0)
 });
 
 const PolygonAttributesCreateUpdateCommand = z.object({
@@ -119,7 +151,8 @@ const PolygonAttributesCreateUpdateCommand = z.object({
 		.number()
 		.min(3, 'Must have at least 3 sides.')
 		.max(20, 'May have at most 20 sides.')
-		.describe('The amount of sides the polygon has. Must be between 3 and 20 sides.'),
+		.describe('The amount of sides the polygon has. Must be between 3 and 20 sides.')
+		.default(3),
 	sideLength: z
 		.number()
 		.min(0, 'May not be negative')
@@ -127,6 +160,7 @@ const PolygonAttributesCreateUpdateCommand = z.object({
 		.describe(
 			'The length of each side of the polygon.  Must be between 0 and 1000 meters.'
 		)
+		.default(0)
 });
 
 const EllipseAttributesCreateUpdateCommand = z.object({
@@ -156,10 +190,10 @@ const GeometryCreateCommand = z
 		date: workspaceFields.geometryDate,
 		scaleFactor: workspaceFields.geometryScaleFactor.default(1),
 		rotation: workspaceFields.geometryRotation.default(0),
-		rectangleAttributes: RectangleAttributesCreateUpdateCommand.optional(),
-		polygonAttributes: PolygonAttributesCreateUpdateCommand.optional(),
-		ellipseAttributes: EllipseAttributesCreateUpdateCommand.optional(),
-		linesAttributes: LinesAttributesCreateUpdateCommand.optional()
+		rectangleAttributes: RectangleAttributesCreateUpdateCommand,
+		polygonAttributes: PolygonAttributesCreateUpdateCommand,
+		ellipseAttributes: EllipseAttributesCreateUpdateCommand,
+		linesAttributes: LinesAttributesCreateUpdateCommand
 	})
 	.refine(
 		(data) => {
@@ -216,5 +250,10 @@ export const WorkspaceCreateCommand = z.object({
 export const PlantingAreaCreateCommand = z.object({
 	workspaceId: z.string(),
 	name: workspaceFields.plantingAreaName,
-	description: workspaceFields.plantingAreaDescription
+	description: workspaceFields.plantingAreaDescription.optional(),
+	location: LocationCreateCommand,
+	geometry: GeometryCreateCommand,
+	grid: workspaceFields.plantingAreaGrid,
+	depth: workspaceFields.plantingAreaDepth,
+	movable: workspaceFields.plantingAreaMovable
 });

@@ -11,7 +11,7 @@
 		/** The type of quantity represented. */
 		quantityType: UnitAwareQuantity;
 	};
-	let { value = $bindable(), quantityType }: Props = $props();
+	let { value = $bindable(), quantityType, ...restProps }: Props = $props();
 
 	const unitAwareValue = createUnitAwareValue(quantityType, value);
 </script>
@@ -23,6 +23,7 @@
 		oninput={() => {
 			value = unitAwareValue.metricValue;
 		}}
+		{...restProps}
 		class="rounded-r-none border-r-0 "
 	/>
 	<span

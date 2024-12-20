@@ -13,7 +13,7 @@
 	import { GardenVisibilityEnum } from '@vdt-webapp/common';
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
 	import { generateGardenId } from '$data/gardens/utils';
-	import useAsync from '$state/asyncHandler.svelte';
+	import { useAsync } from '$components/forms';
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions: {

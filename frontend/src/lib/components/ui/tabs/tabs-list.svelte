@@ -12,7 +12,7 @@
 <TabsPrimitive.List
 	bind:ref
 	class={cn(
-		'bg-neutral-1 text-neutral-11 inline-flex w-full items-center justify-center rounded-none',
+		'bg-neutral-1 text-neutral-11 flex w-full items-center justify-center rounded-none',
 		className
 	)}
 	{...restProps}
