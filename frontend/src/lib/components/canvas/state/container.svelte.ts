@@ -9,7 +9,7 @@ export function createCanvasContainer(canvasId: string) {
 	let stage: Konva.Stage | null = null;
 	let layers: Record<string, Konva.Layer> =
 		{}; /** Record to track references to layers. */
-	const pixelsPerMeter = 50; /** The initial scale of rendering, pre-scaling. */
+	const pixelsPerMeter = 100; /** The initial scale of rendering, pre-scaling. */
 
 	/** Runes. */
 	let initialized = $state(false);

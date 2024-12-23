@@ -13,6 +13,10 @@
 	import type { PlantingAreaCreateForm } from '../[workspaceSlug]/forms';
 	import { GeometryTypeEnum } from '@vdt-webapp/common';
 	import iconIds from '$lib/assets/icons';
+	import DatePicker from '$components/forms/components/DatePicker.svelte';
+	import { getLocalTimeZone } from '@internationalized/date';
+    import type { DateValue } from '@internationalized/date';
+	import Checkbox from '$components/ui/checkbox/checkbox.svelte';
 
 	const { handler, form } = getContext<PlantingAreaCreateForm>(
 		plantingAreaCreateFormId
@@ -31,9 +35,18 @@
 			icon: null
 		}
 	);
+
+    let geometryDateValue: DateValue | undefined = $state()
+    $effect(() => {
+        if (geometryDateValue) {
+            $formData.geometry.date = geometryDateValue.toDate(getLocalTimeZone())
+        }
+    })
+
+    let generateGridSpacing: number = $state(0.3048)
 </script>
 
-<form method="POST" autocomplete="off" use:enhance class="mx-4 my-8">
+<form method="POST" autocomplete="off" use:enhance class="mx-4 mb-8 mt-4">
 	<!-- Name. -->
 	<Form.Field {form} name="name">
 		<Form.Control>
@@ -122,7 +135,21 @@
 		</Form.Field>
 
 		<!-- Date -->
-		Date
+        <Form.Field {form} name="geometry.date">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label
+						description={plantingAreaCreate.schema.shape.geometry.innerType().shape.date.description}
+						optional={plantingAreaCreate.schema.shape.geometry.innerType().shape.date.isOptional()}
+						>Date</Form.Label
+                        >
+                        <DatePicker bind:value={geometryDateValue}/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors
+				handlerErrors={handler.fieldErrors?.['geometry.date']}
+			/>
+		</Form.Field>
 	</fieldset>
 
 	<!-- Geometry. -->
@@ -194,10 +221,50 @@
 		</Form.Field>
 
 		<!-- Scale factor. -->
-		Scale factor
+        <Form.Field {form} name="geometry.scaleFactor">
+            <Form.Control>
+                {#snippet children({ props })}
+                    <Form.Label
+                        description={plantingAreaCreate.schema.shape.geometry.innerType().shape
+                            .scaleFactor.description}
+                        optional={plantingAreaCreate.schema.shape.geometry
+                            .innerType()
+                            .shape.scaleFactor.isOptional()}>Scale Factor</Form.Label
+                    >
+                    <Input
+                        {...props}
+                        type="number"
+                        bind:value={$formData.geometry.scaleFactor}
+                    />
+                {/snippet}
+            </Form.Control>
+            <Form.FieldErrors
+                handlerErrors={handler.fieldErrors?.['geometry.scaleFactor']}
+            />
+        </Form.Field>
 
 		<!-- Rotation. -->
-		Rotation
+        <Form.Field {form} name="geometry.rotation">
+            <Form.Control>
+                {#snippet children({ props })}
+                    <Form.Label
+                        description={plantingAreaCreate.schema.shape.geometry.innerType().shape
+                            .rotation.description}
+                        optional={plantingAreaCreate.schema.shape.geometry
+                            .innerType()
+                            .shape.rotation.isOptional()}>Rotation</Form.Label
+                    >
+                    <Input
+                        {...props}
+                        type="number"
+                        bind:value={$formData.geometry.rotation}
+                    />
+                {/snippet}
+            </Form.Control>
+            <Form.FieldErrors
+                handlerErrors={handler.fieldErrors?.['geometry.rotation']}
+            />
+        </Form.Field>
 
 		{#if $formData.geometry.type === 'RECTANGLE'}
 			<!-- Length. -->
@@ -428,25 +495,135 @@
 			</span>
 		</div>
 
-		<!-- Row Count. -->
-		Number of Rows
-		<!-- Column Count. -->
-		Number of Columns
-	</fieldset>
+		<Form.Field {form} name="includeGrid">
+            <Form.Control>
+				{#snippet children({ props })}
+				<div class="flex items-center justify-between">
+					<Form.Label
+					description={plantingAreaCreate.schema.shape.includeGrid.description}
+					optional={plantingAreaCreate.schema.shape.includeGrid.isOptional()}>Include Grid</Form.Label
+					>
+					<Checkbox {...props} bind:checked={$formData.includeGrid}/>
+				</div>
+				{/snippet}
+            </Form.Control>
+            <Form.FieldErrors
+            handlerErrors={handler.fieldErrors?.['includeGrid']}
+            />
+        </Form.Field>
 
+        {#if $formData.includeGrid}
+        
+        <!-- Grid generate button. -->
+        <div class="flex flex-col gap-4 mb-4">
+            <span class="text-sm">
+                Grid Spacing
+            </span>
+            <UnitAwareInput quantityType="distance" bind:value={generateGridSpacing}/>
+            <Button
+            onclick={() => {
+            }}
+                variant="outline"
+                class="w-full"
+                
+                >
+                Generate Grid
+            </Button>
+        </div>
+        
+		<!-- Row count. -->
+        <Form.Field {form} name="grid.numRows">
+            <Form.Control>
+                {#snippet children({ props })}
+                <Form.Label
+                description={plantingAreaCreate.schema.shape.grid.shape.numRows.description}
+                optional={plantingAreaCreate.schema.shape.grid.shape.numRows.isOptional()}>Number of Rows</Form.Label
+                >
+                <Input
+                {...props}
+                type="number"
+                step="1"
+                bind:value={$formData.grid.numRows}
+                />
+                {/snippet}
+            </Form.Control>
+            <Form.FieldErrors
+            handlerErrors={handler.fieldErrors?.['grid.numRows']}
+            />
+        </Form.Field>
+        
+		<!-- Column count. -->
+        <Form.Field {form} name="grid.numColumns">
+            <Form.Control>
+                {#snippet children({ props })}
+                <Form.Label
+                description={plantingAreaCreate.schema.shape.grid.shape.numColumns.description}
+                optional={plantingAreaCreate.schema.shape.grid.shape.numColumns.isOptional()}>Number of Columns</Form.Label
+                >
+                <Input
+                {...props}
+                type="number"
+                step="1"
+                bind:value={$formData.grid.numColumns}
+                />
+                {/snippet}
+            </Form.Control>
+            <Form.FieldErrors
+            handlerErrors={handler.fieldErrors?.['grid.numColumns']}
+            />
+        </Form.Field>
+        {/if}
+	</fieldset>
+    
 	<!-- Other. -->
 	<fieldset>
-		<div class="my-2 flex items-center">
-			<span class="text-neutral-11 mr-2"> Other </span>
+        <div class="my-2 flex items-center">
+            <span class="text-neutral-11 mr-2"> Other </span>
 			<span class="w-full">
 				<Separator class="w-full" />
 			</span>
 		</div>
 
 		<!-- Movable. -->
-		Movable
+		<Form.Field {form} name="movable">
+            <Form.Control>
+				{#snippet children({ props })}
+				<div class="flex items-center justify-between">
+					<Form.Label
+					description={plantingAreaCreate.schema.shape.movable.description}
+					optional={plantingAreaCreate.schema.shape.movable.isOptional()}>Movable</Form.Label
+					>
+					<Checkbox {...props} bind:checked={$formData.movable}/>
+				</div>
+				{/snippet}
+            </Form.Control>
+            <Form.FieldErrors
+            handlerErrors={handler.fieldErrors?.['movable']}
+            />
+        </Form.Field>
+
 		<!-- Depth. -->
-		Depth
+		<Form.Field {form} name={`depth`}>
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label
+						description={plantingAreaCreate.schema.shape.depth.description}
+						optional={plantingAreaCreate.schema.shape.depth.isOptional()}
+						>Depth</Form.Label
+					>
+					<UnitAwareInput
+						{...props}
+						quantityType="distance"
+						bind:value={$formData.depth}
+					/>
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors
+				handlerErrors={handler.fieldErrors?.[
+					'depth'
+				]}
+			/>
+		</Form.Field>
 	</fieldset>
 
 	<!-- Submit button -->

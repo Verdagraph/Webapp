@@ -6,19 +6,27 @@ export const workspaceFields = {
 	coordinate: z.object({
 		x: z
 			.number()
-			.min(-100000, 'Must be at least negative 100000 meters.')
-			.max(100000, 'May be at most 100000 meters.')
 			.describe(
-				'The horizontal X component of the coordinate. Must be between -100000 and 100000'
+				'The horizontal X component of the coordinate.'
 			),
 		y: z
 			.number()
-			.min(-100000, 'Must be at least negative 100000 meters.')
-			.max(100000, 'May be at most 100000 meters.')
 			.describe(
-				'The vertical Y component of the coordinate. Must be between -100000 and 100000'
+				'The vertical Y component of the coordinate.'
 			)
-	}),
+	}).refine(
+		(data) => {
+			const maxCoordinateMagnitude = 1000000
+			if( (data.x ** 2 + data.y ** 2) > maxCoordinateMagnitude ** 2) {
+				return false
+			}
+			return true
+		},
+		{
+			message: 'Coordinate magnitude limited to 1 000 000 meters.',
+			path: ['x', 'y']
+		}
+	),
 	geometryType: z
 		.enum(GeometryTypeEnum)
 		.describe(
@@ -87,15 +95,15 @@ export const workspaceFields = {
 		.describe('If true the planting area may change location.'),
 	plantingAreaGrid: z.object({
 		numRows: z
-			.number()
+			.number().int()
 			.min(2)
 			.max(100)
-			.describe('The number of rows in the grid. Must be between 2 and 100.'),
+			.describe('The number of rows in the grid. Must be between 2 and 100, and be whole number.'),
 		numColumns: z
-			.number()
+			.number().int()
 			.min(2)
 			.max(100)
-			.describe('The number of columns in the grid. Must be between 2 and 100.')
+			.describe('The number of columns in the grid. Must be between 2 and 100, and be a whole number.')
 	})
 };
 
@@ -253,6 +261,7 @@ export const PlantingAreaCreateCommand = z.object({
 	description: workspaceFields.plantingAreaDescription.optional(),
 	location: LocationCreateCommand,
 	geometry: GeometryCreateCommand,
+	includeGrid: z.boolean().default(true),
 	grid: workspaceFields.plantingAreaGrid,
 	depth: workspaceFields.plantingAreaDepth,
 	movable: workspaceFields.plantingAreaMovable

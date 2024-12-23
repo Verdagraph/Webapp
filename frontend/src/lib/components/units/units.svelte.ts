@@ -1,6 +1,9 @@
 import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
 import userSettings from '$state/userSettings.svelte';
 
+/** The amount of decimal places to prefer when converting units. */
+const DECIMAL_PLACES = 4
+
 type UnitInfo = {
 	symbols: Record<UnitSystem, string>;
 	conversions: Record<UnitSystem, (input: number) => number>;
@@ -66,6 +69,17 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
 };
 
 /**
+ * Rounds a number to the specified amount of decimal places.
+ * @param num The number to round.
+ * @param places The number of decimal places.
+ * @returns The rounded number.
+ */
+function roundToDecimalPlaces(num: number, places: number) {
+	const factor = 10 ** places;
+	return Math.round(num * factor) / factor;
+  };
+
+/**
  * Retrieve the string symbol for a unit.
  * @param unitSystem The unit system.
  * @param quantityType The type of quantity being represented.
@@ -99,7 +113,7 @@ function convertQuantity(
 	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity
 ): number {
-	return units[quantityType].conversions[unitSystem](quantity);
+	return roundToDecimalPlaces(units[quantityType].conversions[unitSystem](quantity), DECIMAL_PLACES);
 }
 
 /**
