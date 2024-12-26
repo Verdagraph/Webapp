@@ -2,7 +2,7 @@ import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
 import userSettings from '$state/userSettings.svelte';
 
 /** The amount of decimal places to prefer when converting units. */
-const DECIMAL_PLACES = 4
+const DECIMAL_PLACES = 4;
 
 type UnitInfo = {
 	symbols: Record<UnitSystem, string>;
@@ -77,7 +77,7 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
 function roundToDecimalPlaces(num: number, places: number) {
 	const factor = 10 ** places;
 	return Math.round(num * factor) / factor;
-  };
+}
 
 /**
  * Retrieve the string symbol for a unit.
@@ -113,7 +113,10 @@ function convertQuantity(
 	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity
 ): number {
-	return roundToDecimalPlaces(units[quantityType].conversions[unitSystem](quantity), DECIMAL_PLACES);
+	return roundToDecimalPlaces(
+		units[quantityType].conversions[unitSystem](quantity),
+		DECIMAL_PLACES
+	);
 }
 
 /**

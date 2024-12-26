@@ -1,4 +1,10 @@
-import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
+import {
+	Schema as S,
+	ClientSchema,
+	Entity,
+	or,
+	EntityWithSelection
+} from '@triplit/client';
 
 /**
  * Specifies a type of geometry.
@@ -124,8 +130,9 @@ export const workspaceSchema = {
 				S.Record({
 					/** Number of sides to the polygon. */
 					numSides: S.Number(),
-					/** Length of each side. */
-					sideLength: S.Number()
+
+					/** Polygon radius. */
+					radius: S.Number()
 				})
 			),
 
@@ -143,11 +150,14 @@ export const workspaceSchema = {
 			/** Lines geometry attributes. */
 			linesAttributes: S.Optional(
 				S.Record({
-					/** A set of coordinates which describe an open shape of line segments. */
+					/** A set of coordinates which describe an open or closed shape of line segments. */
 					coordinateIds: S.Set(S.String()),
 					coordinates: S.RelationMany('coordinates', {
 						where: [['id', 'in', '$linesAttributes.coordinateIds']]
-					})
+					}),
+
+					/** If true the lines form a closed shape. */
+					closed: S.Boolean({default: true})
 				})
 			)
 		}),
@@ -531,8 +541,25 @@ export const workspaceSchema = {
 		}
 	}
 } satisfies ClientSchema;
+
 export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
+
 export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
+export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>
+export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>
+export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>
+export type LinesAttributes = NonNullable<Geometry['linesAttributes']>
+export type GeometryAttributesMap = {
+    'RECTANGLE': RectangleAttributes;
+    'POLYGON': PolygonAttributes;
+    'ELLIPSE': EllipseAttributes;
+    'LINES': LinesAttributes;
+}
+export type RectangleGeometry = Extract<Geometry, { type: 'RECTANGLE' }>
+export type PolygonGeometry = Extract<Geometry, { type: 'POLYGON' }>
+export type EllipseGeometry = Extract<Geometry, { type: 'ELLIPSE' }>
+export type LinesGeometry = Extract<Geometry, { type: 'LINES' }>
+
 export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'>;
 export type Location = Entity<typeof workspaceSchema, 'locations'>;
 export type LocationHistory = Entity<typeof workspaceSchema, 'locationHistories'>;

@@ -58,8 +58,8 @@
 		"zod": "^3.23.8"
 	},
 	"dependencies": {
-		"@triplit/client": "^0.6.8",
-		"@triplit/svelte": "^0.2.27",
+		"@triplit/client": "^0.6.12",
+		"@triplit/svelte": "^0.2.31",
 		"@vdt-webapp/common": "workspace:*",
 		"axios": "^1.7.2",
 		"konva": "^9.3.16"

@@ -151,7 +151,7 @@
 			<Collapsible.Content>
 				<div class="flex {collapsibleFlexDirection} {collapsibleFlexAlignment} gap-2">
 					<!-- Zoom controls. -->
-					<div class="flex">
+					<div class="flex items-center">
 						<!-- Zoom out.-->
 						<Tooltip.Root>
 							<Tooltip.Trigger>
@@ -176,9 +176,9 @@
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								<span
-									class="bg-neutral-1 text-neutral-11 border-neutral-6 h-6 w-auto border-b border-t px-1 py-0.5"
+									class="bg-neutral-1 text-neutral-11 border-neutral-6 flex h-6 w-auto items-center justify-center border-b border-t px-1 py-0.5 text-sm"
 								>
-									{Math.trunc(canvas.transform.scaleFactor * 100)}
+									{Math.trunc(canvas.transform.scaleFactor.x * 100)}
 									%
 								</span>
 							</Tooltip.Trigger>

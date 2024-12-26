@@ -3,30 +3,24 @@ import { GeometryTypeEnum } from './schema';
 
 /** Field specifications. */
 export const workspaceFields = {
-	coordinate: z.object({
-		x: z
-			.number()
-			.describe(
-				'The horizontal X component of the coordinate.'
-			),
-		y: z
-			.number()
-			.describe(
-				'The vertical Y component of the coordinate.'
-			)
-	}).refine(
-		(data) => {
-			const maxCoordinateMagnitude = 1000000
-			if( (data.x ** 2 + data.y ** 2) > maxCoordinateMagnitude ** 2) {
-				return false
+	coordinate: z
+		.object({
+			x: z.number().describe('The horizontal X component of the coordinate.'),
+			y: z.number().describe('The vertical Y component of the coordinate.')
+		})
+		.refine(
+			(data) => {
+				const maxCoordinateMagnitude = 1000000;
+				if (data.x ** 2 + data.y ** 2 > maxCoordinateMagnitude ** 2) {
+					return false;
+				}
+				return true;
+			},
+			{
+				message: 'Coordinate magnitude limited to 1 000 000 meters.',
+				path: ['x', 'y']
 			}
-			return true
-		},
-		{
-			message: 'Coordinate magnitude limited to 1 000 000 meters.',
-			path: ['x', 'y']
-		}
-	),
+		),
 	geometryType: z
 		.enum(GeometryTypeEnum)
 		.describe(
@@ -95,15 +89,21 @@ export const workspaceFields = {
 		.describe('If true the planting area may change location.'),
 	plantingAreaGrid: z.object({
 		numRows: z
-			.number().int()
+			.number()
+			.int()
 			.min(2)
 			.max(100)
-			.describe('The number of rows in the grid. Must be between 2 and 100, and be whole number.'),
+			.describe(
+				'The number of rows in the grid. Must be between 2 and 100, and be whole number.'
+			),
 		numColumns: z
-			.number().int()
+			.number()
+			.int()
 			.min(2)
 			.max(100)
-			.describe('The number of columns in the grid. Must be between 2 and 100, and be a whole number.')
+			.describe(
+				'The number of columns in the grid. Must be between 2 and 100, and be a whole number.'
+			)
 	})
 };
 

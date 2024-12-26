@@ -1,9 +1,10 @@
 import Root from './Canvas.svelte';
 import Gridlines from './Gridlines.svelte';
 import TransformControls from './TransformControls.svelte';
+import * as Workspace from './workspace';
 import { createCanvasContext, type CanvasContext } from './state';
 
-export { Root, Gridlines, TransformControls };
+export { Root, Gridlines, TransformControls, Workspace };
 export { createCanvasContext, type CanvasContext };
 /**
  * TODO: remove notes

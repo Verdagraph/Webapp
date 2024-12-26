@@ -27,24 +27,24 @@ importers:
   common:
     dependencies:
       '@triplit/client':
-        specifier: ^0.5.17
-        version: 0.5.17
+        specifier: ^0.6.12
+        version: 0.6.12
       zod:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
       '@triplit/cli':
-        specifier: ^0.6.30
-        version: 0.6.30
+        specifier: ^0.6.34
+        version: 0.6.34
 
   frontend:
     dependencies:
       '@triplit/client':
-        specifier: ^0.6.8
-        version: 0.6.8
+        specifier: ^0.6.12
+        version: 0.6.12
       '@triplit/svelte':
-        specifier: ^0.2.27
-        version: 0.2.27(svelte@5.1.10)
+        specifier: ^0.2.31
+        version: 0.2.31(svelte@5.1.10)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
@@ -1204,6 +1204,9 @@ packages:
   '@sinclair/typebox@0.32.35':
     resolution: {integrity: sha512-Ul3YyOTU++to8cgNkttakC0dWvpERr6RYoHO2W47DLbFvrwBDJUY31B1sImH6JZSYc4Kt4PyHtoPNu+vL2r2dA==}
 
+  '@sinclair/typebox@0.34.13':
+    resolution: {integrity: sha512-ceVKqyCEgC355Kw0s/0tyfY9MzMQINSykJ/pG2w6YnaZyrcjV48svZpr8lVZrYgWjzOmrIPBhQRAtr/7eJpA5g==}
+
   '@stoplight/better-ajv-errors@1.0.3':
     resolution: {integrity: sha512-0p9uXkuB22qGdNfy3VeEhxkU5uwvp/KrBTAbrLBURv6ilxIVwanKwjMc41lQfIVgPGcOkmLbTolfFrSsueu7zA==}
     engines: {node: ^12.20 || >= 14.13}
@@ -1318,8 +1321,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.2.0'
 
-  '@triplit/cli@0.6.30':
-    resolution: {integrity: sha512-sWsJ/d40lVAqKCoRjU/4c4lh46pguXObmMq8HsG1ZFozOe82oJMZGM7gAtS3O6ZjQ7fjJ3tPgNIMZWYai83Fgg==}
+  '@triplit/cli@0.6.34':
+    resolution: {integrity: sha512-ycFfDh4cRKiwKIjaGkGSteJF3Zg/j6GhHYuNvHPTJs1ICttUf7xMP1TVkxJ86vJxZ0BoUwbagri11IH4pRo2vg==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
@@ -1328,26 +1331,22 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@triplit/client@0.5.17':
-    resolution: {integrity: sha512-Rl9F01r19sK7l749fzLFa3gvOGA36d7DucOy+qC1cx3hkXckZwN65dBVDxjalD695ksyTDgRvo7fJE+1IeWvpw==}
-    engines: {node: '>=18.0.0'}
-
   '@triplit/client@0.5.8':
     resolution: {integrity: sha512-DuVVhFQwvcZMlZ+gp9BNF2G3XctPeO64FoOpnUhrqQbDFEuh2WeMWm83KRNIrrU2+p34MPQ36HcKuHyB95MPTg==}
     engines: {node: '>=18.0.0'}
 
-  '@triplit/client@0.6.8':
-    resolution: {integrity: sha512-TBUMkElk2awDrXKVm3U9PztYcG2Z5JCDyS7wLbUmubiQmW2L8sEPWJT+N3NRs9FXGaxhAXaMo/RXtMspwJlFrw==}
+  '@triplit/client@0.6.12':
+    resolution: {integrity: sha512-lWyDF7iCOWSrmpdvBeyA5e2X1vhowUCQ1bRKB0vqnyYFrJwGZrSMyy600UNHHP43EZW/Ge7nMcxT9zTWoPd4Mg==}
     engines: {node: '>=18.0.0'}
 
   '@triplit/db@0.5.0':
     resolution: {integrity: sha512-vsaJhnd+sy4XuNsk1ZGIEHe7vcMs9hK5MI+nHwUwIg+0Yi2ESpuiW+8HLm3+lYOCDVyVeDLYRAKyqmSxgy/Z3A==}
 
-  '@triplit/db@0.5.15':
-    resolution: {integrity: sha512-sTmdRM69NmOwDGn2Pn4rH0pgqR1ve9aipQEg4/+aNVX00v+78O1iNHvUtAd0pBDRAuBri2WGRpjs4D4EH4zmWw==}
+  '@triplit/db@0.5.19':
+    resolution: {integrity: sha512-2/mw+6vS2iMV5Wox1OMqjZLPBa7XT2EpDbHaUxi05fu5mcz4y2TRBkAtvOefwQPu0eZxxSjIZf1+1tGGvbTs1A==}
 
-  '@triplit/svelte@0.2.27':
-    resolution: {integrity: sha512-/KNfaFdM3kuI4F9jPzOaB5JLEjS6dVYiHcaLy/dvlUizFA5y9cYlDU2kLVybPq9wbBI3HFw4mjV4Ukfn8dBLTg==}
+  '@triplit/svelte@0.2.31':
+    resolution: {integrity: sha512-Ib6IfYm7ERAfh/+k9ySQaJ+RiyoPf7c7VkY54UzYxwTwjeE6+xVTSmAaaG42maQ5Y5Jf2DQ1iQWm2BJiP4m8DQ==}
     peerDependencies:
       svelte: '*'
 
@@ -4731,6 +4730,8 @@ snapshots:
 
   '@sinclair/typebox@0.32.35': {}
 
+  '@sinclair/typebox@0.34.13': {}
+
   '@stoplight/better-ajv-errors@1.0.3(ajv@8.17.1)':
     dependencies:
       ajv: 8.17.1
@@ -4952,7 +4953,7 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.14
 
-  '@triplit/cli@0.6.30':
+  '@triplit/cli@0.6.34':
     dependencies:
       esbuild: 0.23.1
       source-map: 0.7.4
@@ -4966,16 +4967,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  '@triplit/client@0.5.17':
-    dependencies:
-      '@sinclair/typebox': 0.32.35
-      '@triplit/db': 0.5.15
-      comlink: 4.4.1
-      rxjs: 7.8.1
-      superjson: 2.2.1
-    transitivePeerDependencies:
-      - react
-
   '@triplit/client@0.5.8':
     dependencies:
       '@sinclair/typebox': 0.32.35
@@ -4986,10 +4977,10 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/client@0.6.8':
+  '@triplit/client@0.6.12':
     dependencies:
-      '@sinclair/typebox': 0.32.35
-      '@triplit/db': 0.5.15
+      '@sinclair/typebox': 0.34.13
+      '@triplit/db': 0.5.19
       comlink: 4.4.1
       rxjs: 7.8.1
       superjson: 2.2.1
@@ -5008,9 +4999,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/db@0.5.15':
+  '@triplit/db@0.5.19':
     dependencies:
-      '@sinclair/typebox': 0.32.35
+      '@sinclair/typebox': 0.34.13
       '@triplit/tuple-database': 2.2.33
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
@@ -5021,9 +5012,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/svelte@0.2.27(svelte@5.1.10)':
+  '@triplit/svelte@0.2.31(svelte@5.1.10)':
     dependencies:
-      '@triplit/client': 0.6.8
+      '@triplit/client': 0.6.12
       svelte: 5.1.10
     transitivePeerDependencies:
       - react

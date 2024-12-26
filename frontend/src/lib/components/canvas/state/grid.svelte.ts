@@ -80,7 +80,7 @@ export function createCanvasGridManager(
 	transform: CanvasTransform
 ) {
 	/** Konva elements. */
-	let gridlinesLayer: Konva.Layer | nulsl = null;
+	let gridlinesLayer: Konva.Layer | null = null;
 	let backgroundGridlinesGroup: Konva.Group | null = null;
 
 	/** Runes. */
@@ -114,12 +114,12 @@ export function createCanvasGridManager(
 		 * considering the canvas dimensions, position, and scaling.
 		 */
 		const viewableStartPosition = {
-			x: -transform.position.x / transform.scaleFactor,
-			y: -transform.position.y / transform.scaleFactor
+			x: -transform.position.x / transform.scaleFactor.x,
+			y: -transform.position.y / transform.scaleFactor.y
 		};
 		const viewableEndPosition = {
-			x: viewableStartPosition.x + container.width / transform.scaleFactor,
-			y: viewableStartPosition.y + container.height / transform.scaleFactor
+			x: viewableStartPosition.x + container.width / transform.scaleFactor.x,
+			y: viewableStartPosition.y + container.height / transform.scaleFactor.y
 		};
 
 		/**

@@ -13,4 +13,6 @@
 
 <Canvas.Root initializeContext={false} {canvasId} {overlay}>
 	<Canvas.Gridlines {canvasId} />
+
+	<Canvas.Workspace.PlantingAreas {canvasId} />
 </Canvas.Root>
