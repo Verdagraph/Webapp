@@ -1,15 +1,21 @@
 import { AppError } from '@vdt-webapp/common/src/errors';
 import Konva from 'konva';
-import { getColor } from '$lib/utils';
-import mode from '$state/theme.svelte';
 
+/**
+ * Context which stores the Konva stage, container div sizing,
+ * and layers.
+ * @param canvasId The ID of the canvas context. 
+ * @returns The container context.
+ */
 export function createCanvasContainer(canvasId: string) {
-	/** Konva. */
+	/** Consts. */
 	const containerId = canvasId; /** ID of the container HTML element. */
+	const pixelsPerMeter = 100; /** The initial scale of rendering, pre-scaling. */
+
+	/** Konva. */
 	let stage: Konva.Stage | null = null;
 	let layers: Record<string, Konva.Layer> =
 		{}; /** Record to track references to layers. */
-	const pixelsPerMeter = 100; /** The initial scale of rendering, pre-scaling. */
 
 	/** Runes. */
 	let initialized = $state(false);
@@ -65,8 +71,8 @@ export function createCanvasContainer(canvasId: string) {
 	 */
 	function onResize() {
 		resizeFunctions.forEach((func) => func());
-		console.log(`width: ${width} height: ${height}`);
 	}
+
 	/**
 	 * Adds a new side-effect to resizing the canvas container.
 	 * @param func The function to add.

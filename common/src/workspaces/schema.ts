@@ -550,7 +550,7 @@ export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>
 export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>
 export type LinesAttributes = NonNullable<Geometry['linesAttributes']>
 export type GeometryAttributesMap = {
-    'RECTANGLE': RectangleAttributes;
+	'RECTANGLE': RectangleAttributes;
     'POLYGON': PolygonAttributes;
     'ELLIPSE': EllipseAttributes;
     'LINES': LinesAttributes;
@@ -564,4 +564,5 @@ export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'
 export type Location = Entity<typeof workspaceSchema, 'locations'>;
 export type LocationHistory = Entity<typeof workspaceSchema, 'locationHistories'>;
 export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'>;
+export type GridAttributes = NonNullable<PlantingArea['grid']>
 export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>;

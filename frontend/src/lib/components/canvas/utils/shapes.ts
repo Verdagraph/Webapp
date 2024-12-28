@@ -45,7 +45,10 @@ export function getShape(
 			return new Konva.Rect({
 				width: canvas.transform.canvasDistance(attributes.length),
 				height: canvas.transform.canvasDistance(attributes.width),
-                offset: {x: canvas.transform.canvasDistance(attributes.length) /2 , y: canvas.transform.canvasDistance(attributes.width) /2},
+				offset: {
+					x: canvas.transform.canvasDistance(attributes.length) / 2,
+					y: canvas.transform.canvasDistance(attributes.width) / 2
+				},
 				...commonShapeConfig
 			});
 
@@ -75,7 +78,7 @@ export function getShape(
 					);
 					return output;
 				}, []),
-                closed: attributes.closed,
+				closed: attributes.closed,
 				...commonShapeConfig
 			});
 	}

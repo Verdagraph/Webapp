@@ -1,35 +1,40 @@
-import Konva from 'konva';
 import { CanvasContainer } from './container.svelte';
-import { getColor } from '$lib/utils';
-import mode from '$state/theme.svelte';
 import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
 
-const minScaleFactor = 0.1;
-const maxScaleFactor = 10;
 
 /**
  * Indicates a corner of the canvas.
  * Same as tailwind class names.
- */
+*/
 type CanvasCorner = 'tl' | 'tr' | 'br' | 'bl';
 
-/** Config for the controls. */
-type TransformControlsPersistedState = {
+/** Config for the UI controls. */
+type TransformControlsState = {
 	/** The open state of the buttons collapsible. */
 	buttonsExpanded: boolean;
 	/** The position of the buttons on the screen. */
 	buttonsPosition: CanvasCorner;
 };
 
+/** The default position of the transform controls. */
 const defaultButtonPosition: CanvasCorner = isMobile() ? 'br' : 'bl';
 
+/** The minimum and maximum allowed stage scale factors. */
+const minScaleFactor = 0.1;
+const maxScaleFactor = 10;
+
+/**
+ * Context which handles canvas positioning and scaling.
+ * @param container The container context.
+ * @returns The transform context.
+ */
 export function createCanvasTransform(container: CanvasContainer) {
 	/** Runes. */
 	let scaleFactor = $state<Vector2d>({ x: 1, y: 1 });
 	let position = $state<Vector2d>({ x: 0, y: 0 });
-	let config = new LocalStore<TransformControlsPersistedState>('layoutControls', {
+	let config = new LocalStore<TransformControlsState>('layoutControls', {
 		buttonsExpanded: true,
 		buttonsPosition: defaultButtonPosition
 	});
@@ -190,7 +195,7 @@ export function createCanvasTransform(container: CanvasContainer) {
 		console.log(container.height);
 
 		$effect(() => {
-			container.stage?.scale({ x: scaleFactor.x, y: scaleFactor.y });
+			container.stage?.scale(scaleFactor);
 			container.stage?.position(position);
 			transformFunctions.forEach((func) => func());
 		});
@@ -209,7 +214,7 @@ export function createCanvasTransform(container: CanvasContainer) {
 		get position() {
 			return position;
 		},
-		set config(newVal: TransformControlsPersistedState) {
+		set config(newVal: TransformControlsState) {
 			config.value = newVal;
 		},
 		set position(newVal) {
@@ -229,5 +234,4 @@ export function createCanvasTransform(container: CanvasContainer) {
 	};
 }
 export default createCanvasTransform;
-
 export type CanvasTransform = ReturnType<typeof createCanvasTransform>;

@@ -58,6 +58,7 @@
 						</Button.Root>
 					</Menubar.Item>
 				</Menubar.Group>
+				<!-- TODO: Check admin. -->
 				{#if auth.isAuthenticated}
 					<Menubar.Separator />
 					<Menubar.Item>

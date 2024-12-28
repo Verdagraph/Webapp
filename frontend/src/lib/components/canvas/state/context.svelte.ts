@@ -7,10 +7,14 @@ export * from './transform.svelte';
 /**
  * The Canvas Context provides access to all canvas state
  * that must be shared amongst components.
+ * Note that one canvas represents one workspace.
  * @param canvasId Unique identifier for this canvas.
+ * @param canvasWorkspaceId The ID of the workspace represented in the canvas.
  * @returns The canvas contexts.
  */
-export function createCanvasContext(canvasId: string) {
+export function createCanvasContext(canvasId: string, canvasWorkspaceId: string) {
+	const workspaceId = canvasWorkspaceId
+
 	/** Sub-contexts. */
 	const container = createCanvasContainer(canvasId);
 	const transform = createCanvasTransform(container);
@@ -27,6 +31,9 @@ export function createCanvasContext(canvasId: string) {
 	}
 
 	return {
+		get workspaceId() {
+			return workspaceId
+		},
 		transform,
 		container,
 		gridManager,

@@ -1,5 +1,5 @@
 import { AppError } from '../errors';
-import { Geometry, GeometryAttributesMap } from './schema';
+import type { Coordinate, Geometry, GeometryAttributesMap, LocationHistory, Location } from './schema';
 
 
 /**
@@ -39,3 +39,12 @@ export function getGeometryAttributes<T extends Geometry['type']>(
 	/** Should not reach here. */
 	throw new AppError('Geometry type undefined.')
 };
+
+/**
+ * Given a location history, return the location at a given date.  
+ * @param locationHistory The location history to search.
+ * @param date The date at which to retrieve the location at.
+ * @returns The location at the given date.
+ */
+export function getLocationAtDate(locationHistory: LocationHistory, date: Date): Location {
+}

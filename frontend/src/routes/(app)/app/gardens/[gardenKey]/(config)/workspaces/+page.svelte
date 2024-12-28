@@ -172,7 +172,7 @@
 		>
 			<Button
 				variant="outline"
-				href={`/${workspace.slug}`}
+				href={`workspaces/${workspace.slug}`}
 				class="bg-neutral-2 hover:bg-neutral-1 relative mx-4 flex h-72 w-96 flex-col justify-around text-xl"
 			>
 				<p

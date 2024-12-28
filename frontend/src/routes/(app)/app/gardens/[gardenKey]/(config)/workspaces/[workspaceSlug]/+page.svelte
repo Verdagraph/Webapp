@@ -13,6 +13,8 @@
 	import { setContext, getContext } from 'svelte';
 	import { createCanvasContext, type CanvasContext } from '$components/canvas';
 
+	/** Retrieve the workspace ID from the slug. */
+
 	/** Create the layout and set it to context. */
 	const layoutCanvas = createCanvasContext(workspaceLayoutCanvasId);
 	setContext<CanvasContext>(workspaceLayoutCanvasId, layoutCanvas);
