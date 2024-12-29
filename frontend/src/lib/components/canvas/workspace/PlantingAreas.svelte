@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import PlantingArea from './PlantingArea.svelte';
 	import { GeometryTypeEnum } from '@vdt-webapp/common';
+	import { ZonedDateTime } from '@internationalized/date';
 
 	/** Props. */
 	type Props = {
@@ -22,8 +23,9 @@
 			numColumns: 5
 		},
 		locationHistory: {
-			locations: [
+			locations: new Set([
 				{
+					date: new Date(),
 					coordinate: {
 						id: 'aaresont',
 						gardenId: 'arenstoeirasnt',
@@ -32,7 +34,7 @@
 						z: null
 					}
 				}
-			]
+			])
 		},
 		geometry: {
 			id: 'arsenitoa',
@@ -67,6 +69,23 @@
 	};
 </script>
 
-<!--
-    <PlantingArea {canvasId} />
-    -->
+<PlantingArea
+	{canvasId}
+	currentDate={new ZonedDateTime(
+		// Date
+		2025,
+		2,
+		3,
+		// Time zone and UTC offset
+		'America/Los_Angeles',
+		-28800000,
+		// Time
+		9,
+		15,
+		0
+	)}
+	grid={plantingArea.grid}
+	movable={true}
+	locationHistory={plantingArea.locationHistory}
+	geometry={plantingArea.geometry}
+/>

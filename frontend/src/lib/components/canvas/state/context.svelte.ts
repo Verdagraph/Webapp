@@ -13,7 +13,7 @@ export * from './transform.svelte';
  * @returns The canvas contexts.
  */
 export function createCanvasContext(canvasId: string, canvasWorkspaceId: string) {
-	const workspaceId = canvasWorkspaceId
+	const workspaceId = canvasWorkspaceId;
 
 	/** Sub-contexts. */
 	const container = createCanvasContainer(canvasId);
@@ -32,7 +32,7 @@ export function createCanvasContext(canvasId: string, canvasWorkspaceId: string)
 
 	return {
 		get workspaceId() {
-			return workspaceId
+			return workspaceId;
 		},
 		transform,
 		container,

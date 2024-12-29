@@ -157,7 +157,7 @@ export const workspaceSchema = {
 					}),
 
 					/** If true the lines form a closed shape. */
-					closed: S.Boolean({default: true})
+					closed: S.Boolean({ default: true })
 				})
 			)
 		}),
@@ -545,24 +545,24 @@ export const workspaceSchema = {
 export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
 
 export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
-export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>
-export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>
-export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>
-export type LinesAttributes = NonNullable<Geometry['linesAttributes']>
+export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>;
+export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>;
+export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>;
+export type LinesAttributes = NonNullable<Geometry['linesAttributes']>;
 export type GeometryAttributesMap = {
-	'RECTANGLE': RectangleAttributes;
-    'POLYGON': PolygonAttributes;
-    'ELLIPSE': EllipseAttributes;
-    'LINES': LinesAttributes;
-}
-export type RectangleGeometry = Extract<Geometry, { type: 'RECTANGLE' }>
-export type PolygonGeometry = Extract<Geometry, { type: 'POLYGON' }>
-export type EllipseGeometry = Extract<Geometry, { type: 'ELLIPSE' }>
-export type LinesGeometry = Extract<Geometry, { type: 'LINES' }>
+	RECTANGLE: RectangleAttributes;
+	POLYGON: PolygonAttributes;
+	ELLIPSE: EllipseAttributes;
+	LINES: LinesAttributes;
+};
+export type RectangleGeometry = Extract<Geometry, { type: 'RECTANGLE' }>;
+export type PolygonGeometry = Extract<Geometry, { type: 'POLYGON' }>;
+export type EllipseGeometry = Extract<Geometry, { type: 'ELLIPSE' }>;
+export type LinesGeometry = Extract<Geometry, { type: 'LINES' }>;
 
 export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'>;
 export type Location = Entity<typeof workspaceSchema, 'locations'>;
 export type LocationHistory = Entity<typeof workspaceSchema, 'locationHistories'>;
 export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'>;
-export type GridAttributes = NonNullable<PlantingArea['grid']>
+export type GridAttributes = NonNullable<PlantingArea['grid']>;
 export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>;

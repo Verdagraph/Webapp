@@ -3,11 +3,10 @@ import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
 
-
 /**
  * Indicates a corner of the canvas.
  * Same as tailwind class names.
-*/
+ */
 type CanvasCorner = 'tl' | 'tr' | 'br' | 'bl';
 
 /** Config for the UI controls. */

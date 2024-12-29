@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Konva from 'konva';
 	import { getShape, SupportedShape } from '../utils';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import type { CanvasContext } from '../state';
 	import { plantingAreaLayerId } from './consts';
 	import { getColor } from '$lib/utils';
@@ -12,19 +12,23 @@
 		type Geometry,
 		type GeometryTypeEnum,
 		type GridAttributes,
-		type Location
+		type Location,
+		type Coordinate
 	} from '@vdt-webapp/common';
 	import { getLocalTimeZone, type DateValue } from '@internationalized/date';
 
 	/** Props. */
 	type Props = {
-        /** The ID of the canvas. */
+		/** The ID of the canvas. */
 		canvasId: string;
+		/** The current date at which to render the PlantingArea. */
 		currentDate: DateValue;
-		locationHistory: LocationHistory;
-		geometry: Geometry;
+
+		/** PlantingArea properties. */
 		grid: GridAttributes;
 		movable: boolean;
+		locationHistory: LocationHistory;
+		geometry: Geometry;
 	};
 	let {
 		canvasId,
@@ -35,52 +39,74 @@
 		geometry = $bindable()
 	}: Props = $props();
 
-	let canvas = getContext<CanvasContext>(canvasId);
+	/** Retrieve canvas and initialize Konva constructs. */
+	const canvas = getContext<CanvasContext>(canvasId);
 	const layer = canvas.container.getLayer(plantingAreaLayerId);
-	const group: Konva.Group = new Konva.Group();
+	const group: Konva.Group = new Konva.Group({ draggable: movable });
 	layer.add(group);
 
+	/** Border shape of the planting area. */
 	let plantingAreaShape: SupportedShape | null = null;
 
-	let location: Location | null = getLocationAtDate(
-		locationHistory,
-		currentDate.toDate(getLocalTimeZone())
-	);
-	if (location?.workspaceId != workspaceId) {
-	}
-
-	/** Whenever the date changes, update the location .*/
-	$effect(() => {
-		const newLocation = getLocationAtDate(
-			locationHistory,
+	/**
+	 * The current position of the planting area in this workspace
+	 * at the current date.
+	 */
+	let position: Coordinate | null = $derived.by(() => {
+		const location = getLocationAtDate(
+			locationHistory.locations,
 			currentDate.toDate(getLocalTimeZone())
 		);
-
-		/** If the position has changed. */
-		if (newLocation != location) {
-			/** If the planting area has moved outside of the workspace, remove it. */
-			if (newLocation.workspaceId != workspaceId && plantingAreaShape != null) {
-				group.destroyChildren();
-				plantingAreaShape = null;
-			}
-
-			location = newLocation;
+		if (location?.workspaceId === canvas.workspaceId) {
+			return location.coordinate;
+		} else {
+			return null;
 		}
 	});
 
-	/** Whenever the location changes, update the group's position. */
+	/**
+	 * Initialization.
+	 */
+	onMount(() => {
+		if (position) {
+			group.position({
+				x: canvas.transform.canvasXPos(position.x),
+				y: canvas.transform.canvasYPos(position.y)
+			});
+			group.visible(true);
+		} else {
+			group.visible(false);
+		}
 
-	/** Whenever the geometry changes, update the shape. */
-
-	/*
-	let shape = getShape(
-		canvas,
-		locationHistory.locations[0].coordinate,
-		geometry,
-		{
+		plantingAreaShape = getShape(canvas, geometry, {
 			stroke: getColor('neutral', 9, mode.value),
 			fill: getColor('neutral', 4, mode.value)
+		});
+		group.add(plantingAreaShape);
+	});
+
+	/** Whenever the position changes, update the group's position. */
+	$effect(() => {
+		if (position) {
+			group.position({
+				x: canvas.transform.canvasXPos(position.x),
+				y: canvas.transform.canvasYPos(position.y)
+			});
+			group.visible(true);
+		} else {
+			group.visible(false);
 		}
-	);
-    group.add(shape) */
+	});
+
+	/** Whenever the geometry changes, update the shape. */
+	$effect(() => {
+		if (geometry) {
+			plantingAreaShape = getShape(canvas, geometry, {
+				stroke: getColor('neutral', 9, mode.value),
+				fill: getColor('neutral', 4, mode.value)
+			});
+			group.destroyChildren();
+			group.add(plantingAreaShape);
+		}
+	});
 </script>

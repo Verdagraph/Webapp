@@ -4,7 +4,7 @@ import Konva from 'konva';
 /**
  * Context which stores the Konva stage, container div sizing,
  * and layers.
- * @param canvasId The ID of the canvas context. 
+ * @param canvasId The ID of the canvas context.
  * @returns The container context.
  */
 export function createCanvasContainer(canvasId: string) {

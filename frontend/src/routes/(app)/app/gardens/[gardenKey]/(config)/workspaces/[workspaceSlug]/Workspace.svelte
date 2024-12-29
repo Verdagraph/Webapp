@@ -15,9 +15,6 @@
 	};
 	let { workspaceSlug }: Props = $props();
 
-	const layoutCanvas = createCanvasContext(workspaceLayoutCanvasId);
-	setContext<CanvasContext>(workspaceLayoutCanvasId, layoutCanvas);
-
 	let workspace: Workspace = {
 		gardenId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
 		id: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',

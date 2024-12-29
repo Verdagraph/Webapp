@@ -21,20 +21,20 @@ export type SupportedShape =
 /**
  * Constructs a Konva shape from geometry and position objects.
  * @param canvas The canvas context.
- * @param position The position of the shape.
  * @param geometry The geometry of the shape.
  * @param config Any additional config to pass to the shape.
+ * @param position The position of the shape, if any.
  * @returns The Konva shape.
  */
 export function getShape(
 	canvas: CanvasContext,
-	position: Coordinate,
 	geometry: Geometry,
-	config: Partial<ShapeConfig>
+	config: Partial<ShapeConfig>,
+	position?: Coordinate
 ): SupportedShape {
 	const commonShapeConfig: Partial<ShapeConfig> = {
-		x: canvas.transform.canvasXPos(position.x),
-		y: canvas.transform.canvasYPos(position.y),
+		x: canvas.transform.canvasXPos(position?.x || 0),
+		y: canvas.transform.canvasYPos(position?.y || 0),
 		...config
 	};
 
