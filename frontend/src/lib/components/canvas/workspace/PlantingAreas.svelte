@@ -17,7 +17,7 @@
 
 	const layer = canvas.container.addLayer('plantingAreas');
 
-	const plantingArea = {
+	const plantingArea = $state({
 		grid: {
 			numRows: 4,
 			numColumns: 5
@@ -25,6 +25,7 @@
 		locationHistory: {
 			locations: new Set([
 				{
+					workspaceId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
 					date: new Date(),
 					coordinate: {
 						id: 'aaresont',
@@ -66,7 +67,30 @@
 			}
 		},
 		movable: false
-	};
+	});
+
+	let currentDate = $state(new ZonedDateTime(
+		// Date
+		2025,
+		2,
+		3,
+		// Time zone and UTC offset
+		'America/Los_Angeles',
+		-28800000,
+		// Time
+		9,
+		15,
+		0
+	))
+
+	setTimeout(() => {
+		console.log('changing')
+		plantingArea.locationHistory.locations.forEach((location) => {
+			location.coordinate.x += 2
+			location.coordinate.y +=3
+		})
+		console.log(plantingArea)
+	}, 2000)
 </script>
 
 <PlantingArea
@@ -86,6 +110,6 @@
 	)}
 	grid={plantingArea.grid}
 	movable={true}
-	locationHistory={plantingArea.locationHistory}
-	geometry={plantingArea.geometry}
+	bind:locationHistory={plantingArea.locationHistory}
+	bind:geometry={plantingArea.geometry}
 />

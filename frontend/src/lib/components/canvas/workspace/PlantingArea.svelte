@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Konva from 'konva';
-	import { getShape, SupportedShape } from '../utils';
+	import { getShape, type SupportedShape } from '../utils';
 	import { getContext, onMount } from 'svelte';
 	import type { CanvasContext } from '../state';
 	import { plantingAreaLayerId } from './consts';
@@ -48,13 +48,25 @@
 	/** Border shape of the planting area. */
 	let plantingAreaShape: SupportedShape | null = null;
 
+	setTimeout(() => {
+		console.log('changing2')
+		console.log(locationHistory)
+	}, 2000)
+
+	$effect(() => {
+		console.log('location history update')
+		console.log(locationHistory)
+	})
+
 	/**
 	 * The current position of the planting area in this workspace
 	 * at the current date.
 	 */
 	let position: Coordinate | null = $derived.by(() => {
+		console.log('position update 1')
+		console.log(locationHistory)
 		const location = getLocationAtDate(
-			locationHistory.locations,
+			[...locationHistory.locations],
 			currentDate.toDate(getLocalTimeZone())
 		);
 		if (location?.workspaceId === canvas.workspaceId) {
@@ -87,6 +99,7 @@
 
 	/** Whenever the position changes, update the group's position. */
 	$effect(() => {
+		console.log('position update')
 		if (position) {
 			group.position({
 				x: canvas.transform.canvasXPos(position.x),
