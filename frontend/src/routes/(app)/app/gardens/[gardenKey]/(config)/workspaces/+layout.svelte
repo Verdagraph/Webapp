@@ -5,15 +5,20 @@
 	import * as Menubar from '$components/ui/menubar';
 	import { Button } from 'bits-ui';
 	import type { Workspace } from '@vdt-webapp/common';
-	import activeWorkspace from './activeWorkspace.svelte';
+	import { createWorkspaceContext, workspaceContextId } from './activeWorkspace.svelte';
 	import toolbox from './tools';
 	import auth from '$state/auth.svelte';
+	import { setContext } from 'svelte';
 
 	let { children } = $props();
 
 	/** Maximum amount of workspaces displayed in the dropdown. */
 	const workspacesDropdownMaxItems = 10;
 
+	const workspaceContext = createWorkspaceContext();
+	setContext(workspaceContextId, workspaceContext);
+
+	/** TODO: remove. */
 	let workspaces: Workspace[] = [
 		{
 			gardenId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
@@ -75,7 +80,7 @@
 		</Menubar.Menu>
 
 		<!-- Workspace specific content. -->
-		{#if activeWorkspace.id}
+		{#if workspaceContext.id}
 			<!-- Select menu. -->
 			<Menubar.Menu>
 				<Menubar.Trigger>Select</Menubar.Trigger>
@@ -86,12 +91,12 @@
 			<Menubar.Menu>
 				<Menubar.Trigger>Edit</Menubar.Trigger>
 				<Menubar.Content>
-					{#if activeWorkspace.editing}
+					{#if workspaceContext.editing}
 						<Menubar.Item>
 							<Button.Root
 								class="flex items-center justify-start"
 								onclick={() => {
-									activeWorkspace.editing = false;
+									workspaceContext.editing = false;
 								}}
 							>
 								<Icon
@@ -130,7 +135,7 @@
 							<Button.Root
 								class="flex items-center justify-start"
 								onclick={() => {
-									activeWorkspace.editing = true;
+									workspaceContext.editing = true;
 								}}
 							>
 								<Icon
@@ -146,7 +151,7 @@
 			</Menubar.Menu>
 
 			<!-- Add Menu -->
-			{#if activeWorkspace.editing}
+			{#if workspaceContext.editing}
 				<Menubar.Menu>
 					<Menubar.Trigger>Add</Menubar.Trigger>
 					<Menubar.Content>
@@ -176,8 +181,8 @@
 					<!-- Content pane toggles. -->
 					<Menubar.Group>
 						<Menubar.CheckboxItem
-							bind:checked={activeWorkspace.treeEnabled}
-							disabled={!activeWorkspace.layoutEnabled}
+							bind:checked={workspaceContext.treeEnabled}
+							disabled={!workspaceContext.layoutEnabled}
 						>
 							<div class="flex w-full items-center justify-between">
 								<span> Tree </span>
@@ -185,8 +190,8 @@
 							</div>
 						</Menubar.CheckboxItem>
 						<Menubar.CheckboxItem
-							bind:checked={activeWorkspace.layoutEnabled}
-							disabled={!activeWorkspace.treeEnabled}
+							bind:checked={workspaceContext.layoutEnabled}
+							disabled={!workspaceContext.treeEnabled}
 						>
 							<div class="flex w-full items-center justify-between">
 								<span> Layout </span>
@@ -194,11 +199,13 @@
 							</div>
 						</Menubar.CheckboxItem>
 						<!-- Content pane direction. -->
-						{#if activeWorkspace.layoutEnabled && activeWorkspace.treeEnabled}
+						{#if workspaceContext.layoutEnabled && workspaceContext.treeEnabled}
 							<Menubar.Sub>
 								<Menubar.SubTrigger>Direction</Menubar.SubTrigger>
 								<Menubar.SubContent>
-									<Menubar.RadioGroup bind:value={activeWorkspace.contentPaneDirection}>
+									<Menubar.RadioGroup
+										bind:value={workspaceContext.contentPaneDirection}
+									>
 										<Menubar.RadioItem value="horizontal">Horizontal</Menubar.RadioItem>
 										<Menubar.RadioItem value="vertical">Vertical</Menubar.RadioItem>
 									</Menubar.RadioGroup>

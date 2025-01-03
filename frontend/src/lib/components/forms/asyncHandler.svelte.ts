@@ -124,6 +124,7 @@ export function useAsync<TParams = void, TResult = void>(
 	};
 }
 export default useAsync;
+export type AsyncHandler = ReturnType<typeof useAsync>;
 
 /**
  * Converts any type of error which may be raised by the async function

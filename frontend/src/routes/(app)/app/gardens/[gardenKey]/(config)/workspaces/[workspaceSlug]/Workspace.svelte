@@ -1,12 +1,15 @@
 <script lang="ts">
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
 	import type { Workspace } from '@vdt-webapp/common';
-	import activeWorkspace from '../activeWorkspace.svelte';
+	import {
+		workspaceContextId,
+		workspaceLayoutCanvasId,
+		type WorkspaceContext
+	} from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
 	import TabToolbox from '$components/tabToolbox';
 	import Tree from './Tree.svelte';
 	import Layout from './Layout.svelte';
-	import { workspaceLayoutCanvasId } from '../activeWorkspace.svelte';
 	import { setContext, getContext } from 'svelte';
 	import { createCanvasContext, type CanvasContext } from '$components/canvas';
 
@@ -14,6 +17,8 @@
 		workspaceSlug: string;
 	};
 	let { workspaceSlug }: Props = $props();
+
+	const workspaceContext = getContext<WorkspaceContext>(workspaceContextId);
 
 	let workspace: Workspace = {
 		gardenId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
@@ -27,15 +32,15 @@
 	/** Force a re-render of the PaneGroup if the direction is changed. */
 	let initialized = $state(true);
 	$effect(() => {
-		activeWorkspace.contentPaneDirection;
+		workspaceContext.contentPaneDirection;
 		initialized = false;
 		initialized = true;
 	});
 </script>
 
 {#if initialized}
-	<Resizable.PaneGroup direction={activeWorkspace.contentPaneDirection}>
-		{#if activeWorkspace.layoutEnabled}
+	<Resizable.PaneGroup direction={workspaceContext.contentPaneDirection}>
+		{#if workspaceContext.layoutEnabled}
 			<Resizable.Pane defaultSize={70} order={1} minSize={10}>
 				<Layout canvasId={workspaceLayoutCanvasId} />
 			</Resizable.Pane>
@@ -47,7 +52,7 @@
 			</Resizable.Pane>
 			<Resizable.Handle withHandle={false} />
 		{/if}
-		{#if activeWorkspace.treeEnabled}
+		{#if workspaceContext.treeEnabled}
 			<Resizable.Pane defaultSize={30} order={3} minSize={10}>
 				<Tree />
 			</Resizable.Pane>

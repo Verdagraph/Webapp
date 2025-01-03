@@ -2,12 +2,12 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
-	import activeWorkspace, {
-		workspaceLayoutCanvasId,
-		plantingAreaCreateFormId
-	} from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
-	import { createPlantingAreaCreateForm } from './forms';
+	import {
+		workspaceContextId,
+		workspaceLayoutCanvasId,
+		type WorkspaceContext
+	} from '../activeWorkspace.svelte.js';
 	import Workspace from './Workspace.svelte';
 	import type { Snippet } from 'svelte';
 	import { setContext, getContext } from 'svelte';
@@ -20,6 +20,8 @@
 
 	let { data } = $props();
 
+	const workspaceContext = getContext<WorkspaceContext>(workspaceContextId);
+
 	if (data.workspace == null) {
 		toast.error('Workspace does not exist.');
 		goto(`/app/gardens/${$page.params.gardenKey}/workspaces`);
@@ -30,10 +32,6 @@
 	const layoutCanvas = createCanvasContext(workspaceLayoutCanvasId, data.workspace.id);
 	setContext<CanvasContext>(workspaceLayoutCanvasId, layoutCanvas);
 
-	/** Create the planting area creation form and set it to context. */
-	const plantingAreaCreateForm = createPlantingAreaCreateForm();
-	setContext(plantingAreaCreateFormId, plantingAreaCreateForm);
-
 	onMount(() => {
 		if (data.workspace == null) {
 			toast.error('Workspace does not exist.');
@@ -42,9 +40,9 @@
 		}
 
 		/** Update the active workspace upon loading a new workspace. */
-		if (activeWorkspace.id != data.workspace.id) {
-			activeWorkspace.id = data.workspace.id;
-			activeWorkspace.editing = false;
+		if (workspaceContext.id != data.workspace.id) {
+			workspaceContext.id = data.workspace.id;
+			workspaceContext.editing = false;
 		}
 	});
 </script>

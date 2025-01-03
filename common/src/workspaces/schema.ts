@@ -445,12 +445,6 @@ export const workspaceSchema = {
 			/** The depth of the planting area in meters. Used to calculate volume. */
 			depth: S.Number({ default: 0 }),
 
-			/**
-			 * Whether the planting area can be moved easily.
-			 * For example, may be true for a pot but false for a bed.
-			 */
-			movable: S.Boolean({ default: false }),
-
 			/** Optional description. */
 			description: S.String({ default: '' })
 		}),

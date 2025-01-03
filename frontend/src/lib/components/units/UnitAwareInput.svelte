@@ -3,23 +3,61 @@
 	import { Button } from 'bits-ui';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import Icon from '@iconify/svelte';
-	import { createUnitAwareValue } from './units.svelte';
+	import { createUnitAwareValue, convertQuantity } from './units.svelte';
 
 	type Props = {
 		/** The output value. Guarnteed to be in metric. */
 		value: number;
 		/** The type of quantity represented. */
 		quantityType: UnitAwareQuantity;
+		/** The input properties, in meters. */
+		step?: number;
+		min?: number;
+		max?: number;
 	};
-	let { value = $bindable(), quantityType, ...restProps }: Props = $props();
+	let {
+		value = $bindable(),
+		quantityType,
+		step = 0.01,
+		min,
+		max,
+		...restProps
+	}: Props = $props();
+
+	$effect(() => {
+		unitAwareValue.value = value;
+	});
 
 	const unitAwareValue = createUnitAwareValue(quantityType, value);
+
+	/** The input properties, in the unit system. */
+	let unitAwareMin = $derived.by(() => {
+		if (min) {
+			return unitAwareValue.unitSystem === 'metric'
+				? min
+				: convertQuantity(min, 'metric', quantityType);
+		} else {
+			return '';
+		}
+	});
+	let unitAwareMax = $derived.by(() => {
+		if (max) {
+			return unitAwareValue.unitSystem === 'metric'
+				? max
+				: convertQuantity(max, 'metric', quantityType);
+		} else {
+			return '';
+		}
+	});
 </script>
 
 <div class="flex w-full items-center justify-between gap-0">
 	<Input
-		bind:value={unitAwareValue.value}
+		value={unitAwareValue.value}
 		type="number"
+		{step}
+		min={unitAwareMin}
+		max={unitAwareMax}
 		oninput={() => {
 			value = unitAwareValue.metricValue;
 		}}

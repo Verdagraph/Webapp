@@ -2,6 +2,7 @@ import { CanvasContainer } from './container.svelte';
 import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
+import { AppError } from '@vdt-webapp/common/src/errors';
 
 /**
  * Indicates a corner of the canvas.
@@ -188,15 +189,29 @@ export function createCanvasTransform(container: CanvasContainer) {
 	 * Initialize the side-effects.
 	 */
 	function initialize() {
+		if (!container.stage) {
+			throw new AppError(
+				'Attempted to initialize canvas transform with uninitialized stage.'
+			);
+		}
+
 		position = initialPosition();
-		container.stage?.position(position);
-		console.log(position);
-		console.log(container.height);
+		container.stage.position(position);
+		container.stage.draggable(true);
 
 		$effect(() => {
-			container.stage?.scale(scaleFactor);
-			container.stage?.position(position);
+			if (!container.stage) return;
+
+			container.stage.scale(scaleFactor);
+			container.stage.position(position);
 			transformFunctions.forEach((func) => func());
+		});
+
+		/** Events. */
+		container.stage.on('dragmove', () => {
+			if (!container.stage) return;
+
+			position = container.stage.position();
 		});
 	}
 

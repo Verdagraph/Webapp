@@ -46,41 +46,41 @@ export function getGeometryAttributes<T extends Geometry['type']>(
 }
 
 /**
- * Given a location history, return the location at a given date.
- * @param locations a list of locations to search. Assumed to be unsorted.
- * @param date The date at which to retrieve the location at.
- * @returns The location at the given date.
+ * Given a history, usually a geometric or location history return the item at a given date.
+ * @param items a list of items to search. Assumed to be unsorted.
+ * @param date The date at which to retrieve the item at.
+ * @returns The item at the given date.
  */
-export function getLocationAtDate(
-	locations: Array<Location>,
+export function historySelect<T extends { date: Date }>(
+	items: Array<T>,
 	date: Date
-): Location | null {
-	if (locations.length === 0) {
+): T | null {
+	if (items.length === 0) {
 		return null;
 	}
 
 	const time = date.getTime();
 
-	/** Sort locations in ascending order. */
-	const sortedLocations = locations.sort((a, b) => a.date.getTime() - b.date.getTime());
+	/** Sort items in ascending order. */
+	const sortedItems = items.sort((a, b) => a.date.getTime() - b.date.getTime());
 
-	/** If the requested date is before the earliest location, return null. */
-	if (time < sortedLocations[0].date.getTime()) {
+	/** If the requested date is before the earliest item, return null. */
+	if (time < sortedItems[0].date.getTime()) {
 		return null;
 	}
 
-	/** If the requested date is after the latest location, return the latest location. */
-	if (time >= sortedLocations[sortedLocations.length - 1].date.getTime()) {
-		return sortedLocations[sortedLocations.length - 1];
+	/** If the requested date is after the latest item, return the latest item. */
+	if (time >= sortedItems[sortedItems.length - 1].date.getTime()) {
+		return sortedItems[sortedItems.length - 1];
 	}
 
-	/** Find the location where the date falls between it and the next. */
-	for (let i = 0; i < sortedLocations.length - 1; i++) {
-		const currentTime = sortedLocations[i].date.getTime();
-		const nextTime = sortedLocations[i + 1].date.getTime();
+	/** Find the item where the date falls between it and the next. */
+	for (let i = 0; i < sortedItems.length - 1; i++) {
+		const currentTime = sortedItems[i].date.getTime();
+		const nextTime = sortedItems[i + 1].date.getTime();
 
 		if (time >= currentTime && time < nextTime) {
-			return sortedLocations[i];
+			return sortedItems[i];
 		}
 	}
 

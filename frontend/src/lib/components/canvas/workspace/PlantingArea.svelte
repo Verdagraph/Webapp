@@ -1,105 +1,82 @@
 <script lang="ts">
 	import Konva from 'konva';
-	import { getShape, type SupportedShape } from '../utils';
-	import { getContext, onMount } from 'svelte';
+	import type { Vector2d } from 'konva/lib/types';
+	import { getContext, onDestroy } from 'svelte';
+	import {
+		type Coordinate,
+		type Geometry,
+		type GridAttributes
+	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
-	import { plantingAreaLayerId } from './consts';
+	import { getClosedShape, type SupportedShape } from '../utils';
 	import { getColor } from '$lib/utils';
 	import mode from '$state/theme.svelte';
-	import {
-		getLocationAtDate,
-		type LocationHistory,
-		type Geometry,
-		type GeometryTypeEnum,
-		type GridAttributes,
-		type Location,
-		type Coordinate
-	} from '@vdt-webapp/common';
-	import { getLocalTimeZone, type DateValue } from '@internationalized/date';
 
-	/** Props. */
 	type Props = {
 		/** The ID of the canvas. */
 		canvasId: string;
-		/** The current date at which to render the PlantingArea. */
-		currentDate: DateValue;
-
-		/** PlantingArea properties. */
-		grid: GridAttributes;
-		movable: boolean;
-		locationHistory: LocationHistory;
+		/** The ID of the layer which holds the planting areas. */
+		plantingAreaLayerId: string;
+		/** The current position of the planting area in the workspace, in model quantity (meters). */
+		position: Vector2d | null;
+		/** The geometry of the planting area. */
 		geometry: Geometry;
+		/** The grid attributes of the planting area. */
+		grid?: GridAttributes;
+		/** If true, the planting area may be moved and resized. */
+		editable?: boolean;
+		/** If true, the planting area is selected. */
+		selected?: boolean;
+		/** Called when the planting area is moved in the canvas. */
+		onTranslate?: (
+			/** The new position, in canvas quantity (pixels). */
+			newPos: Vector2d
+		) => void;
+		/** Called when the planting area is transformed in the canvas. */
+		onTransform?: (
+			oldGeometry: Geometry,
+			oldScale: Vector2d,
+			newScale: Vector2d
+		) => void;
 	};
 	let {
 		canvasId,
-		currentDate,
+		plantingAreaLayerId,
+		position,
+		geometry,
 		grid,
-		movable,
-		locationHistory = $bindable(),
-		geometry = $bindable()
+		editable = false,
+		selected = false,
+		onTranslate,
+		onTransform
 	}: Props = $props();
 
 	/** Retrieve canvas and initialize Konva constructs. */
 	const canvas = getContext<CanvasContext>(canvasId);
 	const layer = canvas.container.getLayer(plantingAreaLayerId);
-	const group: Konva.Group = new Konva.Group({ draggable: movable });
+	const group: Konva.Group = new Konva.Group({ draggable: editable });
 	layer.add(group);
 
 	/** Border shape of the planting area. */
 	let plantingAreaShape: SupportedShape | null = null;
 
-	setTimeout(() => {
-		console.log('changing2')
-		console.log(locationHistory)
-	}, 2000)
-
+	/** Update shapes upon geometry change. */
 	$effect(() => {
-		console.log('location history update')
-		console.log(locationHistory)
-	})
-
-	/**
-	 * The current position of the planting area in this workspace
-	 * at the current date.
-	 */
-	let position: Coordinate | null = $derived.by(() => {
-		console.log('position update 1')
-		console.log(locationHistory)
-		const location = getLocationAtDate(
-			[...locationHistory.locations],
-			currentDate.toDate(getLocalTimeZone())
-		);
-		if (location?.workspaceId === canvas.workspaceId) {
-			return location.coordinate;
-		} else {
-			return null;
-		}
-	});
-
-	/**
-	 * Initialization.
-	 */
-	onMount(() => {
-		if (position) {
-			group.position({
-				x: canvas.transform.canvasXPos(position.x),
-				y: canvas.transform.canvasYPos(position.y)
-			});
-			group.visible(true);
-		} else {
-			group.visible(false);
-		}
-
-		plantingAreaShape = getShape(canvas, geometry, {
-			stroke: getColor('neutral', 9, mode.value),
-			fill: getColor('neutral', 4, mode.value)
+		group.destroyChildren();
+		group.draggable(true);
+		plantingAreaShape = getClosedShape(canvas, geometry, {
+			strokeWidth: 2,
+			fill: getColor('brown', 3, mode.value),
+			stroke: getColor('brown', 10, mode.value)
 		});
-		group.add(plantingAreaShape);
+		if (plantingAreaShape) {
+			group.add(plantingAreaShape);
+			group.rotation(geometry.rotation);
+		}
 	});
 
-	/** Whenever the position changes, update the group's position. */
+	/** Update position upon position change. */
 	$effect(() => {
-		console.log('position update')
 		if (position) {
 			group.position({
 				x: canvas.transform.canvasXPos(position.x),
@@ -111,15 +88,22 @@
 		}
 	});
 
-	/** Whenever the geometry changes, update the shape. */
-	$effect(() => {
-		if (geometry) {
-			plantingAreaShape = getShape(canvas, geometry, {
-				stroke: getColor('neutral', 9, mode.value),
-				fill: getColor('neutral', 4, mode.value)
-			});
-			group.destroyChildren();
-			group.add(plantingAreaShape);
-		}
+	/** Add events. */
+	if (editable) {
+		group.on('mouseover', () => {
+			document.body.style.cursor = 'grab';
+		});
+		group.on('mouseout', () => {
+			document.body.style.cursor = 'default';
+		});
+		group.on('dragmove', () => {
+			if (onTranslate) {
+				onTranslate({ x: group.x(), y: group.y() });
+			}
+		});
+	}
+
+	onDestroy(() => {
+		group.destroy();
 	});
 </script>

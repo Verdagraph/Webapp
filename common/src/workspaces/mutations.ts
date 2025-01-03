@@ -8,6 +8,7 @@ export const workspaceFields = {
 			x: z.number().describe('The horizontal X component of the coordinate.'),
 			y: z.number().describe('The vertical Y component of the coordinate.')
 		})
+		.describe('A position relative to the origin of a workspace.')
 		.refine(
 			(data) => {
 				const maxCoordinateMagnitude = 1000000;
@@ -38,7 +39,7 @@ export const workspaceFields = {
 		),
 	geometryRotation: z
 		.number()
-		.min(0, 'Must not be negative.')
+		.min(-360, 'Must be at least negative 360 degrees.')
 		.max(360, 'May be at most 360 degrees.')
 		.describe(
 			'The rotation of the geometry in degrees. Must be between 0 and 360 degrees.'
@@ -95,7 +96,8 @@ export const workspaceFields = {
 			.max(100)
 			.describe(
 				'The number of rows in the grid. Must be between 2 and 100, and be whole number.'
-			),
+			)
+			.default(2),
 		numColumns: z
 			.number()
 			.int()
@@ -104,6 +106,7 @@ export const workspaceFields = {
 			.describe(
 				'The number of columns in the grid. Must be between 2 and 100, and be a whole number.'
 			)
+			.default(2)
 	})
 };
 
@@ -142,7 +145,7 @@ const RectangleAttributesCreateUpdateCommand = z.object({
 			'The horizontal, or x-axis length of the rectangle. Must be between 0 and 1000 meters.'
 		)
 		.optional()
-		.default(0),
+		.default(1),
 	width: z
 		.number()
 		.min(0, 'May not be negative.')
@@ -151,7 +154,7 @@ const RectangleAttributesCreateUpdateCommand = z.object({
 			'The vertical, or y-axis width of the rectangle. Must be between 0 and 1000 meters.'
 		)
 		.optional()
-		.default(0)
+		.default(1)
 });
 
 const PolygonAttributesCreateUpdateCommand = z.object({
@@ -161,14 +164,14 @@ const PolygonAttributesCreateUpdateCommand = z.object({
 		.max(20, 'May have at most 20 sides.')
 		.describe('The amount of sides the polygon has. Must be between 3 and 20 sides.')
 		.default(3),
-	sideLength: z
+	radius: z
 		.number()
 		.min(0, 'May not be negative')
 		.max(1000, 'May be at most 1000m')
 		.describe(
-			'The length of each side of the polygon.  Must be between 0 and 1000 meters.'
+			'The distance from the center to any vertex of the polygon. Must be between 0 and 1000 meters.'
 		)
-		.default(0)
+		.default(1)
 });
 
 const EllipseAttributesCreateUpdateCommand = z.object({
@@ -178,7 +181,8 @@ const EllipseAttributesCreateUpdateCommand = z.object({
 		.max(1000, 'May be at most 1000m')
 		.describe(
 			'The horizontal, or x-axis diameter of the ellipse. Must be between 0 and 1000 meters.'
-		),
+		)
+		.default(1),
 	widthDiameter: z
 		.number()
 		.max(0, 'May not be negative')
@@ -186,10 +190,21 @@ const EllipseAttributesCreateUpdateCommand = z.object({
 		.describe(
 			'The vertical, or y-axis diameter of the ellipse. Must be between 0 and 1000 meters.'
 		)
+		.default(1)
 });
 
 const LinesAttributesCreateUpdateCommand = z.object({
-	coordinates: z.array(workspaceFields.coordinate)
+	coordinates: z
+		.array(workspaceFields.coordinate)
+		.min(3)
+		.describe(
+			'A list of coordinates relative to the position of the geometry which define a custom.'
+		)
+		.default([
+			{ x: -1, y: -1 },
+			{ x: 1, y: -1 },
+			{ x: 0, y: 1 }
+		])
 });
 
 const GeometryCreateCommand = z
@@ -219,32 +234,35 @@ const GeometryCreateCommand = z
 		}
 	);
 
+/**
+ * 
 const GeometryUpdateCommand = z
-	.object({
-		type: z.enum(GeometryTypeEnum),
-		date: z.date().optional(),
-		scaleFactor: workspaceFields.geometryScaleFactor.optional(),
-		rotation: workspaceFields.geometryRotation.optional(),
-		rectangleAttributes: RectangleAttributesCreateUpdateCommand.optional(),
-		polygonAttributes: PolygonAttributesCreateUpdateCommand.optional(),
-		ellipseAttributes: EllipseAttributesCreateUpdateCommand.optional(),
-		linesAttributes: LinesAttributesCreateUpdateCommand.optional()
-	})
-	.refine(
-		(data) => {
-			return validateGeometryAttributes(
-				data.type,
-				!data.rectangleAttributes,
-				!data.polygonAttributes,
-				!data.ellipseAttributes,
-				!data.linesAttributes
-			);
-		},
-		{
-			message: 'Included geometry attributes does not satisfy geometry type.',
-			path: ['type']
-		}
-	);
+.object({
+	type: z.enum(GeometryTypeEnum),
+	date: z.date().optional(),
+	scaleFactor: workspaceFields.geometryScaleFactor.optional(),
+	rotation: workspaceFields.geometryRotation.optional(),
+	rectangleAttributes: RectangleAttributesCreateUpdateCommand.optional(),
+	polygonAttributes: PolygonAttributesCreateUpdateCommand.optional(),
+	ellipseAttributes: EllipseAttributesCreateUpdateCommand.optional(),
+	linesAttributes: LinesAttributesCreateUpdateCommand.optional()
+})
+.refine(
+	(data) => {
+		return validateGeometryAttributes(
+			data.type,
+			!data.rectangleAttributes,
+			!data.polygonAttributes,
+			!data.ellipseAttributes,
+			!data.linesAttributes
+		);
+	},
+	{
+		message: 'Included geometry attributes does not satisfy geometry type.',
+		path: ['type']
+	}
+);
+*/
 
 /**
  * Command to create a new workspace.

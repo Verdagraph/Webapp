@@ -126,6 +126,13 @@
 	});
 </script>
 
+<!--
+@component
+Renders a toolbar for manipulating the canvas above the canvas.
+Note that pointer events must be enabled on each button individually,
+this is because they are disabled on the overlay container div to allow
+the events to hit the canvas underneath.
+-->
 <div class="flex h-full w-full p-2 {collapsibleFlexPositioning}">
 	<Tooltip.Root delayDuration={800}>
 		<Collapsible.Root
@@ -137,7 +144,7 @@
 					<Button
 						variant="outline"
 						size="xsm"
-						class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex items-center justify-center"
+						class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 pointer-events-auto flex items-center justify-center"
 					>
 						<Icon
 							icon={'material-symbols:double-arrow'}
@@ -161,7 +168,7 @@
 									}}
 									variant="outline"
 									size="xsm"
-									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 border-r-neutral-4 flex items-center justify-center rounded-r-none"
+									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 border-r-neutral-4 pointer-events-auto flex items-center justify-center rounded-r-none"
 								>
 									<Icon
 										icon={'material-symbols:zoom-out'}
@@ -193,7 +200,7 @@
 									}}
 									variant="outline"
 									size="xsm"
-									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 border-l-neutral-4 flex items-center justify-center rounded-l-none"
+									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 border-l-neutral-4 pointer-events-auto flex items-center justify-center rounded-l-none"
 								>
 									<Icon
 										icon={'material-symbols:zoom-in'}
@@ -226,7 +233,7 @@
 										}}
 										variant="outline"
 										size="xsm"
-										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex items-center justify-center"
+										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 pointer-events-auto flex items-center justify-center"
 									>
 										<Icon
 											icon={'material-symbols:arrow-back-2'}
@@ -253,7 +260,7 @@
 										}}
 										variant="outline"
 										size="xsm"
-										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex items-center justify-center"
+										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 pointer-events-auto flex items-center justify-center"
 									>
 										<Icon
 											icon={'material-symbols:arrow-back-2'}
@@ -280,7 +287,7 @@
 										}}
 										variant="outline"
 										size="xsm"
-										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex items-center justify-center"
+										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 pointer-events-auto flex items-center justify-center"
 									>
 										<Icon
 											icon={'material-symbols:arrow-back-2'}
@@ -307,7 +314,7 @@
 										}}
 										variant="outline"
 										size="xsm"
-										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex items-center justify-center"
+										class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 pointer-events-auto flex items-center justify-center"
 									>
 										<Icon
 											icon={'material-symbols:arrow-back-2'}
@@ -329,7 +336,7 @@
 									onclick={canvas.transform.reset}
 									variant="outline"
 									size="xsm"
-									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 flex items-center justify-center"
+									class="hover:bg-secondary-5 bg-neutral-1 hover:text-secondary-12 pointer-events-auto flex items-center justify-center"
 								>
 									<Icon
 										icon={'material-symbols:home'}
@@ -355,7 +362,7 @@
 									size="xsm"
 									class="{canvas.gridManager.config.snapToGrid
 										? 'bg-secondary-5 border-secondary-6 hover:bg-neutral-3 hover:border-neutral-8'
-										: 'bg-neutral-1 hover:bg-secondary-5'} hover:text-secondary-12 flex rotate-180 items-center justify-center transition-colors"
+										: 'bg-neutral-1 hover:bg-secondary-5'} hover:text-secondary-12 pointer-events-auto flex rotate-180 items-center justify-center transition-colors"
 								>
 									<Icon
 										icon={'iconoir:magnet-solid'}
@@ -381,7 +388,7 @@
 									size="xsm"
 									class="{canvas.gridManager.config.rightAngleConstraint
 										? 'bg-secondary-5 border-secondary-6 hover:bg-neutral-3 hover:border-neutral-8'
-										: 'bg-neutral-1 hover:bg-secondary-5'} hover:text-secondary-12 flex items-center justify-center transition-colors"
+										: 'bg-neutral-1 hover:bg-secondary-5'} hover:text-secondary-12 pointer-events-auto flex items-center justify-center transition-colors"
 								>
 									<Icon icon={'mdi:parallel'} width="3rem" class="text-neutral-11" />
 								</Button>

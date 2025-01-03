@@ -24,6 +24,7 @@ export function createToolbox<ToolId extends string>(
 	isActive: boolean;
 	activate: (id: ToolId, options?: Record<string, any>) => void;
 	deactivate: (id: ToolId) => void;
+	isToolActive: (id: ToolId) => boolean;
 } {
 	/** Stores an array of active tools by their ID. */
 	let activeToolIds = $state<Array<ToolId>>([]);
@@ -61,6 +62,19 @@ export function createToolbox<ToolId extends string>(
 		}
 	}
 
+	/**
+	 * Checks if a tool is active.
+	 * @param id The tool ID.
+	 * @returns True if the tool is active.
+	 */
+	function isToolActive(id: ToolId): boolean {
+		if (activeToolIds.includes(id)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	return {
 		/** Getters. */
 		get lastActivatedId(): ToolId | undefined {
@@ -76,7 +90,8 @@ export function createToolbox<ToolId extends string>(
 			lastActivatedId = newVal;
 		},
 		activate,
-		deactivate
+		deactivate,
+		isToolActive
 	};
 }
 export default createToolbox;

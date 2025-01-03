@@ -2,7 +2,7 @@ import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
 import userSettings from '$state/userSettings.svelte';
 
 /** The amount of decimal places to prefer when converting units. */
-const DECIMAL_PLACES = 4;
+const DECIMAL_PLACES = 2;
 
 type UnitInfo = {
 	symbols: Record<UnitSystem, string>;
@@ -108,15 +108,12 @@ function swapUnit(unitSystem: UnitSystem): UnitSystem {
  * @param quantityType The type of the quantity
  * @returns The quantity represented in the other unit system.
  */
-function convertQuantity(
+export function convertQuantity(
 	quantity: number,
 	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity
 ): number {
-	return roundToDecimalPlaces(
-		units[quantityType].conversions[unitSystem](quantity),
-		DECIMAL_PLACES
-	);
+	return units[quantityType].conversions[unitSystem](quantity);
 }
 
 /**
@@ -152,13 +149,21 @@ export function createUnitAwareValue(
 
 	/** The value displayed in the component. */
 	let value = $state(
-		userSettings.value.units[quantityType] === 'metric'
-			? initialValueMetric
-			: convertQuantity(initialValueMetric, 'metric', quantityType)
+		roundToDecimalPlaces(
+			userSettings.value.units[quantityType] === 'metric'
+				? initialValueMetric
+				: convertQuantity(initialValueMetric, 'metric', quantityType),
+			DECIMAL_PLACES
+		)
 	);
 
 	/** A version of the value guarnteed to be metric. */
-	let metricValue = $derived(convertQuantityToMetric(value, unitSystem, quantityType));
+	let metricValue = $derived(
+		roundToDecimalPlaces(
+			convertQuantityToMetric(value, unitSystem, quantityType),
+			DECIMAL_PLACES
+		)
+	);
 
 	/** The symbol displayed in the component.*/
 	let unitSymbol = $derived(quantityToUnitSymbol(unitSystem, quantityType));
@@ -186,8 +191,17 @@ export function createUnitAwareValue(
 		get unitSymbol() {
 			return unitSymbol;
 		},
+		/**
+		 * @param newVal The new val, in metric.
+		 */
 		set value(newVal) {
-			value = newVal;
+			value =
+				unitSystem === 'metric'
+					? roundToDecimalPlaces(newVal, DECIMAL_PLACES)
+					: roundToDecimalPlaces(
+							convertQuantity(newVal, 'metric', quantityType),
+							DECIMAL_PLACES
+						);
 		},
 		swapUnits
 	};

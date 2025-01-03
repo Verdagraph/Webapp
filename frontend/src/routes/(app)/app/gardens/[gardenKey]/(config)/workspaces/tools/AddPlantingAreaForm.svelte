@@ -8,19 +8,17 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import UnitAwareInput from '$components/units/UnitAwareInput.svelte';
 	import { Input } from '$lib/components/ui/input';
-	import { plantingAreaCreateFormId } from '../activeWorkspace.svelte';
 	import { plantingAreaCreate } from '$data/workspaces/commands';
-	import type { PlantingAreaCreateForm } from '../[workspaceSlug]/forms';
-	import { GeometryTypeEnum } from '@vdt-webapp/common';
 	import iconIds from '$lib/assets/icons';
 	import DatePicker from '$components/forms/components/DatePicker.svelte';
 	import { getLocalTimeZone } from '@internationalized/date';
 	import type { DateValue } from '@internationalized/date';
 	import Checkbox from '$components/ui/checkbox/checkbox.svelte';
+	import { workspaceContextId, type WorkspaceContext } from '../activeWorkspace.svelte';
 
-	const { handler, form } = getContext<PlantingAreaCreateForm>(
-		plantingAreaCreateFormId
-	);
+	const workspaceContext = getContext<WorkspaceContext>(workspaceContextId);
+	const form = workspaceContext.plantingAreaCreateForm.form;
+	const handler = workspaceContext.plantingAreaCreateForm.handler;
 	const { form: formData, enhance } = form;
 
 	const geometryTypeOptions = [
@@ -222,23 +220,6 @@
 			/>
 		</Form.Field>
 
-		<!-- Scale factor. -->
-		<Form.Field {form} name="geometry.scaleFactor">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label
-						description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-							.scaleFactor.description}
-						optional={plantingAreaCreate.schema.shape.geometry
-							.innerType()
-							.shape.scaleFactor.isOptional()}>Scale Factor</Form.Label
-					>
-					<Input {...props} type="number" bind:value={$formData.geometry.scaleFactor} />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.scaleFactor']} />
-		</Form.Field>
-
 		<!-- Rotation. -->
 		<Form.Field {form} name="geometry.rotation">
 			<Form.Control>
@@ -270,6 +251,7 @@
 						>
 						<UnitAwareInput
 							{...props}
+							min={0}
 							quantityType="distance"
 							bind:value={$formData.geometry.rectangleAttributes.length}
 						/>
@@ -293,6 +275,7 @@
 						>
 						<UnitAwareInput
 							{...props}
+							min={0}
 							quantityType="distance"
 							bind:value={$formData.geometry.rectangleAttributes.width}
 						/>
@@ -318,6 +301,7 @@
 						<Input
 							{...props}
 							type="number"
+							min={3}
 							bind:value={$formData.geometry.polygonAttributes.numSides}
 						/>
 					{/snippet}
@@ -327,27 +311,27 @@
 				/>
 			</Form.Field>
 
-			<!-- Side length. -->
-			<Form.Field {form} name="geometry.polygonAttributes.sideLength">
+			<!-- Radius. -->
+			<Form.Field {form} name="geometry.polygonAttributes.radius">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
 							description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-								.polygonAttributes.shape.sideLength.description}
+								.polygonAttributes.shape.radius.description}
 							optional={plantingAreaCreate.schema.shape.geometry
 								.innerType()
-								.shape.polygonAttributes.shape.sideLength.isOptional()}
-							>Side Length</Form.Label
+								.shape.polygonAttributes.shape.radius.isOptional()}>Radius</Form.Label
 						>
 						<UnitAwareInput
 							{...props}
 							quantityType="distance"
-							bind:value={$formData.geometry.polygonAttributes.sideLength}
+							min={0}
+							bind:value={$formData.geometry.polygonAttributes.radius}
 						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors
-					handlerErrors={handler.fieldErrors?.['geometry.polygonAttributes.sideLength']}
+					handlerErrors={handler.fieldErrors?.['geometry.polygonAttributes.radius']}
 				/>
 			</Form.Field>
 		{:else if $formData.geometry.type === 'ELLIPSE'}
@@ -365,6 +349,7 @@
 						>
 						<UnitAwareInput
 							{...props}
+							min={0}
 							quantityType="distance"
 							bind:value={$formData.geometry.ellipseAttributes.lengthDiameter}
 						/>
@@ -391,6 +376,7 @@
 						>
 						<UnitAwareInput
 							{...props}
+							min={0}
 							quantityType="distance"
 							bind:value={$formData.geometry.ellipseAttributes.widthDiameter}
 						/>
@@ -428,11 +414,11 @@
 							<Form.Label
 								description={plantingAreaCreate.schema.shape.geometry
 									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.type.innerType().shape.x
-									.description}
+									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
+									.shape.x.description}
 								optional={plantingAreaCreate.schema.shape.geometry
 									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.type.innerType()
+									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
 									.shape.x.isOptional()}>X-{index}</Form.Label
 							>
 							<UnitAwareInput
@@ -456,11 +442,11 @@
 							<Form.Label
 								description={plantingAreaCreate.schema.shape.geometry
 									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.type.innerType().shape.y
-									.description}
+									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
+									.shape.y.description}
 								optional={plantingAreaCreate.schema.shape.geometry
 									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.type.innerType()
+									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
 									.shape.y.isOptional()}>Y-{index}</Form.Label
 							>
 							<UnitAwareInput
@@ -509,7 +495,11 @@
 			<!-- Grid generate button. -->
 			<div class="mb-4 flex flex-col gap-4">
 				<span class="text-sm"> Grid Spacing </span>
-				<UnitAwareInput quantityType="distance" bind:value={generateGridSpacing} />
+				<UnitAwareInput
+					min={0}
+					quantityType="distance"
+					bind:value={generateGridSpacing}
+				/>
 				<Button onclick={() => {}} variant="outline" class="w-full">
 					Generate Grid
 				</Button>
@@ -529,6 +519,7 @@
 							{...props}
 							type="number"
 							step="1"
+							min={2}
 							bind:value={$formData.grid.numRows}
 						/>
 					{/snippet}
@@ -550,6 +541,7 @@
 							{...props}
 							type="number"
 							step="1"
+							min={2}
 							bind:value={$formData.grid.numColumns}
 						/>
 					{/snippet}
@@ -568,23 +560,6 @@
 			</span>
 		</div>
 
-		<!-- Movable. -->
-		<Form.Field {form} name="movable">
-			<Form.Control>
-				{#snippet children({ props })}
-					<div class="flex items-center justify-between">
-						<Form.Label
-							description={plantingAreaCreate.schema.shape.movable.description}
-							optional={plantingAreaCreate.schema.shape.movable.isOptional()}
-							>Movable</Form.Label
-						>
-						<Checkbox {...props} bind:checked={$formData.movable} />
-					</div>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['movable']} />
-		</Form.Field>
-
 		<!-- Depth. -->
 		<Form.Field {form} name={`depth`}>
 			<Form.Control>
@@ -596,6 +571,7 @@
 					>
 					<UnitAwareInput
 						{...props}
+						min={0}
 						quantityType="distance"
 						bind:value={$formData.depth}
 					/>

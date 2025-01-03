@@ -11,16 +11,23 @@
 		 */
 		initializeContext: boolean;
 		canvasId: string;
+		canvasWorkspaceId: string;
 
 		children: Snippet<[]>;
 		overlay: Snippet<[]>;
 	};
-	let { initializeContext = false, canvasId, children, overlay }: Props = $props();
+	let {
+		initializeContext = false,
+		canvasId,
+		canvasWorkspaceId,
+		children,
+		overlay
+	}: Props = $props();
 
 	/** Create or retrieve the context. */
 	let canvas: CanvasContext;
 	if (initializeContext) {
-		canvas = createCanvasContext(canvasId);
+		canvas = createCanvasContext(canvasId, canvasWorkspaceId);
 		setContext<CanvasContext>(canvasId, canvas);
 	} else {
 		canvas = getContext<CanvasContext>(canvasId);
@@ -54,7 +61,7 @@
 			{@render children()}
 		{/if}
 	</div>
-	<div class="absolute left-[0.5px] top-0 z-10 h-full w-full">
+	<div class="pointer-events-none absolute left-[0.5px] top-0 z-10 h-full w-full">
 		{@render overlay()}
 	</div>
 </div>

@@ -44,7 +44,6 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 			return mergeErrors({ fieldErrors: validationErrors }, handler.errors);
 		}
 	});
-	$inspect(errors);
 
 	/** Update the validation errors on updating data. */
 	$effect(() => {

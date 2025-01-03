@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import activeWorkspace from './activeWorkspace.svelte';
+	import { getContext, onMount } from 'svelte';
+	import { workspaceContextId, type WorkspaceContext } from './activeWorkspace.svelte';
 	import type { Workspace } from '@vdt-webapp/common';
 	import { Button } from '$components/ui/button';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import WorkspaceThumbnail from '$components/workspaces/WorkspaceThumbnail.svelte';
 
+	const workspaceContext = getContext<WorkspaceContext>(workspaceContextId);
+
 	onMount(() => {
 		/** CLear the active workspace. */
-		if (activeWorkspace.id) {
-			activeWorkspace.id = null;
-			activeWorkspace.editing = false;
+		if (workspaceContext.id) {
+			workspaceContext.reset();
 		}
 	});
 

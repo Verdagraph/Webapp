@@ -12,6 +12,10 @@
 	};
 	let { value, quantityType }: Props = $props();
 
+	$effect(() => {
+		unitAwareValue.value = value;
+	});
+
 	const unitAwareValue = createUnitAwareValue(quantityType, value);
 </script>
 
