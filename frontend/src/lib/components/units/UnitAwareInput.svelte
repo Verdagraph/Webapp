@@ -24,8 +24,14 @@
 		...restProps
 	}: Props = $props();
 
+	/** Track external value changes. */
 	$effect(() => {
-		unitAwareValue.value = value;
+		/** Note: This effect currently causes circular
+		 * dependency which makes the input essentially non-functional
+		 * when units are swapped.
+		 * TODO: fix this
+		 */
+		unitAwareValue.setDisplayValue(value);
 	});
 
 	const unitAwareValue = createUnitAwareValue(quantityType, value);
@@ -53,15 +59,16 @@
 
 <div class="flex w-full items-center justify-between gap-0">
 	<Input
-		value={unitAwareValue.value}
+		bind:value={unitAwareValue.displayValue}
 		type="number"
 		{step}
 		min={unitAwareMin}
 		max={unitAwareMax}
-		oninput={() => {
+		{...restProps}
+		oninput={(s) => {
+			externalUpdate = false;
 			value = unitAwareValue.metricValue;
 		}}
-		{...restProps}
 		class="rounded-r-none border-r-0 "
 	/>
 	<span
@@ -72,6 +79,7 @@
 	>
 	<Button.Root
 		onclick={unitAwareValue.swapUnits}
+		type="button"
 		class="border-l-neutral-5 border-neutral-7 hover:bg-neutral-2 h-10 rounded-r-md border px-2"
 	>
 		<Icon icon="material-symbols:swap-horiz-rounded" width="1rem" />

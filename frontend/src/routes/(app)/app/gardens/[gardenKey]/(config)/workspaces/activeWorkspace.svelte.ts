@@ -30,6 +30,11 @@ export function createWorkspaceContext() {
 	let activeWorkspaceId = $state<string | null>(null);
 	/** If true, the workspace is being edited by the user. */
 	let editing = $state<boolean>(false);
+
+	/** Selected entities. */
+	let selectedPlantingAreaIds = $state<string[]>([]);
+
+	/** Persisted config. */
 	let config = localStore<WorkspaceConfig>('workspaceConfig', {
 		treeEnabled: defaultTreeEnabled,
 		layoutEnabled: true,
@@ -45,6 +50,7 @@ export function createWorkspaceContext() {
 			dataType: 'json',
 			validators: zod(plantingAreaCreate.schema),
 			onUpdate({ form }) {
+				console.log('yikes');
 				if (form.valid) {
 					plantingAreaCreateHandler.execute(form.data);
 				}
@@ -69,6 +75,9 @@ export function createWorkspaceContext() {
 		get editing(): boolean {
 			return editing;
 		},
+		get selectedPlantingAreaIds() {
+			return selectedPlantingAreaIds;
+		},
 		get treeEnabled(): boolean {
 			return config.value.treeEnabled;
 		},
@@ -85,6 +94,9 @@ export function createWorkspaceContext() {
 		},
 		set editing(newVal: boolean) {
 			editing = newVal;
+		},
+		set selectedPlantingAreaIds(newVal: string[]) {
+			selectedPlantingAreaIds = newVal;
 		},
 		set treeEnabled(newVal: boolean) {
 			/* Only allow disabling the content if other content is enabled. */

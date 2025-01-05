@@ -20,7 +20,7 @@
 		/** The current position of the planting area in the workspace, in model quantity (meters). */
 		position: Vector2d | null;
 		/** The geometry of the planting area. */
-		geometry: Geometry;
+		geometry: Omit<Geometry, 'id' | 'gardenId'>;
 		/** The grid attributes of the planting area. */
 		grid?: GridAttributes;
 		/** If true, the planting area may be moved and resized. */
@@ -33,11 +33,7 @@
 			newPos: Vector2d
 		) => void;
 		/** Called when the planting area is transformed in the canvas. */
-		onTransform?: (
-			oldGeometry: Geometry,
-			oldScale: Vector2d,
-			newScale: Vector2d
-		) => void;
+		onTransform?: (newGeometry: Geometry) => void;
 	};
 	let {
 		canvasId,
@@ -63,7 +59,6 @@
 	/** Update shapes upon geometry change. */
 	$effect(() => {
 		group.destroyChildren();
-		group.draggable(true);
 		plantingAreaShape = getClosedShape(canvas, geometry, {
 			strokeWidth: 2,
 			fill: getColor('brown', 3, mode.value),
@@ -88,6 +83,19 @@
 		}
 	});
 
+	/** Update color on selection change. */
+	$effect(() => {
+		if (selected) {
+			plantingAreaShape?.fill(getColor('accent', 3, mode.value));
+			plantingAreaShape?.stroke(getColor('accent', 6, mode.value));
+			plantingAreaShape?.strokeWidth(3);
+		} else {
+			plantingAreaShape?.fill(getColor('brown', 3, mode.value));
+			plantingAreaShape?.stroke(getColor('brown', 10, mode.value));
+			plantingAreaShape?.strokeWidth(2);
+		}
+	});
+
 	/** Add events. */
 	if (editable) {
 		group.on('mouseover', () => {
@@ -97,6 +105,12 @@
 			document.body.style.cursor = 'default';
 		});
 		group.on('dragmove', () => {
+			if (onTranslate) {
+				onTranslate({ x: group.x(), y: group.y() });
+			}
+		});
+		group.on('dragend', () => {
+			group.position(canvas.gridManager.snapToGrid(group.position()));
 			if (onTranslate) {
 				onTranslate({ x: group.x(), y: group.y() });
 			}

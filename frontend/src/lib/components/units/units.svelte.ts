@@ -148,61 +148,58 @@ export function createUnitAwareValue(
 	let unitSystem = $state(userSettings.value.units[quantityType]);
 
 	/** The value displayed in the component. */
-	let value = $state(
-		roundToDecimalPlaces(
-			userSettings.value.units[quantityType] === 'metric'
-				? initialValueMetric
-				: convertQuantity(initialValueMetric, 'metric', quantityType),
-			DECIMAL_PLACES
-		)
+	let displayValue = $state(
+		userSettings.value.units[quantityType] === 'metric'
+			? initialValueMetric
+			: convertQuantity(initialValueMetric, 'metric', quantityType)
 	);
 
 	/** A version of the value guarnteed to be metric. */
 	let metricValue = $derived(
-		roundToDecimalPlaces(
-			convertQuantityToMetric(value, unitSystem, quantityType),
-			DECIMAL_PLACES
-		)
+		convertQuantityToMetric(displayValue, unitSystem, quantityType)
 	);
 
 	/** The symbol displayed in the component.*/
 	let unitSymbol = $derived(quantityToUnitSymbol(unitSystem, quantityType));
 
 	/**
+	 * @param newVal The new value, in metric.
+	 */
+	function setDisplayValue(newVal: number) {
+		displayValue =
+			unitSystem === 'metric'
+				? newVal
+				: convertQuantity(newVal, 'metric', quantityType);
+	}
+
+	/**
 	 * When the units are swapped, the intermediate quantity is converted
 	 * to the other unit system and the unit system is swapped.
 	 */
 	function swapUnits() {
-		const oldUnitSystem = unitSystem;
+		console.warn('Swapping units not currently supported.');
+		return;
+		displayValue = convertQuantity(displayValue, unitSystem, quantityType);
 		unitSystem = swapUnit(unitSystem);
-		value = convertQuantity(value, oldUnitSystem, quantityType);
 	}
 
 	return {
 		get unitSystem() {
 			return unitSystem;
 		},
-		get value() {
-			return value;
+		get displayValue() {
+			return roundToDecimalPlaces(displayValue, DECIMAL_PLACES);
 		},
 		get metricValue() {
-			return metricValue;
+			return roundToDecimalPlaces(metricValue, DECIMAL_PLACES);
 		},
 		get unitSymbol() {
 			return unitSymbol;
 		},
-		/**
-		 * @param newVal The new val, in metric.
-		 */
-		set value(newVal) {
-			value =
-				unitSystem === 'metric'
-					? roundToDecimalPlaces(newVal, DECIMAL_PLACES)
-					: roundToDecimalPlaces(
-							convertQuantity(newVal, 'metric', quantityType),
-							DECIMAL_PLACES
-						);
+		set displayValue(newVal) {
+			displayValue = newVal;
 		},
+		setDisplayValue,
 		swapUnits
 	};
 }

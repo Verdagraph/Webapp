@@ -133,23 +133,6 @@
 				handlerErrors={handler.fieldErrors?.['location.coordinate.y']}
 			/>
 		</Form.Field>
-
-		<!-- Date -->
-		<Form.Field {form} name="geometry.date">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label
-						description={plantingAreaCreate.schema.shape.geometry.innerType().shape.date
-							.description}
-						optional={plantingAreaCreate.schema.shape.geometry
-							.innerType()
-							.shape.date.isOptional()}>Date</Form.Label
-					>
-					<DatePicker bind:value={geometryDateValue} />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.date']} />
-		</Form.Field>
 	</fieldset>
 
 	<!-- Geometry. -->

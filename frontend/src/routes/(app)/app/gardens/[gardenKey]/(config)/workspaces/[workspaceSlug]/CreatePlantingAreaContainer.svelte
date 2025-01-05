@@ -2,12 +2,9 @@
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import type { CanvasContext } from '$components/canvas';
 	import { getContext } from 'svelte';
-	import {
-		workspaceContextId,
-		workspaceLayoutCanvasId,
-		type WorkspaceContext
-	} from '../activeWorkspace.svelte';
+	import { workspaceContextId, type WorkspaceContext } from '../activeWorkspace.svelte';
 	import type { Vector2d } from 'konva/lib/types';
+	import type { Geometry } from '@vdt-webapp/common';
 
 	type Props = {
 		canvasId: string;
@@ -35,12 +32,16 @@ planting area creation form.
 
 Should only render this component if the planting area
 creation tool is active.
+
+Note the yucky typecasting: PlantingArea does not need
+some attributes of the LinesAttributes but I don't know
+of an easy way to ignore them.
 -->
 <PlantingArea
 	{canvasId}
 	{plantingAreaLayerId}
 	position={$formData.location.coordinate}
-	geometry={$formData.geometry}
+	geometry={$formData.geometry as unknown as Geometry}
 	grid={$formData.grid}
 	editable={true}
 	{onTranslate}

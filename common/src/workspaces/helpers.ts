@@ -4,7 +4,9 @@ import type {
 	Geometry,
 	GeometryAttributesMap,
 	LocationHistory,
-	Location
+	Location,
+	GridAttributes,
+	RectangleAttributes
 } from './schema';
 
 /**
@@ -46,7 +48,8 @@ export function getGeometryAttributes<T extends Geometry['type']>(
 }
 
 /**
- * Given a history, usually a geometric or location history return the item at a given date.
+ * Given a history, usually a geometric or location history,
+ * return the item at a given date.
  * @param items a list of items to search. Assumed to be unsorted.
  * @param date The date at which to retrieve the item at.
  * @returns The item at the given date.
@@ -87,3 +90,7 @@ export function historySelect<T extends { date: Date }>(
 	/** Fallback to null. */
 	return null;
 }
+
+function calculateBoundingRectangle(geometry: Geometry): RectangleAttributes {}
+
+export function generateGrid(geometry: Geometry, spacing: number): GridAttributes {}

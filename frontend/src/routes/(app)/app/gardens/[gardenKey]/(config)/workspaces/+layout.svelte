@@ -46,7 +46,7 @@
 								<Button.Root
 									href="/app/gardens/{$page.params
 										.gardenKey}/workspaces/{workspace.slug}"
-									class="text-light w-full"
+									class="text-light h-full w-full w-full"
 								>
 									{workspace.name}
 								</Button.Root>
@@ -56,7 +56,7 @@
 					<Menubar.Item>
 						<Button.Root
 							href="/app/gardens/{$page.params.gardenKey}/workspaces"
-							class="flex w-full justify-between"
+							class="flex h-full w-full w-full justify-between"
 						>
 							<span> See All </span>
 							<Icon icon={iconIds.listIcon} width="1.25rem" class="text-neutral-10" />
@@ -69,7 +69,7 @@
 					<Menubar.Item>
 						<Button.Root
 							href="/app/gardens/{$page.params.gardenKey}/workspaces/create"
-							class="flex w-full items-center justify-between"
+							class="flex h-full w-full w-full items-center justify-between"
 						>
 							<span> Create Workspace </span>
 							<Icon icon={iconIds.addIcon} width="1.25rem" class="text-neutral-10" />
@@ -94,7 +94,7 @@
 					{#if workspaceContext.editing}
 						<Menubar.Item>
 							<Button.Root
-								class="flex items-center justify-start"
+								class="flex h-full w-full items-center justify-start"
 								onclick={() => {
 									workspaceContext.editing = false;
 								}}
@@ -109,7 +109,7 @@
 						</Menubar.Item>
 						<Menubar.Item>
 							<Button.Root
-								class="flex items-center justify-start"
+								class="flex h-full w-full items-center justify-start"
 								onclick={() => {
 									toolbox.activate('translate');
 								}}
@@ -133,7 +133,7 @@
 					{:else}
 						<Menubar.Item>
 							<Button.Root
-								class="flex items-center justify-start"
+								class="flex h-full w-full items-center justify-start"
 								onclick={() => {
 									workspaceContext.editing = true;
 								}}
@@ -157,7 +157,7 @@
 					<Menubar.Content>
 						<Menubar.Item>
 							<Button.Root
-								class="flex items-center justify-between"
+								class="flex h-full w-full items-center justify-between"
 								onclick={() => {
 									toolbox.activate('addPlantingArea');
 								}}
