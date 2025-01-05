@@ -6,7 +6,7 @@ import {
 	set_private_env,
 	set_public_env,
 	set_safe_public_env
-} from '../../../../node_modules/.pnpm/@sveltejs+kit@2.7.3_@sveltejs+vite-plugin-svelte@4.0.0_svelte@5.1.10_vite@5.4.10_@types+node@_2bh73anvaew7evftqu7cilhmka/node_modules/@sveltejs/kit/src/runtime/shared-server.js';
+} from '../../../../node_modules/.pnpm/@sveltejs+kit@2.15.1_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.16.1_vite@5.4.11_@types+node_pcqwacmu2xhpixkzvkcrf23ld4/node_modules/@sveltejs/kit/src/runtime/shared-server.js';
 
 export const options = {
 	app_dir: '_app',
@@ -23,6 +23,7 @@ export const options = {
 	embedded: false,
 	env_public_prefix: 'PUBLIC_',
 	env_private_prefix: '',
+	hash_routing: false,
 	hooks: null, // added lazily, via `get_hooks`
 	preload_strategy: 'modulepreload',
 	root,
@@ -45,11 +46,26 @@ export const options = {
 			message +
 			'</h1>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>\n'
 	},
-	version_hash: '1u8st0f'
+	version_hash: 'o7wfdp'
 };
 
 export async function get_hooks() {
-	return {};
+	let handle;
+	let handleFetch;
+	let handleError;
+	let init;
+
+	let reroute;
+	let transport;
+
+	return {
+		handle,
+		handleFetch,
+		handleError,
+		init,
+		reroute,
+		transport
+	};
 }
 
 export {

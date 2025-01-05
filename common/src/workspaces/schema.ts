@@ -419,6 +419,9 @@ export const workspaceSchema = {
 			gardenId: S.String(),
 			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
+			/** Name. */
+			name: S.String(),
+
 			/** The geometry of the planting area. */
 			geometryId: S.String(),
 			geometry: S.RelationOne('geometries', {

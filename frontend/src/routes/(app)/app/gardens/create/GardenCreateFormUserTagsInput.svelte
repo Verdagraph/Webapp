@@ -4,7 +4,6 @@
 	import iconIds from '$lib/assets/icons';
 	import { createTagsInput, melt } from '@melt-ui/svelte';
 	import { usernamesExistQueries } from '$data/users/queries';
-	import gardenFields from '$lib/backendSchema/specs/garden';
 
 	type Props = {
 		tagsInput: string[] | undefined;
@@ -21,7 +20,8 @@
 		editable: true,
 		addOnPaste: true,
 		trim: true,
-		maxTags: gardenFields.user_invites_list.max_length.value,
+		/** TODO: Add the max from the zod schema. */
+		//maxTags: gardenFields.user_invites_list.max_length.value,
 		placeholder: 'Enter a username',
 		/** Sync the bindable input prop and Melt's writable store. */
 		add(tag: string) {

@@ -8,14 +8,14 @@
 	"author": "",
 	"license": "ISC",
 	"scripts": {
-		"dev": "triplit dev --seed --verbose",
+		"dev": "triplit dev --seed",
 		"seed": "triplit seed"
 	},
 	"devDependencies": {
-		"@triplit/cli": "^0.6.34"
+		"@triplit/cli": "^0.6.35"
 	},
 	"dependencies": {
-		"@triplit/client": "^0.6.12",
-		"zod": "^3.23.8"
+		"@triplit/client": "^0.6.13",
+		"zod": "^3.24.1"
 	}
 }

@@ -26,21 +26,21 @@ export default function seed(): BulkInsert<typeof schema> {
 				visibility: 'PUBLIC',
 				description: 'This is the default seeded garden.',
 				creatorId: 'user1',
-				adminIds: new Set('user1')
+				adminIds: new Set(['user1'])
 			},
 			{
 				id: 'edit-garden',
 				name: 'Editor Garden.',
 				visibility: 'PUBLIC',
 				creatorId: null,
-				editorIds: new Set('user1')
+				editorIds: new Set(['user1'])
 			},
 			{
 				id: 'view-garden',
 				name: 'Viewer Garden.',
 				visibility: 'PUBLIC',
 				creatorId: null,
-				viewerIds: new Set('user1')
+				viewerIds: new Set(['user1'])
 			}
 		],
 		gardenMemberships: [

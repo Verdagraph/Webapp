@@ -204,10 +204,14 @@ const LinesAttributesCreateUpdateCommand = z.object({
 			{ x: -1, y: -1 },
 			{ x: 1, y: -1 },
 			{ x: 0, y: 1 }
-		])
+		]),
+	closed: z
+		.boolean()
+		.describe('If true, the line segments form a closed shape.')
+		.default(true)
 });
 
-const GeometryCreateCommand = z
+export const GeometryCreateCommand = z
 	.object({
 		type: workspaceFields.geometryType,
 		date: workspaceFields.geometryDate,
@@ -274,6 +278,7 @@ export const WorkspaceCreateCommand = z.object({
 });
 
 export const PlantingAreaCreateCommand = z.object({
+	gardenId: z.string(),
 	workspaceId: z.string(),
 	name: workspaceFields.plantingAreaName,
 	description: workspaceFields.plantingAreaDescription.optional(),

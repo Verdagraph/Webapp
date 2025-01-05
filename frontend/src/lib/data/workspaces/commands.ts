@@ -2,7 +2,9 @@ import { z as zod } from 'zod';
 import {
 	WorkspaceCreateCommand,
 	PlantingAreaCreateCommand,
-	type Workspace
+	GeometryCreateCommand,
+	type Workspace,
+	type Geometry
 } from '@vdt-webapp/common';
 import { getClientOrError } from '$data/users/auth';
 import { slugify } from '$lib/utils';
@@ -55,73 +57,87 @@ export const workspaceCreate = {
 	}
 };
 
-/** Updates a workspace. */
-/**
- * 
-export const workspaceUpdate = {
-	schema: zod.object({
-		workspace_ref: zod.string().uuid(),
-		name: workspaceFieldSchemas.workspace_name.optional(),
-		description: workspaceFieldSchemas.workspace_description.optional()
-	}),
-	mutation: () => {
-		return useMutation(function (data: WorkspaceUpdateCommand) {
-			return workspaceUpdateCommandOp(data);
-		});
-	}
-};
-*/
-
-/** Deletes a workspace. */
-/**
- * 
-export const workspaceDelete = {
-	schema: zod.object({
-		workspace_ref: zod.string().uuid()
-	}),
-	mutation: () => {
-		return useMutation(function (data: WorkspaceDeleteCommand) {
-			return workspaceDeleteCommandOp(data);
-		});
-	}
-};
-
 /** Creates a new planting area in a workspace. */
 export const plantingAreaCreate = {
 	schema: PlantingAreaCreateCommand,
-	mutation: async (data: zod.infer<typeof PlantingAreaCreateCommand>) => {}
-};
+	mutation: async (data: zod.infer<typeof PlantingAreaCreateCommand>) => {
+		const { garden } = await requireRole(data.gardenId, 'ADMIN');
 
-/** Updates a planting area. */
-/**
- * 
-export const plantingAreaUpdate = {
-	schema: zod.object({
-		workspace_ref: zod.string().uuid(),
-		planting_area_id: zod.string().uuid(),
-		name: workspaceFieldSchemas.planting_area_name.optional(),
-		description: workspaceFieldSchemas.planting_area_description.optional()
-	}),
-	mutation: () => {
-		return useMutation(function (data: PlantingAreaUpdateCommand) {
-			return plantingAreaUpdateCommandOp(data);
+		/** Retrieve workspace. */
+		const workspace = await triplit.fetchOne(
+			triplit.query('workspaces').id(data.workspaceId).build()
+		);
+		if (workspace == null) {
+			throw new AppError(`Failed to retrieve workspace ${data.workspaceId}`, {
+				nonFormErrors: ['Failed to retrieve workspace.']
+			});
+		}
+
+		await triplit.transact(async (transaction) => {
+			/** Persist geometry. */
+			let geometry: Omit<Geometry, 'id'> = {
+				gardenId: garden.id,
+				type: data.geometry.type,
+				date: data.geometry.date,
+				scaleFactor: data.geometry.scaleFactor,
+				rotation: data.geometry.rotation
+			};
+			switch (data.geometry.type) {
+				case 'RECTANGLE':
+					geometry.rectangleAttributes = data.geometry.rectangleAttributes;
+					break;
+				case 'POLYGON':
+					geometry.polygonAttributes = data.geometry.polygonAttributes;
+					break;
+				case 'ELLIPSE':
+					geometry.ellipseAttributes = data.geometry.ellipseAttributes;
+					break;
+				case 'LINES':
+					const coordinateIds: string[] = [];
+					for (const point of data.geometry.linesAttributes.coordinates) {
+						const coordinate = await transaction.insert('coordinates', {
+							gardenId: garden.id,
+							x: point.x,
+							y: point.y
+						});
+						coordinateIds.push(coordinate.id);
+					}
+					geometry.linesAttributes = {
+						coordinateIds: new Set(coordinateIds),
+						coordinates: data.geometry.linesAttributes.coordinates,
+						closed: data.geometry.linesAttributes.closed
+					};
+					break;
+			}
+			geometry = await transaction.insert('geometries', geometry);
+
+			/** Persist locations. */
+			const locationCoordinate = await transaction.insert('coordinates', {
+				gardenId: garden.id,
+				x: data.location.coordinate.x,
+				y: data.location.coordinate.y
+			});
+			const location = await transaction.insert('locations', {
+				gardenId: garden.id,
+				workspaceId: workspace.id,
+				coordinateId: locationCoordinate.id,
+				date: data.geometry.date
+			});
+			const locationHistory = await transaction.insert('locationHistories', {
+				gardenId: garden.id,
+				locationIds: new Set([location.id])
+			});
+
+			/** Persist planting area. */
+			await transaction.insert('plantingAreas', {
+				gardenId: garden.id,
+				name: data.name,
+				description: data.description,
+				geometryId: geometry.gardenId,
+				locationHistoryId: locationHistory.id,
+				grid: data.grid,
+				depth: data.depth
+			});
 		});
 	}
 };
-
-*/
-/** Deletes a planting area. */
-/**
- * 
-export const plantingAreaDelete = {
-	schema: zod.object({
-		workspace_ref: zod.string().uuid(),
-		planting_area_id: zod.string().uuid()
-	}),
-	mutation: () => {
-		return useMutation(function (data: PlantingAreaDeleteCommand) {
-			return plantingAreaDeleteCommandOp(data);
-		});
-	}
-};
-*/

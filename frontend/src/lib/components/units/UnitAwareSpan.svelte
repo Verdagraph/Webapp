@@ -13,7 +13,7 @@
 	let { value, quantityType }: Props = $props();
 
 	$effect(() => {
-		unitAwareValue.value = value;
+		unitAwareValue.displayValue = value;
 	});
 
 	const unitAwareValue = createUnitAwareValue(quantityType, value);
@@ -22,7 +22,7 @@
 <div class="flex w-full items-center justify-between gap-0">
 	<span
 		class="border-neutral-7 bg-neutral-1 ring-offset-neutral-1 focus-visible:ring-neutral-7 flex h-10 w-full rounded-md rounded-r-none border border-r-0 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-		>{unitAwareValue.value}</span
+		>{unitAwareValue.displayValue}</span
 	>
 	<span
 		class="border-x-neutral-5 border-neutral-7 flex h-10 w-auto min-w-10 items-center justify-center border-y border-l px-3 {unitAwareValue.unitSystem ===

@@ -24,6 +24,10 @@ export const userLogin = {
 		const token = await userLoginOp(data);
 
 		/** Start the Triplit session. */
+
+		/** TODO: Resolve an error where a session is started already regardless... */
+		await triplit.endSession();
+		console.log(token);
 		await triplit.startSession(token);
 		auth.isAuthenticated = true;
 	}
