@@ -4,10 +4,10 @@
 	import * as Dialog from '$components/ui/dialog';
 	import RegistrationForm from './RegistrationForm.svelte';
 	/** Set to true on form success. */
-	let succeeded = $state<boolean>(false);
+	let succeeded: boolean = $state(false);
 
 	/** Stores the email the form sent to. */
-	let registeredEmail = $state<string>('');
+	let registeredEmail: string = $state('');
 </script>
 
 <svelte:head>

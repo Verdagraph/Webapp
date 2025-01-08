@@ -1,4 +1,4 @@
 import PlantingAreas from './PlantingAreas.svelte';
-import PlantingArea from './EditablePlantingArea.svelte';
+import EditablePlantingAreaContainer from './EditablePlantingAreaContainer.svelte';
 
-export { PlantingArea, PlantingAreas };
+export { EditablePlantingAreaContainer, PlantingAreas };

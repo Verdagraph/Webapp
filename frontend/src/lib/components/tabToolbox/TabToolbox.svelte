@@ -13,8 +13,8 @@
 	let { toolbox }: Props = $props();
 
 	/** For some reason, need to calculate tab height manually or it extends its parent. */
-	let root = $state<HTMLElement | null>(null);
-	let list = $state<HTMLElement | null>(null);
+	let root: HTMLElement | null = $state(null);
+	let list: HTMLElement | null = $state(null);
 	let contentHeight = $derived.by(() => {
 		if (root && list) {
 			return root.offsetHeight - list.offsetHeight;

@@ -27,9 +27,9 @@ export function createToolbox<ToolId extends string>(
 	isToolActive: (id: ToolId) => boolean;
 } {
 	/** Stores an array of active tools by their ID. */
-	let activeToolIds = $state<Array<ToolId>>([]);
+	let activeToolIds: Array<ToolId> = $state([]);
 	/** Stores the last activated tool by its ID */
-	let lastActivatedId = $state<ToolId | undefined>(undefined);
+	let lastActivatedId: ToolId | undefined = $state(undefined);
 	/** Presents the attributes of the active tools. */
 	let activeTools = $derived<ToolAttributeType<ToolId>[]>(
 		attributes.filter((attr) => activeToolIds.includes(attr.id))

@@ -12,7 +12,11 @@ export * from './transform.svelte';
  * @param canvasWorkspaceId The ID of the workspace represented in the canvas.
  * @returns The canvas contexts.
  */
-export function createCanvasContext(canvasId: string, canvasWorkspaceId: string) {
+export function createCanvasContext(
+	canvasContextId: string,
+	canvasWorkspaceId: string
+) {
+	const canvasId = canvasContextId;
 	const workspaceId = canvasWorkspaceId;
 
 	/** Sub-contexts. */
@@ -30,14 +34,27 @@ export function createCanvasContext(canvasId: string, canvasWorkspaceId: string)
 		transform.initialize();
 	}
 
+	/**
+	 * Destroy the canvas.
+	 */
+	function destroy() {
+		if (container.stage) {
+			container.stage.destroy();
+		}
+	}
+
 	return {
+		get canvasId() {
+			return canvasId;
+		},
 		get workspaceId() {
 			return workspaceId;
 		},
 		transform,
 		container,
 		gridManager,
-		initialize
+		initialize,
+		destroy
 	};
 }
 export default createCanvasContext;

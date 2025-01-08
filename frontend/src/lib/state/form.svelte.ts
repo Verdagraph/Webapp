@@ -3,6 +3,14 @@ import { z } from 'zod';
 import useAsync, { type HandlerOptions } from './asyncHandler.svelte';
 
 /**
+ * @note
+ * This file was created to replace superforms, as I got frustrated
+ * with it not being updated to use runes.
+ * I abandoned this when it became clear how hard that would be.
+ * The file remains here in case it is useful in the future.
+ */
+
+/**
  * Options which may be set on the form handler.
  */
 type FormOptions<TSchema extends z.ZodObject<any>, TResult> = {

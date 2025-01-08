@@ -50,9 +50,9 @@ const formAttributes: FormAttributeType[] = [
 /** Runes */
 
 /** Stores the IDs of the active forms. */
-let activeFormIds = $state<VerdagraphFormType[]>([]);
+let activeFormIds: VerdagraphFormType[] = $state([]);
 /** Stores the ID of the last activated form. */
-let lastActivatedId = $state<VerdagraphFormType | undefined>();
+let lastActivatedId: VerdagraphFormType | undefined = $state();
 /** Presents the attributes of the active forms. */
 const activeForms = $derived(
 	formAttributes.filter((attributes) => activeFormIds.includes(attributes.id))

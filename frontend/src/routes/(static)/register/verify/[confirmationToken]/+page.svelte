@@ -5,7 +5,7 @@
 	import { userConfirmEmailConfirmation } from '$data/users/commands';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
-	import { useAsync } from '$components/forms';
+	import useAsync from '$state/asyncHandler.svelte';
 	import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
 	import z from 'zod';
 

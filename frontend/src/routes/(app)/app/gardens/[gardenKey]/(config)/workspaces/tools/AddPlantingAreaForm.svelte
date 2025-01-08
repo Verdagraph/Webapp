@@ -10,13 +10,12 @@
 	import { Input } from '$lib/components/ui/input';
 	import { plantingAreaCreate } from '$data/workspaces/commands';
 	import iconIds from '$lib/assets/icons';
-	import DatePicker from '$components/forms/components/DatePicker.svelte';
 	import { getLocalTimeZone } from '@internationalized/date';
 	import type { DateValue } from '@internationalized/date';
 	import Checkbox from '$components/ui/checkbox/checkbox.svelte';
-	import { workspaceContextId, type WorkspaceContext } from '../activeWorkspace.svelte';
+	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 
-	const workspaceContext = getContext<WorkspaceContext>(workspaceContextId);
+	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;
 	const handler = workspaceContext.plantingAreaCreateForm.handler;
 	const { form: formData, enhance } = form;

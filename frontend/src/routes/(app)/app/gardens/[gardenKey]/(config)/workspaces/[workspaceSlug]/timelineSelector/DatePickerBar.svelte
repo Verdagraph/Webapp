@@ -12,7 +12,7 @@
 		timelineSelection,
 		minSelectOffset,
 		maxSelectOffset
-	} from '../state/timelineSelection.svelte';
+	} from '../timelineSelection.svelte';
 </script>
 
 <!-- Timeline selection translation buttons. -->

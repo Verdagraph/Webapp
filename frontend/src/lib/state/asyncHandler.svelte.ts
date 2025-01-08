@@ -43,7 +43,7 @@ export function useAsync<TParams = void, TResult = void>(
 	asyncFn: (params: TParams) => Promise<TResult>,
 	options?: HandlerOptions<TResult>
 ) {
-	let _rune = $state<AsyncState<TResult>>({
+	let _rune: AsyncState<TResult> = $state({
 		isLoading: false,
 		isError: false,
 		isSuccess: false,

@@ -4,7 +4,8 @@ import {
 	PlantingAreaCreateCommand,
 	GeometryCreateCommand,
 	type Workspace,
-	type Geometry
+	type Geometry,
+	type Location
 } from '@vdt-webapp/common';
 import { getClientOrError } from '$data/users/auth';
 import { slugify } from '$lib/utils';
@@ -125,7 +126,8 @@ export const plantingAreaCreate = {
 			});
 			const locationHistory = await transaction.insert('locationHistories', {
 				gardenId: garden.id,
-				locationIds: new Set([location.id])
+				locationIds: new Set([location.id]),
+				workspaceIds: new Set([workspace.id])
 			});
 
 			/** Persist planting area. */
@@ -141,3 +143,5 @@ export const plantingAreaCreate = {
 		});
 	}
 };
+
+export async function plantingAreaTranslate(id: string, newLocation: Location) {}

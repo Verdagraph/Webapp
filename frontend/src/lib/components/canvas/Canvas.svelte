@@ -6,32 +6,15 @@
 
 	/** Props. */
 	type Props = {
-		/**
-		 * If true, the context must be initialized outside of this component.
-		 */
-		initializeContext: boolean;
 		canvasId: string;
-		canvasWorkspaceId: string;
 
 		children: Snippet<[]>;
 		overlay: Snippet<[]>;
 	};
-	let {
-		initializeContext = false,
-		canvasId,
-		canvasWorkspaceId,
-		children,
-		overlay
-	}: Props = $props();
+	let { canvasId, children, overlay }: Props = $props();
 
 	/** Create or retrieve the context. */
-	let canvas: CanvasContext;
-	if (initializeContext) {
-		canvas = createCanvasContext(canvasId, canvasWorkspaceId);
-		setContext<CanvasContext>(canvasId, canvas);
-	} else {
-		canvas = getContext<CanvasContext>(canvasId);
-	}
+	const canvas = getContext<CanvasContext>(canvasId);
 
 	let containerRef: HTMLDivElement;
 	onMount(() => {

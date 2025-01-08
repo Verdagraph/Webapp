@@ -65,8 +65,7 @@
 		min={unitAwareMin}
 		max={unitAwareMax}
 		{...restProps}
-		oninput={(s) => {
-			externalUpdate = false;
+		oninput={() => {
 			value = unitAwareValue.metricValue;
 		}}
 		class="rounded-r-none border-r-0 "

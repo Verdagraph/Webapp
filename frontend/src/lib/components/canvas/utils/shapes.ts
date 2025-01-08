@@ -21,7 +21,7 @@ export type SupportedShape =
 /**
  * Constructs a Konva shape from geometry and position objects.
  * @param canvas The canvas context.
- * @param geometry The geometry of the shape.
+ * @param geometry The geometry of the shape. Must have the linesAttributes coordinates included.
  * @param forceLinesClosed If true, the lines geometry will be closed regardless of its attributes.
  * @param config Any additional config to pass to the shape.
  * @param position The position of the shape, if any.
@@ -29,7 +29,7 @@ export type SupportedShape =
  */
 function getClosedOrUnclosedShape(
 	canvas: CanvasContext,
-	geometry: Geometry,
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date'>,
 	forceLinesClosed: boolean = false,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
@@ -91,6 +91,17 @@ function getClosedOrUnclosedShape(
 
 		case 'LINES':
 			attributes = getGeometryAttributes<'LINES'>(geometry as LinesGeometry);
+			/**
+			 * TODO: Remove this once linesCoordinates can be moved to linesAttributes.coordinates
+			 */
+			if (!geometry.linesAttributes?.coordinates) {
+				/** @ts-ignore */
+				if (!geometry.linesCoordinates) {
+					throw new AppError('Lines geometry without coordinates.');
+				}
+				/** @ts-ignore */
+				attributes.coordinates = geometry.linesCoordinates;
+			}
 
 			if (!attributes.coordinates || attributes.coordinates.length < 3) {
 				console.warn(`Geometry attributes undefined.`);
@@ -125,7 +136,7 @@ function getClosedOrUnclosedShape(
  */
 export function getShape(
 	canvas: CanvasContext,
-	geometry: Geometry,
+	geometry: Omit<Geometry, 'id' | 'gardenId'>,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
 ): SupportedShape | null {
@@ -143,7 +154,7 @@ export function getShape(
  */
 export function getClosedShape(
 	canvas: CanvasContext,
-	geometry: Geometry,
+	geometry: Omit<Geometry, 'id' | 'gardenId'>,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
 ): SupportedShape | null {

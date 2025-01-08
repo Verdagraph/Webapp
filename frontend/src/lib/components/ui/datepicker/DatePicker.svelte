@@ -10,12 +10,6 @@
 	import { Calendar } from '$lib/components/ui/calendar/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 
-	const df = new DateFormatter('en-US', {
-		day: '2-digit',
-		month: 'short',
-		year: '2-digit'
-	});
-
 	type Props = {
 		value: DateValue | undefined;
 		minValue?: DateValue | undefined;
@@ -23,6 +17,12 @@
 		onValueChange?: (date: DateValue | undefined) => void;
 	};
 	let { value = $bindable(), minValue, maxValue, onValueChange }: Props = $props();
+
+	const df = new DateFormatter('en-US', {
+		day: '2-digit',
+		month: 'short',
+		year: '2-digit'
+	});
 </script>
 
 <Popover.Root>

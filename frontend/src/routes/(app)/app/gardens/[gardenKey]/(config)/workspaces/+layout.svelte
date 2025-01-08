@@ -5,7 +5,7 @@
 	import * as Menubar from '$components/ui/menubar';
 	import { Button } from 'bits-ui';
 	import type { Workspace } from '@vdt-webapp/common';
-	import { createWorkspaceContext, workspaceContextId } from './activeWorkspace.svelte';
+	import { setWorkspaceContext } from './activeWorkspace.svelte';
 	import toolbox from './tools';
 	import auth from '$state/auth.svelte';
 	import { setContext } from 'svelte';
@@ -15,8 +15,7 @@
 	/** Maximum amount of workspaces displayed in the dropdown. */
 	const workspacesDropdownMaxItems = 10;
 
-	const workspaceContext = createWorkspaceContext();
-	setContext(workspaceContextId, workspaceContext);
+	const workspaceContext = setWorkspaceContext();
 
 	/** TODO: remove. */
 	let workspaces: Workspace[] = [

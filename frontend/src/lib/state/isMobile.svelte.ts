@@ -7,7 +7,7 @@ export const isMobile = (): boolean => {
 };
 
 export class IsMobile {
-	#current = $state<boolean>(false);
+	#current: boolean = $state(false);
 
 	constructor() {
 		$effect(() => {

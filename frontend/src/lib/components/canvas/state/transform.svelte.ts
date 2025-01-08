@@ -32,8 +32,8 @@ const maxScaleFactor = 10;
  */
 export function createCanvasTransform(container: CanvasContainer) {
 	/** Runes. */
-	let scaleFactor = $state<Vector2d>({ x: 1, y: 1 });
-	let position = $state<Vector2d>({ x: 0, y: 0 });
+	let scaleFactor: Vector2d = $state({ x: 1, y: 1 });
+	let position: Vector2d = $state({ x: 0, y: 0 });
 	let config = new LocalStore<TransformControlsState>('layoutControls', {
 		buttonsExpanded: true,
 		buttonsPosition: defaultButtonPosition

@@ -5,10 +5,10 @@
 	import { externalLinks } from '$lib/assets/links';
 	import RequestEmailConfirmationForm from './RequestEmailConfirmationForm.svelte';
 	/** Set to true on form success. */
-	let succeeded = $state<boolean>(false);
+	let succeeded: boolean = $state(false);
 
 	/** Stores the email the form sent to. */
-	let registeredEmail = $state<string>('');
+	let registeredEmail: string = $state('');
 </script>
 
 <svelte:head>

@@ -2,37 +2,45 @@ import * as Resizable from '$components/ui/resizable';
 import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
 import { plantingAreaCreate } from '$data/workspaces/commands';
-import { useAsync } from '$components/forms';
+import useAsync from '$state/asyncHandler.svelte';
 import { superForm, defaults } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { z } from 'zod';
+import { type CanvasContext, createCanvasContext } from '$components/canvas';
+import { setContext, getContext } from 'svelte';
 
-export const workspaceLayoutCanvasId = 'workspaceLayoutCanvas';
-export const workspaceContextId = 'workspaceContext';
-
-/** Disable the tree by default on small devices. */
-const defaultTreeEnabled = isMobile() ? false : true;
-/** Organize content panes vertically on narrow screens. */
-const defaultContentPaneDirection = isMobile() ? 'vertical' : 'horizontal';
-
+/** Workspace config persisted to local storage. */
 type WorkspaceConfig = {
 	/** Whether the tree pane is open. */
 	treeEnabled: boolean;
+	/** Whether the layout pane is open. */
 	layoutEnabled: boolean;
+	/** The direction of the layout/tree/toolbox panes. */
 	contentPaneDirection: Resizable.Direction;
 };
+
+const workspaceContextId = 'workspaceEditorContext';
+const workspaceLayoutCanvasContextId = 'workspaceLayoutCanvas';
+
+/**
+ * TODO: Disable the tree by default on small devices.
+ * Once the Layout has achieved feature parity with the Tree,
+ * including editing the geometry of planting areas, this may be done.
+ */
+const defaultTreeEnabled = isMobile() ? true : true;
+
+/** Organize content panes vertically on narrow screens. */
+const defaultContentPaneDirection = isMobile() ? 'vertical' : 'horizontal';
 
 /**
  * Holds context for the actively opened workspace.
  */
-export function createWorkspaceContext() {
+function createWorkspaceContext() {
 	/** The ID of the active workspace. */
-	let activeWorkspaceId = $state<string | null>(null);
+	let activeWorkspaceId: string | null = $state(null);
 	/** If true, the workspace is being edited by the user. */
-	let editing = $state<boolean>(false);
-
+	let editing: boolean = $state(false);
 	/** Selected entities. */
-	let selectedPlantingAreaIds = $state<string[]>([]);
+	let selectedPlantingAreaIds: Set<string> = $state(new Set());
 
 	/** Persisted config. */
 	let config = localStore<WorkspaceConfig>('workspaceConfig', {
@@ -61,10 +69,41 @@ export function createWorkspaceContext() {
 		}
 	);
 
+	/**
+	 * Resets the context to a null state.
+	 */
 	function reset() {
 		activeWorkspaceId = null;
 		editing = false;
 		plantingAreaCreateSuperform.reset();
+		setContext(workspaceLayoutCanvasContextId, null);
+	}
+
+	/** Set a new workspace as the active one. */
+	function setWorkspace(id: string) {
+		reset();
+		activeWorkspaceId = id;
+		setContext(
+			workspaceLayoutCanvasContextId,
+			createCanvasContext(workspaceLayoutCanvasContextId, id)
+		);
+	}
+
+	function selectPlantingArea(plantingAreaId: string) {
+		/** TODO: Listed for shift keyboard event, and if not, exclusive select. */
+		if (selectedPlantingAreaIds.has(plantingAreaId)) {
+			selectedPlantingAreaIds.delete(plantingAreaId);
+		} else {
+			selectedPlantingAreaIds.add(plantingAreaId);
+		}
+	}
+
+	function isPlantingAreaSelected(plantingAreaId: string): boolean {
+		if (selectedPlantingAreaIds.has(plantingAreaId)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	return {
@@ -87,16 +126,13 @@ export function createWorkspaceContext() {
 		get contentPaneDirection(): Resizable.Direction {
 			return config.value.contentPaneDirection;
 		},
+		get layoutCanvasContext() {
+			return getContext<CanvasContext>(workspaceLayoutCanvasContextId);
+		},
 
 		/* Setters. */
-		set id(newVal: string | null) {
-			activeWorkspaceId = newVal;
-		},
 		set editing(newVal: boolean) {
 			editing = newVal;
-		},
-		set selectedPlantingAreaIds(newVal: string[]) {
-			selectedPlantingAreaIds = newVal;
 		},
 		set treeEnabled(newVal: boolean) {
 			/* Only allow disabling the content if other content is enabled. */
@@ -117,12 +153,22 @@ export function createWorkspaceContext() {
 		set contentPaneDirection(newVal: Resizable.Direction) {
 			config.value.contentPaneDirection = newVal;
 		},
-
 		plantingAreaCreateForm: {
 			handler: plantingAreaCreateHandler,
 			form: plantingAreaCreateSuperform
 		},
-		reset
+		reset,
+		setWorkspace,
+		selectPlantingArea,
+		isPlantingAreaSelected
 	};
 }
 export type WorkspaceContext = ReturnType<typeof createWorkspaceContext>;
+
+export function setWorkspaceContext() {
+	return setContext(workspaceContextId, createWorkspaceContext());
+}
+
+export function getWorkspaceContext() {
+	return getContext<WorkspaceContext>(workspaceContextId);
+}
