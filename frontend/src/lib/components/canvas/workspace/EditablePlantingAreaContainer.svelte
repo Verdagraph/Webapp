@@ -30,6 +30,9 @@
 
 	const canvas = getContext<CanvasContext>(canvasId);
 	const query = useQuery(triplit, plantingAreaQuery.vars({ plantingAreaId }));
+
+	$inspect(query);
+
 	let plantingArea = $derived.by(() => {
 		if (query.results && query.results[0]) {
 			return query.results[0];
@@ -40,20 +43,22 @@
 
 	let position: Vector2d | null = $derived.by(() => {
 		if (plantingArea && plantingArea.locationHistory) {
+			console.log(plantingArea.locationHistory);
 			const location = historySelect(
 				plantingArea.locationHistory?.locations,
 				currentDate.toDate(getLocalTimeZone())
 			);
-			if (
-				location &&
-				location.coordinate &&
-				location.workspaceId === canvas.workspaceId
-			) {
-				return { x: location.coordinate.x, y: location.coordinate.y };
+			console.log(location);
+			console.log(canvas.workspaceId);
+			if (location && location.workspaceId === canvas.workspaceId) {
+				console.log(location);
+				return { x: location.x, y: location.y };
 			} else {
+				console.log('failed1');
 				return null;
 			}
 		} else {
+			console.log('failed2');
 			return null;
 		}
 	});

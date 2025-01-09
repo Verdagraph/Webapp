@@ -2,7 +2,8 @@
 	import { useQuery } from '@triplit/svelte';
 	import {
 		getGardenSpecifcTabs,
-		getGardensTab,
+		getGardensAuthTab,
+		getGardensAnonTab,
 		getTraitsTab,
 		getResourcesTab,
 		getAuthProfileTab,
@@ -37,6 +38,10 @@
 
 	/** Retrieve the tabs. */
 	let gardensTab = $derived.by(() => {
+		if (!auth.isAuthenticated) {
+			return getGardensAnonTab();
+		}
+
 		/** Include all associated gardens ordered from favorites to viewerships. */
 		const mostRelevantGardens: Garden[] = [];
 		if (favoriteMemberships.results) {
@@ -55,7 +60,7 @@
 		if (viewerGardens.results) {
 			mostRelevantGardens.push(...viewerGardens.results);
 		}
-		return getGardensTab(mostRelevantGardens);
+		return getGardensAuthTab(mostRelevantGardens);
 	});
 
 	let gardenTabs = $derived.by(() => {

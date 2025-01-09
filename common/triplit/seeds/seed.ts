@@ -4,7 +4,7 @@ import { schema } from '../schema';
 export default function seed(): BulkInsert<typeof schema> {
 	return {
 		profiles: [
-			{ id: 'user1', username: 'nathanielarking' },
+			{ id: 'user1', username: 'user1' },
 			{ id: 'user2', username: 'user2' },
 			{ id: 'user3', username: 'user3' },
 			{ id: 'user4', username: 'user4' }
@@ -67,6 +67,203 @@ export default function seed(): BulkInsert<typeof schema> {
 				inviterId: null,
 				status: 'ACCEPTED',
 				acceptedAt: new Date()
+			}
+		],
+		workspaces: [
+			{
+				id: 'workspace1',
+				gardenId: 'garden1',
+				name: 'Workspace 1',
+				slug: 'workspace-1',
+				description: 'This is the default seeded workspace.'
+			}
+		],
+		plantingAreas: [
+			{
+				gardenId: 'garden1',
+				name: 'Rectangle Area',
+				geometryId: 'rectangleAreaGeometry',
+				locationHistoryId: 'rectangleGeometryLocations',
+				description: 'Rectangle Description.'
+			},
+			{
+				gardenId: 'garden1',
+				name: 'Ellipse Area',
+				geometryId: 'ellipseAreaGeometry',
+				locationHistoryId: 'ellipseGeometryLocations',
+				description: 'Ellipse Description.'
+			},
+			{
+				gardenId: 'garden1',
+				name: 'Polygon Area',
+				geometryId: 'polygonAreaGeometry',
+				locationHistoryId: 'polygonGeometryLocations',
+				description: 'Polygon Description.'
+			}
+			/*
+			{
+				gardenId: 'garden1',
+				name: 'Lines Area',
+				geometryId: 'linesAreaGeometry',
+				locationHistoryId: 'linesGeometryLocations',
+				description: 'Lines Description.'
+			}
+			*/
+		],
+		geometries: [
+			{
+				id: 'rectangleAreaGeometry',
+				gardenId: 'garden1',
+				type: 'RECTANGLE',
+				date: new Date(),
+				rectangleAttributes: {
+					length: 2,
+					width: 3
+				}
+			},
+			{
+				id: 'ellipseAreaGeometry',
+				gardenId: 'garden1',
+				type: 'ELLIPSE',
+				date: new Date(),
+				ellipseAttributes: {
+					widthDiameter: 1.5,
+					lengthDiameter: 2
+				}
+			},
+			{
+				id: 'polygonAreaGeometry',
+				gardenId: 'garden1',
+				type: 'POLYGON',
+				date: new Date(),
+				polygonAttributes: {
+					numSides: 5,
+					radius: 0.4
+				}
+			},
+			{
+				id: 'linesAreaGeometry',
+				gardenId: 'garden1',
+				type: 'LINES',
+				date: new Date(),
+				// @ts-ignore
+				linesAttributes: {
+					coordinateIds: new Set([
+						'linesAreaCoord1',
+						'linesAreaCoord2',
+						'linesAreaCoord3',
+						'linesAreaCoord4'
+					]),
+					closed: true
+				}
+			}
+		],
+		locationHistories: [
+			{
+				id: 'rectangleGeometryLocations',
+				gardenId: 'garden1',
+				locationIds: new Set([
+					'rectangleAreaGeometryLocation1',
+					'rectangleAreaGeometryLocation2'
+				]),
+				workspaceIds: new Set(['workspace1'])
+			},
+			{
+				id: 'ellipseGeometryLocations',
+				gardenId: 'garden1',
+				locationIds: new Set([
+					'ellipseAreaGeometryLocation1',
+					'ellipseAreaGeometryLocation2'
+				]),
+				workspaceIds: new Set(['workspace1'])
+			},
+			{
+				id: 'polygonGeometryLocations',
+				gardenId: 'garden1',
+				locationIds: new Set(['polygonAreaGeometryLocation1']),
+				workspaceIds: new Set(['workspace1'])
+			},
+			{
+				id: 'linesGeometryLocations',
+				gardenId: 'garden1',
+				locationIds: new Set(['linesAreaGeometryLocation1']),
+				workspaceIds: new Set(['workspace1'])
+			}
+		],
+		locations: [
+			{
+				id: 'rectangleAreaGeometryLocation1',
+				gardenId: 'garden1',
+				workspaceId: 'workspace1',
+				x: 5,
+				y: 2,
+				date: new Date(2024, 0, 8, 14, 30, 0)
+			},
+			{
+				id: 'rectangleAreaGeometryLocation2',
+				gardenId: 'garden1',
+				workspaceId: 'workspace1',
+				x: 6,
+				y: 8,
+				date: new Date(2024, 0, 11, 14, 30, 0)
+			},
+			{
+				id: 'ellipseAreaGeometryLocation1',
+				gardenId: 'garden1',
+				workspaceId: 'workspace1',
+				x: -3,
+				y: 5,
+				date: new Date(2024, 0, 12, 14, 30, 0)
+			},
+			{
+				id: 'ellipseAreaGeometryLocation2',
+				gardenId: 'garden1',
+				workspaceId: 'workspace1',
+				x: 0,
+				y: 10,
+				date: new Date(2024, 0, 14, 14, 30, 0)
+			},
+			{
+				id: 'polygonAreaGeometryLocation1',
+				gardenId: 'garden1',
+				workspaceId: 'workspace1',
+				x: -5,
+				y: -5,
+				date: new Date(2024, 0, 3, 14, 30, 0)
+			},
+			{
+				id: 'linesAreaGeometryLocation1',
+				gardenId: 'garden1',
+				workspaceId: 'workspace1',
+				x: -8,
+				y: 2,
+				date: new Date(2024, 0, 3, 14, 30, 0)
+			}
+		],
+		coordinates: [
+			{
+				id: 'linesAreaCoord1',
+				gardenId: 'garden1',
+				x: -1,
+				y: 0
+			},
+			{
+				id: 'linesAreaCoord2',
+				gardenId: 'garden1',
+				x: -4,
+				y: 1
+			},
+			{
+				id: 'linesAreaCoord3',
+				gardenId: 'garden1',
+				x: 2,
+				y: 1.5
+			},
+			{
+				id: 'linesAreaCoord4',
+				gardenId: 'garden1',
+				x: 0.5,
+				y: -1
 			}
 		]
 	};

@@ -62,10 +62,12 @@ export function historySelect<T extends { date: Date }>(
 		return null;
 	}
 
+	return items[0];
+
 	const time = date.getTime();
 
 	/** Sort items in ascending order. */
-	const sortedItems = items.sort((a, b) => a.date.getTime() - b.date.getTime());
+	const sortedItems = [...items].sort((a, b) => a.date.getTime() - b.date.getTime());
 
 	/** If the requested date is before the earliest item, return null. */
 	if (time < sortedItems[0].date.getTime()) {
@@ -90,7 +92,3 @@ export function historySelect<T extends { date: Date }>(
 	/** Fallback to null. */
 	return null;
 }
-
-function calculateBoundingRectangle(geometry: Geometry): RectangleAttributes {}
-
-export function generateGrid(geometry: Geometry, spacing: number): GridAttributes {}

@@ -15,6 +15,7 @@
 	let { children } = $props();
 </script>
 
+<!-- Theme switcher. -->
 <ModeWatcher />
 
 <!-- Sonner toaster from Shadcn-svelte -->

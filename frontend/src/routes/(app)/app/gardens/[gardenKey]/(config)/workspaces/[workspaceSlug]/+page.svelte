@@ -23,5 +23,5 @@
 </script>
 
 {#if workspaceContext.id}
-	<Workspace workspaceId={workspaceContext.id} />
+	<Workspace />
 {/if}

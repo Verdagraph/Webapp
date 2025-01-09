@@ -110,30 +110,34 @@
 	});
 
 	/** Add events. */
-	if (editable) {
-		group.on('mouseover', () => {
-			document.body.style.cursor = 'grab';
-		});
-		group.on('mouseout', () => {
-			document.body.style.cursor = 'default';
-		});
-		group.on('dragmove', () => {
-			if (onTranslate) {
-				onTranslate({ x: group.x(), y: group.y() }, false);
-			}
-		});
-		group.on('dragend', () => {
-			group.position(canvas.gridManager.snapToGrid(group.position()));
-			if (onTranslate) {
-				onTranslate({ x: group.x(), y: group.y() }, true);
-			}
-		});
-		group.on('pointerclick', () => {
-			if (onClick) {
-				onClick();
-			}
-		});
-	}
+	$effect(() => {
+		if (editable) {
+			group.on('mouseover', () => {
+				document.body.style.cursor = 'grab';
+			});
+			group.on('mouseout', () => {
+				document.body.style.cursor = 'default';
+			});
+			group.on('dragmove', () => {
+				if (onTranslate) {
+					onTranslate({ x: group.x(), y: group.y() }, false);
+				}
+			});
+			group.on('dragend', () => {
+				group.position(canvas.gridManager.snapToGrid(group.position()));
+				if (onTranslate) {
+					onTranslate({ x: group.x(), y: group.y() }, true);
+				}
+			});
+			group.on('pointerclick', () => {
+				if (onClick) {
+					onClick();
+				}
+			});
+		} else {
+			group.off('mouseover mouseout dragmove dragend pointerclick');
+		}
+	});
 
 	onDestroy(() => {
 		group.destroy();

@@ -1,5 +1,4 @@
 import triplit from '$data/triplit';
-import { it } from 'node:test';
 
 export const workspaceSlugQuery = triplit.query('workspaces').where([
 	['gardenId', '=', '$query.gardenId'],
@@ -17,8 +16,6 @@ export const plantingAreaQuery = triplit
 	.id('$query.plantingAreaId')
 	.include('geometry', (rel) => rel('geometry').include('linesCoordinates').build())
 	.include('locationHistory', (rel) =>
-		rel('locationHistory')
-			.include('locations', (rel) => rel('locations').include('coordinate').build())
-			.build()
+		rel('locationHistory').include('locations').build()
 	)
 	.limit(1);

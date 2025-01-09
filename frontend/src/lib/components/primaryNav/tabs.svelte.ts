@@ -34,16 +34,11 @@ export type PrimaryTabItemSpec = {
 const MAX_GARDENS_IN_TAB_SIDEBAR = 10;
 
 /**
- * Constructs the tab which lists gardens the user has access to.
+ * Constructs the tab which lists gardens the authenticated user has access to.
  * @param gardens list of garden schemas associated with the user.
  * @returns Tab specification for the gardens tab.
  */
-export const getGardensTab = (gardens: Garden[] = []): PrimaryTabSpec => {
-	const discoverSubmenuItem: PrimaryTabItemSpec = {
-		url: getGardenBaseUrl('discover'),
-		label: 'Discover',
-		iconId: iconIds.gardensIcon
-	};
+export const getGardensAuthTab = (gardens: Garden[] = []): PrimaryTabSpec => {
 	const viewAllSubmenuItem: PrimaryTabItemSpec = {
 		url: getGardenBaseUrl(''),
 		label: 'View All',
@@ -57,21 +52,31 @@ export const getGardensTab = (gardens: Garden[] = []): PrimaryTabSpec => {
 			className: 'truncate italic'
 		}));
 
-	if (auth.isAuthenticated) {
-		return {
-			id: 'gardens',
-			label: 'Gardens',
-			iconId: iconIds.gardensIcon,
-			submenuItems: [...gardensSubmenuItems, viewAllSubmenuItem]
-		};
-	} else {
-		return {
-			id: 'gardens',
-			label: 'Gardens',
-			iconId: iconIds.gardensIcon,
-			submenuItems: [discoverSubmenuItem]
-		};
-	}
+	return {
+		id: 'gardens',
+		label: 'Gardens',
+		iconId: iconIds.gardensIcon,
+		submenuItems: [...gardensSubmenuItems, viewAllSubmenuItem]
+	};
+};
+
+/**
+ * Constructs the tab which lists gardens the anonymous user has access to.
+ * @param gardens list of garden schemas associated with the user.
+ * @returns Tab specification for the gardens tab.
+ */
+export const getGardensAnonTab = (): PrimaryTabSpec => {
+	const discoverSubmenuItem: PrimaryTabItemSpec = {
+		url: getGardenBaseUrl('discover'),
+		label: 'Discover',
+		iconId: iconIds.gardensIcon
+	};
+	return {
+		id: 'gardens',
+		label: 'Gardens',
+		iconId: iconIds.gardensIcon,
+		submenuItems: [discoverSubmenuItem]
+	};
 };
 
 /**

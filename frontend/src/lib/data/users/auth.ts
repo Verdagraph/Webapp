@@ -23,13 +23,13 @@ export const userLogin = {
 		/** Fetch the token. */
 		const token = await userLoginOp(data);
 
-		/** Start the Triplit session. */
-
-		/** TODO: Resolve an error where a session is started already regardless... */
+		/** End the anonymous session. */
 		await triplit.endSession();
-		console.log(token);
+
+		/** Start the Triplit session. */
 		await triplit.startSession(token);
-		auth.isAuthenticated = true;
+
+		return token;
 	}
 };
 
@@ -39,7 +39,6 @@ export const userLogin = {
 export const userRefresh = {
 	mutation: async function () {
 		const token = await userRefreshOp();
-		auth.isAuthenticated = true;
 		return token;
 	}
 };
@@ -50,12 +49,11 @@ export const userRefresh = {
 export const userLogout = {
 	mutation: async function () {
 		/** Don't allow re-logging out. */
-		if (triplit.token == null || triplit.token == TRIPLIT_ANON_TOKEN) {
+		if (!auth.isAuthenticated) {
 			return;
 		}
 
 		await triplit.endSession();
-		auth.isAuthenticated = false;
 	}
 };
 
@@ -73,11 +71,7 @@ export const getClient = async (): Promise<{
 	}
 
 	const account = await triplit.fetchOne(
-		triplit
-			.query('accounts')
-			.where([['id', '=', '$role.accountId']])
-			.include('profile')
-			.build()
+		triplit.query('accounts').id('$session.accountId').include('profile').build()
 	);
 	if (!account || !account.profile) {
 		return null;

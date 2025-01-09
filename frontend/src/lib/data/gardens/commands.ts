@@ -21,6 +21,14 @@ import { getClientOrError } from '$data/users/auth';
 
 /** Helpers. */
 
+/**
+ * Given a garden and a role, retrieve the client
+ * and throw an error if the client does not have at least
+ * that role.
+ * @param gardenId The garden to retrieve.
+ * @param role The role to authorize for.
+ * @returns The client and garden objects.
+ */
 export async function requireRole(
 	gardenId: string,
 	role: (typeof GardenMembershipRoleEnum)[number]
@@ -57,6 +65,7 @@ export async function requireRole(
  * given they are not already members in a garden.
  * @param usernames The usernames to retrieve profile IDs for.
  * @param garden The garden to check the user's aren't already members in.
+ * If the garden is undefined, all users are considered new members.
  * @returns A set of matching profile IDs that aren't already members in the garden.
  */
 async function getNewMembershipIdsFromUsernames(
@@ -136,6 +145,10 @@ export const gardenCreate = {
 
 			/** Add admin memberships. */
 			for (const userId in adminIds) {
+				if (userId === client.profile.id) {
+					continue;
+				}
+
 				await transaction.insert('gardenMemberships', {
 					gardenId: garden.id,
 					userId: userId,

@@ -5,15 +5,11 @@
 	import TabToolbox from '$components/tabToolbox';
 	import Tree from './Tree.svelte';
 	import Layout from './Layout.svelte';
-	import { getContext } from 'svelte';
 	import TimelineSelector from './timelineSelector/TimelineSelector.svelte';
 
-	type Props = {
-		workspaceId: string;
-	};
-	let { workspaceId }: Props = $props();
-
 	const workspaceContext = getWorkspaceContext();
+
+	console.log(workspaceContext.id);
 
 	/** Force a re-render of the PaneGroup if the direction is changed. */
 	let initialized = $state(true);
@@ -24,9 +20,9 @@
 	});
 </script>
 
-{#if initialized}
-	<div class="flex h-full w-full flex-col">
-		<div class="overflow-none grow">
+<div class="flex h-full w-full flex-col">
+	<div class="overflow-none grow">
+		{#if initialized}
 			<Resizable.PaneGroup direction={workspaceContext.contentPaneDirection}>
 				{#if workspaceContext.layoutEnabled}
 					<Resizable.Pane defaultSize={70} order={1} minSize={10}>
@@ -46,9 +42,9 @@
 					</Resizable.Pane>
 				{/if}
 			</Resizable.PaneGroup>
-		</div>
-		<div class="h-auto w-full">
-			<TimelineSelector />
-		</div>
+		{/if}
 	</div>
-{/if}
+	<div class="h-auto w-full">
+		<TimelineSelector />
+	</div>
+</div>

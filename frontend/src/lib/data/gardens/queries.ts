@@ -27,7 +27,7 @@ export const favoriteMembershipsQuery = triplit
 export const acceptancePendingMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where([
-		['status', '!=', 'ACCEPTEd'],
+		['status', '!=', 'ACCEPTED'],
 		['userId', '=', '$session.profileId']
 	])
 	.include('garden');

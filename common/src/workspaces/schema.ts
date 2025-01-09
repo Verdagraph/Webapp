@@ -295,11 +295,14 @@ export const workspaceSchema = {
 			workspaceId: S.String(),
 			workspace: S.RelationOne('workspaces', { where: [['id', '=', '$workspaceId']] }),
 
-			/** The coordinate describing the location in the workspace. */
-			coordinateId: S.String(),
-			coordinate: S.RelationOne('coordinates', {
-				where: [['id', '=', '$coordinateId']]
-			}),
+			/** The horizontal X component of the location in meters. */
+			x: S.Number(),
+
+			/** The vertical Y component of the location in meters. */
+			y: S.Number(),
+
+			/** The depth/altitude component of the location in meters. */
+			z: S.Number({ nullable: true, default: 0 }),
 
 			/** The date at which the location applies. */
 			date: S.Date()

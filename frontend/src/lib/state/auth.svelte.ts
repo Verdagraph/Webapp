@@ -1,18 +1,22 @@
+import triplit, { TRIPLIT_ANON_TOKEN } from '$data/triplit';
+
 /**
- * Stores whether the user is authenticated, not considering Triplit's state.
+ * The user is authenticated if the token registered in triplit
+ * is defined and not equal to the anonymous token.
  */
-let _isAuthenticated: boolean = $state(false);
+let _isAuthenticated: boolean = $derived.by(() => {
+	if (!triplit.token || triplit.token === TRIPLIT_ANON_TOKEN) {
+		return false;
+	} else {
+		return true;
+	}
+});
 
 /* Exported state methods. */
 export const auth = {
 	/* Getter. */
 	get isAuthenticated(): boolean {
 		return _isAuthenticated;
-	},
-
-	/* Setter. */
-	set isAuthenticated(newVal: boolean) {
-		_isAuthenticated = newVal;
 	}
 };
 export default auth;

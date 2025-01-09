@@ -15,7 +15,14 @@
 	const canvasId = canvasContext.canvasId;
 	const plantingAreaLayerId = 'plantingAreas';
 
-	const plantingAreaIds = useQuery(triplit, plantingAreaIdsQuery);
+	const plantingAreaIds = useQuery(
+		triplit,
+		plantingAreaIdsQuery.vars({ workspaceId: workspaceContext.id })
+	);
+
+	/**
+	 * TODO: Remove editable status if the planting area create form is active
+	 */
 </script>
 
 {#snippet overlay()}
@@ -37,7 +44,7 @@
 					{plantingAreaId}
 					{plantingAreaLayerId}
 					currentDate={new ZonedDateTime(
-						2022,
+						2015,
 						2,
 						3,
 						'America/Los_Angeles',
