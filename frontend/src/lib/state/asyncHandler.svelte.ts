@@ -162,7 +162,6 @@ const convertErrors = (
 const handleErrors = (errors: AppErrors) => {
 	if (errors.nonFormErrors) {
 		for (const errorMessage of errors.nonFormErrors) {
-			console.log(errorMessage);
 			/** Toast */
 			toast.error(errorMessage);
 		}
