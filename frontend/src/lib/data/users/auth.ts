@@ -28,6 +28,7 @@ export const userLogin = {
 
 		/** Start the Triplit session. */
 		await triplit.startSession(token);
+		auth.updateAuth();
 
 		return token;
 	}
@@ -39,6 +40,7 @@ export const userLogin = {
 export const userRefresh = {
 	mutation: async function () {
 		const token = await userRefreshOp();
+		auth.updateAuth();
 		return token;
 	}
 };
@@ -54,6 +56,7 @@ export const userLogout = {
 		}
 
 		await triplit.endSession();
+		auth.updateAuth();
 	}
 };
 

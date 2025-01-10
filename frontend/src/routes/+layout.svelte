@@ -22,7 +22,7 @@
 	 * For development purposes, automatically log the user in.
 	 * TODO: Make this conditional based on environment variables.
 	 */
-	const autoLogIn = false;
+	const autoLogIn = true;
 	let initialized = $state(false);
 	if (autoLogIn) {
 		setTimeout(() => {
