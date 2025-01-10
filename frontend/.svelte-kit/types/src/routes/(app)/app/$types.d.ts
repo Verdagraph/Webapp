@@ -42,7 +42,6 @@ type LayoutRouteId =
 	| '/(app)/app/gardens/[gardenKey]/(config)/workspaces'
 	| '/(app)/app/gardens/[gardenKey]/(config)/workspaces/[workspaceSlug]'
 	| '/(app)/app/gardens/[gardenKey]/(config)/workspaces/create'
-	| '/(app)/app/gardens/[gardenKey]/(garden)/dash'
 	| '/(app)/app/gardens/[gardenKey]/(garden)/members'
 	| '/(app)/app/gardens/[gardenKey]/(garden)/metrics'
 	| '/(app)/app/gardens/[gardenKey]/(planner)/verdagraph'

@@ -7,6 +7,8 @@ const iconIds = {
 	/* Generic */
 	dropdownMenuIcon: 'material-symbols-light:menu-rounded',
 	formFieldDescriptionIcon: 'material-symbols:info-outline-rounded',
+	errorIcon: 'material-symbols:error-outline-rounded',
+	checkmarkIcon: 'carbon:checkmark-filled',
 	defaultSpinnerIcon: 'humbleicons:spinner-earring',
 	defaultRefreshIcon: 'material-symbols:refresh-rounded',
 	defaultClose: 'mdi:close',

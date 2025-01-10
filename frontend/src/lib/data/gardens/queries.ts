@@ -6,21 +6,21 @@ export const activeGardenQuery = triplit.query('gardens').id('$query.activeGarde
 
 export const adminGardensQuery = triplit
 	.query('gardens')
-	.where('adminIds', 'has', '$session.profileId');
+	.where('adminIds', 'has', 'session.profileId');
 
 export const editorGardensQuery = triplit
 	.query('gardens')
-	.where('editorIds', 'has', '$session.profileId');
+	.where('editorIds', 'has', 'session.profileId');
 
 export const viewerGardensQuery = triplit
 	.query('gardens')
-	.where('viewerIds', 'has', '$session.profileId');
+	.where('viewerIds', 'has', 'session.profileId');
 
 export const favoriteMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where([
 		['favorite', '=', true],
-		['userId', '=', '$session.profileId']
+		['userId', '=', 'session.profileId']
 	])
 	.include('garden');
 
@@ -28,7 +28,7 @@ export const acceptancePendingMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where([
 		['status', '!=', 'ACCEPTED'],
-		['userId', '=', '$session.profileId']
+		['userId', '=', 'session.profileId']
 	])
 	.include('garden');
 

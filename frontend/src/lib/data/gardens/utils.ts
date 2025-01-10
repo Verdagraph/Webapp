@@ -1,5 +1,10 @@
-import plantNamesFile from '$lib/assets/plantNames.txt?raw';
 import triplit from '$data/triplit';
+
+/**
+ * Names are assumed to be less than the
+ * maximum ID length minus (GENERATED_KEY_RANDOM_SECTION_LENGTH + 1)
+ */
+import plantNamesFile from '$lib/assets/plantNames.json';
 
 /** The length of the randomly generated section at the end of the generated key. */
 const GENERATED_KEY_RANDOM_SECTION_LENGTH = 3;
@@ -14,19 +19,13 @@ const MAX_PLANT_NAME_TRIES = 5;
 const RANDOM_STRING_KEY_LENGTH = 8;
 
 /**
- * Process plant names. Names are assumed to be less than the
- * maximum ID length minus (GENERATED_KEY_RANDOM_SECTION_LENGTH + 1)
- */
-const plantNames: Array<string> = plantNamesFile.split('\n');
-
-/**
  * Generated a random string.
  * @param length The length of the generated string.
  * @param characters The character set to pull from.
  * @returns A random string.
  */
 function generateRandomString(length: number, characters: string) {
-	let result = ' ';
+	let result = '';
 	const charactersLength = characters.length;
 	for (let i = 0; i < length; i++) {
 		result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -42,7 +41,8 @@ function generateRandomString(length: number, characters: string) {
  */
 function generateGardenIdFromPlantName(): string {
 	/** Pick a random plant name. */
-	const plantName = plantNames[Math.floor(Math.random() * plantNames.length)];
+	const plantName =
+		plantNamesFile.plants[Math.floor(Math.random() * plantNamesFile.plants.length)];
 
 	/** Generate a random section at the end. Ensure it starts with a number. */
 	const randomSectionBeginningCharacter = generateRandomString(1, '0123456789');

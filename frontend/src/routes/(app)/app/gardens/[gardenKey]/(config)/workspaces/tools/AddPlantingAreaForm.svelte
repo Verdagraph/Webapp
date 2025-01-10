@@ -144,7 +144,7 @@
 		</div>
 
 		<!-- Type. -->
-		<Form.Field {form} name="location.coordinate.x">
+		<Form.Field {form} name="geometry.type">
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label
@@ -154,12 +154,7 @@
 							.innerType()
 							.shape.type.isOptional()}>Type</Form.Label
 					>
-					<Select.Root
-						{...props}
-						type="single"
-						name="geometryType"
-						bind:value={$formData.geometry.type}
-					>
+					<Select.Root {...props} type="single" bind:value={$formData.geometry.type}>
 						<Select.Trigger class="w-full">
 							<div class="item-center flex">
 								<span>
