@@ -1,5 +1,4 @@
 import triplit from '$data/triplit';
-import auth from '$state/auth.svelte';
 import type { QueryResult } from '@triplit/client';
 import { schema } from '@vdt-webapp/common';
 
@@ -7,26 +6,26 @@ export const activeGardenQuery = triplit.query('gardens').id('$query.activeGarde
 
 export const adminGardensQuery = triplit
 	.query('gardens')
-	.where(auth.isAuthenticated ? ['adminIds', 'has', '$session.profileId'] : false);
+	.where('adminIds', 'has', '$session.profileId');
 
 export const editorGardensQuery = triplit
 	.query('gardens')
-	.where(auth.isAuthenticated ? ['editorIds', 'has', '$session.profileId'] : false);
+	.where('editorIds', 'has', '$session.profileId');
 
 export const viewerGardensQuery = triplit
 	.query('gardens')
-	.where(auth.isAuthenticated ? ['viewerIds', 'has', '$session.profileId'] : false);
+	.where(['viewerIds', 'has', '$session.profileId']);
 
 export const favoriteMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where('favorite', '=', true)
-	.where(auth.isAuthenticated ? ['userId', '=', '$session.profileId'] : false)
+	.where(['userId', '=', '$session.profileId'])
 	.include('garden');
 
 export const acceptancePendingMembershipsQuery = triplit
 	.query('gardenMemberships')
 	.where('status', '!=', 'ACCEPTED')
-	.where(auth.isAuthenticated ? ['userId', '=', '$session.profileId'] : false)
+	.where(['userId', '=', '$session.profileId'])
 	.include('garden');
 
 const acceptancePendingMembershipsQueryBuilt =

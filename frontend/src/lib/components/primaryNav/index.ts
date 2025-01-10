@@ -1,2 +1,2 @@
-import PrimaryNav from './PrimaryNav.svelte';
+import PrimaryNav from './PrimaryNavContainer.svelte';
 export default PrimaryNav;
