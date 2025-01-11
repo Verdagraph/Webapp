@@ -9,7 +9,6 @@
 	import { setWorkspaceContext } from './activeWorkspace.svelte';
 	import toolbox from './tools';
 	import auth from '$state/auth.svelte';
-	import { setContext } from 'svelte';
 
 	let { children } = $props();
 
@@ -18,7 +17,7 @@
 
 	const workspaceContext = setWorkspaceContext();
 
-	/** TODO: remove. */
+	/** TODO: Replace with query. */
 	let workspaces: Workspace[] = [
 		{
 			gardenId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',

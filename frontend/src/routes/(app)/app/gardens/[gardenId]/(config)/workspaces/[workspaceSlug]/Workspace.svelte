@@ -16,6 +16,8 @@
 		initialized = false;
 		initialized = true;
 	});
+
+	/** TODO: Figure out why and fix the layout canvas not being there after renavigating after a page refresh. */
 </script>
 
 <div class="flex h-full w-full flex-col">

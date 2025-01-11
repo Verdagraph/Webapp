@@ -14,6 +14,8 @@ export async function load({ params }) {
 	);
 
 	if (!workspace) {
+		/** TODO: Make toasts work here. */
+		//toast.error('Workspace does not exist.');
 		goto(`/app/gardens/${params.gardenId}/workspaces`);
 		throw new AppError(`Workspace ${params.workspaceSlug} does not exist`);
 	}

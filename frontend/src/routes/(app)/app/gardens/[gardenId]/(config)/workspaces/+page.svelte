@@ -15,7 +15,7 @@
 		}
 	});
 
-	/** TODO: Remove */
+	/** TODO: Replace with query. */
 	let workspaces: Workspace[] = [
 		{
 			gardenId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
