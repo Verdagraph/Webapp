@@ -1,9 +1,11 @@
 <script lang="ts">
+	/*
 	import { Combobox } from 'bits-ui';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
 	import { flyAndScale } from '$lib/utils/index.js';
 	import type { CultivarSchema } from '$codegen/types';
+	*/
 	type Props = {
 		collectionId: string;
 		cultivars: CultivarSchema[];

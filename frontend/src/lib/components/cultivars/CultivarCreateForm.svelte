@@ -1,4 +1,5 @@
 <script lang="ts">
+	/*
 	import { useQueryClient } from '@sveltestack/svelte-query';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
@@ -11,6 +12,7 @@
 	import cultivarFields from '$lib/backendSchema/specs/cultivar';
 	import type { CultivarCreateCommand, CultivarSchema } from '$codegen/types';
 	import CultivarParentCombobox from './CultivarParentCombobox.svelte';
+	*/
 
 	type Props = {
 		collectionId: string;

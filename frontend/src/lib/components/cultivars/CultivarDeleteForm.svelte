@@ -1,10 +1,12 @@
 <script lang="ts">
+	/*
 	import { useQueryClient } from '@sveltestack/svelte-query';
 	import * as Form from '$lib/components/ui/form';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { cultivarDelete } from '$lib/data/cultivar/commands';
 	import { createFormErrors } from '$state/formErrors.svelte';
+	*/
 
 	type Props = {
 		collectionId: string;

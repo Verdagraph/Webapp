@@ -12,7 +12,7 @@
 
 	if (data.workspace == null) {
 		toast.error('Workspace does not exist.');
-		goto(`app/gardens/${page.params.gardenKey}/workspaces`);
+		goto(`/app/gardens/${page.params.gardenKey}/workspaces`);
 		throw new AppError(`Workspace ${page.params.workspaceSlug} does not exist`);
 	}
 

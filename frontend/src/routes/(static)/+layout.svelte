@@ -8,7 +8,9 @@
 
 <!-- If the user is authenticated, show the PrimaryNav component. Otherwise, the UnauthStaticNav. -->
 {#if auth.isAuthenticated}
-	<PrimaryNav {children}></PrimaryNav>
+	<PrimaryNav>
+		{@render children()}
+	</PrimaryNav>
 {:else}
 	<UnauthStaticNav />
 	{@render children()}

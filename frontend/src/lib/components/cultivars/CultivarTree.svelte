@@ -1,4 +1,5 @@
 <script lang="ts">
+	/*
 	import { melt, createTreeView, type TreeView } from '@melt-ui/svelte';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
@@ -17,6 +18,7 @@
 	import CultivarDeleteForm from './CultivarDeleteForm.svelte';
 	import debounce from '$lib/utils/debounce';
 	import { attributeKeyToComponent } from './attributes';
+	*/
 
 	type Props = {
 		collectionId: string;
