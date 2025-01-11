@@ -3,7 +3,8 @@
 	import Bottombar from './Bottombar.svelte';
 	import { IsMobile } from '$lib/state/isMobile.svelte';
 
-	let { gardensTab, gardenTabs, profileTab, traitsTab, resourcesTab, children } = $props();
+	let { gardensTab, gardenTabs, profileTab, traitsTab, resourcesTab, children } =
+		$props();
 
 	const isMobile = new IsMobile();
 </script>

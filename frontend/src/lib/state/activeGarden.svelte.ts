@@ -1,10 +1,10 @@
 /**
  * Stores the active garden's key
  */
-let _rune: string | null = $state('garden1');
+let _rune: string | null = $state(null);
 
 /* Exported state methods. */
-export const activeGardenKey = {
+export const activeGardenId = {
 	/* Getter. */
 	get value(): string | null {
 		return _rune;
@@ -15,4 +15,4 @@ export const activeGardenKey = {
 		_rune = newVal;
 	}
 };
-export default activeGardenKey;
+export default activeGardenId;

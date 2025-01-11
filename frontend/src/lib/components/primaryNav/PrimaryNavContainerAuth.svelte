@@ -5,7 +5,7 @@
 		getGardensAuthTab,
 		getTraitsTab,
 		getResourcesTab,
-		getAuthProfileTab,
+		getAuthProfileTab
 	} from './tabs.svelte';
 	import type { Garden } from '@vdt-webapp/common';
 	import triplit from '$data/triplit';
@@ -16,7 +16,7 @@
 		viewerGardensQuery,
 		favoriteMembershipsQuery
 	} from '$data/gardens/queries';
-	import activeGardenKey from '$state/activeGarden.svelte';
+	import activeGardenId from '$state/activeGarden.svelte';
 	import PrimaryNav from './PrimaryNav.svelte';
 
 	let { children } = $props();
@@ -24,7 +24,7 @@
 	/* Queries */
 	let activeGarden = useQuery(
 		triplit,
-		activeGardenQuery.vars({ activeGardenId: activeGardenKey })
+		activeGardenQuery.vars({ activeGardenId: activeGardenId })
 	);
 	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
 	let adminGardens = useQuery(triplit, adminGardensQuery);
@@ -70,4 +70,11 @@
 	const resourcesTab = getResourcesTab();
 </script>
 
-<PrimaryNav {gardensTab} {gardenTabs} {profileTab} {traitsTab} {resourcesTab} {children} />
+<PrimaryNav
+	{gardensTab}
+	{gardenTabs}
+	{profileTab}
+	{traitsTab}
+	{resourcesTab}
+	{children}
+/>

@@ -66,9 +66,6 @@
 			$formData.id = generatedId;
 		}
 	});
-	setTimeout(() => {
-		console.log($formData.adminInvites);
-	}, 5000);
 </script>
 
 <form method="POST" use:enhance>
@@ -91,13 +88,13 @@
 		<Form.FieldErrors handlerErrors={gardenCreateHandler.errors?.fieldErrors?.name} />
 	</Form.Field>
 
-	<!-- Garden key -->
+	<!-- Garden ID -->
 	<Form.Field {form} name="id">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
 					description={gardenCreate.schema.shape.id.description}
-					optional={gardenCreate.schema.shape.id.isOptional()}>Key</Form.Label
+					optional={gardenCreate.schema.shape.id.isOptional()}>ID</Form.Label
 				>
 				<span class="flex">
 					<Input

@@ -76,6 +76,12 @@ export default function seed(): BulkInsert<typeof schema> {
 				name: 'Workspace 1',
 				slug: 'workspace-1',
 				description: 'This is the default seeded workspace.'
+			},
+			{
+				id: 'workspace2',
+				gardenId: 'garden1',
+				name: 'Workspace 2',
+				slug: 'workspace-1ss'
 			}
 		],
 		plantingAreas: [

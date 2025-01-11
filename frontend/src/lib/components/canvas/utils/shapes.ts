@@ -64,7 +64,6 @@ function getClosedOrUnclosedShape(
 			attributes = getGeometryAttributes<'POLYGON'>(geometry as PolygonGeometry);
 
 			if (!attributes.numSides || !attributes.radius) {
-				console.log(`sides: ${attributes.numSides} radius: ${attributes.radius}`);
 				console.warn(`Geometry attributes undefined.`);
 				return null;
 			}

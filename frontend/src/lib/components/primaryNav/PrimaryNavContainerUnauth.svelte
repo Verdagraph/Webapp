@@ -5,13 +5,11 @@
 		getGardensAnonTab,
 		getTraitsTab,
 		getResourcesTab,
-		getAnonProfileTab,
+		getAnonProfileTab
 	} from './tabs.svelte';
 	import triplit from '$data/triplit';
-	import {
-		activeGardenQuery,
-	} from '$data/gardens/queries';
-	import activeGardenKey from '$state/activeGarden.svelte';
+	import { activeGardenQuery } from '$data/gardens/queries';
+	import activeGardenId from '$state/activeGarden.svelte';
 	import PrimaryNav from './PrimaryNav.svelte';
 
 	let { children } = $props();
@@ -19,11 +17,11 @@
 	/* Queries */
 	let activeGarden = useQuery(
 		triplit,
-		activeGardenQuery.vars({ activeGardenId: activeGardenKey })
+		activeGardenQuery.vars({ activeGardenId: activeGardenId })
 	);
 
 	/** Retrieve the tabs. */
-	let gardensTab = getGardensAnonTab()
+	let gardensTab = getGardensAnonTab();
 
 	let gardenTabs = $derived.by(() => {
 		if (activeGarden.results && activeGarden.results.length > 0) {
@@ -41,4 +39,11 @@
 	const resourcesTab = getResourcesTab();
 </script>
 
-<PrimaryNav {gardensTab} {gardenTabs} {profileTab} {traitsTab} {resourcesTab} {children} />
+<PrimaryNav
+	{gardensTab}
+	{gardenTabs}
+	{profileTab}
+	{traitsTab}
+	{resourcesTab}
+	{children}
+/>
