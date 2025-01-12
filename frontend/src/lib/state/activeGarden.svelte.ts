@@ -3,6 +3,8 @@
  */
 let _rune: string | null = $state(null);
 
+/** TODO: Add storage of the client's role in the garden, for use in templates. */
+
 /* Exported state methods. */
 export const activeGardenId = {
 	/* Getter. */
