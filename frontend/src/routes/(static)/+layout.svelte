@@ -1,15 +1,15 @@
 <script>
 	import PrimaryNav from '$components/primaryNav';
 	import auth from '$state/auth.svelte';
-	import UnauthStaticNav from './UnauthStaticNav.svelte';
+	import AnonStaticNav from './AnonStaticNav.svelte';
 
 	let { children } = $props();
 </script>
 
-<!-- If the user is authenticated, show the PrimaryNav component. Otherwise, the UnauthStaticNav. -->
+<!-- If the user is authenticated, show the PrimaryNav component. Otherwise, the AnonStaticNav. -->
 {#if auth.isAuthenticated}
 	<PrimaryNav {children}></PrimaryNav>
 {:else}
-	<UnauthStaticNav />
+	<AnonStaticNav />
 	{@render children()}
 {/if}
