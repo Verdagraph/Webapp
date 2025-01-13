@@ -24,17 +24,18 @@ export function createToolbox<ToolId extends string>(
 	isActive: boolean;
 	activate: (id: ToolId, options?: Record<string, any>) => void;
 	deactivate: (id: ToolId) => void;
+	isToolActive: (id: ToolId) => boolean;
 } {
 	/** Stores an array of active tools by their ID. */
-	let activeToolIds = $state<Array<ToolId>>([]);
+	let activeToolIds: Array<ToolId> = $state([]);
 	/** Stores the last activated tool by its ID */
-	let lastActivatedId = $state<ToolId | undefined>(undefined);
+	let lastActivatedId: ToolId | undefined = $state(undefined);
 	/** Presents the attributes of the active tools. */
-	let activeTools = $derived<ToolAttributeType<ToolId>[]>(
+	const activeTools = $derived<ToolAttributeType<ToolId>[]>(
 		attributes.filter((attr) => activeToolIds.includes(attr.id))
 	);
 	/** True if any tools are active. */
-	let isActive = $derived<boolean>(activeToolIds.length > 0);
+	const isActive = $derived<boolean>(activeToolIds.length > 0);
 
 	/**
 	 * Activates a tool.
@@ -61,6 +62,19 @@ export function createToolbox<ToolId extends string>(
 		}
 	}
 
+	/**
+	 * Checks if a tool is active.
+	 * @param id The tool ID.
+	 * @returns True if the tool is active.
+	 */
+	function isToolActive(id: ToolId): boolean {
+		if (activeToolIds.includes(id)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	return {
 		/** Getters. */
 		get lastActivatedId(): ToolId | undefined {
@@ -72,8 +86,12 @@ export function createToolbox<ToolId extends string>(
 		get isActive(): boolean {
 			return isActive;
 		},
+		set lastActivatedId(newVal) {
+			lastActivatedId = newVal;
+		},
 		activate,
-		deactivate
+		deactivate,
+		isToolActive
 	};
 }
 export default createToolbox;

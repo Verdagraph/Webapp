@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
 	import { useQuery } from '@triplit/svelte';
@@ -20,6 +19,14 @@
 	import triplit from '$data/triplit';
 	import type { Garden } from '@vdt-webapp/common';
 
+	/**
+	 * If a non-authenticated user accesses this page,
+	 * redirect to public discovery page.
+	 */
+	if (!auth.isAuthenticated) {
+		goto('gardens/discover');
+	}
+
 	/** Queries */
 	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
 	let adminGardens = useQuery(triplit, adminGardensQuery);
@@ -29,16 +36,6 @@
 		triplit,
 		acceptancePendingMembershipsQuery
 	);
-
-	/**
-	 * If a non-authenticated user accesses this page,
-	 * redirect to public discovery page.
-	 */
-	onMount(() => {
-		if (!auth.isAuthenticated) {
-			goto('gardens/discover');
-		}
-	});
 </script>
 
 <svelte:head>

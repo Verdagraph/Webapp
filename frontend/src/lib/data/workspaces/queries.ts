@@ -1,23 +1,21 @@
-import { useQuery } from '@sveltestack/svelte-query';
-import type { UseQueryOptions } from '@sveltestack/svelte-query';
-import { workspaceGetPartialsQueryOp } from '$codegen';
-import type {
-	WorkspaceGetPartialsQueryOpParams,
-	WorkspacePartialSchema
-} from '$codegen/types';
+import triplit from '$data/triplit';
 
-/**
- * Retrieves the workspace partial schemas associated with a garden.
- */
-export const workspacePartialsQuery = (
-	data: WorkspaceGetPartialsQueryOpParams,
-	options?: UseQueryOptions<WorkspacePartialSchema[]>
-) => {
-	return useQuery<WorkspacePartialSchema[]>(
-		['workspacePartials', data.garden_key],
-		() => {
-			return workspaceGetPartialsQueryOp(data);
-		},
-		options
-	);
-};
+export const workspaceSlugQuery = triplit.query('workspaces').where([
+	['gardenId', '=', '$query.gardenId'],
+	['slug', '=', '$query.workspaceSlug']
+]);
+
+export const plantingAreaIdsQuery = triplit
+	.query('plantingAreas')
+	.where(['locationHistory.workspaceIds', 'has', '$query.workspaceId'])
+	.select(['id']);
+
+/** TODO: Update this query once linesCoordinates can be moved to linesAttributes.coordinates. */
+export const plantingAreaQuery = triplit
+	.query('plantingAreas')
+	.id('$query.plantingAreaId')
+	.include('geometry', (rel) => rel('geometry').include('linesCoordinates').build())
+	.include('locationHistory', (rel) =>
+		rel('locationHistory').include('locations').build()
+	)
+	.limit(1);

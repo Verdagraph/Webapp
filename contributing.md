@@ -38,3 +38,6 @@ Instructions for the use of Devcontainers on Linux should be simpler than on Win
 # Non-devcontainer
 
 Instructions for manual setup of the environment have not yet been created. If you follow this path, please update this document.
+
+Post create steps:
+make sure to copy .env.default in ./common to a normal .env file.

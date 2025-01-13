@@ -5,7 +5,7 @@
 	import { Button } from 'bits-ui';
 	import type { PrimaryTabSpec } from './tabs.svelte';
 	import Tab from './Tab.svelte';
-	import activeGardenKey from '$state/activeGarden.svelte';
+	import activeGardenId from '$state/activeGarden.svelte';
 
 	type Props = {
 		gardensTab: PrimaryTabSpec;
@@ -25,7 +25,7 @@
 Large screens sidebar.
 -->
 <nav
-	class="border-neutral-6 bg-neutral-2 fixed top-0 flex h-full flex-col justify-between border-r"
+	class="border-neutral-8 bg-neutral-2 fixed top-0 flex h-full flex-col justify-between border-r"
 >
 	<!-- Links displayed at the top. -->
 	<ul>
@@ -39,7 +39,7 @@ Large screens sidebar.
 		<!-- Gardens tab. -->
 		<Tab spec={gardensTab} side="right" iconSize="2rem" />
 
-		{#if activeGardenKey.value}
+		{#if activeGardenId.value}
 			<Separator class="bg-neutral-6" />
 
 			<!-- Garden specific links. -->

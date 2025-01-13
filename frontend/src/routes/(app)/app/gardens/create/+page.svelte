@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
-	import { Button } from '$components/ui/button';
 	import GardenCreateForm from './GardenCreateForm.svelte';
 </script>
 

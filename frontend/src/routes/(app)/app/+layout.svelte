@@ -4,4 +4,6 @@
 	let { children } = $props();
 </script>
 
-<PrimaryNav {children}></PrimaryNav>
+<PrimaryNav>
+	{@render children()}
+</PrimaryNav>

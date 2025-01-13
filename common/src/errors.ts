@@ -9,7 +9,12 @@
  * and are rendered as toasts or other popups on the frontend.
  */
 
-/** Errors shown to the user under form fields. Each error is a key of the field name and a value of the error message(s). */
+/**
+ * Errors shown to the user under form fields. Each error is a key of the field name and a value of the error message(s).
+ * Field names are not enforced by types currently, so we rely on a convention.
+ * For nested fields, usual dot access eg., field1.field2
+ * For arrays, bracket index eg., field1.field2[number].field3
+ */
 export type FieldErrors = Record<string, Array<string>>;
 /** Errors shown to the user under a form not related to a specific field. */
 type NonFieldErrors = Array<string>;

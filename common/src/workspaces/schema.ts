@@ -1,13 +1,19 @@
-import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
+import {
+	Schema as S,
+	ClientSchema,
+	Entity,
+	or,
+	EntityWithSelection
+} from '@triplit/client';
 
 /**
  * Specifies a type of geometry.
  * Each geometry type is associated with a different record type
  * describing its features.
  * RECTANGLE: a closed shape specified by width and height.
- * POLYGON: a closed shape specified by a set of joined line segments.
+ * POLYGON: a closed shape specified by a number of sides and their length.
  * ELLIPSE: a closed shape specified by a major and minor radius.
- * LINES: an open shape specified by a set of joined line segments.`
+ * LINES: a closed or open shape specified by a set of joined line segments.`
  */
 export const GeometryTypeEnum = ['RECTANGLE', 'POLYGON', 'ELLIPSE', 'LINES'] as const;
 
@@ -122,35 +128,43 @@ export const workspaceSchema = {
 			/** Polygon geometry attributes. */
 			polygonAttributes: S.Optional(
 				S.Record({
-					/** A set of coordinates which describe a closed shape of line segments. */
-					shellCoordinateIds: S.Set(S.String()),
-					shellCoordinates: S.RelationMany('coordinates', {
-						where: [['id', 'in', '$polygonAttributes.shellCoordinateIds']]
-					})
+					/** Number of sides to the polygon. */
+					numSides: S.Number(),
+
+					/** Polygon radius. */
+					radius: S.Number()
 				})
 			),
 
 			/** Ellipe geometry attributes. */
 			ellipseAttributes: S.Optional(
 				S.Record({
-					/** The length of the horizontal radius in meters. */
-					lengthRadius: S.Number(),
+					/** The length of the horizontal diameter in meters. */
+					lengthDiameter: S.Number(),
 
-					/** The width of the vertical radius in meters. */
-					widthRadius: S.Number()
+					/** The width of the vertical diameter in meters. */
+					widthDiameter: S.Number()
 				})
 			),
 
 			/** Lines geometry attributes. */
 			linesAttributes: S.Optional(
 				S.Record({
-					/** A set of coordinates which describe an open shape of line segments. */
+					/** A set of coordinates which describe an open or closed shape of line segments. */
 					coordinateIds: S.Set(S.String()),
 					coordinates: S.RelationMany('coordinates', {
 						where: [['id', 'in', '$linesAttributes.coordinateIds']]
-					})
+					}),
+
+					/** If true the lines form a closed shape. */
+					closed: S.Boolean({ default: true })
 				})
-			)
+			),
+
+			/** Temp relation for including lines coordinates. TODO: Remove this if/when Triplit supports inculding relations inside records. */
+			linesCoordinates: S.RelationMany('coordinates', {
+				where: [['id', 'in', '$linesAttributes.coordinateIds']]
+			})
 		}),
 		permissions: {
 			anon: {
@@ -278,11 +292,14 @@ export const workspaceSchema = {
 			workspaceId: S.String(),
 			workspace: S.RelationOne('workspaces', { where: [['id', '=', '$workspaceId']] }),
 
-			/** The coordinate describing the location in the workspace. */
-			coordinateId: S.String(),
-			coordinate: S.RelationOne('coordinates', {
-				where: [['id', '=', '$coordinateId']]
-			}),
+			/** The horizontal X component of the location in meters. */
+			x: S.Number(),
+
+			/** The vertical Y component of the location in meters. */
+			y: S.Number(),
+
+			/** The depth/altitude component of the location in meters. */
+			z: S.Number({ nullable: true, default: 0 }),
 
 			/** The date at which the location applies. */
 			date: S.Date()
@@ -410,11 +427,25 @@ export const workspaceSchema = {
 			gardenId: S.String(),
 			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
-			/** The geometric history of the planting area. */
-			geometryHistoryId: S.String(),
-			geometryHistory: S.RelationOne('geometryHistories', {
-				where: [['id', '=', '$geometryHistoryId']]
+			/** Name. */
+			name: S.String(),
+
+			/** The geometry of the planting area. */
+			geometryId: S.String(),
+			geometry: S.RelationOne('geometries', {
+				where: [['id', '=', '$geometryId']]
 			}),
+
+			/**
+			 * Describes a grid overlaid onto the geometry.
+			 * Used for placing plants.
+			 */
+			grid: S.Optional(
+				S.Record({
+					numRows: S.Number(),
+					numColumns: S.Number()
+				})
+			),
 
 			/** The location history of the planting area. */
 			locationHistoryId: S.String(),
@@ -424,12 +455,6 @@ export const workspaceSchema = {
 
 			/** The depth of the planting area in meters. Used to calculate volume. */
 			depth: S.Number({ default: 0 }),
-
-			/**
-			 * Whether the planting area can be moved easily.
-			 * For example, may be true for a pot but false for a bed.
-			 */
-			movable: S.Boolean({ default: false }),
 
 			/** Optional description. */
 			description: S.String({ default: '' })
@@ -521,10 +546,28 @@ export const workspaceSchema = {
 		}
 	}
 } satisfies ClientSchema;
+
 export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
+
 export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
+export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>;
+export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>;
+export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>;
+export type LinesAttributes = NonNullable<Geometry['linesAttributes']>;
+export type GeometryAttributesMap = {
+	RECTANGLE: RectangleAttributes;
+	POLYGON: PolygonAttributes;
+	ELLIPSE: EllipseAttributes;
+	LINES: LinesAttributes;
+};
+export type RectangleGeometry = Extract<Geometry, { type: 'RECTANGLE' }>;
+export type PolygonGeometry = Extract<Geometry, { type: 'POLYGON' }>;
+export type EllipseGeometry = Extract<Geometry, { type: 'ELLIPSE' }>;
+export type LinesGeometry = Extract<Geometry, { type: 'LINES' }>;
+
 export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'>;
 export type Location = Entity<typeof workspaceSchema, 'locations'>;
 export type LocationHistory = Entity<typeof workspaceSchema, 'locationHistories'>;
 export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'>;
+export type GridAttributes = NonNullable<PlantingArea['grid']>;
 export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>;

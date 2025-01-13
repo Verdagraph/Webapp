@@ -1,13 +1,21 @@
 import { AppError } from '@vdt-webapp/common/src/errors';
 import Konva from 'konva';
-import { getColor } from '$lib/utils';
-import mode from '$state/theme.svelte';
 
+/**
+ * Context which stores the Konva stage, container div sizing,
+ * and layers.
+ * @param canvasId The ID of the canvas context.
+ * @returns The container context.
+ */
 export function createCanvasContainer(canvasId: string) {
-	/** Konva elements. */
-	const containerId = canvasId;
+	/** Consts. */
+	const containerId = canvasId; /** ID of the container HTML element. */
+	const pixelsPerMeter = 100; /** The initial scale of rendering, pre-scaling. */
+
+	/** Konva. */
 	let stage: Konva.Stage | null = null;
-	let layers: Record<string, Konva.Layer> = {};
+	const layers: Record<string, Konva.Layer> =
+		{}; /** Record to track references to layers. */
 
 	/** Runes. */
 	let initialized = $state(false);
@@ -17,7 +25,7 @@ export function createCanvasContainer(canvasId: string) {
 	/**
 	 * An array of functions which, when the canvas is resized, are called.
 	 */
-	let resizeFunctions: Array<() => void> = [
+	const resizeFunctions: Array<() => void> = [
 		/** Update the stage upon container resize. */
 		() => {
 			if (stage) {
@@ -64,6 +72,7 @@ export function createCanvasContainer(canvasId: string) {
 	function onResize() {
 		resizeFunctions.forEach((func) => func());
 	}
+
 	/**
 	 * Adds a new side-effect to resizing the canvas container.
 	 * @param func The function to add.
@@ -83,24 +92,6 @@ export function createCanvasContainer(canvasId: string) {
 			height: height
 		});
 
-		/** Initialize the background*/
-		const backgroundLayer = addLayer('background');
-		const backgroundRect = new Konva.Rect({
-			fill: getColor('neutral', 1, mode.value),
-			x: 0,
-			y: 0,
-			width: stage.width(),
-			height: stage.height()
-		});
-		backgroundLayer.add(backgroundRect);
-		addResizeFunction(() => {
-			console.log(`width: ${width} height: ${height}`);
-			if (stage && backgroundRect) {
-				backgroundRect.width(stage.width());
-				backgroundRect.height(stage.height());
-			}
-		});
-
 		initialized = true;
 	}
 
@@ -110,6 +101,9 @@ export function createCanvasContainer(canvasId: string) {
 		},
 		get stage() {
 			return stage;
+		},
+		get pixelsPerMeter() {
+			return pixelsPerMeter;
 		},
 		get initialized() {
 			return initialized;

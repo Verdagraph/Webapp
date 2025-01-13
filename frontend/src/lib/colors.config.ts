@@ -12,7 +12,9 @@ import {
 	amber,
 	amberDark,
 	mint,
-	mintDark
+	mintDark,
+	brown,
+	brownDark
 } from '@radix-ui/colors';
 
 /**
@@ -23,13 +25,17 @@ import {
  */
 
 export type Color =
+	/** Semantic colors. */
 	| 'neutral'
 	| 'primary'
 	| 'secondary'
 	| 'accent'
 	| 'destructive'
 	| 'warning'
-	| 'success';
+	| 'success'
+
+	/** Literal colors. */
+	| 'brown';
 
 type ColorSpec = {
 	/** The name of the color in radix UI. */
@@ -75,6 +81,11 @@ export const colors: Record<Color, ColorSpec> = {
 		radixId: 'mint',
 		radixLightValue: mint,
 		radixDarkValue: mintDark
+	},
+	brown: {
+		radixId: 'brown',
+		radixLightValue: brown,
+		radixDarkValue: brownDark
 	}
 };
 export default colors;

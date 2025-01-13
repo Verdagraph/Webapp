@@ -43,14 +43,20 @@ export const GardenCreateCommand = z.object({
 	description: gardenFields.description.optional(),
 	visibility: gardenFields.visibility,
 	adminInvites: gardenFields.usernameInvitesList
-		.describe('A list of usernames to invite as admins.')
-		.optional(),
+		.describe(
+			'A list of usernames to invite as admins. A maximum of 10 users can be invited at once.'
+		)
+		.default([]),
 	editorInvites: gardenFields.usernameInvitesList
-		.describe('A list of usernames to invite as editors.')
-		.optional(),
+		.describe(
+			'A list of usernames to invite as editors. A maximum of 10 users can be invited at once.'
+		)
+		.default([]),
 	viewerInvites: gardenFields.usernameInvitesList
-		.describe('A list of usernames to invite as viewers.')
-		.optional()
+		.describe(
+			'A list of usernames to invite as viewers. A maximum of 10 users can be invited at once.'
+		)
+		.default([])
 });
 
 /**
