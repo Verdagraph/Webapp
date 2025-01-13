@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { setContext, getContext } from 'svelte';
-	import { createCanvasContext, type CanvasContext } from './state';
+	import { getContext } from 'svelte';
+	import { type CanvasContext } from './state';
 
 	/** Props. */
 	type Props = {

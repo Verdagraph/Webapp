@@ -12,9 +12,10 @@
 	/** Force a re-render of the PaneGroup if the direction is changed. */
 	let initialized = $state(true);
 	$effect(() => {
-		workspaceContext.contentPaneDirection;
-		initialized = false;
-		initialized = true;
+		if (workspaceContext.contentPaneDirection) {
+			initialized = false;
+			initialized = true;
+		}
 	});
 
 	/** TODO: Figure out why and fix the layout canvas not being there after renavigating after a page refresh. */

@@ -40,10 +40,10 @@ function createWorkspaceContext() {
 	/** If true, the workspace is being edited by the user. */
 	let editing: boolean = $state(false);
 	/** Selected entities. */
-	let selectedPlantingAreaIds: Set<string> = $state(new Set());
+	const selectedPlantingAreaIds: Set<string> = $state(new Set());
 
 	/** Persisted config. */
-	let config = localStore<WorkspaceConfig>('workspaceConfig', {
+	const config = localStore<WorkspaceConfig>('workspaceConfig', {
 		treeEnabled: defaultTreeEnabled,
 		layoutEnabled: true,
 		contentPaneDirection: defaultContentPaneDirection

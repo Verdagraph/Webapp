@@ -1,7 +1,6 @@
 import iconIds from '$lib/assets/icons';
 import { externalLinks } from '$lib/assets/links';
 import { Garden } from '@vdt-webapp/common';
-import auth from '$state/auth.svelte';
 
 /**
  * Utility to get the base URL for the active garden.

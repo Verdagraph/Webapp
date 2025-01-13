@@ -1,16 +1,8 @@
 import { AppError } from '../errors';
-import type {
-	Coordinate,
-	Geometry,
-	GeometryAttributesMap,
-	LocationHistory,
-	Location,
-	GridAttributes,
-	RectangleAttributes
-} from './schema';
+import type { Geometry, GeometryAttributesMap } from './schema';
 
 /**
- * Returns the attributs from the geometry based on its type.
+ * Returns the attributes from the geometry based on its type.
  * Throws an error if the attributes are undefined.
  * @param geometry The geometry to extract from.
  * @returns The attributes.
@@ -61,8 +53,6 @@ export function historySelect<T extends { date: Date }>(
 	if (items.length === 0) {
 		return null;
 	}
-
-	return items[0];
 
 	const time = date.getTime();
 

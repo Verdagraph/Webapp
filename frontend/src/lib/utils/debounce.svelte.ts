@@ -11,18 +11,3 @@ export const debounce = (callback: Function, wait = 300) => {
 	};
 };
 export default debounce;
-
-export function debounceRune(callback: Function, wait = 300) {
-	let debouncedValue = $state(callback());
-
-	$effect.pre(() => {
-		const value = callback();
-		const timeout = setTimeout(() => {
-			debouncedValue = value;
-		}, wait);
-
-		return () => clearTimeout(timeout);
-	});
-
-	return () => debouncedValue;
-}

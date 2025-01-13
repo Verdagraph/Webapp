@@ -14,7 +14,7 @@ export function createCanvasContainer(canvasId: string) {
 
 	/** Konva. */
 	let stage: Konva.Stage | null = null;
-	let layers: Record<string, Konva.Layer> =
+	const layers: Record<string, Konva.Layer> =
 		{}; /** Record to track references to layers. */
 
 	/** Runes. */
@@ -25,7 +25,7 @@ export function createCanvasContainer(canvasId: string) {
 	/**
 	 * An array of functions which, when the canvas is resized, are called.
 	 */
-	let resizeFunctions: Array<() => void> = [
+	const resizeFunctions: Array<() => void> = [
 		/** Update the stage upon container resize. */
 		() => {
 			if (stage) {

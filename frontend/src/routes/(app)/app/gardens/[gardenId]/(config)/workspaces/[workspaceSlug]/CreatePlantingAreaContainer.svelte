@@ -13,7 +13,7 @@
 	const canvas = workspaceContext.layoutCanvasContext;
 	const { form: formData } = workspaceContext.plantingAreaCreateForm.form;
 
-	function onTranslate(newPos: Vector2d, movementOver: boolean) {
+	function onTranslate(newPos: Vector2d) {
 		$formData.location.coordinate = {
 			x: canvas.transform.modelXPos(newPos.x),
 			y: canvas.transform.modelYPos(newPos.y)

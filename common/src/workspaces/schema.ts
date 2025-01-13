@@ -148,9 +148,6 @@ export const workspaceSchema = {
 			),
 
 			/** Lines geometry attributes. */
-			/**
-			 * TODO: Address the fact that Triplit does not currently support including relations inside records.
-			 */
 			linesAttributes: S.Optional(
 				S.Record({
 					/** A set of coordinates which describe an open or closed shape of line segments. */
@@ -164,7 +161,7 @@ export const workspaceSchema = {
 				})
 			),
 
-			/** Temp relation for including lines coordinates. */
+			/** Temp relation for including lines coordinates. TODO: Remove this if/when Triplit supports inculding relations inside records. */
 			linesCoordinates: S.RelationMany('coordinates', {
 				where: [['id', 'in', '$linesAttributes.coordinateIds']]
 			})

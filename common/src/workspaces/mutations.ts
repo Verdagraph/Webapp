@@ -1,6 +1,9 @@
 import z from 'zod';
 import { GeometryTypeEnum } from './schema';
 
+/** The maximum supported magnitude of a coordinate. */
+const maxCoordinateMagnitude = 1000000;
+
 /** Field specifications. */
 export const workspaceFields = {
 	coordinate: z
@@ -11,7 +14,6 @@ export const workspaceFields = {
 		.describe('A position relative to the origin of a workspace.')
 		.refine(
 			(data) => {
-				const maxCoordinateMagnitude = 1000000;
 				if (data.x ** 2 + data.y ** 2 > maxCoordinateMagnitude ** 2) {
 					return false;
 				}
@@ -110,6 +112,15 @@ export const workspaceFields = {
 	})
 };
 
+/**
+ * Given a geometry type, ensure the associated attributes are included.
+ * @param type The geometry type.
+ * @param rectangleAttributesNullish True if the rectangle attributes aren't included. 
+ * @param polygonAttributesNullish True if the polygon attributes aren't included.
+ * @param ellipseAttributesNullish True if the ellipse attributes aren't included.
+ * @param linesAttributesNullish True if the lines attributes aren't included.
+ * @returns 
+ */
 function validateGeometryAttributes(
 	type: (typeof GeometryTypeEnum)[number],
 	rectangleAttributesNullish: boolean,
@@ -233,40 +244,10 @@ export const GeometryCreateCommand = z
 			);
 		},
 		{
-			message: 'Included geometry attributes does not satisfy geometry type.',
+			message: 'Included geometry attributes do not satisfy geometry type.',
 			path: ['type']
 		}
 	);
-
-/**
- * 
-const GeometryUpdateCommand = z
-.object({
-	type: z.enum(GeometryTypeEnum),
-	date: z.date().optional(),
-	scaleFactor: workspaceFields.geometryScaleFactor.optional(),
-	rotation: workspaceFields.geometryRotation.optional(),
-	rectangleAttributes: RectangleAttributesCreateUpdateCommand.optional(),
-	polygonAttributes: PolygonAttributesCreateUpdateCommand.optional(),
-	ellipseAttributes: EllipseAttributesCreateUpdateCommand.optional(),
-	linesAttributes: LinesAttributesCreateUpdateCommand.optional()
-})
-.refine(
-	(data) => {
-		return validateGeometryAttributes(
-			data.type,
-			!data.rectangleAttributes,
-			!data.polygonAttributes,
-			!data.ellipseAttributes,
-			!data.linesAttributes
-		);
-	},
-	{
-		message: 'Included geometry attributes does not satisfy geometry type.',
-		path: ['type']
-	}
-);
-*/
 
 /**
  * Command to create a new workspace.

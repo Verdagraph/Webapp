@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import * as Form from '$lib/components/ui/form';
 	import * as Textarea from '$lib/components/ui/textarea';

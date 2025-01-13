@@ -2,16 +2,13 @@ import { z as zod } from 'zod';
 import {
 	WorkspaceCreateCommand,
 	PlantingAreaCreateCommand,
-	GeometryCreateCommand,
 	type Workspace,
 	type Geometry,
 	type Location
 } from '@vdt-webapp/common';
-import { getClientOrError } from '$data/users/auth';
 import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
 import { AppError } from '@vdt-webapp/common/src/errors';
-import { exists } from '@triplit/client';
 import { requireRole } from '$data/gardens/commands';
 
 /** Creates a new workspace in a garden. */
@@ -93,7 +90,7 @@ export const plantingAreaCreate = {
 				case 'ELLIPSE':
 					geometry.ellipseAttributes = data.geometry.ellipseAttributes;
 					break;
-				case 'LINES':
+				case 'LINES': {
 					const coordinateIds: string[] = [];
 					for (const point of data.geometry.linesAttributes.coordinates) {
 						const coordinate = await transaction.insert('coordinates', {
@@ -109,19 +106,16 @@ export const plantingAreaCreate = {
 						closed: data.geometry.linesAttributes.closed
 					};
 					break;
+				}
 			}
 			geometry = await transaction.insert('geometries', geometry);
 
 			/** Persist locations. */
-			const locationCoordinate = await transaction.insert('coordinates', {
-				gardenId: garden.id,
-				x: data.location.coordinate.x,
-				y: data.location.coordinate.y
-			});
 			const location = await transaction.insert('locations', {
 				gardenId: garden.id,
 				workspaceId: workspace.id,
-				coordinateId: locationCoordinate.id,
+				x: data.location.coordinate.x,
+				y: data.location.coordinate.y,
 				date: data.geometry.date
 			});
 			const locationHistory = await transaction.insert('locationHistories', {

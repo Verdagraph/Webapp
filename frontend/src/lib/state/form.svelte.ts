@@ -41,9 +41,9 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 	/** Stores the result of zod validation. */
 	let validationErrors: FieldErrors | null = $state(null);
 	/** Used to execute the async function. */
-	let handler = useAsync(asyncFn, options?.handler);
+	const handler = useAsync(asyncFn, options?.handler);
 	/** All validation errors and those returned by the handler. */
-	let errors = $derived.by(() => {
+	const errors = $derived.by(() => {
 		if (validationErrors == null) {
 			return handler.errors;
 		} else if (handler.errors == null) {

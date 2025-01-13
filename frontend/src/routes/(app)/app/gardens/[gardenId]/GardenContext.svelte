@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { activeGardenId } from '$state/activeGarden.svelte';
 </script>
 
 <!--

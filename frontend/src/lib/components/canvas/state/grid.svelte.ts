@@ -41,12 +41,12 @@ export function createCanvasGridManager(
 	let backgroundGridlinesGroup: Konva.Group | null = null;
 
 	/** Runes. */
-	let config = localStore<GridManagerPersistedState>('layoutGridState', {
+	const config = localStore<GridManagerPersistedState>('layoutGridState', {
 		snapToGrid: true,
 		rightAngleConstraint: false,
 		metersPerBackgroundGridline: 0.3048
 	});
-	let pixelsPerBackgroundGridline = $derived(
+	const pixelsPerBackgroundGridline = $derived(
 		container.pixelsPerMeter * config.value.metersPerBackgroundGridline
 	);
 

@@ -4,7 +4,7 @@
 	import { getContext } from 'svelte';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
-	import { historySelect, type Geometry } from '@vdt-webapp/common';
+	import { historySelect } from '@vdt-webapp/common';
 	import triplit from '$data/triplit';
 	import { useQuery } from '@triplit/svelte';
 	import { type DateValue, getLocalTimeZone } from '@internationalized/date';

@@ -7,7 +7,7 @@ import { toast } from 'svelte-sonner';
 /**
  * Options which may be set on the async handler.
  */
-export type HandlerOptions<ResultType = any> = {
+export type HandlerOptions<ResultType = Record<string, unknown>> = {
 	/** Called after a successful call to the async function. */
 	onSuccess?: (result: ResultType) => void;
 	/** Called after an error is raised by the async function. */

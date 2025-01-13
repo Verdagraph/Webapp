@@ -1,4 +1,4 @@
-import { userLoginOp, UserLoginOpBody, userRefreshOp } from '$codegen';
+import { userLoginOp, userRefreshOp } from '$codegen';
 import triplit from '$data/triplit';
 import { UserAccount, UserProfile } from '@vdt-webapp/common';
 import { AppError } from '@vdt-webapp/common/src/errors';

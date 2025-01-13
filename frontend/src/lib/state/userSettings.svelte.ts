@@ -14,7 +14,7 @@ type UserSettings = {
 	units: PreferredUnitSettings;
 };
 
-let _rune = new LocalStore<UserSettings>('userSettings', {
+const _rune = new LocalStore<UserSettings>('userSettings', {
 	units: {
 		distance: 'metric',
 		temperature: 'metric',

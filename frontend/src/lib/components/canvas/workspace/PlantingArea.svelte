@@ -1,13 +1,8 @@
 <script lang="ts">
 	import Konva from 'konva';
 	import type { Vector2d } from 'konva/lib/types';
-	import type { ShapeConfig } from 'konva/lib/Shape';
 	import { getContext, onDestroy } from 'svelte';
-	import {
-		type Coordinate,
-		type Geometry,
-		type GridAttributes
-	} from '@vdt-webapp/common';
+	import { type Geometry, type GridAttributes } from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, type SupportedShape } from '../utils';
 	import { getColor } from '$lib/utils';

@@ -94,11 +94,11 @@ function getClosedOrUnclosedShape(
 			 * TODO: Remove this once linesCoordinates can be moved to linesAttributes.coordinates
 			 */
 			if (!geometry.linesAttributes?.coordinates) {
-				/** @ts-ignore */
+				/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type.*/
 				if (!geometry.linesCoordinates) {
 					throw new AppError('Lines geometry without coordinates.');
 				}
-				/** @ts-ignore */
+				/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type. */
 				attributes.coordinates = geometry.linesCoordinates;
 			}
 

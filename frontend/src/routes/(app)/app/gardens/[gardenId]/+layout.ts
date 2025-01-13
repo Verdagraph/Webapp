@@ -1,7 +1,6 @@
 import triplit from '$data/triplit';
 import { activeGardenQuery } from '$data/gardens/queries.js';
 import { goto } from '$app/navigation';
-import { toast } from 'svelte-sonner';
 import activeGardenId from '$state/activeGarden.svelte';
 import { AppError } from '@vdt-webapp/common/src/errors';
 

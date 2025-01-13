@@ -31,11 +31,11 @@ export function createToolbox<ToolId extends string>(
 	/** Stores the last activated tool by its ID */
 	let lastActivatedId: ToolId | undefined = $state(undefined);
 	/** Presents the attributes of the active tools. */
-	let activeTools = $derived<ToolAttributeType<ToolId>[]>(
+	const activeTools = $derived<ToolAttributeType<ToolId>[]>(
 		attributes.filter((attr) => activeToolIds.includes(attr.id))
 	);
 	/** True if any tools are active. */
-	let isActive = $derived<boolean>(activeToolIds.length > 0);
+	const isActive = $derived<boolean>(activeToolIds.length > 0);
 
 	/**
 	 * Activates a tool.

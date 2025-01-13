@@ -155,12 +155,12 @@ export function createUnitAwareValue(
 	);
 
 	/** A version of the value guarnteed to be metric. */
-	let metricValue = $derived(
+	const metricValue = $derived(
 		convertQuantityToMetric(displayValue, unitSystem, quantityType)
 	);
 
 	/** The symbol displayed in the component.*/
-	let unitSymbol = $derived(quantityToUnitSymbol(unitSystem, quantityType));
+	const unitSymbol = $derived(quantityToUnitSymbol(unitSystem, quantityType));
 
 	/**
 	 * @param newVal The new value, in metric.

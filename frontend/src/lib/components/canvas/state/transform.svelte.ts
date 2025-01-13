@@ -34,7 +34,7 @@ export function createCanvasTransform(container: CanvasContainer) {
 	/** Runes. */
 	let scaleFactor: Vector2d = $state({ x: 1, y: 1 });
 	let position: Vector2d = $state({ x: 0, y: 0 });
-	let config = new LocalStore<TransformControlsState>('layoutControls', {
+	const config = new LocalStore<TransformControlsState>('layoutControls', {
 		buttonsExpanded: true,
 		buttonsPosition: defaultButtonPosition
 	});
@@ -42,7 +42,7 @@ export function createCanvasTransform(container: CanvasContainer) {
 	/**
 	 * An array of functions which, when the canvas is transformed, are called.
 	 */
-	let transformFunctions: Array<() => void> = [];
+	const transformFunctions: Array<() => void> = [];
 
 	/** Functions. */
 
