@@ -36,11 +36,3 @@ The User wireframes allow:
 ## Self Profile
 
 ## Others Profiles
-
-## Friends
-
-# Garden
-
-## GardenMembership Invites 
-
-![Invites](./wireframes/invites.excalidraw.png)
