@@ -4,29 +4,28 @@ import { schema } from '@vdt-webapp/common';
 
 export const activeGardenQuery = triplit.query('gardens').id('$query.activeGardenId');
 
-export const adminGardensQuery = triplit.query('gardens').id('garden1');
-//.where('adminIds', 'has', '$global.clientProfileId');
+export const adminGardensQuery = triplit
+	.query('gardens')
+	.where('adminIds', 'has', '$session.profileId');
 
-export const editorGardensQuery = triplit.query('gardens');
-//.where('editorIds', 'has', '$global.clientProfileId');
+export const editorGardensQuery = triplit
+	.query('gardens')
+	.where('editorIds', 'has', '$session.profileId');
 
-export const viewerGardensQuery = triplit.query('gardens');
-//.where('viewerIds', 'has', '$global.clientProfileId');
+export const viewerGardensQuery = triplit
+	.query('gardens')
+	.where(['viewerIds', 'has', '$session.profileId']);
 
 export const favoriteMembershipsQuery = triplit
 	.query('gardenMemberships')
-	.where([
-		['favorite', '=', true]
-		//['userId', '=', '$global.clientProfileId']
-	])
+	.where('favorite', '=', true)
+	.where(['userId', '=', '$session.profileId'])
 	.include('garden');
 
 export const acceptancePendingMembershipsQuery = triplit
 	.query('gardenMemberships')
-	.where([
-		['status', '!=', 'ACCEPTEd']
-		//['userId', '=', '$global.clientProfileId']
-	])
+	.where('status', '!=', 'ACCEPTED')
+	.where(['userId', '=', '$session.profileId'])
 	.include('garden');
 
 const acceptancePendingMembershipsQueryBuilt =

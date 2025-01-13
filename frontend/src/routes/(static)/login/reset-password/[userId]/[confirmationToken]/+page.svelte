@@ -5,7 +5,7 @@
 	import PasswordResetForm from './PasswordResetForm.svelte';
 
 	/** Set to true on form success. */
-	let succeeded = $state<boolean>(false);
+	let succeeded: boolean = $state(false);
 </script>
 
 <svelte:head>

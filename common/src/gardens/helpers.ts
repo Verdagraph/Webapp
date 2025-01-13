@@ -29,7 +29,7 @@ export const isProfileMember = (garden: Garden, profileId: string): boolean => {
 
 /**
  * Checks whether a user has a role in the garden.
- * Roles an upwards inclusive, meaning an admin user is authorized for editor activities.
+ * Roles are upwards inclusive, meaning an admin user is authorized for editor activities.
  * @param garden The garden to check membership of.
  * @param profileId The ID of the profile to check.
  * @param role The role to check membership against.

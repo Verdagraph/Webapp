@@ -1,4 +1,4 @@
-import { userLoginOp, UserLoginOpBody, userRefreshOp } from '$codegen';
+import { userLoginOp, userRefreshOp } from '$codegen';
 import triplit from '$data/triplit';
 import { UserAccount, UserProfile } from '@vdt-webapp/common';
 import { AppError } from '@vdt-webapp/common/src/errors';
@@ -23,9 +23,14 @@ export const userLogin = {
 		/** Fetch the token. */
 		const token = await userLoginOp(data);
 
+		/** End the anonymous session. */
+		await triplit.endSession();
+
 		/** Start the Triplit session. */
 		await triplit.startSession(token);
-		auth.isAuthenticated = true;
+		auth.updateAuth();
+
+		return token;
 	}
 };
 
@@ -35,7 +40,7 @@ export const userLogin = {
 export const userRefresh = {
 	mutation: async function () {
 		const token = await userRefreshOp();
-		auth.isAuthenticated = true;
+		auth.updateAuth();
 		return token;
 	}
 };
@@ -46,12 +51,12 @@ export const userRefresh = {
 export const userLogout = {
 	mutation: async function () {
 		/** Don't allow re-logging out. */
-		if (triplit.token == null || triplit.token == TRIPLIT_ANON_TOKEN) {
+		if (!auth.isAuthenticated) {
 			return;
 		}
 
 		await triplit.endSession();
-		auth.isAuthenticated = false;
+		auth.updateAuth();
 	}
 };
 
@@ -69,11 +74,7 @@ export const getClient = async (): Promise<{
 	}
 
 	const account = await triplit.fetchOne(
-		triplit
-			.query('accounts')
-			.where([['id', '=', '$role.accountId']])
-			.include('profile')
-			.build()
+		triplit.query('accounts').id('$session.accountId').include('profile').build()
 	);
 	if (!account || !account.profile) {
 		return null;

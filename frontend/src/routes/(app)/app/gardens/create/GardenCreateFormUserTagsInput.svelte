@@ -1,17 +1,21 @@
 <script lang="ts">
-	import type Tag from '@melt-ui/svelte';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
 	import { createTagsInput, melt } from '@melt-ui/svelte';
-	import { usernamesExistQueries } from '$data/users/queries';
-	import gardenFields from '$lib/backendSchema/specs/garden';
+	import { userProfilesUsernameQuery } from '$data/users/queries';
+	import { useQuery } from '@triplit/svelte';
+	import triplit from '$data/triplit';
+	import * as Popover from '$components/ui/popover';
+	import PopoverContent from '$components/ui/popover/popover-content.svelte';
+
+	/** TODO: Redo this component once Melt-UI has updated the Tags-Input component to runes. */
 
 	type Props = {
-		tagsInput: string[] | undefined;
-		formAttrs: any;
+		tagsInput: string[];
+		maxTags: number | undefined;
 	};
 
-	let { tagsInput = $bindable(), formAttrs }: Props = $props();
+	let { tagsInput = $bindable(), maxTags, ...restProps }: Props = $props();
 
 	const {
 		elements: { root, tag, input, deleteTrigger, edit },
@@ -21,39 +25,46 @@
 		editable: true,
 		addOnPaste: true,
 		trim: true,
-		maxTags: gardenFields.user_invites_list.max_length.value,
+		maxTags,
 		placeholder: 'Enter a username',
 		/** Sync the bindable input prop and Melt's writable store. */
 		add(tag: string) {
-			tagsInput?.push(tag);
+			tagsInput.push(tag);
+			updateProfilesQuery();
 			return { id: tag, value: tag };
 		},
 		/** The ID of the tag is the previous ID, the value is the newly set value. */
-		update(tag: Tag.Tag) {
-			tagsInput = tagsInput?.filter((username) => {
+		update(tag) {
+			tagsInput = tagsInput.filter((username) => {
 				return username !== tag.id;
 			});
+			tagsInput.push(tag.value);
+			updateProfilesQuery();
 			return { id: tag.value, value: tag.value };
 		},
-		remove(tag: Tag.Tag) {
-			tagsInput = tagsInput?.filter((username) => {
+		remove(tag) {
+			tagsInput = tagsInput.filter((username) => {
 				return username !== tag.id;
 			});
+			updateProfilesQuery();
 			return true;
 		}
 	});
 
-	/** TODO: Indicate in the input whether the username exists. */
-	const usernameQueries = usernamesExistQueries(
-		tags.get().map((tag) => {
-			return tag.value;
-		})
+	/** Indicate in the input whether the username exists. */
+	const profiles = useQuery(
+		triplit,
+		userProfilesUsernameQuery.select(['username']).vars({ usernames: [...tagsInput] })
 	);
-	// #if usernameQueries.some(usernameQuery => usernameQuery.queryKey)
+	function updateProfilesQuery() {
+		profiles.updateQuery(
+			userProfilesUsernameQuery.select(['username']).vars({ usernames: [...tagsInput] })
+		);
+	}
 </script>
 
 <div
-	class="border-neutral-12 bg-neutral-1 flex flex-col items-start justify-center gap-2 rounded-md border text-sm"
+	class="border-neutral-7 bg-neutral-1 flex flex-col items-start justify-center gap-2 rounded-md border text-sm"
 >
 	<div
 		use:melt={$root}
@@ -64,11 +75,35 @@
 				use:melt={$tag(t)}
 				class="bg-neutral-2 text-neutral-11 flex items-center overflow-hidden rounded-md [word-break:break-word] data-[disabled]:hover:cursor-default data-[disabled]:focus:!outline-none data-[disabled]:focus:!ring-0"
 			>
-				<span class="border-neutral-5 flex items-center border-r px-1.5">{t.value}</span
-				>
+				<span class="flex items-center px-1.5">{t.value}</span>
+				<Popover.Root>
+					<Popover.Trigger class="pr-1.5">
+						{#if profiles.results && profiles.results.find((profile) => profile.username === t.value)}
+							<Icon icon={iconIds.checkmarkIcon} class="text-primary-8" width="1rem" />
+						{:else if profiles.fetching}
+							<Icon
+								icon={iconIds.defaultSpinnerIcon}
+								class="text-neutral-6 animate-spin"
+								width="1rem"
+							/>
+						{:else}
+							<Icon icon={iconIds.errorIcon} class="text-destructive-8" width="1rem" />
+						{/if}
+					</Popover.Trigger>
+					<PopoverContent>
+						{#if profiles.results && profiles.results.includes({ username: t.value })}
+							This user exists.
+						{:else if profiles.fetching}
+							Verifying username...
+						{:else}
+							This user does not exist.
+						{/if}
+					</PopoverContent>
+				</Popover.Root>
 				<button
 					use:melt={$deleteTrigger(t)}
-					class="enabled:hover:bg-neutral-3 flex h-full items-center px-1"
+					type="button"
+					class="enabled:hover:bg-neutral-3 border-neutral-5 flex h-full items-center border-l px-1"
 				>
 					<Icon icon={iconIds.defaultClose} width="1rem" />
 				</button>
@@ -80,7 +115,7 @@
 		{/each}
 		<input
 			use:melt={$input}
-			{...formAttrs}
+			{...restProps}
 			disabled={false}
 			type="text"
 			class="bg-neutral-1 text-neutral-11 data-[invalid]:text-destructive-6 w-full min-w-[4.5rem] shrink grow basis-0 border-0 outline-none focus:!ring-0"

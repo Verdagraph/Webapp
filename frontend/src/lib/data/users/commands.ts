@@ -1,5 +1,3 @@
-import { z, z as zod } from 'zod';
-import { useMutation } from '@sveltestack/svelte-query';
 import {
 	UserCreateCommand,
 	UserConfirmEmailConfirmationCommand,

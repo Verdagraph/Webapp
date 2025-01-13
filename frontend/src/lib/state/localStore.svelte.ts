@@ -6,7 +6,7 @@ import { browser } from '$app/environment';
  * https://www.youtube.com/watch?v=HnNgkwHZIII
  */
 export class LocalStore<T> {
-	_rune = $state<T>() as T;
+	_rune: T = $state() as T;
 	_key = '';
 
 	constructor(key: string, value: T) {

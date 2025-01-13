@@ -7,7 +7,7 @@ import { toast } from 'svelte-sonner';
 /**
  * Options which may be set on the async handler.
  */
-type HandlerOptions<ResultType = any> = {
+export type HandlerOptions<ResultType = Record<string, unknown>> = {
 	/** Called after a successful call to the async function. */
 	onSuccess?: (result: ResultType) => void;
 	/** Called after an error is raised by the async function. */
@@ -39,11 +39,11 @@ type AsyncState<TResult> = {
  * @param options Handler options.
  * @returns An async handler rune.
  */
-export function useAsync<TResult = void, TParams = void>(
+export function useAsync<TParams = void, TResult = void>(
 	asyncFn: (params: TParams) => Promise<TResult>,
 	options?: HandlerOptions<TResult>
 ) {
-	let _rune = $state<AsyncState<TResult>>({
+	let _rune: AsyncState<TResult> = $state({
 		isLoading: false,
 		isError: false,
 		isSuccess: false,
@@ -124,6 +124,7 @@ export function useAsync<TResult = void, TParams = void>(
 	};
 }
 export default useAsync;
+export type AsyncHandler = ReturnType<typeof useAsync>;
 
 /**
  * Converts any type of error which may be raised by the async function
@@ -161,7 +162,6 @@ const convertErrors = (
 const handleErrors = (errors: AppErrors) => {
 	if (errors.nonFormErrors) {
 		for (const errorMessage of errors.nonFormErrors) {
-			console.log(errorMessage);
 			/** Toast */
 			toast.error(errorMessage);
 		}

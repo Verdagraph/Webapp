@@ -1,25 +1,24 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { setContext } from 'svelte';
-	import { getColor } from '$lib/utils';
-	import { mode } from 'mode-watcher';
-	import { createCanvasContext, type CanvasContext } from './state';
+	import { getContext } from 'svelte';
+	import { type CanvasContext } from './state';
 
 	/** Props. */
 	type Props = {
 		canvasId: string;
-		children: Snippet<[]>;
-	};
-	let { canvasId, children }: Props = $props();
 
-	/** Create the context. */
-	const canvas = createCanvasContext(canvasId);
-	setContext<CanvasContext>(canvasId, canvas);
+		children: Snippet<[]>;
+		overlay: Snippet<[]>;
+	};
+	let { canvasId, children, overlay }: Props = $props();
+
+	/** Create or retrieve the context. */
+	const canvas = getContext<CanvasContext>(canvasId);
 
 	let containerRef: HTMLDivElement;
 	onMount(() => {
-		canvas.container.initialize();
+		canvas.initialize();
 
 		const resizeObserver = new ResizeObserver(canvas.container.onResize);
 		resizeObserver.observe(containerRef);
@@ -32,13 +31,20 @@
 </script>
 
 <div
-	id={canvasId}
-	bind:this={containerRef}
 	bind:clientWidth={canvas.container.width}
 	bind:clientHeight={canvas.container.height}
-	class="h-full w-full"
+	class="relative h-full w-full"
 >
-	{#if canvas.container.initialized}
-		{@render children()}
-	{/if}
+	<div
+		id={canvasId}
+		bind:this={containerRef}
+		class="absolute left-[0.5px] top-0 h-full w-full"
+	>
+		{#if canvas.container.initialized}
+			{@render children()}
+		{/if}
+	</div>
+	<div class="pointer-events-none absolute left-[0.5px] top-0 z-10 h-full w-full">
+		{@render overlay()}
+	</div>
 </div>

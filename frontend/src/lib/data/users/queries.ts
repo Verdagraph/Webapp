@@ -1,4 +1,3 @@
-import { useQuery } from '@triplit/svelte';
 import triplit from '$data/triplit';
 
 /**
@@ -9,6 +8,8 @@ export const userProfilesQuery = triplit
 	.where('id', 'in', '$query.profileIds');
 
 /**
- * Constructs a list of queries which return whether a username exists.
+ * Retrieves the requested user profiles by username.
  */
-export const usernamesExistQueries = (data: Array<string>) => {};
+export const userProfilesUsernameQuery = triplit
+	.query('profiles')
+	.where('username', 'in', '$query.usernames');

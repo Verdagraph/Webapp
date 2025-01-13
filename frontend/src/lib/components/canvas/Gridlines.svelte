@@ -10,5 +10,5 @@
 
 	let canvas = getContext<CanvasContext>(canvasId);
 
-	canvas.grid.initialize();
+	canvas.gridManager.initialize();
 </script>

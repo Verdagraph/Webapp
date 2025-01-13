@@ -1,8 +1,6 @@
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import type { AxiosRequestConfig, AxiosError } from 'axios';
 import axios from 'axios';
-import { goto } from '$app/navigation';
 import { AppError, ServerErrorResponse } from '@vdt-webapp/common/src/errors';
-import auth from '$state/auth.svelte';
 import triplit from './triplit';
 
 /** Static client configuration. */
