@@ -36,6 +36,12 @@ This view is shown to anonymous and authenticated viewers, and allows searching 
 
 These frames exist within the context of a specific garden.
 
+## Context
+
+An extra nav-style bar at the bottom of the screen gives context as to the current garden. It will show connection status and a dropdown displaying the currently connected/active users.
+
+![Context Wireframe](./wireframes/context.excalidraw.png)
+
 ## Dashboard
 
 This is the root page of a Garden. It should provide summary information about the state of the Planner, Devices, any new members, etc. I'm still not sure exactly what should go on it.
