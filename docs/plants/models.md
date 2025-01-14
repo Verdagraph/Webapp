@@ -26,12 +26,13 @@ classDiagram
     }
     class Harvest {
         date: date
-        mass: float
-        units: float
+        mass: number
+        units: number
         quality: HarvestQualityEnum
     }
     class Plant {
         cultivarName: string
+        name: string
         recordedLifespan: Lifespan
         expectedLifespan: Lifespan
         batched: boolean
@@ -47,6 +48,38 @@ classDiagram
         Category: Workspace
     }
 ```
+
+# Lifespan
+
+The lifespan stores all data about a plant which may differ from expected to real behaviour.
+
+## origin
+
+The origin stores how the plant was created. Options are:
+- directSeed: A seed is sown directly into the area it will reach maturity in.
+- seedToTransplant: A seed is sown in one area and then transplanted into the area it will reach maturity in.
+- seedlingToTransplant: A seedling is transplanted directly into the area it will reach maturity in.
+
+In direct seed mode, most plants will have one location: the one they were seeded in. In seed to transplant mode, a plant will have at least two locations: the one where it was seeded, usually in a dedicated seed starting area, and where it is transplanted. Both should be defined when the plant is created. In the seedling to transplant mode, the plant starts as a seedling, for example, when seedlings are sourced from a nursery.
+
+## locationHistory and geometryHistory
+
+Both location and geometry may vary over time, as plants move around or grow.
+
+## seedDate, germDate, expiryDate
+
+Stores the key dates for the plants.
+- seedDate: The date at which the plant is seeded.
+- germDate: The date at which the seed germinated.
+- expiryDate: The date at which the plant is removed from the space.
+
+## harvests
+
+A variable number of harvests may be assigned to a plant. For plants which have a zero `AnnualLifecycleProfile.firstToLastHarvest` this should include only one harvest, but this may be overridden. Each harvest contains the following attributes:
+- date: The date of the harvest.
+- mass: The mass of the harvest, in kg.
+- units: The number of units. This may differ in meaning depending on the plant. For example, for carrots, it could mean the number of roots. For lettuce, it could mean the number of leaves.
+- quality: The quality of the harvest. May be low, medium, or high.
 
 # Plant
 
@@ -66,19 +99,6 @@ The purpose of storing two Lifespan objects is to clearly delineate between the 
 
 If true, the model represents several different plants in real life. In this mode, less attention is paid to, for example, how geometry changes over time as plants grow, because the same model represents multiple plants. Instead of tracking individual carrots, we can use one model instance to track a square foot of space which has carrots in it, all planted at the same time.
 
-# Lifespan
+# PlantGroup
 
-The lifespan stores all data about a plant which may differ from expected to real behaviour.
-
-## origin
-
-The origin stores how the plant was created. Options are:
-- directSeed: A seed is sown directly into the area it will reach maturity in.
-- seedToTransplant: A seed is sown in one area and then transplanted into the area it will reach maturity in.
-- seedlingToTransplant: A seedling is transplanted directly into the area it will reach maturity in.
-
-In direct seed mode, most plants will have one location: the one they were seeded in. In seed to transplant mode, a plant will have at least two locations: the one where it was seeded, usually in a dedicated seed starting area, and where it is transplanted. Both should be defined when the plant is created. In the seedling to transplant mode, the plant starts as a seedling, for example, when seedlings are sourced from a nursery.
-
-## locationHistory and geometryHistory
-
-Both location and geometry may vary over time, as plants move around or grow.
+PlantGroups are simple collections of references to Plants which serve to group them together. This is optional, but can be useful when experimenting with different plans. For example, all plants currently in the model which are uncomitted may be put together in a group, and then hidden, with a new group constructed in its place. This allows for creating multiple mutually-exclusive parallel plans for comparison, to try out new ideas without deleting old ones.

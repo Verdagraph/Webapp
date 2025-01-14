@@ -1,11 +1,9 @@
 ---
 status: This document is behind the implementation, but the implementation may need a redesign.
 ---
-
-
 # Cultivars - Wireframes
 
-The Garden wireframes allow:
+The Cultivars wireframes allow:
 - Viewing and editing CultivarCollections
 
 ## CultivarCollections

@@ -1,8 +1,11 @@
+---
+status: This document roughly matches the implementation when it comes to the layout, but is ahead when it comes to everything else.
+---
 # Planner - Wireframes
 
 The Planner pages are split into two groups:
-- *Verdagraph*: a combination of three different views of the model state, mainly Plants, PlantingWindows, and Actions.
-- *Workbook*: a list-like view of Actions optimized for assigning Actions among Users and using as a reference when carrying out tasks more conveninent than the Verdagraph.
+- *Verdagraph*: a complex view of the data model through its spatial and temporal aspects, made primarily for manipulating the state of Plants.
+- *Workbook*: a calendar-like view of Actions optimized for assigning Actions among Users and using as a reference when carrying out tasks more conveninent than the Verdagraph.
 
 # Verdagraph
 
@@ -12,21 +15,18 @@ The Verdagraph is split into three main views into the model state:
 - *Layout*: Displays model attributes according to their spatial layout.
 
 All three of these windows are toggleable. They are supported by the following additional UI elements:
-- *Timeline Selector*: Allows selecting a range of dates easily with the mouse and keyboard. This range dictates which model elements are visible in the Tree and Calendar, with the center of the range being the "selected day" which controls the day displayed in the Layout.
+- *Timeline Selector*: Allows selecting a range of dates easily with the mouse and keyboard. This range dictates which model elements are visible in the Tree and Calendar, with the center of the range being the "focused day" which controls the day displayed in the Layout.
 - *Toolbar*: A horizontal toolbar.
-- *Form* A reusable component for storing a list of active forms (ex. "Add Plant", "Record Observation"), allowing the resuse of functionality between Tree, Calendar, and Layout.
+- *Toolbox* A reusable component for storing a list of active tools (ex. "Add Plant", "Record Observation"), allowing the resuse of functionality between Tree, Calendar, and Layout.
 
-![Verdagraph Structure Wireframe](./wireframes/verdagraph_structure.excalidraw.png)
-
-![Verdagraph Structure Filled Wireframe](./wireframes/verdagraph_structure_filled.excalidraw.png)
+![Verdagraph Structure Wireframe](./wireframes/verdagraphStructure.excalidraw.png)
 
 ## Tree
 
-![Tree Wireframe](./wireframes/tree.excalidraw.png)
 
-Using the [Tree](https://melt-ui.com/docs/builders/tree) component from Melt UI, [Plants](), [PlantingWindows](), and [Actions]() are displayed in scrollable windows.
+Using the [Tree](https://melt-ui.com/docs/builders/tree) component from Melt UI, Plants, PlantingWindows, an Actions are displayed in scrollable windows.
 
-The range of objects displayed is controlled by the [TimelineSelector](), with the selected day being highlighted.
+The range of objects displayed is controlled by the TimelineSelector, with the selected day being highlighted.
 
 Buttons:
 1. PlantingWindow window toggle button
@@ -38,6 +38,8 @@ Buttons:
 | -------- | ------- | ------- |
 | Cultivar>Environment>PlantingWindow | Cultivar>Plant | ActionType |
 
+![Tree Wireframe](./wireframes/tree.excalidraw.png)
+
 ## Calendar
 
 ![Calendar Wireframe](./wireframes/calendar.excalidraw.png)
@@ -46,16 +48,9 @@ Buttons:
 
 ![Layout Wireframe](./wireframes/layout.excalidraw.png)
 
-## Toolbar
-
-![Toolbar Wireframe](./wireframes/toolbar.excalidraw.png)
-
-## Form
-
-![Form Wireframe](./wireframes/form.excalidraw.png)
-
 ## Timeline Selector
 
 ![Timeline Selector Wireframe](./wireframes/timeline_selector.excalidraw.png)
 
 # Workbook
+

@@ -14,9 +14,9 @@ Each subfolder represents a feature category. Obviously, most features overlap, 
 | [Garden](gardens/README.md) | Gardens are containers for multiple Workspaces, as well as general environments for all other model state, and a space to connect Users. |
 | [Workspace](workspaces/README.md) | Workspaces are containers which give spatial context to objects such as plants, planting containers, devices, and other models. |
 | [Cultivars](cultivars/README.md) | Cultivars are collections of attribute models defining the expected behaviours of plant species. |
+| [Environment](environment/README.md) | Containers for climate and other environmental data. |
 | [Plants](plants/README.md) | Plants are physical instances of plants with known locations in space and time, and a reference to a Cultivar. |
 | [Planner](planner/README.md) | Planner models are tools for describing past, present, and planned plant instances together as a structured plan, as well as generating plans based on constraints and objectives.
-| [Environment](environment/README.md) | Containers for climate and other environmental data. |
 | [Actions](actions/README.md) | Collections of outputs from the model state including lists of tasks to be performed. |
 | [Devices, Controllers, and Sensors](devices/README.md) | Devices are containers of Controllers and Sensors, which are tools to interface Environment inputs and Actions outputs with external APIs. |
 
