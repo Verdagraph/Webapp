@@ -62,7 +62,7 @@ export const userLogout = {
 
 /**
  * Fetches the client's Account and Profile objects.
- * If unauthenticated, null is returned.
+ * If anonymous, null is returned.
  * @returns The client if it was found, else null.
  */
 export const getClient = async (): Promise<{
