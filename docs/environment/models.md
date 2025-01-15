@@ -1,7 +1,9 @@
 ---
 status: This document is ahead of the implementation.
 ---
+
 # Planner Models
+
 ```mermaid
 ---
 title: Environment Domain Model
@@ -34,11 +36,12 @@ classDiagram
 
 # Environment
 
-An Environment is a container for environmental characteristics, as well as the model which inputs about the world, such as temperature, can be connected to. An environment can be connected to a parent entity, where the Environment will apply across that entity, or it may define its own geometry. 
+An Environment is a container for environmental characteristics, as well as the model which inputs about the world, such as temperature, can be connected to. An environment can be connected to a parent entity, where the Environment will apply across that entity, or it may define its own geometry.
 
 ## parentType, garden, workspace, plantingArea, geometryHistory, locationHistory, and inherit
 
 An Environment may be connected to a parent entity. The value of `parentType` defines which it is connected to, and has the following options:
+
 - garden: the environment applies to a garden
 - workspace: the environment applies to a workspace
 - plantingArea: the environment applies to a planting area
@@ -57,11 +60,13 @@ Gardens should be able to define attributes of the physical environment.
 ### FrostDateProfile
 
 Frost dates are a widely used heuristic for constructing planting calendars. The `FrostDatePlantingWindowProfile` defined in the Plants feature category use these to define acceptable planting windows.
+
 - lastFrostDate: The date at which the last frost date is expected to occurr.
 - firstFrostDate: The date at which the last frost date is expected to oc[urr.
 
 ### AnnualTemperatureProfile
 
 Stores the expected minimum and maximum temperatures that may happen over the course of a year.
+
 - minimumTemperature: The minimum temperature expected over the year.
 - maximumTemperature: The maximum temperature expected over the year.

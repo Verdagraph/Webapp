@@ -2,7 +2,6 @@
 status: This document is up to date with the implementation.
 ---
 
-
 # Garden - Models
 
 ```mermaid
@@ -102,18 +101,22 @@ The Geometry model is meant to describe a shape in 2D space. The GeometryHistory
 Four types of geometries are supported: rectangles, polygons, ellipses, and lines. They are described by the following attributes.
 
 RectangleAttributes:
+
 - Length
 - Width
 
 PolygonAttributes:
+
 - Number of sides
 - Radius
 
 EllipseAttributes:
+
 - Horizontal diameter
 - Vertical diameter
 
 Lines:
+
 - A set of Coordinates, located relative to the center of the shape.
 - Whether the attributes describe a closed shape or not.
 

@@ -1,6 +1,7 @@
 ---
 status: This document is ahead of the implementation.
 ---
+
 # Actions - Models
 
 ```mermaid
@@ -38,6 +39,7 @@ An Action represents a task or set of tasks which needs to be completed to bring
 ## targetType, plant, plantingArea, workspace, garden
 
 An Action may be tied to another entity. The options are:
+
 - Plant
 - PlantingArea
 - Workspace
@@ -58,6 +60,7 @@ An Action is made up of multiple Tasks, which each describe an individual task. 
 ## type
 
 Each Task has a type. These types are what the software uses to automatically populate task descriptions for each plant. The type options are:
+
 - Seed a plant
 - Thin around a plant
 - Harden a plant

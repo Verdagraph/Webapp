@@ -2,7 +2,6 @@
 status: This document is up to date with the implementation.
 ---
 
-
 # Garden - Models
 
 ```mermaid
@@ -54,6 +53,7 @@ A Garden should keep track of the User that created it, but have no reliance on 
 ## visibility
 
 A Garden should be able to have these levels of visibility:
+
 - Hidden: View permissions and up are restricted to members.
 - Unlisted: Edit permissions and up are restricted to members. Anyone with a link can view, but can't be found with a search.
 - Public: Edit permissions and up are restricted to members. Anyone with a link can view, and potentially find on the site without a link.
@@ -76,20 +76,21 @@ A GardenMembership should refer to only one main User.
 
 ## inviter
 
-A GardenMembership should keep track of who created it. If the inviter and the user are the same, the inviter should be None. The deletion of the inviter should be of no consequence to the GardenMembership. 
+A GardenMembership should keep track of who created it. If the inviter and the user are the same, the inviter should be None. The deletion of the inviter should be of no consequence to the GardenMembership.
 
 ## role
 
 A GardenMembership should be able to grant these levels of access:
+
 - Admins:
-    - Invite, demote, or revoke user memberships.
-    - Change the garden attributes.
-    - Add and remove Workspaces, CultivarSets.
-    - Manipulate all model state.
+  - Invite, demote, or revoke user memberships.
+  - Change the garden attributes.
+  - Add and remove Workspaces, CultivarSets.
+  - Manipulate all model state.
 - Edit:
-    - Update most model state.
-- View: 
-    - Restricted to read-only.
+  - Update most model state.
+- View:
+  - Restricted to read-only.
 
 ## favorite
 

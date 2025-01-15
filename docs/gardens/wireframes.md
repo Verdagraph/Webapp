@@ -2,15 +2,15 @@
 status: This document is ahead of the implementation.
 ---
 
-
 # Garden - Wireframes
 
 The Garden wireframes allow:
+
 - Viewing all the gardens a user has access to.
 - Viewing all the pending invites.
 - Creating a new garden
 - Editing garden attributes
-- Viewing the dashboard, members, chat, and metrics. 
+- Viewing the dashboard, members, chat, and metrics.
 
 # App Base Context
 

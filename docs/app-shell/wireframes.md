@@ -5,6 +5,7 @@ status: These wireframes are behind the implementation.
 # App Shell - Wireframes
 
 The App Shell is able to adapt to the following states:
+
 1. Whether the user is anonymous or authenticated.
 2. Whether the user is viewing static pages, app pages, or app pages within the context of a Garden.
 
@@ -16,7 +17,7 @@ The [static pages](../static-pages/README.md) are the entry points to the websit
 
 ![Anon Static Pages](./wireframes/anon-static-pages.excalidraw.png)
 
-A horizontal, top navbar is used for a familiar website-style introduction to the application. 
+A horizontal, top navbar is used for a familiar website-style introduction to the application.
 
 ## Auth Static Pages
 
@@ -46,7 +47,7 @@ The App Base applies to any non-static page that is within a garden context.
 
 ![Anon App Garden](./wireframes/anon-app-garden.excalidraw.png)
 
-The anonymous view of a garden should allow access to all the information in that garden, including the dashboard, planner, config, and devices tab. It should still contain Login and Register buttons, as well as a way of getting back to the static pages. 
+The anonymous view of a garden should allow access to all the information in that garden, including the dashboard, planner, config, and devices tab. It should still contain Login and Register buttons, as well as a way of getting back to the static pages.
 
 ## Auth App Garden
 

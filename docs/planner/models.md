@@ -1,7 +1,9 @@
 ---
 status: This document is ahead of the implementation.
 ---
+
 # Planner Models
+
 ```mermaid
 ---
 title: Planner Domain Model
@@ -44,7 +46,8 @@ The number of days from the current date the Generator will try to place Plants 
 ## strategy
 
 The strategy is the computational process used to populate the model. Extensive research has not been done on this, but one algorithm seems promising.
-- Simulated annealing: this algorith uses random processes and entropy to converge on local maxima, and it is a quasi-optimization process. 
+
+- Simulated annealing: this algorith uses random processes and entropy to converge on local maxima, and it is a quasi-optimization process.
 
 ## objective
 

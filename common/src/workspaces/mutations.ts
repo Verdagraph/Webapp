@@ -115,11 +115,11 @@ export const workspaceFields = {
 /**
  * Given a geometry type, ensure the associated attributes are included.
  * @param type The geometry type.
- * @param rectangleAttributesNullish True if the rectangle attributes aren't included. 
+ * @param rectangleAttributesNullish True if the rectangle attributes aren't included.
  * @param polygonAttributesNullish True if the polygon attributes aren't included.
  * @param ellipseAttributesNullish True if the ellipse attributes aren't included.
  * @param linesAttributesNullish True if the lines attributes aren't included.
- * @returns 
+ * @returns
  */
 function validateGeometryAttributes(
 	type: (typeof GeometryTypeEnum)[number],

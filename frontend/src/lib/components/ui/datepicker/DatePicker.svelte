@@ -39,6 +39,6 @@
 		{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
 	</Popover.Trigger>
 	<Popover.Content class="w-auto p-0">
-		<Calendar type="single" bind:value />
+		<Calendar type="single" bind:value {onValueChange} {minValue} {maxValue} />
 	</Popover.Content>
 </Popover.Root>
