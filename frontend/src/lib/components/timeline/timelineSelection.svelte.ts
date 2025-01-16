@@ -19,16 +19,6 @@ const minSelectOffset: DateDuration = { days: 1 };
 /* Maximum offset between the focused day and the selection bounds. */
 const maxSelectOffset: DateDuration = { years: 4 };
 
-type YearTick = {
-	type: 'YEAR';
-	year: number;
-	day: number;
-};
-
-type MonthTick = {
-	type: 'MONTH';
-};
-
 export function createTimelineSelection() {
 	/**
 	 * Selection.

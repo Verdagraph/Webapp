@@ -7,9 +7,14 @@
 		selection: TimelineSelection;
 	};
 	let { selection }: Props = $props();
+
+	let width = $state(0);
 </script>
 
-<div class="border-neutral-6 flex h-auto w-full flex-col border-t">
+<div
+	bind:clientWidth={width}
+	class="border-neutral-6 flex h-auto w-full flex-col border-t"
+>
 	<DatePickerBar {selection} />
-	<SliderBar {selection} />
+	<SliderBar {selection} {width} />
 </div>

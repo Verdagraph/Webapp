@@ -1,18 +1,32 @@
 <script lang="ts">
 	import { Slider } from 'bits-ui';
 	import { type TimelineSelection } from '../timelineSelection.svelte';
-	import { getDayOfWeek, getLocalTimeZone } from '@internationalized/date';
+	import { getDayOfWeek } from '@internationalized/date';
 	import { cn } from '$lib/utils';
 	import { getMonthString } from '../utils';
 
 	type Props = {
 		selection: TimelineSelection;
+		width: number;
 	};
-	let { selection }: Props = $props();
+	let { selection, width }: Props = $props();
 
-	const baseTickClass = 'self-end flex items-start';
-	const baseTickDayLabelClass = 'absolute text-xs text-neutral-10 ml-[3px]';
-	const baseTickLineClass = 'bg-neutral-8 h-[12px] w-[2px] rounded-t-lg';
+	/**
+	 * Ideally, we would position the tick day label between the two
+	 * ticks using flex. But, the tick divs aren't the width between ticks
+	 * but just a point width.
+	 * So, translate the tick labels so they are in between ticks.
+	 * Calculate the width of a tick, divide in half, add the tick width,
+	 * and add approximately half the day label's width.
+	 */
+	const tickLineWidth = 2;
+	let tickLabelTranslate = $derived(
+		width / selection.maxSliderValue / 2 + tickLineWidth - 7
+	);
+
+	const baseTickClass = 'self-end flex items-end h-[14px]';
+	const baseTickDayLabelClass = 'absolute text-[10px] text-neutral-9 w-[12px]';
+	const baseTickLineClass = `bg-neutral-8 h-[12px] w-[${tickLineWidth}px] rounded-t-lg`;
 </script>
 
 <Slider.Root
@@ -25,18 +39,18 @@
 	class="relative flex h-12 w-full touch-none select-none"
 >
 	{#snippet children({ thumbs, ticks })}
-		<span class="bg-neutral-2 h-[2px] w-full cursor-pointer self-start">
-			<Slider.Range class="bg-neutral-2 h-3" />
+		<span class="h-3 w-full cursor-pointer self-start">
+			<Slider.Range class="bg-primary-4 h-3" />
 		</span>
 		{#each thumbs as index}
 			<Slider.Thumb
 				{index}
-				class="focus-visible:ring-neutal-11 active:scale-98 bg-neutral-9 h-1/3 w-1 cursor-pointer self-start rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+				class="focus-visible:ring-neutal-11 active:scale-98 bg-neutral-10 h-1/3 w-1 cursor-pointer self-start rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 			/>
 		{/each}
 
 		{#each ticks as index}
-			{#if index > 0 && index < selection.maxSliderValue}
+			{#if index >= 0 && index < selection.maxSliderValue}
 				{@const dateValue = selection.sliderValueToDateValue(index)}
 
 				<!-- Render a different tick depending on the date. -->
@@ -46,13 +60,16 @@
 					<Slider.Tick {index}>
 						{#snippet child({ props })}
 							<div {...props} class={cn(baseTickClass, '')}>
-								<span class="text-neutral-11 absolute -translate-y-[20px] text-sm">
+								<span class="text-neutral-11 absolute -translate-y-[14px] text-sm">
 									{dateValue.year}
 								</span>
-								<span class={cn(baseTickDayLabelClass, '')}>
+								<span
+									class={cn(baseTickDayLabelClass, '')}
+									style="transform: translateX({tickLabelTranslate}px)"
+								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
-								<span class={cn(baseTickLineClass, 'h-[18px]')}></span>
+								<span class={cn(baseTickLineClass, 'h-[14px]')}></span>
 							</div>
 						{/snippet}
 					</Slider.Tick>
@@ -62,10 +79,13 @@
 					<Slider.Tick {index}>
 						{#snippet child({ props })}
 							<div {...props} class={cn(baseTickClass, '')}>
-								<span class="text-neutral-11 absolute -translate-y-[16px] text-xs">
+								<span class="text-neutral-11 absolute -translate-y-[14px] text-xs">
 									{getMonthString(dateValue.month)}
 								</span>
-								<span class={cn(baseTickDayLabelClass, '')}>
+								<span
+									class={cn(baseTickDayLabelClass, '')}
+									style="transform: translateX({tickLabelTranslate}px)"
+								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
 								<span class={cn(baseTickLineClass, 'h-[14px]')}></span>
@@ -78,7 +98,10 @@
 					<Slider.Tick {index}>
 						{#snippet child({ props })}
 							<div {...props} class={cn(baseTickClass, '')}>
-								<span class={cn(baseTickDayLabelClass, 'text-neutral-11')}>
+								<span
+									class={cn(baseTickDayLabelClass, 'text-neutral-11')}
+									style="transform: translateX({tickLabelTranslate}px)"
+								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
 								<span class={cn(baseTickLineClass, '')}></span>
@@ -91,7 +114,10 @@
 					<Slider.Tick {index}>
 						{#snippet child({ props })}
 							<div {...props} class={cn(baseTickClass, '')}>
-								<span class={cn(baseTickDayLabelClass, '')}>
+								<span
+									class={cn(baseTickDayLabelClass, '')}
+									style="transform: translateX({tickLabelTranslate}px)"
+								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
 								<span class={cn(baseTickLineClass, '')}></span>
