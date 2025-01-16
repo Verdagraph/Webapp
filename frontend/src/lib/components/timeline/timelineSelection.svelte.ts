@@ -19,6 +19,16 @@ const minSelectOffset: DateDuration = { days: 1 };
 /* Maximum offset between the focused day and the selection bounds. */
 const maxSelectOffset: DateDuration = { years: 4 };
 
+/**
+ * The number of days the slider needs to be within the minimum or
+ * maximum bounds before the slider range will be translated. */
+const translateRangeThreshold = 2;
+/** The number of miliseconds between range translations. */
+const translateRangeInterval = 50;
+/** The delta of each range translation. */
+const forwardTranslateRange = { days: 1 };
+const backwardTranslateRange = { days: -1 };
+
 export function createTimelineSelection() {
 	/**
 	 * Selection.
@@ -51,7 +61,43 @@ export function createTimelineSelection() {
 			calculateDeltaDays(endSelection, beginSlider)
 		];
 	});
-	endSlider.day;
+	/** Store whether the slider is close enough to the edge to move the range. */
+	let translateSliderForward: boolean = $derived(
+		maxSliderValue - sliderValue[2] < translateRangeThreshold
+	);
+	let translateSliderBackward: boolean = $derived(
+		sliderValue[0] - minSliderValue < translateRangeThreshold
+	);
+	let sliderExpandIntervalId: NodeJS.Timeout | null = null;
+	$effect(() => {
+		if (translateSliderForward) {
+			if (sliderExpandIntervalId === null) {
+				sliderExpandIntervalId = setInterval(() => {
+					translate(forwardTranslateRange);
+				}, translateRangeInterval);
+			}
+		} else {
+			if (sliderExpandIntervalId) {
+				clearInterval(sliderExpandIntervalId);
+				sliderExpandIntervalId = null;
+			}
+		}
+	});
+	$effect(() => {
+		if (translateSliderBackward) {
+			if (sliderExpandIntervalId === null) {
+				sliderExpandIntervalId = setInterval(() => {
+					translate(backwardTranslateRange);
+				}, translateRangeInterval);
+			}
+		} else {
+			if (sliderExpandIntervalId) {
+				clearInterval(sliderExpandIntervalId);
+				sliderExpandIntervalId = null;
+			}
+		}
+	});
+
 	/**
 	 * Given a change in the focused day, move the selection along with it.
 	 * @param newFocus The new focused day.
@@ -76,6 +122,32 @@ export function createTimelineSelection() {
 
 		/** Update focused day. */
 		focus = newFocus;
+	}
+
+	/**
+	 * Given a change in the begin selection date, move the slider range
+	 * along with it if the new begin selection day surpasses it.
+	 * @param newBeginSelection The new begin selection date.
+	 */
+	function changeBeginSelection(newBeginSelection: DateValue) {
+		beginSelection = newBeginSelection;
+
+		if (beginSlider > beginSelection) {
+			beginSlider = beginSelection.subtract(defaultSliderDisplayOffset);
+		}
+	}
+
+	/**
+	 * Given a change in the end selection date, move the slider range
+	 * along with it if the new end selection day surpasses it.
+	 * @param newEndSelection The new end selection date.
+	 */
+	function changeEndSelection(newEndSelection: DateValue) {
+		endSelection = newEndSelection;
+
+		if (endSelection > endSlider) {
+			endSlider = endSelection.add(defaultSliderDisplayOffset);
+		}
 	}
 
 	/**
@@ -111,16 +183,6 @@ export function createTimelineSelection() {
 			newVal[2] = Math.min(newVal[2] + deltaDays, maxSliderValue);
 		}
 
-		/** Move the slider range if the selection gets close to the edges. */
-		//if (maxSliderValue - newVal[2] < 10) {
-		//endSlider = endSlider.add({weeks: 1})
-		//beginSlider = beginSlider.add({weeks: 1})
-		//}
-		//else if (newVal[0] - minSliderValue < 2) {
-		//endSlider = endSlider.subtract({weeks: 1})
-		//beginSlider = beginSlider.subtract({weeks: 1})
-		//}
-
 		/** Update the selection. */
 		beginSelection = sliderValueToDateValue(newVal[0]);
 		focus = sliderValueToDateValue(newVal[1]);
@@ -145,15 +207,11 @@ export function createTimelineSelection() {
 		get sliderValue() {
 			return sliderValue;
 		},
-		set beginSelection(newVal) {
-			beginSelection = newVal;
-		},
-		set endSelection(newVal) {
-			endSelection = newVal;
-		},
 		minSelectOffset,
 		maxSelectOffset,
 		refocus,
+		changeBeginSelection,
+		changeEndSelection,
 		translate,
 		sliderValueToDateValue,
 		updateSlider

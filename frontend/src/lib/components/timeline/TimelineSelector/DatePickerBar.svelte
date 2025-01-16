@@ -36,7 +36,12 @@
 		<Tooltip.Root>
 			<Tooltip.Trigger>
 				<DatePicker
-					bind:value={selection.beginSelection}
+					value={selection.beginSelection}
+					onValueChange={(newVal) => {
+						if (newVal) {
+							selection.changeBeginSelection(newVal);
+						}
+					}}
 					minValue={selection.focus.subtract(selection.maxSelectOffset)}
 					maxValue={selection.focus.subtract(selection.minSelectOffset)}
 				/>
@@ -101,7 +106,12 @@
 		<Tooltip.Root>
 			<Tooltip.Trigger>
 				<DatePicker
-					bind:value={selection.endSelection}
+					value={selection.endSelection}
+					onValueChange={(newVal) => {
+						if (newVal) {
+							selection.changeEndSelection(newVal);
+						}
+					}}
 					minValue={selection.focus.add(selection.minSelectOffset)}
 					maxValue={selection.focus.add(selection.maxSelectOffset)}
 				/>
