@@ -99,6 +99,25 @@ export function createTimelineSelection() {
 	});
 
 	/**
+	 * Resets the selection to the default.
+	 */
+	function reset() {
+		focus = today(getLocalTimeZone());
+		beginSelection = focus.subtract(defaultLowerSelectionOffset);
+		endSelection = focus.add(defaultUpperSelectionOffset);
+		beginSlider = beginSelection.subtract(defaultSliderDisplayOffset);
+		endSlider = endSelection.add(defaultSliderDisplayOffset);
+	}
+
+	/**
+	 * Resets the slider range back to the default.
+	 */
+	function resetSliderRange() {
+		beginSlider = beginSelection.subtract(defaultSliderDisplayOffset);
+		endSlider = endSelection.add(defaultSliderDisplayOffset);
+	}
+
+	/**
 	 * Given a change in the focused day, move the selection along with it.
 	 * @param newFocus The new focused day.
 	 */
@@ -209,6 +228,8 @@ export function createTimelineSelection() {
 		},
 		minSelectOffset,
 		maxSelectOffset,
+		reset,
+		resetSliderRange,
 		refocus,
 		changeBeginSelection,
 		changeEndSelection,

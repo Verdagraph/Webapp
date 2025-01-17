@@ -20,13 +20,16 @@
 	 * and add approximately half the day label's width.
 	 */
 	const tickLineWidth = 2;
-	let tickLabelTranslate = $derived(
-		width / selection.maxSliderValue / 2 + tickLineWidth - 7
-	);
+	let tickWidth = $derived(width / selection.maxSliderValue);
+	let tickLabelTranslate = $derived(tickWidth / 2 + tickLineWidth - 7);
+
+	/** The minimum amount of pixels that will allow the tick day labels to show. */
+	const tickLabelThreshold = 16;
 
 	const baseTickClass = 'self-end flex items-end h-[14px]';
-	const baseTickDayLabelClass = 'absolute text-[10px] text-neutral-9 w-[12px]';
-	const baseTickLineClass = `bg-neutral-8 h-[12px] w-[${tickLineWidth}px] rounded-t-lg`;
+	const baseTickDayLabelClass =
+		'absolute text-[9px] text-neutral-9 w-[14px] text-center';
+	const baseTickLineClass = `bg-neutral-7 h-[12px] w-[${tickLineWidth}px] rounded-t-lg`;
 </script>
 
 <Slider.Root
@@ -40,12 +43,12 @@
 >
 	{#snippet children({ thumbs, ticks })}
 		<span class="h-3 w-full cursor-pointer self-start">
-			<Slider.Range class="bg-primary-4 h-3" />
+			<Slider.Range class="bg-primary-8 h-3" />
 		</span>
 		{#each thumbs as index}
 			<Slider.Thumb
 				{index}
-				class="focus-visible:ring-neutal-11 active:scale-98 bg-neutral-10 h-1/3 w-1 cursor-pointer self-start rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+				class="focus-visible:ring-neutal-11 active:scale-98 bg-neutral-11 h-1/3 w-1 cursor-pointer self-start rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 			/>
 		{/each}
 
@@ -66,6 +69,7 @@
 								<span
 									class={cn(baseTickDayLabelClass, '')}
 									style="transform: translateX({tickLabelTranslate}px)"
+									class:hidden={tickWidth < tickLabelThreshold}
 								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
@@ -85,6 +89,7 @@
 								<span
 									class={cn(baseTickDayLabelClass, '')}
 									style="transform: translateX({tickLabelTranslate}px)"
+									class:hidden={tickWidth < tickLabelThreshold}
 								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
@@ -101,6 +106,7 @@
 								<span
 									class={cn(baseTickDayLabelClass, 'text-neutral-11')}
 									style="transform: translateX({tickLabelTranslate}px)"
+									class:hidden={tickWidth < tickLabelThreshold}
 								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
@@ -117,6 +123,7 @@
 								<span
 									class={cn(baseTickDayLabelClass, '')}
 									style="transform: translateX({tickLabelTranslate}px)"
+									class:hidden={tickWidth < tickLabelThreshold}
 								>
 									{dateValue.day.toString().padStart(2, '0')}
 								</span>
