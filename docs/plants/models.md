@@ -1,6 +1,7 @@
 ---
 status: This document is ahead of the implementation.
 ---
+
 # Plants - Models
 
 ```mermaid
@@ -56,6 +57,7 @@ The lifespan stores all data about a plant which may differ from expected to rea
 ## origin
 
 The origin stores how the plant was created. Options are:
+
 - directSeed: A seed is sown directly into the area it will reach maturity in.
 - seedToTransplant: A seed is sown in one area and then transplanted into the area it will reach maturity in.
 - seedlingToTransplant: A seedling is transplanted directly into the area it will reach maturity in.
@@ -69,6 +71,7 @@ Both location and geometry may vary over time, as plants move around or grow.
 ## seedDate, germDate, expiryDate
 
 Stores the key dates for the plants.
+
 - seedDate: The date at which the plant is seeded.
 - germDate: The date at which the seed germinated.
 - expiryDate: The date at which the plant is removed from the space.
@@ -76,6 +79,7 @@ Stores the key dates for the plants.
 ## harvests
 
 A variable number of harvests may be assigned to a plant. For plants which have a zero `AnnualLifecycleProfile.firstToLastHarvest` this should include only one harvest, but this may be overridden. Each harvest contains the following attributes:
+
 - date: The date of the harvest.
 - mass: The mass of the harvest, in kg.
 - units: The number of units. This may differ in meaning depending on the plant. For example, for carrots, it could mean the number of roots. For lettuce, it could mean the number of leaves.
@@ -84,6 +88,7 @@ A variable number of harvests may be assigned to a plant. For plants which have 
 # Plant
 
 A plant represents a physical instance of a plant, or, if that level of granularity is not desired, a group of plants. The purpose of Plant models is:
+
 1. To represent the spatial and temporal extent of plants during the planning phase, so that the can be planned around each other. For example, the more accurate of a model we have of how long a plant is going to last in a particular environment, the better we can plan to replace it with another, maximizing usage of space.
 2. To represent the status of a plant in-real-life, for the purposes of tracking its progress, shifting the plan around this progress, and managing Actions associated with cultivating it.
 

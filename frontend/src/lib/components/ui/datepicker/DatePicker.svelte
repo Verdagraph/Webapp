@@ -12,11 +12,18 @@
 
 	type Props = {
 		value: DateValue | undefined;
+		compact?: boolean;
 		minValue?: DateValue | undefined;
 		maxValue?: DateValue | undefined;
 		onValueChange?: (date: DateValue | undefined) => void;
 	};
-	let { value = $bindable(), minValue, maxValue, onValueChange }: Props = $props();
+	let {
+		value = $bindable(),
+		compact = false,
+		minValue,
+		maxValue,
+		onValueChange
+	}: Props = $props();
 
 	const df = new DateFormatter('en-US', {
 		day: '2-digit',
@@ -32,13 +39,16 @@
 				variant: 'outline',
 				class: 'w-full justify-start text-left font-normal'
 			}),
-			!value && 'text-muted-foreground'
+			!value && 'text-muted-foreground',
+			compact && 'px-2 text-xs'
 		)}
 	>
-		<CalendarIcon />
+		{#if !compact}
+			<CalendarIcon />
+		{/if}
 		{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
 	</Popover.Trigger>
 	<Popover.Content class="w-auto p-0">
-		<Calendar type="single" bind:value />
+		<Calendar type="single" bind:value {onValueChange} {minValue} {maxValue} />
 	</Popover.Content>
 </Popover.Root>

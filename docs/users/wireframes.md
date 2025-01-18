@@ -5,6 +5,7 @@ status: This document is ahead of the implementation in regards to Profile stuff
 # User - Wireframes
 
 The User wireframes allow:
+
 - Creating and logging into an account
 - Viewing and editing one's own profile
 - Viewing other profiles.

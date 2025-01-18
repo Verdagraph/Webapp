@@ -27,6 +27,7 @@ const iconIds = {
 	sortIcon: 'material-symbols:sort-rounded',
 	sortAlphaIcon: 'icons8:alphabetical-sorting',
 	sortReverseAlphaIcon: 'icons8:alphabetical-sorting-2',
+	homeIcon: 'material-symbols:home',
 
 	/* Navigation and UI. */
 	gardenDrawerIcon: 'material-symbols:menu-open-rounded',
@@ -99,11 +100,15 @@ const iconIds = {
 	verdagraphLayoutIcon: 'mdi:land-plots-circle-variant',
 	verdagraphCalendarIcon: 'mdi:calendar-text',
 	verdagraphTreeIcon: 'material-symbols:account-tree-rounded',
+
+	/** TimelineSelector. */
 	verdagraphMonthReverseIcon: 'mdi:chevron-triple-left',
 	verdagraphWeekReverseIcon: 'mdi:chevron-double-left',
 	verdagraphDayReverseIcon: 'mdi:chevron-left',
 	verdagraphDayForwardIcon: 'mdi:chevron-right',
 	verdagraphWeekForwardIcon: 'mdi:chevron-double-right',
-	verdagraphMonthForwardIcon: 'mdi:chevron-triple-right'
+	verdagraphMonthForwardIcon: 'mdi:chevron-triple-right',
+	timelineSelectorTranslateIcon: 'lucide:move-horizontal',
+	timelineSelectorShrinkIcon: 'uil:shrink'
 };
 export default iconIds;

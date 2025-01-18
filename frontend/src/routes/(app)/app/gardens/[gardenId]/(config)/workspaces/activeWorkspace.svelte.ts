@@ -7,6 +7,7 @@ import { superForm, defaults } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { type CanvasContext, createCanvasContext } from '$components/canvas';
 import { setContext, getContext } from 'svelte';
+import { createTimelineSelection } from '$components/timeline';
 
 /** Workspace config persisted to local storage. */
 type WorkspaceConfig = {
@@ -49,6 +50,9 @@ function createWorkspaceContext() {
 		contentPaneDirection: defaultContentPaneDirection
 	});
 
+	/** Timeline. */
+	const timelineSelection = createTimelineSelection();
+
 	/** Forms. */
 	const plantingAreaCreateHandler = useAsync(plantingAreaCreate.mutation);
 	const plantingAreaCreateSuperform = superForm(
@@ -74,6 +78,7 @@ function createWorkspaceContext() {
 	function reset() {
 		activeWorkspaceId = null;
 		editing = false;
+		selectedPlantingAreaIds.clear();
 		plantingAreaCreateSuperform.reset();
 
 		/** Reset the canvas. */
@@ -158,6 +163,7 @@ function createWorkspaceContext() {
 		set contentPaneDirection(newVal: Resizable.Direction) {
 			config.value.contentPaneDirection = newVal;
 		},
+		timelineSelection,
 		plantingAreaCreateForm: {
 			handler: plantingAreaCreateHandler,
 			form: plantingAreaCreateSuperform

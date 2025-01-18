@@ -9,6 +9,7 @@ status: None of the static pages have been implemented yet.
 ![Landing Page Wireframe](./wireframes/landing.excalidraw.png)
 
 The landing page should include:
+
 - Key information about what the app does, and why
 - Application screenshots (to be decided exactly what)
 - Potentially a live demo
@@ -26,6 +27,7 @@ The donation page will just contain a link to the liberapay, maybe some informat
 # Other
 
 Brainstorm: what else should be included in the static pages?
+
 - Information about planned features, roadmap, etc.
 - Link to a YouTube video explaining the app.
 - Link to the Discord, Github

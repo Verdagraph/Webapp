@@ -1,6 +1,7 @@
 ---
 status: This document is ahead of the implementation, but behind what will be needed in the implementation, as many more attribute profiles will be required, such as geometric attributes.
 ---
+
 # Cultivars - Models
 
 ```mermaid
@@ -98,14 +99,16 @@ The purpose of a Cultivar is to contain several different profiles which describ
 ### Annual Lifecycle
 
 The annual lifecycle defines the length of the stages of life for annual plants.
+
 - seedToGerm: The expected amount of days from starting a seed to its germination.
 - germToTransplant: The expected amount of days from the germination of a seed to when it will be ready for transplant. For cultivars which are not able to be transplanted, this value is unused.
 - germToFirstHarvest: The expected amount of days the germination of a seed to when it will be ready for a harvest.
 - firstToLastHarvest: The expected amount of days the first and last harvest of a plant. For plants which only have one harvest, this value is zero.
 
-### Frost Date Planting Windows 
+### Frost Date Planting Windows
 
 A planting window defines a period of time within an environment that a cultivar should be planted. These attributes define an allowed planting window of time relative to the first and last frost dates. These planting windows are used for incdicating within the Verdagraph when plants are suggested to be planted.
+
 - lastFrostWindowOpen: The amount of days between the last frost and the beginning of the planting window. Positive values indicate the window begins after the last frost date. For example, a value of -15 indicates the cultivar may be planted 15 days before the last frost date.
 - lastFrostWindowClosed: The amount of days between the last frost and the end of the planting window. Positive values indicate the window begins after the last frost date. For example, a value of 15 indicates the cultivar must be planted before 15 days after the last frost date.
 - firstFrostWindowOpen: The amount of days between the first frost and the beginning of the planting window. Positive values indicate the window begins after the first frost date. For example, a value of -15 indicates the cultivar may be planted 15 days before the first frost date.
@@ -114,4 +117,5 @@ A planting window defines a period of time within an environment that a cultivar
 ### Origin
 
 The origin refers to the method used to create plants.
+
 - transplantable: Defines whether a plant may be started as a seed in one location and transplanted to another. Some plants, such as carrots, don't tolerate transplants, and so must be started directly.

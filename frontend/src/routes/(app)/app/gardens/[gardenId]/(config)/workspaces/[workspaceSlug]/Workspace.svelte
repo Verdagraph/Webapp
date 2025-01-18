@@ -5,7 +5,7 @@
 	import TabToolbox from '$components/tabToolbox';
 	import Tree from './Tree.svelte';
 	import Layout from './Layout.svelte';
-	import TimelineSelector from './timelineSelector/TimelineSelector.svelte';
+	import { TimelineSelector } from '$components/timeline';
 
 	const workspaceContext = getWorkspaceContext();
 
@@ -48,6 +48,6 @@
 		{/if}
 	</div>
 	<div class="h-auto w-full">
-		<TimelineSelector />
+		<TimelineSelector selection={workspaceContext.timelineSelection} />
 	</div>
 </div>
