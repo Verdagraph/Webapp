@@ -6,9 +6,12 @@
 	import Calendar from './calendar/Calendar.svelte';
 	import Layout from './layout/Layout.svelte';
 	import Tree from './tree/Tree.svelte';
-	import TimelineSelector from './timelineSelector/TimelineSelector.svelte';
+	import { TimelineSelector } from '$components/timeline';
 	import Form from './forms/Form.svelte';
 	import forms from './state/forms.svelte';
+	import { setVerdagraphContext } from './verdagraphContext.svelte';
+
+	const verdagraphContext = setVerdagraphContext();
 
 	let viewSettings = createViewSettings();
 	setContext('viewSettings', viewSettings);
@@ -71,6 +74,6 @@
 	</div>
 
 	<div class="w-full">
-		<TimelineSelector />
+		<TimelineSelector selection={verdagraphContext.timelineSelection} />
 	</div>
 </div>

@@ -78,6 +78,7 @@ function createWorkspaceContext() {
 	function reset() {
 		activeWorkspaceId = null;
 		editing = false;
+		selectedPlantingAreaIds.clear();
 		plantingAreaCreateSuperform.reset();
 
 		/** Reset the canvas. */
