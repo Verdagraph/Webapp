@@ -1,3 +1,4 @@
+import { SvelteSet } from 'svelte/reactivity';
 import * as Resizable from '$components/ui/resizable';
 import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
@@ -41,7 +42,7 @@ function createWorkspaceContext() {
 	/** If true, the workspace is being edited by the user. */
 	let editing: boolean = $state(false);
 	/** Selected entities. */
-	const selectedPlantingAreaIds: Set<string> = $state(new Set());
+	const selectedPlantingAreaIds: Set<string> = $state(new SvelteSet());
 
 	/** Persisted config. */
 	const config = localStore<WorkspaceConfig>('workspaceConfig', {
@@ -106,13 +107,13 @@ function createWorkspaceContext() {
 		} else {
 			selectedPlantingAreaIds.add(plantingAreaId);
 		}
+
+		console.log(selectedPlantingAreaIds);
 	}
 
-	function isPlantingAreaSelected(plantingAreaId: string): boolean {
+	function unselectPlantingArea(plantingAreaId: string) {
 		if (selectedPlantingAreaIds.has(plantingAreaId)) {
-			return true;
-		} else {
-			return false;
+			selectedPlantingAreaIds.delete(plantingAreaId);
 		}
 	}
 
@@ -171,7 +172,7 @@ function createWorkspaceContext() {
 		reset,
 		setWorkspace,
 		selectPlantingArea,
-		isPlantingAreaSelected
+		unselectPlantingArea
 	};
 }
 export type WorkspaceContext = ReturnType<typeof createWorkspaceContext>;

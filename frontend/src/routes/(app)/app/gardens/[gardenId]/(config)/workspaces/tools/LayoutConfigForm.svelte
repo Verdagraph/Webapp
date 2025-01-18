@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
-	import type { CanvasContext } from '$components/canvas';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import { UnitAwareInput } from '$components/units/';
+	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 
-	const layoutCanvas = getContext<CanvasContext>('workspaceLayout');
+	const workspaceContext = getWorkspaceContext();
+	const layoutCanvas = workspaceContext.layoutCanvasContext;
 
 	const buttonsPositionOptions = [
 		{ value: 'tl', label: 'Top Left' },

@@ -40,6 +40,6 @@ of an easy way to ignore them.
 	geometry={$formData.geometry as unknown as Geometry}
 	grid={$formData.grid}
 	editable={true}
-	selected={false}
+	selected={true}
 	{onTranslate}
 />

@@ -19,3 +19,8 @@ export const plantingAreaQuery = triplit
 		rel('locationHistory').include('locations').build()
 	)
 	.limit(1);
+
+export const plantingAreaSelectionQuery = triplit
+	.query('plantingAreas')
+	.where('id', 'in', '$query.plantingAreaIds')
+	.select(['id', 'name']);

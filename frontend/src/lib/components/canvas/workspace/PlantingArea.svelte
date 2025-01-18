@@ -57,11 +57,15 @@
 	/** Border shape of the planting area. */
 	let plantingAreaShape: SupportedShape | null = null;
 
+	/**
+	 * Retrives the shape settings based on state.
+	 * @param selected Whether the planting area is selected.
+	 */
 	function getShapeConfig(selected: boolean) {
 		if (selected) {
 			return {
-				fill: getColor('accent', 3, mode.value),
-				stroke: getColor('accent', 6, mode.value),
+				fill: getColor('accent', 5, mode.value),
+				stroke: getColor('accent', 8, mode.value),
 				strokeWidth: 3
 			};
 		} else {
@@ -107,6 +111,7 @@
 	/** Add events. */
 	$effect(() => {
 		if (editable) {
+			group.draggable(true);
 			group.on('mouseover', () => {
 				document.body.style.cursor = 'grab';
 			});
@@ -130,6 +135,7 @@
 				}
 			});
 		} else {
+			group.draggable(false);
 			group.off('mouseover mouseout dragmove dragend pointerclick');
 		}
 	});

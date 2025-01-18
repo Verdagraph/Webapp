@@ -4,7 +4,7 @@ import {
 	type DateValue,
 	type DateDuration
 } from '@internationalized/date';
-import { calculateDeltaDays } from './utils';
+import { calculateDeltaDays, calendarDateToUtc } from './utils';
 
 /** Default offset between selected day and the upper selection range. */
 const defaultUpperSelectionOffset: DateDuration = { weeks: 3 };
@@ -39,6 +39,11 @@ export function createTimelineSelection() {
 	let beginSelection: DateValue = $state(focus.subtract(defaultLowerSelectionOffset));
 	/** Day which marks the end of the timeline selection. */
 	let endSelection: DateValue = $state(focus.add(defaultUpperSelectionOffset));
+
+	/** Derived selection. */
+	let focusUtc: Date = $derived(calendarDateToUtc(focus));
+	let beginSelectionUtc: Date = $derived(calendarDateToUtc(beginSelection));
+	let endSelectionUtc: Date = $derived(calendarDateToUtc(endSelection));
 
 	/**
 	 * Slider properties.
@@ -216,6 +221,15 @@ export function createTimelineSelection() {
 		},
 		get endSelection() {
 			return endSelection;
+		},
+		get focusUtc() {
+			return focusUtc;
+		},
+		get beginSelectionUtc() {
+			return beginSelectionUtc;
+		},
+		get endSelectionUtc() {
+			return endSelectionUtc;
 		},
 		get minSliderValue() {
 			return minSliderValue;

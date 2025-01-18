@@ -9,6 +9,9 @@
 	import { setWorkspaceContext } from './activeWorkspace.svelte';
 	import toolbox from './tools';
 	import auth from '$state/auth.svelte';
+	import { useQuery } from '@triplit/svelte';
+	import triplit from '$data/triplit';
+	import { plantingAreaSelectionQuery } from '$data/workspaces/queries';
 
 	let { children } = $props();
 
@@ -27,6 +30,13 @@
 			description: ''
 		}
 	];
+
+	const selectedPlantingAreas = useQuery(
+		triplit,
+		plantingAreaSelectionQuery.vars({
+			plantingAreaIds: workspaceContext.selectedPlantingAreaIds
+		})
+	);
 </script>
 
 <div class="flex h-full w-full flex-col overflow-clip">
@@ -86,7 +96,31 @@
 			<!-- Select menu. -->
 			<Menubar.Menu>
 				<Menubar.Trigger>Select</Menubar.Trigger>
-				<Menubar.Content></Menubar.Content>
+				<Menubar.Content>
+					<Menubar.Group>
+						<Menubar.GroupHeading>Planting Areas</Menubar.GroupHeading>
+						{#if selectedPlantingAreas.results && selectedPlantingAreas.results.length > 0}
+							{#each selectedPlantingAreas.results as plantingArea}
+								<Menubar.Item class="flex justify-between px-2">
+									<span class="text-sm">
+										{plantingArea.name}
+									</span>
+									<Button.Root
+										onclick={() => {
+											workspaceContext.unselectPlantingArea(plantingArea.id);
+										}}
+									>
+										<Icon icon={iconIds.defaultClose} width="1.25rem" />
+									</Button.Root>
+								</Menubar.Item>
+							{/each}
+						{:else}
+							<Menubar.Item>
+								<span class="italic">None</span>
+							</Menubar.Item>
+						{/if}
+					</Menubar.Group>
+				</Menubar.Content>
 			</Menubar.Menu>
 
 			<!-- Edit Menu -->
