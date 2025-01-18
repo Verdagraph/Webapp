@@ -108,6 +108,7 @@ const iconIds = {
 	verdagraphDayForwardIcon: 'mdi:chevron-right',
 	verdagraphWeekForwardIcon: 'mdi:chevron-double-right',
 	verdagraphMonthForwardIcon: 'mdi:chevron-triple-right',
+	timelineSelectorTranslateIcon: 'lucide:move-horizontal',
 	timelineSelectorShrinkIcon: 'uil:shrink'
 };
 export default iconIds;

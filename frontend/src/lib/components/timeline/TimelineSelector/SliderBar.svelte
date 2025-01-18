@@ -29,14 +29,16 @@
 	const baseTickClass = 'self-end flex items-end h-[14px]';
 	const baseTickDayLabelClass =
 		'absolute text-[9px] text-neutral-9 w-[14px] text-center';
-	const baseTickLineClass = `bg-neutral-7 h-[12px] w-[${tickLineWidth}px] rounded-t-lg`;
+	const baseTickLineClass = `bg-neutral-7 h-[12px] w-[2px] rounded-t-lg`;
 </script>
 
 <Slider.Root
-	bind:value={() => selection.sliderValue,
-	(newVal) => {
-		selection.updateSlider(newVal);
-	}}
+	bind:value={
+		() => selection.sliderValue,
+		(newVal) => {
+			selection.updateSlider(newVal);
+		}
+	}
 	min={selection.minSliderValue}
 	max={selection.maxSliderValue}
 	class="relative flex h-12 w-full touch-none select-none"
