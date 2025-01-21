@@ -63,7 +63,8 @@ export const workspaceFields = {
 		.string()
 		.trim()
 		.max(700, 'May be at most 1400 characters.')
-		.describe('May be at most 1400 characters.'),
+		.describe('May be at most 1400 characters.')
+		.default(''),
 	plantingAreaName: z
 		.string()
 		.trim()
@@ -80,7 +81,8 @@ export const workspaceFields = {
 		.string()
 		.trim()
 		.max(700, 'May be at most 1400 characters.')
-		.describe('May be at most 1400 characters.'),
+		.describe('May be at most 1400 characters.')
+		.default(''),
 	plantingAreaDepth: z
 		.number()
 		.min(0, 'May not be negative')
@@ -140,7 +142,7 @@ function validateGeometryAttributes(
 	return true;
 }
 
-const LocationCreateCommand = z.object({
+export const LocationCreateCommand = z.object({
 	gardenId: z.string(),
 	workspaceId: z.string(),
 	coordinate: workspaceFields.coordinate,
@@ -196,7 +198,7 @@ const EllipseAttributesCreateUpdateCommand = z.object({
 		.default(1),
 	widthDiameter: z
 		.number()
-		.max(0, 'May not be negative')
+		.min(0, 'May not be negative')
 		.max(1000, 'May be at most 1000m')
 		.describe(
 			'The vertical, or y-axis diameter of the ellipse. Must be between 0 and 1000 meters.'

@@ -40,7 +40,7 @@ export const registerErrorHandler = (app: FastifyInstance) => {
 			errorMessage = error.message;
 			errorDetails = error.details;
 		} else {
-			console.log(error);
+			console.error(error);
 		}
 
 		reply.code(statusCode).send({

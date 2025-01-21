@@ -112,7 +112,7 @@
 	)}
 {/snippet}
 
-<div class="flex flex-row items-center justify-between px-2 py-2 md:px-4">
+<div class="flex h-12 flex-row items-center justify-between px-2 py-2 md:px-4">
 	<Tooltip.Root>
 		<Tooltip.Trigger>
 			<DatePicker
@@ -159,7 +159,6 @@
 						value={selection.focus}
 						compact={isMobile.current}
 						onValueChange={(newDate: DateValue | undefined) => {
-							console.log(newDate);
 							if (newDate) {
 								selection.refocus(newDate);
 							}

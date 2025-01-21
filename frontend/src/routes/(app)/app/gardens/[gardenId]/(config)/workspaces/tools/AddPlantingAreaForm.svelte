@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
 	import * as Form from '$lib/components/ui/form';
 	import * as Textarea from '$lib/components/ui/textarea';
@@ -13,6 +14,8 @@
 	import type { DateValue } from '@internationalized/date';
 	import Checkbox from '$components/ui/checkbox/checkbox.svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
+	import { toast } from 'svelte-sonner';
+	import { AppError } from '@vdt-webapp/common/src/errors';
 
 	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;
@@ -32,11 +35,16 @@
 		}
 	);
 
-	let geometryDateValue: DateValue | undefined = $state();
 	$effect(() => {
-		if (geometryDateValue) {
-			$formData.geometry.date = geometryDateValue.toDate(getLocalTimeZone());
+		if (!workspaceContext.id) {
+			toast.error('Error retrieving workspace context.');
+			throw new AppError('Error retrieving workspace contxet.');
 		}
+
+		$formData.gardenId = page.params.gardenId;
+		$formData.workspaceId = workspaceContext.id;
+		$formData.geometry.date = workspaceContext.timelineSelection.focusUtc;
+		$formData.location.date = workspaceContext.timelineSelection.focusUtc;
 	});
 
 	let generateGridSpacing: number = $state(0.3048);

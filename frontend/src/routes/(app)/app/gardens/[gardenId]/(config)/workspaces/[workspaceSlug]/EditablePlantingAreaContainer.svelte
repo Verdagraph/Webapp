@@ -50,11 +50,14 @@
 		workspaceContext.selectedPlantingAreaIds.has(plantingAreaId)
 	);
 
-	$effect(() => {
-		console.log(selected);
-	});
-
 	function onTranslate(newPos: Vector2d, movementOver: boolean) {}
+
+	console.log(plantingAreaId);
+	$effect(() => {
+		if (query.results && query.results[0].id === 'E8eHBz92YSlg3sSG2ulRa') {
+			console.log(query.results[0]);
+		}
+	});
 </script>
 
 <!--

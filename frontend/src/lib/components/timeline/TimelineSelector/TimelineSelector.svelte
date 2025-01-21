@@ -13,7 +13,7 @@
 
 <div
 	bind:clientWidth={width}
-	class="border-neutral-6 flex h-auto w-full flex-col border-t"
+	class="border-neutral-6 flex h-24 w-full flex-col border-t"
 >
 	<DatePickerBar {selection} />
 	<SliderBar {selection} {width} />

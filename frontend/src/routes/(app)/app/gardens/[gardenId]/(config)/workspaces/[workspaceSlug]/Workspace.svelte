@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex h-full w-full flex-col">
-	<div class="overflow-none grow">
+	<div class="h-full grow overflow-hidden">
 		{#if initialized}
 			<Resizable.PaneGroup direction={workspaceContext.contentPaneDirection}>
 				{#if workspaceContext.layoutEnabled}
@@ -47,7 +47,7 @@
 			</Resizable.PaneGroup>
 		{/if}
 	</div>
-	<div class="h-auto w-full">
+	<div class="bottom-0 h-24">
 		<TimelineSelector selection={workspaceContext.timelineSelection} />
 	</div>
 </div>

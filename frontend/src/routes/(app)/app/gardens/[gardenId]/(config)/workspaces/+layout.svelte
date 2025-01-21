@@ -34,9 +34,16 @@
 	const selectedPlantingAreas = useQuery(
 		triplit,
 		plantingAreaSelectionQuery.vars({
-			plantingAreaIds: workspaceContext.selectedPlantingAreaIds
+			plantingAreaIds: [...workspaceContext.selectedPlantingAreaIds]
 		})
 	);
+	$effect(() => {
+		selectedPlantingAreas.updateQuery(
+			plantingAreaSelectionQuery.vars({
+				plantingAreaIds: [...workspaceContext.selectedPlantingAreaIds]
+			})
+		);
+	});
 </script>
 
 <div class="flex h-full w-full flex-col overflow-clip">

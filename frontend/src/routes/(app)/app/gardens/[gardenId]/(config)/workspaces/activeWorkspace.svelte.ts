@@ -9,6 +9,8 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { type CanvasContext, createCanvasContext } from '$components/canvas';
 import { setContext, getContext } from 'svelte';
 import { createTimelineSelection } from '$components/timeline';
+import activeGardenId from '$state/activeGarden.svelte';
+import toolbox from './tools';
 
 /** Workspace config persisted to local storage. */
 type WorkspaceConfig = {
@@ -55,7 +57,11 @@ function createWorkspaceContext() {
 	const timelineSelection = createTimelineSelection();
 
 	/** Forms. */
-	const plantingAreaCreateHandler = useAsync(plantingAreaCreate.mutation);
+	const plantingAreaCreateHandler = useAsync(plantingAreaCreate.mutation, {
+		onSuccess: () => {
+			toolbox.deactivate('addPlantingArea');
+		}
+	});
 	const plantingAreaCreateSuperform = superForm(
 		defaults(zod(plantingAreaCreate.schema)),
 		{
@@ -107,8 +113,6 @@ function createWorkspaceContext() {
 		} else {
 			selectedPlantingAreaIds.add(plantingAreaId);
 		}
-
-		console.log(selectedPlantingAreaIds);
 	}
 
 	function unselectPlantingArea(plantingAreaId: string) {

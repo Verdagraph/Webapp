@@ -2,14 +2,82 @@ import { z as zod } from 'zod';
 import {
 	WorkspaceCreateCommand,
 	PlantingAreaCreateCommand,
+	LocationCreateCommand,
 	type Workspace,
 	type Geometry,
-	type Location
+	type Location,
+	type LocationHistory,
+	GeometryCreateCommand,
+	TriplitTransaction
 } from '@vdt-webapp/common';
 import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
 import { AppError } from '@vdt-webapp/common/src/errors';
 import { requireRole } from '$data/gardens/commands';
+
+/** Helpers. */
+export async function insertGeometry(
+	gardenId: string,
+	data: zod.infer<typeof GeometryCreateCommand>,
+	transaction: TriplitTransaction
+): Promise<Geometry> {
+	let geometry: Omit<Geometry, 'id'> = {
+		gardenId: gardenId,
+		type: data.type,
+		date: data.date,
+		scaleFactor: data.scaleFactor,
+		rotation: data.rotation
+	};
+	switch (data.type) {
+		case 'RECTANGLE':
+			geometry.rectangleAttributes = data.rectangleAttributes;
+			break;
+		case 'POLYGON':
+			geometry.polygonAttributes = data.polygonAttributes;
+			break;
+		case 'ELLIPSE':
+			geometry.ellipseAttributes = data.ellipseAttributes;
+			break;
+		case 'LINES': {
+			const coordinateIds: string[] = [];
+			for (const point of data.linesAttributes.coordinates) {
+				const coordinate = await transaction.insert('coordinates', {
+					gardenId: gardenId,
+					x: point.x,
+					y: point.y
+				});
+				coordinateIds.push(coordinate.id);
+			}
+			geometry.linesAttributes = {
+				coordinateIds: new Set(coordinateIds),
+				coordinates: data.linesAttributes.coordinates,
+				closed: data.linesAttributes.closed
+			};
+			break;
+		}
+	}
+	return await transaction.insert('geometries', geometry);
+}
+
+export async function insertNewLocationHistory(
+	gardenId: string,
+	workspaceId: string,
+	data: zod.infer<typeof LocationCreateCommand>,
+	transaction: TriplitTransaction
+): Promise<LocationHistory> {
+	const location = await transaction.insert('locations', {
+		gardenId: gardenId,
+		workspaceId: workspaceId,
+		x: data.coordinate.x,
+		y: data.coordinate.y,
+		date: data.date
+	});
+	return await transaction.insert('locationHistories', {
+		gardenId: gardenId,
+		locationIds: new Set([location.id]),
+		workspaceIds: new Set([workspaceId])
+	});
+}
 
 /** Creates a new workspace in a garden. */
 export const workspaceCreate = {
@@ -73,67 +141,28 @@ export const plantingAreaCreate = {
 
 		await triplit.transact(async (transaction) => {
 			/** Persist geometry. */
-			let geometry: Omit<Geometry, 'id'> = {
-				gardenId: garden.id,
-				type: data.geometry.type,
-				date: data.geometry.date,
-				scaleFactor: data.geometry.scaleFactor,
-				rotation: data.geometry.rotation
-			};
-			switch (data.geometry.type) {
-				case 'RECTANGLE':
-					geometry.rectangleAttributes = data.geometry.rectangleAttributes;
-					break;
-				case 'POLYGON':
-					geometry.polygonAttributes = data.geometry.polygonAttributes;
-					break;
-				case 'ELLIPSE':
-					geometry.ellipseAttributes = data.geometry.ellipseAttributes;
-					break;
-				case 'LINES': {
-					const coordinateIds: string[] = [];
-					for (const point of data.geometry.linesAttributes.coordinates) {
-						const coordinate = await transaction.insert('coordinates', {
-							gardenId: garden.id,
-							x: point.x,
-							y: point.y
-						});
-						coordinateIds.push(coordinate.id);
-					}
-					geometry.linesAttributes = {
-						coordinateIds: new Set(coordinateIds),
-						coordinates: data.geometry.linesAttributes.coordinates,
-						closed: data.geometry.linesAttributes.closed
-					};
-					break;
-				}
-			}
-			geometry = await transaction.insert('geometries', geometry);
+			const geometry = await insertGeometry(data.gardenId, data.geometry, transaction);
 
 			/** Persist locations. */
-			const location = await transaction.insert('locations', {
-				gardenId: garden.id,
-				workspaceId: workspace.id,
-				x: data.location.coordinate.x,
-				y: data.location.coordinate.y,
-				date: data.geometry.date
-			});
-			const locationHistory = await transaction.insert('locationHistories', {
-				gardenId: garden.id,
-				locationIds: new Set([location.id]),
-				workspaceIds: new Set([workspace.id])
-			});
+			const locationHistory = await insertNewLocationHistory(
+				garden.id,
+				workspace.id,
+				data.location,
+				transaction
+			);
 
 			/** Persist planting area. */
 			await transaction.insert('plantingAreas', {
 				gardenId: garden.id,
 				name: data.name,
 				description: data.description,
-				geometryId: geometry.gardenId,
+				geometryId: geometry.id,
 				locationHistoryId: locationHistory.id,
 				grid: data.grid,
 				depth: data.depth
 			});
+
+			console.log('completed?');
 		});
 	}
 };
