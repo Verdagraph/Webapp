@@ -16,6 +16,14 @@ import { AppError } from '@vdt-webapp/common/src/errors';
 import { requireRole } from '$data/gardens/commands';
 
 /** Helpers. */
+
+/**
+ * Insert a geometry into the database.
+ * @param gardenId The ID of the garden.
+ * @param data The geometry create command.
+ * @param transaction The database transaction.
+ * @returns The geometry after insertion.
+ */
 export async function insertGeometry(
 	gardenId: string,
 	data: zod.infer<typeof GeometryCreateCommand>,
@@ -59,6 +67,13 @@ export async function insertGeometry(
 	return await transaction.insert('geometries', geometry);
 }
 
+/**
+ * Insert a new location history into the database.
+ * @param gardenId The ID of the garden.
+ * @param data The location create command.
+ * @param transaction The database transaction.
+ * @returns The location history after insertion.
+ */
 export async function insertNewLocationHistory(
 	gardenId: string,
 	workspaceId: string,
