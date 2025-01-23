@@ -6,12 +6,10 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator';
-	import UnitAwareInput from '$components/units/UnitAwareInput.svelte';
+	import { UnitAwareInput, CoordinateInput } from '$components/units';
 	import { Input } from '$lib/components/ui/input';
 	import { plantingAreaCreate } from '$data/workspaces/commands';
 	import iconIds from '$lib/assets/icons';
-	import { getLocalTimeZone } from '@internationalized/date';
-	import type { DateValue } from '@internationalized/date';
 	import Checkbox from '$components/ui/checkbox/checkbox.svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import { toast } from 'svelte-sonner';
@@ -86,60 +84,22 @@
 	</Form.Field>
 
 	<!-- Position. -->
-	<fieldset>
-		<div class="my-2 flex items-center">
-			<span class="text-neutral-11 mr-2"> Position </span>
-			<span class="w-full">
-				<Separator class="w-full" />
-			</span>
-		</div>
-
-		<!-- X Coordinate. -->
-		<Form.Field {form} name="location.coordinate.x">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label
-						description={plantingAreaCreate.schema.shape.location.shape.coordinate.innerType()
-							.shape.x.description}
-						optional={plantingAreaCreate.schema.shape.location.shape.coordinate
-							.innerType()
-							.shape.x.isOptional()}>X</Form.Label
-					>
-					<UnitAwareInput
-						{...props}
-						quantityType="distance"
-						bind:value={$formData.location.coordinate.x}
-					/>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors
-				handlerErrors={handler.fieldErrors?.['location.coordinate.x']}
-			/>
-		</Form.Field>
-
-		<!-- Y Coordinate. -->
-		<Form.Field {form} name="location.coordinate.y">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label
-						description={plantingAreaCreate.schema.shape.location.shape.coordinate.innerType()
-							.shape.y.description}
-						optional={plantingAreaCreate.schema.shape.location.shape.coordinate
-							.innerType()
-							.shape.y.isOptional()}>Y</Form.Label
-					>
-					<UnitAwareInput
-						{...props}
-						quantityType="distance"
-						bind:value={$formData.location.coordinate.y}
-					/>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors
-				handlerErrors={handler.fieldErrors?.['location.coordinate.y']}
-			/>
-		</Form.Field>
-	</fieldset>
+	<Form.Field {form} name="location">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={plantingAreaCreate.schema.shape.location.description}
+					optional={plantingAreaCreate.schema.shape.location.isOptional()}
+					>Position</Form.Label
+				>
+				<CoordinateInput
+					{...props}
+					bind:x={$formData.location.coordinate.x}
+					bind:y={$formData.location.coordinate.y}
+				/>
+			{/snippet}
+		</Form.Control>
+	</Form.Field>
 
 	<!-- Geometry. -->
 	<fieldset>

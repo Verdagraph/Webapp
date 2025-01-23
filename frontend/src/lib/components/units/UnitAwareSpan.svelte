@@ -20,6 +20,7 @@
 		decimalPlaces
 	);
 
+	/** Track external value changes. */
 	$effect(() => {
 		unitAwareValues.setDisplayValues([metricValue]);
 	});

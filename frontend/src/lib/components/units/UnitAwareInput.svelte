@@ -70,7 +70,7 @@
 		class="rounded-r-none border-r-0 "
 	/>
 	<span
-		class="border-x-neutral-5 border-neutral-7 flex h-10 w-auto min-w-10 items-center justify-center border-y border-l px-3 {unitAwareValues.unitSystem ===
+		class="border-x-neutral-5 bg-neutral-2 border-neutral-7 flex h-10 w-auto min-w-10 items-center justify-center border-y border-l px-3 {unitAwareValues.unitSystem ===
 			'metric' && quantityType === 'distance'
 			? 'text-lg'
 			: 'text-md'} text-neutral-11">{unitAwareValues.unitSymbol}</span
@@ -78,7 +78,7 @@
 	<Button.Root
 		onclick={unitAwareValues.swapUnits}
 		type="button"
-		class="border-l-neutral-5 border-neutral-7 hover:bg-neutral-2 h-10 rounded-r-md border px-2"
+		class="border-l-neutral-5 border-neutral-7 bg-neutral-2 hover:bg-neutral-3 h-10 rounded-r-md border px-2"
 	>
 		<Icon icon="material-symbols:swap-horiz-rounded" width="1rem" />
 	</Button.Root>
