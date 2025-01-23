@@ -2,7 +2,7 @@ import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
 import userSettings from '$state/userSettings.svelte';
 
 /** The amount of decimal places to prefer when converting units. */
-const DECIMAL_PLACES = 2;
+const DECIMAL_PLACES = 3;
 
 type UnitInfo = {
 	symbols: Record<UnitSystem, string>;
@@ -74,7 +74,7 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
  * @param places The number of decimal places.
  * @returns The rounded number.
  */
-function roundToDecimalPlaces(num: number, places: number) {
+export function roundToDecimalPlaces(num: number, places: number) {
 	const factor = 10 ** places;
 	return Math.round(num * factor) / factor;
 }
@@ -85,7 +85,7 @@ function roundToDecimalPlaces(num: number, places: number) {
  * @param quantityType The type of quantity being represented.
  * @returns The unit symbol as a string.
  */
-function quantityToUnitSymbol(
+export function quantityToUnitSymbol(
 	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity
 ): string {
@@ -97,7 +97,7 @@ function quantityToUnitSymbol(
  * @param unitSystem The unit system to swap.
  * @returns The opposite unit system.
  */
-function swapUnit(unitSystem: UnitSystem): UnitSystem {
+export function swapUnit(unitSystem: UnitSystem): UnitSystem {
 	return unitSystem === 'metric' ? 'imperial' : 'metric';
 }
 
@@ -135,41 +135,51 @@ function convertQuantityToMetric(
 }
 
 /**
- * Creates a set of runes for tracking and changing the unit system of value.
+ * Creates a set of runes for tracking and changing the unit system of an array of values.
  * @param quantityType The type of quantity to represent.
- * @param initialValueMetric The initial value of the quantity, in metric.
+ * @param initialValuesMetric The initial values, in metric.
  * @returns A unit aware value.
  */
 export function createUnitAwareValue(
 	quantityType: UnitAwareQuantity,
-	initialValueMetric: number
+	initialValuesMetric: Array<number>
 ) {
 	/** The current unit system for this value. Defaults to user preferences. */
-	let unitSystem = $state(userSettings.value.units[quantityType]);
+	let unitSystem: UnitSystem = $state(userSettings.value.units[quantityType]);
 
 	/** The value displayed in the component. */
-	let displayValue = $state(
+	let displayValues: Array<number> = $state(
 		userSettings.value.units[quantityType] === 'metric'
-			? initialValueMetric
-			: convertQuantity(initialValueMetric, 'metric', quantityType)
+			? initialValuesMetric
+			: initialValuesMetric.map((value) =>
+					convertQuantity(value, 'metric', quantityType)
+				)
 	);
 
-	/** A version of the value guarnteed to be metric. */
-	const metricValue = $derived(
-		convertQuantityToMetric(displayValue, unitSystem, quantityType)
+	/** A version of the display values guaranteed to be metric. */
+	const metricValues = $derived(
+		displayValues.map((value) =>
+			convertQuantityToMetric(value, unitSystem, quantityType)
+		)
 	);
 
 	/** The symbol displayed in the component.*/
 	const unitSymbol = $derived(quantityToUnitSymbol(unitSystem, quantityType));
 
 	/**
-	 * @param newVal The new value, in metric.
+	 * Sets the display value from an external source.
+	 * @param newVal The new values, in metric.
 	 */
-	function setDisplayValue(newVal: number) {
-		displayValue =
+	function setDisplayValues(newVal: Array<number>) {
+		const newDisplayValues =
 			unitSystem === 'metric'
 				? newVal
-				: convertQuantity(newVal, 'metric', quantityType);
+				: newVal.map((value) => convertQuantity(value, 'metric', quantityType));
+		newDisplayValues.forEach((value, index) => {
+			if (value != displayValues[index]) {
+				displayValues[index] = newDisplayValues[index];
+			}
+		});
 	}
 
 	/**
@@ -177,9 +187,9 @@ export function createUnitAwareValue(
 	 * to the other unit system and the unit system is swapped.
 	 */
 	function swapUnits() {
-		console.warn('Swapping units not currently supported.');
-		return;
-		displayValue = convertQuantity(displayValue, unitSystem, quantityType);
+		displayValues = displayValues.map((value) =>
+			convertQuantity(value, unitSystem, quantityType)
+		);
 		unitSystem = swapUnit(unitSystem);
 	}
 
@@ -187,19 +197,19 @@ export function createUnitAwareValue(
 		get unitSystem() {
 			return unitSystem;
 		},
-		get displayValue() {
-			return roundToDecimalPlaces(displayValue, DECIMAL_PLACES);
+		get displayValues() {
+			return displayValues;
 		},
-		get metricValue() {
-			return roundToDecimalPlaces(metricValue, DECIMAL_PLACES);
+		get metricValues() {
+			return metricValues;
 		},
 		get unitSymbol() {
 			return unitSymbol;
 		},
-		set displayValue(newVal) {
-			displayValue = newVal;
+		set displayValues(newVal) {
+			displayValues = newVal;
 		},
-		setDisplayValue,
+		setDisplayValues,
 		swapUnits
 	};
 }
