@@ -1,9 +1,10 @@
 import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
 import userSettings from '$state/userSettings.svelte';
 
-/** The amount of decimal places to prefer when converting units. */
-const DECIMAL_PLACES = 3;
-
+/**
+ * Describes the symbols of the unit systems
+ * and how to convert between them.
+ */
 type UnitInfo = {
 	symbols: Record<UnitSystem, string>;
 	conversions: Record<UnitSystem, (input: number) => number>;
@@ -74,7 +75,7 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
  * @param places The number of decimal places.
  * @returns The rounded number.
  */
-export function roundToDecimalPlaces(num: number, places: number) {
+function roundToDecimalPlaces(num: number, places: number) {
 	const factor = 10 ** places;
 	return Math.round(num * factor) / factor;
 }
@@ -85,7 +86,7 @@ export function roundToDecimalPlaces(num: number, places: number) {
  * @param quantityType The type of quantity being represented.
  * @returns The unit symbol as a string.
  */
-export function quantityToUnitSymbol(
+function quantityToUnitSymbol(
 	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity
 ): string {
@@ -97,7 +98,7 @@ export function quantityToUnitSymbol(
  * @param unitSystem The unit system to swap.
  * @returns The opposite unit system.
  */
-export function swapUnit(unitSystem: UnitSystem): UnitSystem {
+function swapUnit(unitSystem: UnitSystem): UnitSystem {
 	return unitSystem === 'metric' ? 'imperial' : 'metric';
 }
 
@@ -108,7 +109,7 @@ export function swapUnit(unitSystem: UnitSystem): UnitSystem {
  * @param quantityType The type of the quantity
  * @returns The quantity represented in the other unit system.
  */
-export function convertQuantity(
+function convertQuantity(
 	quantity: number,
 	unitSystem: UnitSystem,
 	quantityType: UnitAwareQuantity
@@ -138,16 +139,18 @@ function convertQuantityToMetric(
  * Creates a set of runes for tracking and changing the unit system of an array of values.
  * @param quantityType The type of quantity to represent.
  * @param initialValuesMetric The initial values, in metric.
+ * @param decimalPlaces The number of decimal places to prefer when converting values.
  * @returns A unit aware value.
  */
-export function createUnitAwareValue(
+export function createUnitAwareValues(
 	quantityType: UnitAwareQuantity,
-	initialValuesMetric: Array<number>
+	initialValuesMetric: Array<number>,
+	decimalPlaces: number = 2
 ) {
 	/** The current unit system for this value. Defaults to user preferences. */
 	let unitSystem: UnitSystem = $state(userSettings.value.units[quantityType]);
 
-	/** The value displayed in the component. */
+	/** The values displayed in the component. */
 	let displayValues: Array<number> = $state(
 		userSettings.value.units[quantityType] === 'metric'
 			? initialValuesMetric
@@ -168,13 +171,20 @@ export function createUnitAwareValue(
 
 	/**
 	 * Sets the display value from an external source.
+	 * Ensures that the new display value is different from
+	 * the current one to avoid double-conversion.
 	 * @param newVal The new values, in metric.
 	 */
 	function setDisplayValues(newVal: Array<number>) {
 		const newDisplayValues =
 			unitSystem === 'metric'
 				? newVal
-				: newVal.map((value) => convertQuantity(value, 'metric', quantityType));
+				: newVal.map((value) =>
+						roundToDecimalPlaces(
+							convertQuantity(value, 'metric', quantityType),
+							decimalPlaces
+						)
+					);
 		newDisplayValues.forEach((value, index) => {
 			if (value != displayValues[index]) {
 				displayValues[index] = newDisplayValues[index];
@@ -183,14 +193,54 @@ export function createUnitAwareValue(
 	}
 
 	/**
+	 * Handles an input component such that the display values
+	 * are properly updated.
+	 * Requires the caller to update the output metric value from
+	 * metricValues after this function.
+	 * @param event The input component event.
+	 * @param index The index of the values the input handles.
+	 */
+	function handleInput(
+		event: Event & {
+			currentTarget: EventTarget & HTMLInputElement;
+		},
+		index: number
+	) {
+		if (!(event.target instanceof HTMLInputElement) || !event.target.value) {
+			return;
+		}
+
+		let newValue = parseFloat(event.target.value);
+		if (!newValue) {
+			newValue = 0;
+		}
+
+		displayValues[index] = newValue;
+	}
+
+	/**
 	 * When the units are swapped, the intermediate quantity is converted
 	 * to the other unit system and the unit system is swapped.
 	 */
 	function swapUnits() {
 		displayValues = displayValues.map((value) =>
-			convertQuantity(value, unitSystem, quantityType)
+			roundToDecimalPlaces(
+				convertQuantity(value, unitSystem, quantityType),
+				decimalPlaces
+			)
 		);
 		unitSystem = swapUnit(unitSystem);
+	}
+
+	/**
+	 * Converts a metric quantity to a quantity in the current unit system.
+	 * @param metricValue A metric quantity.
+	 * @returns A quantity in the current unit system.
+	 */
+	function metricToCurrentUnit(metricValue: number): number {
+		return unitSystem === 'metric'
+			? metricValue
+			: convertQuantity(metricValue, 'metric', quantityType);
 	}
 
 	return {
@@ -210,6 +260,9 @@ export function createUnitAwareValue(
 			displayValues = newVal;
 		},
 		setDisplayValues,
-		swapUnits
+		handleInput,
+		swapUnits,
+		metricToCurrentUnit
 	};
 }
+export type UnitAwareValues = ReturnType<typeof createUnitAwareValues>;
