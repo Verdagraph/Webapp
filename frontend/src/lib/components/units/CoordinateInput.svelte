@@ -51,7 +51,7 @@
 	});
 </script>
 
-<div class="@container h-full w-full">
+<div {...restProps} class="@container h-full w-full">
 	<div
 		class="@xs:flex-row flex w-full grid-cols-3 grid-rows-2 flex-col justify-between"
 	>
@@ -67,7 +67,6 @@
 				{step}
 				min={unitAwareMin}
 				max={unitAwareMax}
-				{...restProps}
 				oninput={(event) => {
 					unitAwareValues.handleInput(event, 0);
 					x = unitAwareValues.metricValues[0];
@@ -87,7 +86,6 @@
 				{step}
 				min={unitAwareMin}
 				max={unitAwareMax}
-				{...restProps}
 				oninput={(event) => {
 					unitAwareValues.handleInput(event, 1);
 					y = unitAwareValues.metricValues[1];
