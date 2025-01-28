@@ -1,9 +1,7 @@
 import { Schema as S } from '@triplit/client';
 import { z } from 'zod';
 
-/**
- * The annual lifecycle defines the length of the stages of life for annual plants.
- */
+/** Schema. */
 export const AnnualLifeCycleProfile = S.Record({
 	sowToGerm: S.Optional(S.Number()),
 	germToTransplant: S.Optional(S.Number()),
@@ -35,9 +33,7 @@ export const fields = {
 	)
 };
 
-/**
- * Command to update an annual lifecycle profile.
- */
+/** Update command. */
 export const AnnualLifecycleUpdateCommand = z
 	.object({
 		sowToGerm: fields.sowToGerm.optional(),

@@ -64,26 +64,54 @@ export const cultivarSchema = {
 					/** Allow reads if the collection is not hidden,
 					 *  the garden is defined and the user is a member,
 					 *  or the user is defined and the user is the owner. */
-					/*
 					filter: [
 						or([
 							['visibility', '!=', 'HIDDEN'],
-							['adminIds', 'has', '$role.profileId'],
-							['editorIds', 'has', '$role.profileId'],
-							['viewerIds', 'has', '$role.profileId']
+							['userId', '=', '$role.profileId'],
+							['garden.adminIds', 'has', '$role.profileId'],
+							['garden.editorIds', 'has', '$role.profileId'],
+							['garden.viewerIds', 'has', '$role.profileId']
 						])
-					]*/
+					]
 				},
 				insert: {
-					/** Allow new collections to be created:
+					/**
+					 * Allow new collections to be created:
 					 * if the garden is defined, the user must be an admin in the garden.
 					 * Otherwise, the user can create their own collections.
 					 */
-					//filter: [['creatorId', '=', '$role.profileId']]
+					filter: [
+						or([
+							['userId', '=', '$role.profileId'],
+							['garden.adminIds', 'has', '$role.profileId']
+						])
+					]
 				},
 				update: {
-					/** Restrict edit access to admins. */
-					//filter: [['adminIds', 'has', '$role.profileId']]
+					/**
+					 * Allow collections to be update:
+					 * if the garden is defined, the user must be an admin in the garden.
+					 * Otherwise, the user can update their own collections.
+					 */
+					filter: [
+						or([
+							['userId', '=', '$role.profileId'],
+							['garden.adminIds', 'has', '$role.profileId']
+						])
+					]
+				},
+				delete: {
+					/**
+					 * Allow collections to be deleted:
+					 * if the garden is defined, the user must be an admin in the garden.
+					 * Otherwise, the user can deleted their own collections.
+					 */
+					filter: [
+						or([
+							['userId', '=', '$role.profileId'],
+							['garden.adminIds', 'has', '$role.profileId']
+						])
+					]
 				}
 			}
 		}
@@ -119,8 +147,70 @@ export const cultivarSchema = {
 			/** Attributes which define this cultivar. */
 			attributes: CultivarAttributes
 		}),
-		permissions: {}
+		permissions: {
+			anon: {
+				read: {
+					/** Allow anonymous reads if the collection is not hidden. */
+					filter: [['collection.visibility', '!=', 'HIDDEN']]
+				}
+			},
+			user: {
+				read: {
+					/** Allow reads if the collection is not hidden,
+					 *  the garden is defined and the user is a member,
+					 *  or the user is defined and the user is the owner. */
+					filter: [
+						or([
+							['collection.visibility', '!=', 'HIDDEN'],
+							['collection.userId', '=', '$role.profileId'],
+							['collection.garden.adminIds', 'has', '$role.profileId'],
+							['collection.garden.editorIds', 'has', '$role.profileId'],
+							['collection.garden.viewerIds', 'has', '$role.profileId']
+						])
+					]
+				},
+				insert: {
+					/**
+					 * Allow new cultivars to be created:
+					 * if the garden is defined, the user must be an admin in the garden.
+					 * Otherwise, the user can create their own collections.
+					 */
+					filter: [
+						or([
+							['collection.userId', '=', '$role.profileId'],
+							['collection.garden.adminIds', 'has', '$role.profileId']
+						])
+					]
+				},
+				update: {
+					/**
+					 * Allow cultivars to be update:
+					 * if the garden is defined, the user must be an admin in the garden.
+					 * Otherwise, the user can update their own collections.
+					 */
+					filter: [
+						or([
+							['collection.userId', '=', '$role.profileId'],
+							['collection.garden.adminIds', 'has', '$role.profileId']
+						])
+					]
+				},
+				delete: {
+					/**
+					 * Allow cultivars to be deleted:
+					 * if the garden is defined, the user must be an admin in the garden.
+					 * Otherwise, the user can deleted their own collections.
+					 */
+					filter: [
+						or([
+							['collection.userId', '=', '$role.profileId'],
+							['collection.garden.adminIds', 'has', '$role.profileId']
+						])
+					]
+				}
+			}
+		}
 	}
 } satisfies ClientSchema;
-export type Cultivar = Entity<typeof cultivarSchema, 'cultivarCollections'>;
-export type CultivarCollection = Entity<typeof cultivarSchema, 'cultivars'>;
+export type Cultivar = Entity<typeof cultivarSchema, 'cultivars'>;
+export type CultivarCollection = Entity<typeof cultivarSchema, 'cultivarCollections'>;
