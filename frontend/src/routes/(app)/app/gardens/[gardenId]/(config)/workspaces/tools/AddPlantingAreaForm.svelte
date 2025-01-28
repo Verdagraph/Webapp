@@ -160,7 +160,7 @@
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors
-				handlerErrors={handler.fieldErrors?.['location.coordinate.x']}
+				handlerErrors={handler.fieldErrors?.['geometry.type']}
 			/>
 		</Form.Field>
 
@@ -181,6 +181,7 @@
 			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.rotation']} />
 		</Form.Field>
 
+		<!-- RECTANGLE GEOMETRY. -->
 		{#if $formData.geometry.type === 'RECTANGLE'}
 			<!-- Length. -->
 			<Form.Field {form} name="geometry.rectangleAttributes.length">
@@ -229,6 +230,8 @@
 					handlerErrors={handler.fieldErrors?.['geometry.rectangleAttributes.width']}
 				/>
 			</Form.Field>
+
+		<!-- POLYGON GEOMETRY. -->
 		{:else if $formData.geometry.type === 'POLYGON'}
 			<!-- Side count. -->
 			<Form.Field {form} name="geometry.polygonAttributes.numSides">
@@ -278,6 +281,8 @@
 					handlerErrors={handler.fieldErrors?.['geometry.polygonAttributes.radius']}
 				/>
 			</Form.Field>
+
+		<!-- ELLIPSE GEOMETRY. -->
 		{:else if $formData.geometry.type === 'ELLIPSE'}
 			<!-- Length diameter. -->
 			<Form.Field {form} name="geometry.ellipseAttributes.lengthDiameter">
@@ -332,80 +337,47 @@
 					]}
 				/>
 			</Form.Field>
+
+		<!-- LINES GEOMETRY. -->
 		{:else if $formData.geometry.type === 'LINES'}
-			<!-- Coordinate add button. -->
-			<Button
-				onclick={() => {
-					$formData.geometry.linesAttributes.coordinates = [
-						...$formData.geometry.linesAttributes.coordinates,
-						{ x: 0, y: 0 }
-					];
-				}}
-				variant="outline"
-				class="mb-4 flex w-full items-center justify-between"
-			>
-				<span> Add Point </span>
-				<Icon icon={iconIds.addIcon} width="1.5rem" />
-			</Button>
-
-			<!-- Coordinate. -->
-			{#each $formData.geometry.linesAttributes.coordinates as coordinate, index (index)}
-				<!-- X Coordinate. -->
-				<Form.Field {form} name={`geometry.linesAttributes.coordinates[${index}]`}>
+		<!-- Coordinate. -->
+		{#each $formData.geometry.linesAttributes.coordinates as coordinate, index}
+		<Form.Field {form} name={`geometry.linesAttributes.coordinates[${index}]`}>
 					<Form.Control>
 						{#snippet children({ props })}
 							<Form.Label
 								description={plantingAreaCreate.schema.shape.geometry
 									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.x.description}
+									.shape.linesAttributes.shape.coordinates._def.innerType._def.description}
 								optional={plantingAreaCreate.schema.shape.geometry
 									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.x.isOptional()}>X-{index}</Form.Label
+									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.isOptional()}>Coordinate {index}</Form.Label
 							>
-							<UnitAwareInput
-								{...props}
-								quantityType="distance"
-								bind:value={$formData.geometry.linesAttributes.coordinates[index].x}
-							/>
+							<CoordinateInput {...props} bind:x={$formData.geometry.linesAttributes.coordinates[index].x} bind:y={$formData.geometry.linesAttributes.coordinates[index].y} />
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors
-						handlerErrors={handler.fieldErrors?.[
-							`geometry.linesAttributes.coordinates[${index}].x`
-						]}
-					/>
-				</Form.Field>
-
-				<!-- Y Coordinate. -->
-				<Form.Field {form} name={`geometry.linesAttributes.coordinates[${index}]`}>
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label
-								description={plantingAreaCreate.schema.shape.geometry
-									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.y.description}
-								optional={plantingAreaCreate.schema.shape.geometry
-									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.y.isOptional()}>Y-{index}</Form.Label
-							>
-							<UnitAwareInput
-								{...props}
-								quantityType="distance"
-								bind:value={$formData.geometry.linesAttributes.coordinates[index].y}
-							/>
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors
-						handlerErrors={handler.fieldErrors?.[
+					handlerErrors={handler.fieldErrors?.[
 							`geometry.linesAttributes.coordinates[${index}]`
 						]}
 					/>
 				</Form.Field>
-			{/each}
+				{/each}
+
+				<!-- Coordinate add button. -->
+				<Button
+					onclick={() => {
+						$formData.geometry.linesAttributes.coordinates = [
+							...$formData.geometry.linesAttributes.coordinates,
+							{ x: 0, y: 0 }
+						];
+					}}
+					variant="outline"
+					class="mb-4 flex w-full items-center justify-between"
+				>
+					<span> Add Point </span>
+					<Icon icon={iconIds.addIcon} width="1.5rem" />
+				</Button>
 		{/if}
 	</fieldset>
 
