@@ -52,9 +52,9 @@ export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number
 			/**
 			 * TODO: Remove this once linesCoordinates can be moved to linesAttributes.coordinates
 			 */
-			/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type.*/
 			if (
 				!geometry.linesAttributes ||
+				/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type.*/
 				(!geometry.linesAttributes?.coordinates && !geometry.linesCoordinates)
 			) {
 				console;

@@ -1,14 +1,21 @@
 <script lang="ts">
 	import type { Coordinate, Geometry } from '@vdt-webapp/common';
+	import { getContext } from 'svelte';
 	import { GeometryTypeEnum } from '@vdt-webapp/common';
 	import Konva from 'konva';
 	import { getGeometryResizePoints } from './utils';
+	import type { CanvasContext } from '../state';
 
 	type Props = {
+		/** The ID of the canvas. */
+		canvasId: string;
 		geometry: Geometry;
 		plantingAreaGroup: Konva.Group;
 	};
-	let { geometry = $bindable(), plantingAreaGroup }: Props = $props();
+	let { canvasId, geometry = $bindable(), plantingAreaGroup }: Props = $props();
+
+	/** Retrieve canvas and initialize Konva constructs. */
+	const canvas = getContext<CanvasContext>(canvasId);
 
 	let group = new Konva.Group();
 	plantingAreaGroup.add(group);
@@ -26,23 +33,50 @@
 		index: number,
 		geometryType: (typeof GeometryTypeEnum)[number]
 	) {
+		const point = resizePoints[index];
+
 		switch (geometryType) {
 			case 'RECTANGLE':
-				/** Corner indices: 1, 3, 5, 7: change w and height
-				 * Side indices: 2, 4, 6, 8: change w or height
+				/**
+				 * If the index is even,
+				 * calculate the new width and height.
 				 */
+				if (index % 2 === 0) {
+					const newLength = Math.abs(point.x()) * 2;
+					const newWidth = Math.abs(point.y()) * 2;
+
+					geometry.rectangleAttributes.length =
+						canvas.transform.modelDistance(newLength);
+					geometry.rectangleAttributes.width = canvas.transform.modelDistance(newWidth);
+
+					/**
+					 * If the index is odd,
+					 * calculate the new width or height
+					 * and constrain movement to an axis.
+					 */
+				} else {
+				}
+
 				break;
 
 			case 'POLYGON':
 				/**
-				 * Vertices indices: all, changes radius:
+				 * Calculate the new radius,
+				 * and constrain the movement to
+				 * a straight line from the center.
 				 */
 				break;
 
 			case 'ELLIPSE':
 				/**
-				 * Top&bottom indices: change height
-				 * Side indicies: change w
+				 * If the index is even, calculate the
+				 * new width and constrain movement
+				 * to the Y axis.
+				 */
+
+				/**
+				 * If the index is odd, calculate the new
+				 * length and constrain movement to the X axis.
 				 */
 				break;
 
