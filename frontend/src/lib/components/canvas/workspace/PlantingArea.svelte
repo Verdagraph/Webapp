@@ -2,7 +2,11 @@
 	import Konva from 'konva';
 	import type { Vector2d } from 'konva/lib/types';
 	import { getContext, onDestroy } from 'svelte';
-	import { type Geometry, type GridAttributes } from '@vdt-webapp/common';
+	import {
+		getGeometryHeight,
+		type Geometry,
+		type GridAttributes
+	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, type SupportedShape } from '../utils';
 	import { getColor } from '$lib/utils';
@@ -13,6 +17,9 @@
 		canvasId: string;
 		/** The ID of the layer which holds the planting areas. */
 		plantingAreaLayerId: string;
+		/** Name of the planting area. Can be disabled */
+		name: string;
+		showName: boolean;
 		/** The current position of the planting area in the workspace, in model quantity (meters). */
 		position: Vector2d | null;
 		/** The geometry of the planting area. */
@@ -38,6 +45,8 @@
 	let {
 		canvasId,
 		plantingAreaLayerId,
+		name,
+		showName = true,
 		position,
 		geometry,
 		editable,
@@ -54,8 +63,16 @@
 	const group: Konva.Group = new Konva.Group({ draggable: editable });
 	layer.add(group);
 
-	/** Border shape of the planting area. */
+	/** Shapes of the planting area. */
 	let plantingAreaShape: SupportedShape | null = null;
+	let nameText = new Konva.Text({
+		fontFamily: 'sans',
+		fontSize: 15,
+		opacity: 0.7,
+		text: name,
+		visible: showName
+	});
+	group.add(nameText);
 
 	/**
 	 * Retrives the shape settings based on state.
@@ -64,26 +81,41 @@
 	function getShapeConfig(selected: boolean) {
 		if (selected) {
 			return {
-				fill: getColor('accent', 5, mode.value),
-				stroke: getColor('accent', 8, mode.value),
-				strokeWidth: 3
+				plantingAreaShapeConfig: {
+					fill: getColor('accent', 5, mode.value),
+					stroke: getColor('accent', 8, mode.value),
+					strokeWidth: 3
+				},
+				nameTextShapeConfig: {
+					fill: getColor('accent', 11, mode.value)
+				}
 			};
 		} else {
 			return {
-				fill: getColor('brown', 3, mode.value),
-				stroke: getColor('brown', 10, mode.value),
-				strokeWidth: 2
+				plantingAreaShapeConfig: {
+					fill: getColor('brown', 3, mode.value),
+					stroke: getColor('brown', 10, mode.value),
+					strokeWidth: 2
+				},
+				nameTextShapeConfig: {
+					fill: getColor('brown', 11, mode.value)
+				}
 			};
 		}
 	}
 
 	/** Update shapes upon geometry change. */
 	$effect(() => {
-		group.destroyChildren();
-		plantingAreaShape = getClosedShape(canvas, geometry, getShapeConfig(selected));
+		plantingAreaShape?.destroy();
+		plantingAreaShape = getClosedShape(
+			canvas,
+			geometry,
+			getShapeConfig(selected).plantingAreaShapeConfig
+		);
 		if (plantingAreaShape) {
 			group.add(plantingAreaShape);
 			group.rotation(geometry.rotation);
+			nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
 		}
 	});
 
@@ -102,10 +134,18 @@
 
 	/** Update color on selection change. */
 	$effect(() => {
-		const config = getShapeConfig(selected);
-		plantingAreaShape?.fill(config.fill);
-		plantingAreaShape?.stroke(config.stroke);
-		plantingAreaShape?.strokeWidth(config.strokeWidth);
+		const { plantingAreaShapeConfig, nameTextShapeConfig } = getShapeConfig(selected);
+		plantingAreaShape?.fill(plantingAreaShapeConfig.fill);
+		plantingAreaShape?.stroke(plantingAreaShapeConfig.stroke);
+		plantingAreaShape?.strokeWidth(plantingAreaShapeConfig.strokeWidth);
+		nameText.fill(nameTextShapeConfig.fill);
+	});
+
+	/** Update name text on name change. */
+	$effect(() => {
+		nameText.text(name);
+		nameText.offsetX(nameText.width() / 2);
+		nameText.offsetY(nameText.height() + 10);
 	});
 
 	/** Add events. */

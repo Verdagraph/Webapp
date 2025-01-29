@@ -45,11 +45,6 @@ function getClosedOrUnclosedShape(
 		case 'RECTANGLE':
 			attributes = getGeometryAttributes<'RECTANGLE'>(geometry as RectangleGeometry);
 
-			if (!attributes.length || !attributes.width) {
-				console.warn(`Geometry attributes undefined.`);
-				return null;
-			}
-
 			return new Konva.Rect({
 				width: canvas.transform.canvasDistance(attributes.length),
 				height: canvas.transform.canvasDistance(attributes.width),
@@ -63,11 +58,6 @@ function getClosedOrUnclosedShape(
 		case 'POLYGON':
 			attributes = getGeometryAttributes<'POLYGON'>(geometry as PolygonGeometry);
 
-			if (!attributes.numSides || !attributes.radius) {
-				console.warn(`Geometry attributes undefined.`);
-				return null;
-			}
-
 			return new Konva.RegularPolygon({
 				sides: attributes.numSides,
 				radius: canvas.transform.canvasDistance(attributes.radius),
@@ -77,35 +67,14 @@ function getClosedOrUnclosedShape(
 		case 'ELLIPSE':
 			attributes = getGeometryAttributes<'ELLIPSE'>(geometry as EllipseGeometry);
 
-			if (!attributes.lengthDiameter || !attributes.widthDiameter) {
-				console.warn(`Geometry attributes undefined.`);
-				return null;
-			}
-
 			return new Konva.Ellipse({
-				radiusX: canvas.transform.canvasDistance(attributes.lengthDiameter),
-				radiusY: canvas.transform.canvasDistance(attributes.widthDiameter),
+				radiusX: canvas.transform.canvasDistance(attributes.lengthDiameter / 2),
+				radiusY: canvas.transform.canvasDistance(attributes.widthDiameter / 2),
 				...commonShapeConfig
 			});
 
 		case 'LINES':
 			attributes = getGeometryAttributes<'LINES'>(geometry as LinesGeometry);
-			/**
-			 * TODO: Remove this once linesCoordinates can be moved to linesAttributes.coordinates
-			 */
-			if (!geometry.linesAttributes?.coordinates) {
-				/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type.*/
-				if (!geometry.linesCoordinates) {
-					throw new AppError('Lines geometry without coordinates.');
-				}
-				/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type. */
-				attributes.coordinates = geometry.linesCoordinates;
-			}
-
-			if (!attributes.coordinates || attributes.coordinates.length < 3) {
-				console.warn(`Geometry attributes undefined.`);
-				return null;
-			}
 
 			return new Konva.Line({
 				points: attributes.coordinates.reduce<number[]>((output, coordinate) => {

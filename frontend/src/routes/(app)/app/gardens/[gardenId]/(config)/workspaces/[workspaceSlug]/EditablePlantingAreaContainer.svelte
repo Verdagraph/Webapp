@@ -69,6 +69,7 @@ area in the workspace editor, ie., editable
 	<PlantingArea
 		{canvasId}
 		{plantingAreaLayerId}
+		name={plantingArea.name}
 		{position}
 		geometry={plantingArea.geometry}
 		grid={plantingArea.grid}

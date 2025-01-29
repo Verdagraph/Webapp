@@ -1,5 +1,13 @@
 import { AppError } from '../errors';
-import type { Geometry, GeometryAttributesMap } from './schema';
+import type {
+	Geometry,
+	GeometryAttributesMap,
+	GeometryTypeEnum,
+	RectangleGeometry,
+	EllipseGeometry,
+	PolygonGeometry,
+	LinesGeometry
+} from './schema';
 
 /**
  * Returns the attributes from the geometry based on its type.
@@ -7,31 +15,62 @@ import type { Geometry, GeometryAttributesMap } from './schema';
  * @param geometry The geometry to extract from.
  * @returns The attributes.
  */
-export function getGeometryAttributes<T extends Geometry['type']>(
+export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number]>(
 	geometry: Extract<Geometry, { type: T }>
 ): GeometryAttributesMap[T] {
 	switch (geometry.type) {
 		case 'RECTANGLE':
-			if (!geometry.rectangleAttributes) {
+			if (
+				!geometry.rectangleAttributes ||
+				!geometry.rectangleAttributes.length ||
+				!geometry.rectangleAttributes.width
+			) {
 				throw new AppError('Rectangle geometry undefined.');
 			}
 			return geometry.rectangleAttributes as GeometryAttributesMap[T];
 
 		case 'POLYGON':
-			if (!geometry.polygonAttributes) {
+			if (
+				!geometry.polygonAttributes ||
+				!geometry.polygonAttributes.numSides ||
+				!geometry.polygonAttributes.radius
+			) {
 				throw new AppError('Polygon geometry undefined.');
 			}
 			return geometry.polygonAttributes as GeometryAttributesMap[T];
 
 		case 'ELLIPSE':
-			if (!geometry.ellipseAttributes) {
+			if (
+				!geometry.ellipseAttributes ||
+				!geometry.ellipseAttributes.lengthDiameter ||
+				!geometry.ellipseAttributes.widthDiameter
+			) {
 				throw new AppError('Ellipse geometry undefined.');
 			}
 			return geometry.ellipseAttributes as GeometryAttributesMap[T];
 		case 'LINES':
-			if (!geometry.linesAttributes) {
+			/**
+			 * TODO: Remove this once linesCoordinates can be moved to linesAttributes.coordinates
+			 */
+			/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type.*/
+			if (
+				!geometry.linesAttributes ||
+				(!geometry.linesAttributes?.coordinates && !geometry.linesCoordinates)
+			) {
+				console;
 				throw new AppError('Lines geometry undefined.');
 			}
+
+			const attributes = geometry.linesAttributes;
+			if (!geometry.linesAttributes.coordinates) {
+				/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type. */
+				attributes.coordinates = geometry.linesCoordinates;
+			}
+
+			if (!attributes.coordinates || attributes.coordinates.length < 3) {
+				throw new AppError('Lines geometry undefined.');
+			}
+
 			return geometry.linesAttributes as GeometryAttributesMap[T];
 	}
 
@@ -81,4 +120,27 @@ export function historySelect<T extends { date: Date }>(
 
 	/** Fallback to null. */
 	return null;
+}
+
+export function getGeometryHeight(
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date'>
+): number {
+	let attributes;
+	switch (geometry.type) {
+		case 'RECTANGLE':
+			attributes = getGeometryAttributes<'RECTANGLE'>(geometry as RectangleGeometry);
+			return attributes.width / 2;
+
+		case 'POLYGON':
+			attributes = getGeometryAttributes<'POLYGON'>(geometry as PolygonGeometry);
+			return attributes.radius;
+
+		case 'ELLIPSE':
+			attributes = getGeometryAttributes<'ELLIPSE'>(geometry as EllipseGeometry);
+			return attributes.widthDiameter / 2;
+
+		case 'LINES':
+			attributes = getGeometryAttributes<'LINES'>(geometry as LinesGeometry);
+			return Math.max(...attributes.coordinates.map((coordinate) => coordinate.y));
+	}
 }

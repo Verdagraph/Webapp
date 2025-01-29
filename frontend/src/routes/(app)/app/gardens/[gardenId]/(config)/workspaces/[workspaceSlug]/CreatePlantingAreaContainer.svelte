@@ -36,6 +36,7 @@ of an easy way to ignore them.
 <PlantingArea
 	canvasId={canvas.canvasId}
 	{plantingAreaLayerId}
+	name={$formData.name}
 	position={$formData.location.coordinate}
 	geometry={$formData.geometry as unknown as Geometry}
 	grid={$formData.grid}
