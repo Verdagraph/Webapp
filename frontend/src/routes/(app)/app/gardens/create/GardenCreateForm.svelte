@@ -13,7 +13,7 @@
 	import { GardenVisibilityEnum } from '@vdt-webapp/common';
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
 	import { generateGardenId } from '$data/gardens/utils';
-	import useAsync from '$state/asyncHandler.svelte';
+	import createMutationHandler from '$state/mutationHandler.svelte';
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions: {
@@ -41,7 +41,7 @@
 	);
 
 	/** Garden creation form. */
-	let gardenCreateHandler = useAsync(gardenCreate.mutation, {
+	let gardenCreateHandler = createMutationHandler(gardenCreate.mutation, {
 		onSuccess: (data) => {
 			goto('/app/gardens/' + data.id);
 		}
@@ -61,7 +61,7 @@
 	const { form: formData, enhance } = form;
 
 	/** Garden ID generation handler. */
-	let gardenIdGenerationHandler = useAsync(generateGardenId, {
+	let gardenIdGenerationHandler = createMutationHandler(generateGardenId, {
 		onSuccess: (generatedId) => {
 			$formData.id = generatedId;
 		}

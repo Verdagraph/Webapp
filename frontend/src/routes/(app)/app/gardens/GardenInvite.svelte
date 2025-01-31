@@ -11,7 +11,7 @@
 	} from '$data/gardens/commands';
 	import { useQuery } from '@triplit/svelte';
 	import triplit from '$data/triplit';
-	import useAsync from '$state/asyncHandler.svelte';
+	import createMutationHandler from '$state/mutationHandler.svelte';
 
 	type Props = {
 		invite: AcceptancePendingMembershipsQueryResult;
@@ -24,8 +24,12 @@
 	);
 
 	/** Mutations. */
-	const gardenMembershipAcceptHandler = useAsync(gardenMembershipAccept.mutation);
-	const gardenMembershipDeleteHandler = useAsync(gardenMembershipDelete.mutation);
+	const gardenMembershipAcceptHandler = createMutationHandler(
+		gardenMembershipAccept.mutation
+	);
+	const gardenMembershipDeleteHandler = createMutationHandler(
+		gardenMembershipDelete.mutation
+	);
 </script>
 
 <li class="flex flex-row">

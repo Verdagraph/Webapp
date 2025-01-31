@@ -16,13 +16,15 @@
 		minValue?: DateValue | undefined;
 		maxValue?: DateValue | undefined;
 		onValueChange?: (date: DateValue | undefined) => void;
+		disabled?: boolean;
 	};
 	let {
 		value = $bindable(),
 		compact = false,
 		minValue,
 		maxValue,
-		onValueChange
+		onValueChange,
+		disabled = false
 	}: Props = $props();
 
 	const df = new DateFormatter('en-US', {
@@ -49,6 +51,13 @@
 		{value ? df.format(value.toDate(getLocalTimeZone())) : 'Pick a date'}
 	</Popover.Trigger>
 	<Popover.Content class="w-auto p-0">
-		<Calendar type="single" bind:value {onValueChange} {minValue} {maxValue} />
+		<Calendar
+			type="single"
+			bind:value
+			{onValueChange}
+			{minValue}
+			{maxValue}
+			{disabled}
+		/>
 	</Popover.Content>
 </Popover.Root>

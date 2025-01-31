@@ -10,6 +10,20 @@ import type {
 } from './schema';
 
 /**
+ * Checks whether two dates are on the same day or not.
+ * @param date1 The first date.
+ * @param date2 The second date.
+ * @returns If true, the two dates take place on the same day.
+ */
+export function isSameDay(date1: Date, date2: Date): boolean {
+	return (
+		date1.getFullYear() === date2.getFullYear() &&
+		date1.getMonth() === date2.getMonth() &&
+		date1.getDate() === date2.getDate()
+	);
+}
+
+/**
  * Returns the attributes from the geometry based on its type.
  * Throws an error if the attributes are undefined.
  * @param geometry The geometry to extract from.
@@ -27,7 +41,7 @@ export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number
 			) {
 				throw new AppError('Rectangle geometry undefined.');
 			}
-			return geometry.rectangleAttributes as GeometryAttributesMap[T];
+			return { ...geometry.rectangleAttributes } as GeometryAttributesMap[T];
 
 		case 'POLYGON':
 			if (
@@ -37,7 +51,7 @@ export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number
 			) {
 				throw new AppError('Polygon geometry undefined.');
 			}
-			return geometry.polygonAttributes as GeometryAttributesMap[T];
+			return { ...geometry.polygonAttributes } as GeometryAttributesMap[T];
 
 		case 'ELLIPSE':
 			if (
@@ -47,7 +61,7 @@ export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number
 			) {
 				throw new AppError('Ellipse geometry undefined.');
 			}
-			return geometry.ellipseAttributes as GeometryAttributesMap[T];
+			return { ...geometry.ellipseAttributes } as GeometryAttributesMap[T];
 		case 'LINES':
 			/**
 			 * TODO: Remove this once linesCoordinates can be moved to linesAttributes.coordinates
@@ -61,7 +75,7 @@ export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number
 				throw new AppError('Lines geometry undefined.');
 			}
 
-			const attributes = geometry.linesAttributes;
+			const attributes = { ...geometry.linesAttributes };
 			if (!geometry.linesAttributes.coordinates) {
 				/** @ts-expect-error as linesCoordinates is a relation and not included in the Triplit generated type. */
 				attributes.coordinates = geometry.linesCoordinates;
@@ -71,7 +85,7 @@ export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number
 				throw new AppError('Lines geometry undefined.');
 			}
 
-			return geometry.linesAttributes as GeometryAttributesMap[T];
+			return attributes as GeometryAttributesMap[T];
 	}
 
 	/** Should not reach here. */
@@ -81,6 +95,9 @@ export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number
 /**
  * Given a history, usually a geometric or location history,
  * return the item at a given date.
+ * The date need not be the exact date of an item, an item
+ * is considered valid at a given date as long as it is before
+ * the next item.
  * @param items a list of items to search. Assumed to be unsorted.
  * @param date The date at which to retrieve the item at.
  * @returns The item at the given date.
@@ -122,6 +139,28 @@ export function historySelect<T extends { date: Date }>(
 	return null;
 }
 
+/**
+ * Given a history, usually a geometric or location history,
+ * return the item at a given date.
+ * An item will only be returned if one exists at the same
+ * day as the given date.
+ * @param items a list of items to search. Assumed to be unsorted.
+ * @param date The date at which to retrieve the item at.
+ * @returns The item at the given date.
+ */
+export function historySelectDay<T extends { date: Date }>(
+	items: Array<T>,
+	date: Date
+): T | null {
+	return [...items].find((item) => isSameDay(item.date, date)) || null;
+}
+
+/**
+ * Given a geometry, returns the coordinate (in meters)
+ * of its vertical extent, relative to the origin of the shape.
+ * @param geometry The geometry to find the height for.
+ * @returns The height, in meters, of the vertical extent of the shape.
+ */
 export function getGeometryHeight(
 	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date'>
 ): number {

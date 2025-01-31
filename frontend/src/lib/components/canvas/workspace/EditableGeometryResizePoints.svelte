@@ -1,53 +1,57 @@
 <script lang="ts">
-	import type { Coordinate, Geometry } from '@vdt-webapp/common';
+	import type { Coordinate, DeepPartial, Geometry } from '@vdt-webapp/common';
 	import { getContext } from 'svelte';
 	import { GeometryTypeEnum } from '@vdt-webapp/common';
 	import Konva from 'konva';
 	import { getGeometryResizePoints } from './utils';
 	import type { CanvasContext } from '../state';
+	import { AppError } from '@vdt-webapp/common/src/errors';
 
 	type Props = {
 		/** The ID of the canvas. */
 		canvasId: string;
-		geometry: Geometry;
-		plantingAreaGroup: Konva.Group;
+		/* The geometry to add points for. */
+		geometry: Omit<Geometry, 'id' | 'gardenId'>;
+		/** A konva group already made that stores the geometry's shapes. */
+		geometryGroup: Konva.Group;
+		/** A color to make the points. */
+		color: string;
+		/** Called when the geometry is transformed in the canvas. */
+		onTransform?: (
+			/** The updated geometry attributes after transformation. */
+			newGeometry: DeepPartial<Geometry>,
+			/** If true, the transform has ended.*/
+			transformOver: boolean
+		) => void;
 	};
-	let { canvasId, geometry = $bindable(), plantingAreaGroup }: Props = $props();
+	let { canvasId, geometry, geometryGroup, color, onTransform }: Props = $props();
 
 	/** Retrieve canvas and initialize Konva constructs. */
 	const canvas = getContext<CanvasContext>(canvasId);
 
 	let group = new Konva.Group();
-	plantingAreaGroup.add(group);
-	let coordinates: Array<Pick<Coordinate, 'x' | 'y'>> = [];
-	let resizePoints: Array<Konva.Ellipse> = [];
+	geometryGroup.add(group);
+	let resizePoints: Array<Konva.Circle> = [];
 
 	let previousGeometryType: (typeof GeometryTypeEnum)[number] = geometry.type;
 	let previousNumResizePoints: number = 0;
 
-	/**
-	 * Rectangle:
-	 */
+	function handleResizePointDrag(index: number): DeepPartial<Geometry> {
+		const newGeometry: DeepPartial<Geometry> = {};
 
-	function handleResizePointDrag(
-		index: number,
-		geometryType: (typeof GeometryTypeEnum)[number]
-	) {
-		const point = resizePoints[index];
-
-		switch (geometryType) {
+		switch (newGeometry.type) {
 			case 'RECTANGLE':
 				/**
 				 * If the index is even,
 				 * calculate the new width and height.
 				 */
 				if (index % 2 === 0) {
-					const newLength = Math.abs(point.x()) * 2;
-					const newWidth = Math.abs(point.y()) * 2;
-
-					geometry.rectangleAttributes.length =
-						canvas.transform.modelDistance(newLength);
-					geometry.rectangleAttributes.width = canvas.transform.modelDistance(newWidth);
+					const newLength = Math.abs(resizePoints[index].x()) * 2;
+					const newWidth = Math.abs(resizePoints[index].y()) * 2;
+					newGeometry.rectangleAttributes = {
+						length: canvas.transform.modelDistance(newLength),
+						width: canvas.transform.modelDistance(newWidth)
+					};
 
 					/**
 					 * If the index is odd,
@@ -55,9 +59,23 @@
 					 * and constrain movement to an axis.
 					 */
 				} else {
-				}
+					/** Top or bottom point. */
+					if (index === 1 || index === 5) {
+						resizePoints[index].x(0);
+						const newWidth = Math.abs(resizePoints[index].y()) * 2;
+						newGeometry.rectangleAttributes = {
+							width: canvas.transform.modelDistance(newWidth)
+						};
 
-				break;
+						/** Side points. */
+					} else {
+						resizePoints[index].y(0);
+						const newLength = Math.abs(resizePoints[index].x()) * 2;
+						newGeometry.rectangleAttributes = {
+							length: canvas.transform.modelDistance(newLength)
+						};
+					}
+				}
 
 			case 'POLYGON':
 				/**
@@ -86,10 +104,11 @@
 				 */
 				break;
 		}
+		return newGeometry;
 	}
 
 	$effect(() => {
-		coordinates = getGeometryResizePoints(geometry);
+		const coordinates = getGeometryResizePoints(geometry);
 		/**
 		 * If the points haven't been created yet,
 		 * or the geometry type has switched,
@@ -102,16 +121,32 @@
 			previousGeometryType != geometry.type ||
 			previousNumResizePoints != coordinates.length
 		) {
+			resizePoints = [];
 			group.destroyChildren();
-			coordinates.forEach((coordinate) => {
-				const point = new Konva.Ellipse({
-					radiusX: 5,
-					radiusY: 5,
-					x: coordinate.x,
-					y: coordinate.y,
-					draggable: true
+			coordinates.forEach((coordinate, index) => {
+				const point = new Konva.Circle({
+					radius: 8,
+					x: canvas.transform.canvasXPos(coordinate.x),
+					y: canvas.transform.canvasYPos(coordinate.y),
+					draggable: true,
+					fill: color
 				});
-				point.on('dragmove dragend', () => {});
+				point.on('mouseover', () => {
+					document.body.style.cursor = 'grab';
+				});
+				point.on('mouseout', () => {
+					document.body.style.cursor = 'default';
+				});
+				point.on('dragmove', () => {
+					if (onTransform) {
+						onTransform(handleResizePointDrag(index), false);
+					}
+				});
+				point.on('dragend', () => {
+					if (onTransform) {
+						onTransform(handleResizePointDrag(index), true);
+					}
+				});
 				resizePoints.push(point);
 				group.add(point);
 			});

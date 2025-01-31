@@ -5,9 +5,9 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$data/users/auth';
-	import useAsync from '$state/asyncHandler.svelte';
+	import createMutationHandler from '$state/mutationHandler.svelte';
 
-	let formHandler = useAsync(userLogin.mutation, {
+	let formHandler = createMutationHandler(userLogin.mutation, {
 		onSuccess: () => {
 			goto('/app');
 		}

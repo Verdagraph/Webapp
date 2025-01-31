@@ -33,6 +33,8 @@ export function createTimelineSelection() {
 	/**
 	 * Selection.
 	 */
+	/** Used to prevent changes, for example when an object is being moved around. */
+	let disabled = $state(false);
 	/** Controls the view of the Layout. */
 	let focus: DateValue = $state(today(getLocalTimeZone()));
 	/** Day which marks the start of the timeline selection. */
@@ -107,6 +109,10 @@ export function createTimelineSelection() {
 	 * Resets the selection to the default.
 	 */
 	function reset() {
+		if (disabled) {
+			return;
+		}
+
 		focus = today(getLocalTimeZone());
 		beginSelection = focus.subtract(defaultLowerSelectionOffset);
 		endSelection = focus.add(defaultUpperSelectionOffset);
@@ -118,6 +124,10 @@ export function createTimelineSelection() {
 	 * Resets the slider range back to the default.
 	 */
 	function resetSliderRange() {
+		if (disabled) {
+			return;
+		}
+
 		beginSlider = beginSelection.subtract(defaultSliderDisplayOffset);
 		endSlider = endSelection.add(defaultSliderDisplayOffset);
 	}
@@ -127,6 +137,10 @@ export function createTimelineSelection() {
 	 * @param newFocus The new focused day.
 	 */
 	function refocus(newFocus: DateValue) {
+		if (disabled) {
+			return;
+		}
+
 		/* Calculate the difference between two focused dates in days.  */
 		const deltaDays = calculateDeltaDays(newFocus, focus);
 
@@ -154,6 +168,10 @@ export function createTimelineSelection() {
 	 * @param newBeginSelection The new begin selection date.
 	 */
 	function changeBeginSelection(newBeginSelection: DateValue) {
+		if (disabled) {
+			return;
+		}
+
 		beginSelection = newBeginSelection;
 
 		if (beginSlider > beginSelection) {
@@ -167,6 +185,10 @@ export function createTimelineSelection() {
 	 * @param newEndSelection The new end selection date.
 	 */
 	function changeEndSelection(newEndSelection: DateValue) {
+		if (disabled) {
+			return;
+		}
+
 		endSelection = newEndSelection;
 
 		if (endSelection > endSlider) {
@@ -179,6 +201,10 @@ export function createTimelineSelection() {
 	 * @param translation The time duration to translate the selection
 	 */
 	function translate(translation: DateDuration) {
+		if (disabled) {
+			return;
+		}
+
 		focus = focus.add(translation);
 		beginSelection = beginSelection.add(translation);
 		endSelection = endSelection.add(translation);
@@ -200,6 +226,10 @@ export function createTimelineSelection() {
 	 * @param newVal The new slider value.
 	 */
 	function updateSlider(newVal: number[]) {
+		if (disabled) {
+			return;
+		}
+
 		/** Drag the selection along with the focus. */
 		if (newVal[1] != sliderValue[1]) {
 			const deltaDays = newVal[1] - sliderValue[1];
@@ -212,6 +242,15 @@ export function createTimelineSelection() {
 		focus = sliderValueToDateValue(newVal[1]);
 		endSelection = sliderValueToDateValue(newVal[2]);
 	}
+
+	function disable() {
+		disabled = true;
+	}
+
+	function enable() {
+		disabled = false;
+	}
+
 	return {
 		get focus() {
 			return focus;
@@ -240,6 +279,9 @@ export function createTimelineSelection() {
 		get sliderValue() {
 			return sliderValue;
 		},
+		get disabled() {
+			return disabled;
+		},
 		minSelectOffset,
 		maxSelectOffset,
 		reset,
@@ -249,7 +291,9 @@ export function createTimelineSelection() {
 		changeEndSelection,
 		translate,
 		sliderValueToDateValue,
-		updateSlider
+		updateSlider,
+		disable,
+		enable
 	};
 }
 export type TimelineSelection = ReturnType<typeof createTimelineSelection>;

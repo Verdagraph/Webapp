@@ -8,6 +8,7 @@ import { type TriplitClient } from '@triplit/client';
 export * from './users/index';
 export * from './gardens/index';
 export * from './workspaces/index';
+export * from './utils';
 
 /** Export Triplit schemas. */
 export const schema = {

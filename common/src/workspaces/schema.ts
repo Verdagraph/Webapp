@@ -548,6 +548,7 @@ export const workspaceSchema = {
 } satisfies ClientSchema;
 
 export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
+export type Position = Pick<Coordinate, 'x' | 'y'>;
 
 export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
 export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>;

@@ -5,12 +5,14 @@
 	import {
 		getGeometryHeight,
 		type Geometry,
-		type GridAttributes
+		type GridAttributes,
+		type DeepPartial
 	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
-	import { getClosedShape, type SupportedShape } from '../utils';
+	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
 	import { getColor } from '$lib/utils';
 	import mode from '$state/theme.svelte';
+	import EditableGeometryResizePoints from './EditableGeometryResizePoints.svelte';
 
 	type Props = {
 		/** The ID of the canvas. */
@@ -30,15 +32,20 @@
 		selected: boolean;
 		/** The grid attributes of the planting area. */
 		grid?: GridAttributes;
-		/** Called when the planting area is moved in the canvas. */
+		/** Called when the position is moved in the canvas. */
 		onTranslate?: (
 			/** The new position, in canvas quantity (pixels). */
 			newPos: Vector2d,
 			/** If true, the movement has ended (dragend).*/
 			movementOver: boolean
 		) => void;
-		/** Called when the planting area is transformed in the canvas. */
-		onTransform?: (newGeometry: Geometry) => void;
+		/** Called when the geometry is transformed in the canvas. */
+		onTransform?: (
+			/** The updated geometry attributes after transformation. */
+			newGeometry: DeepPartial<Geometry>,
+			/** If true, the transform has ended.*/
+			transformOver: boolean
+		) => void;
 		/** Called when the planting area is clicked. */
 		onClick?: () => void;
 	};
@@ -53,7 +60,7 @@
 		selected,
 		grid,
 		onTranslate,
-		onTransform,
+		onTransform: onTransformContainer,
 		onClick
 	}: Props = $props();
 
@@ -63,7 +70,7 @@
 	const group: Konva.Group = new Konva.Group({ draggable: editable });
 	layer.add(group);
 
-	/** Shapes of the planting area. */
+	/** Shapes. */
 	let plantingAreaShape: SupportedShape | null = null;
 	let nameText = new Konva.Text({
 		fontFamily: 'sans',
@@ -74,6 +81,14 @@
 	});
 	group.add(nameText);
 
+	let strokeColor = $derived.by(() => {
+		if (selected) {
+			return getColor('accent', 8, mode.value);
+		} else {
+			return getColor('brown', 10, mode.value);
+		}
+	});
+
 	/**
 	 * Retrives the shape settings based on state.
 	 * @param selected Whether the planting area is selected.
@@ -83,7 +98,7 @@
 			return {
 				plantingAreaShapeConfig: {
 					fill: getColor('accent', 5, mode.value),
-					stroke: getColor('accent', 8, mode.value),
+					stroke: strokeColor,
 					strokeWidth: 3
 				},
 				nameTextShapeConfig: {
@@ -94,7 +109,7 @@
 			return {
 				plantingAreaShapeConfig: {
 					fill: getColor('brown', 3, mode.value),
-					stroke: getColor('brown', 10, mode.value),
+					stroke: strokeColor,
 					strokeWidth: 2
 				},
 				nameTextShapeConfig: {
@@ -152,10 +167,10 @@
 	$effect(() => {
 		if (editable) {
 			group.draggable(true);
-			group.on('mouseover', () => {
-				document.body.style.cursor = 'grab';
+			plantingAreaShape?.on('mouseover', () => {
+				document.body.style.cursor = 'move';
 			});
-			group.on('mouseout', () => {
+			plantingAreaShape?.on('mouseout', () => {
 				document.body.style.cursor = 'default';
 			});
 			group.on('dragmove', () => {
@@ -180,7 +195,26 @@
 		}
 	});
 
+	function onTransform(newGeometry: DeepPartial<Geometry>, transformOver: boolean) {
+		if (plantingAreaShape) {
+			//updateShape(canvas, newGeometry, plantingAreaShape)
+		}
+		if (onTransformContainer) {
+			//onTransformContainer(newGeometry, transformOver);
+		}
+	}
+
 	onDestroy(() => {
 		group.destroy();
 	});
 </script>
+
+{#if editable}
+	<EditableGeometryResizePoints
+		{canvasId}
+		{geometry}
+		color={strokeColor}
+		geometryGroup={group}
+		{onTransform}
+	/>
+{/if}

@@ -3,7 +3,7 @@ import * as Resizable from '$components/ui/resizable';
 import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
 import { plantingAreaCreate } from '$data/workspaces/commands';
-import useAsync from '$state/asyncHandler.svelte';
+import createMutationHandler from '$state/mutationHandler.svelte';
 import { superForm, defaults } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { type CanvasContext, createCanvasContext } from '$components/canvas';
@@ -57,7 +57,7 @@ function createWorkspaceContext() {
 	const timelineSelection = createTimelineSelection();
 
 	/** Forms. */
-	const plantingAreaCreateHandler = useAsync(plantingAreaCreate.mutation, {
+	const plantingAreaCreateHandler = createMutationHandler(plantingAreaCreate.mutation, {
 		onSuccess: () => {
 			toolbox.deactivate('addPlantingArea');
 		}

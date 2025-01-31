@@ -7,9 +7,9 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { workspaceCreate } from '$data/workspaces/commands';
-	import useAsync from '$state/asyncHandler.svelte';
+	import createMutationHandler from '$state/mutationHandler.svelte';
 
-	let formHandler = useAsync(workspaceCreate.mutation, {
+	let formHandler = createMutationHandler(workspaceCreate.mutation, {
 		onSuccess: (workspace) => {
 			const workspaceHref = `/app/gardens/${$page.params.gardenId}/workspaces/${workspace.slug}`;
 			goto(workspaceHref);

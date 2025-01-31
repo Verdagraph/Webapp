@@ -1,7 +1,10 @@
 import {
 	type Geometry,
 	getGeometryAttributes,
-	LinesAttributes
+	RectangleGeometry,
+	LinesGeometry,
+	EllipseGeometry,
+	PolygonGeometry
 } from '@vdt-webapp/common';
 
 /**
@@ -32,12 +35,11 @@ import {
  *   \   /
  *     2
  *
- * For a polygon, there is a point at each vertex.
+ * For a polygon, there is a one point, at the top.
  *      0
  *    /   \
- *  4      1
- *   \     /
- *    3--2
+ *    \   /
+ *     ---
  *
  * For a lines geometry described by a set of points,
  * the resize points are simply the set of points.
@@ -69,7 +71,7 @@ export function getGeometryResizePoints(
 			return [
 				{ x: -halfLength, y: halfWidth },
 				{ x: 0, y: halfWidth },
-				{ x: halfLength, y: halfLength },
+				{ x: halfLength, y: halfWidth },
 				{ x: halfLength, y: 0 },
 				{ x: halfLength, y: -halfWidth },
 				{ x: 0, y: -halfWidth },

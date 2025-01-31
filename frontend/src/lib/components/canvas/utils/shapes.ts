@@ -128,3 +128,38 @@ export function getClosedShape(
 ): SupportedShape | null {
 	return getClosedOrUnclosedShape(canvas, geometry, true, config, position);
 }
+
+export function updateShape(
+	canvas: CanvasContext,
+	newGeometry: Partial<Geometry>,
+	shape: SupportedShape
+) {
+	if (!newGeometry.type) {
+		return;
+	}
+
+	switch (newGeometry.type) {
+		case 'RECTANGLE':
+			if (!newGeometry.rectangleAttributes) {
+				return;
+			}
+
+			if (newGeometry.rectangleAttributes.length) {
+				shape.width(
+					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.length)
+				);
+				shape.offsetX(
+					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.length) / 2
+				);
+			}
+			if (newGeometry.rectangleAttributes.width) {
+				shape.height(
+					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.width)
+				);
+				shape.offsetY(
+					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.width) / 2
+				);
+			}
+			break;
+	}
+}
