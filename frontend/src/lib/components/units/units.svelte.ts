@@ -1,5 +1,6 @@
 import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
 import userSettings from '$state/userSettings.svelte';
+import { roundToDecimalPlaces } from '$lib/utils';
 
 /**
  * Describes the symbols of the unit systems
@@ -68,17 +69,6 @@ const units: Record<UnitAwareQuantity, UnitInfo> = {
 		}
 	}
 };
-
-/**
- * Rounds a number to the specified amount of decimal places.
- * @param num The number to round.
- * @param places The number of decimal places.
- * @returns The rounded number.
- */
-function roundToDecimalPlaces(num: number, places: number) {
-	const factor = 10 ** places;
-	return Math.round(num * factor) / factor;
-}
 
 /**
  * Retrieve the string symbol for a unit.

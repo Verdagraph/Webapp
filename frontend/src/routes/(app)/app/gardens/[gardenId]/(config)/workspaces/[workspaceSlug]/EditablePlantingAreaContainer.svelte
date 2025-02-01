@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DeepPartial, Geometry, Position } from '@vdt-webapp/common';
+	import type { GeometryPartial, Geometry, Position } from '@vdt-webapp/common';
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
@@ -27,6 +27,7 @@
 	const query = useQuery(triplit, plantingAreaQuery.vars({ plantingAreaId }));
 
 	/** Handlers. */
+	/** Translation. */
 	const translateMutationHandler = createMutationHandler(locationHistoryUpdate);
 	const translateChangeHandler = createChangeHandler(
 		(newData: Position) => {
@@ -48,9 +49,10 @@
 		}
 	);
 
+	/** Transformation. */
 	const transformMutationHandler = createMutationHandler(geometryUpdate);
 	const transformChangeHandler = createChangeHandler(
-		(newData: DeepPartial<Geometry>) => {
+		(newData: GeometryPartial) => {
 			if (!plantingArea) {
 				return;
 			}
@@ -112,7 +114,7 @@
 	}
 
 	/** Update the change handler on transformation. */
-	function onTransform(newGeometry: DeepPartial<Geometry>, transformOver: boolean) {
+	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
 		transformChangeHandler.change(transformOver, newGeometry);
 	}
 </script>

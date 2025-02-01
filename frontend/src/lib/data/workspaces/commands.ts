@@ -11,7 +11,7 @@ import {
 	TriplitTransaction,
 	historySelectDay,
 	type Position,
-	DeepPartial
+	GeometryPartial
 } from '@vdt-webapp/common';
 import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
@@ -70,10 +70,17 @@ export async function geometryCreate(
 	return await transaction.insert('geometries', geometry);
 }
 
-export async function geometryUpdate(
-	geometryId: string,
-	newGeometry: DeepPartial<Geometry>
-) {
+/** TODO: Add validation using the zod schemas to this function.
+ */
+
+/**
+ * Given a geometry partial object, which is a geometry object
+ * where all values (including those of the nested attribute objects)
+ * are optional, add these updated to Triplit.
+ * @param geometryId The ID of the geometry to update.
+ * @param newGeometry The attributes to update.
+ */
+export async function geometryUpdate(geometryId: string, newGeometry: GeometryPartial) {
 	const geometry = await triplit.fetchOne(
 		triplit.query('geometries').id(geometryId).build()
 	);
@@ -84,6 +91,40 @@ export async function geometryUpdate(
 	}
 
 	await triplit.transact(async (transaction) => {
+		/**
+		 * The lines geometry update is a little trickier to handle
+		 * because the points are connected via a relation.
+		 * The new geometry may have the same number of points,
+		 * or it may have more or less.
+		 * The approach taken is to simply delete all associated
+		 * coordinates and add new ones to reflect the new geometry.
+		 * This is only necessary if the new geometry has specified
+		 * a new list of coordinates.
+		 */
+		let newCoordinateIds: Set<string> | null = null;
+		if (newGeometry.type === 'LINES') {
+			if (
+				newGeometry.linesAttributes?.coordinates &&
+				geometry.linesAttributes?.coordinateIds
+			) {
+				for (const coordinateId of geometry.linesAttributes.coordinateIds) {
+					await transaction.delete('coordinates', coordinateId);
+				}
+			}
+
+			if (newGeometry.linesAttributes?.coordinates) {
+				newCoordinateIds = new Set();
+				for (const newCoordinate of newGeometry.linesAttributes.coordinates) {
+					const coordinate = await transaction.insert('coordinates', {
+						gardenId: geometry.gardenId,
+						x: newCoordinate.x,
+						y: newCoordinate.y
+					});
+					newCoordinateIds.add(coordinate.id);
+				}
+			}
+		}
+
 		await transaction.update('geometries', geometryId, (geometry) => {
 			if (newGeometry.type) {
 				geometry.type = newGeometry.type;
@@ -100,7 +141,11 @@ export async function geometryUpdate(
 
 			switch (newGeometry.type) {
 				case 'RECTANGLE':
-					if (newGeometry.rectangleAttributes && geometry.rectangleAttributes) {
+					if (!geometry.rectangleAttributes) {
+						geometry.rectangleAttributes = { length: 1, width: 1 };
+					}
+
+					if (newGeometry.rectangleAttributes) {
 						if (newGeometry.rectangleAttributes.length) {
 							geometry.rectangleAttributes.length =
 								newGeometry.rectangleAttributes.length;
@@ -111,8 +156,13 @@ export async function geometryUpdate(
 						}
 					}
 					break;
+
 				case 'POLYGON':
-					if (newGeometry.polygonAttributes && geometry.polygonAttributes) {
+					if (!geometry.polygonAttributes) {
+						geometry.polygonAttributes = { radius: 1, numSides: 3 };
+					}
+
+					if (newGeometry.polygonAttributes) {
 						if (newGeometry.polygonAttributes.numSides) {
 							geometry.polygonAttributes.numSides =
 								newGeometry.polygonAttributes.numSides;
@@ -122,8 +172,13 @@ export async function geometryUpdate(
 						}
 					}
 					break;
+
 				case 'ELLIPSE':
-					if (newGeometry.ellipseAttributes && geometry.ellipseAttributes) {
+					if (!geometry.ellipseAttributes) {
+						geometry.ellipseAttributes = { lengthDiameter: 1, widthDiameter: 1 };
+					}
+
+					if (newGeometry.ellipseAttributes) {
 						if (newGeometry.ellipseAttributes.lengthDiameter) {
 							geometry.ellipseAttributes.lengthDiameter =
 								newGeometry.ellipseAttributes.lengthDiameter;
@@ -134,20 +189,22 @@ export async function geometryUpdate(
 						}
 					}
 					break;
+
 				case 'LINES': {
-					/**
-					 * The lines geometry update is a little trickier to handle
-					 * because the points are connected via a relation.
-					 * The new geometry may have the same number of points,
-					 * or it may have more or less.
-					 * The approach taken is to delete or add coordinate entities
-					 * as needed to match the number that exists in the new geometry.
-					 * Then, each is updated to match the values of the new geometry points.
-					 */
-					const deltaNumCoordinates =
-						(newGeometry.linesAttributes?.coordinateIds.size || 0) -
-						(geometry.linesAttributes?.coordinateIds.size || 0);
-					/** TODO */
+					if (!geometry.linesAttributes) {
+						geometry.linesAttributes = {
+							coordinateIds: new Set(),
+							closed: true,
+							coordinates: []
+						};
+					}
+
+					if (newGeometry.linesAttributes?.closed) {
+						geometry.linesAttributes.closed = newGeometry.linesAttributes.closed;
+					}
+					if (newCoordinateIds) {
+						geometry.linesAttributes.coordinateIds = newCoordinateIds;
+					}
 
 					break;
 				}

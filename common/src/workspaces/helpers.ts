@@ -63,6 +63,7 @@ export function getGeometryAttributes<T extends GeometryType>(
 			}
 			return { ...geometry.ellipseAttributes } as GeometryAttributesMap[T];
 		case 'LINES':
+			console.log(geometry);
 			/**
 			 * TODO: Remove this once linesCoordinates can be moved to linesAttributes.coordinates
 			 */

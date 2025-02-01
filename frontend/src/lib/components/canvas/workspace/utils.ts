@@ -81,8 +81,8 @@ export function getGeometryResizePoints(
 
 		case 'POLYGON':
 			attributes = getGeometryAttributes<'POLYGON'>(geometry as PolygonGeometry);
-			/** TODO */
-			return [];
+
+			return [{ x: 0, y: attributes.radius }];
 
 		case 'ELLIPSE':
 			attributes = getGeometryAttributes<'ELLIPSE'>(geometry as EllipseGeometry);

@@ -9,15 +9,42 @@ import type {
 	RectangleGeometry,
 	Coordinate,
 	Geometry,
-	DeepPartial
+	GeometryPartial,
+	GeometryType
 } from '@vdt-webapp/common';
 import { getGeometryAttributes } from '@vdt-webapp/common';
 
+/**
+ * Union of supported shape types in Konva for geometry objects.
+ */
 export type SupportedShape =
 	| Konva.Rect
 	| Konva.Ellipse
 	| Konva.RegularPolygon
 	| Konva.Line;
+
+/**
+ * Maps native application geometry enum to Konva class name.
+ */
+const konvaShapeClassNames: Record<GeometryType, string> = {
+	RECTANGLE: 'Rect',
+	POLYGON: 'RegularPolygon',
+	ELLIPSE: 'Ellipse',
+	LINES: 'Line'
+};
+
+/**
+ * Throws an error if the supported shape does not match the geometry type.
+ * @param shape The shape to validate.
+ * @param geometryType The geometry type to validate against.
+ */
+function validateShapeGeometry(shape: SupportedShape, geometryType: GeometryType) {
+	if (shape.getClassName() !== konvaShapeClassNames[geometryType]) {
+		throw new AppError(
+			`Attempted to update a shape of type ${shape.getClassName()} with a different geometry type of ${geometryType}`
+		);
+	}
+}
 
 /**
  * Constructs a Konva shape from geometry and position objects.
@@ -130,14 +157,23 @@ export function getClosedShape(
 	return getClosedOrUnclosedShape(canvas, geometry, true, config, position);
 }
 
+/**
+ * Given an existing shape object and a partial of geometry
+ * updates, update the shape object.
+ * The shape object must match the type of the geometry update.
+ * @param canvas The canvas context of the shape.
+ * @param newGeometry The new geometry updated attributes.
+ * @param shape The existing shape object.
+ */
 export function updateShape(
 	canvas: CanvasContext,
-	newGeometry: DeepPartial<Geometry>,
+	newGeometry: GeometryPartial,
 	shape: SupportedShape
 ) {
 	if (!newGeometry.type) {
 		return;
 	}
+	validateShapeGeometry(shape, newGeometry.type);
 
 	switch (newGeometry.type) {
 		case 'RECTANGLE':
@@ -145,21 +181,89 @@ export function updateShape(
 				return;
 			}
 
+			const rectangle = shape as Konva.Rect;
+
 			if (newGeometry.rectangleAttributes.length) {
-				shape.width(
+				rectangle.width(
 					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.length)
 				);
-				shape.offsetX(
+				rectangle.offsetX(
 					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.length) / 2
 				);
 			}
 			if (newGeometry.rectangleAttributes.width) {
-				shape.height(
+				rectangle.height(
 					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.width)
 				);
-				shape.offsetY(
+				rectangle.offsetY(
 					canvas.transform.canvasDistance(newGeometry.rectangleAttributes.width) / 2
 				);
+			}
+			break;
+
+		case 'POLYGON':
+			if (!newGeometry.polygonAttributes) {
+				return;
+			}
+
+			const polygon = shape as Konva.RegularPolygon;
+
+			if (newGeometry.polygonAttributes.numSides) {
+				polygon.sides(newGeometry.polygonAttributes.numSides);
+			}
+			if (newGeometry.polygonAttributes.radius) {
+				polygon.radius(
+					canvas.transform.canvasDistance(newGeometry.polygonAttributes.radius)
+				);
+			}
+			break;
+
+		case 'ELLIPSE':
+			if (!newGeometry.ellipseAttributes) {
+				return;
+			}
+
+			const ellipse = shape as Konva.Ellipse;
+
+			if (newGeometry.ellipseAttributes.lengthDiameter) {
+				ellipse.radiusX(
+					canvas.transform.canvasDistance(
+						newGeometry.ellipseAttributes.lengthDiameter / 2
+					)
+				);
+			}
+			if (newGeometry.ellipseAttributes.widthDiameter) {
+				ellipse.radiusY(
+					canvas.transform.canvasDistance(
+						newGeometry.ellipseAttributes.widthDiameter / 2
+					)
+				);
+			}
+			break;
+
+		case 'LINES':
+			if (!newGeometry.linesAttributes) {
+				return;
+			}
+
+			const lines = shape as Konva.Line;
+
+			if (newGeometry.linesAttributes.coordinates) {
+				lines.points(
+					newGeometry.linesAttributes.coordinates.reduce<number[]>(
+						(output, coordinate) => {
+							output.push(
+								canvas.transform.canvasXPos(coordinate.x),
+								canvas.transform.canvasYPos(coordinate.y)
+							);
+							return output;
+						},
+						[]
+					)
+				);
+			}
+			if (newGeometry.linesAttributes.closed) {
+				lines.closed(newGeometry.linesAttributes.closed);
 			}
 			break;
 	}

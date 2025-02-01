@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { Coordinate, DeepPartial, Geometry } from '@vdt-webapp/common';
+	import type { GeometryPartial, Geometry } from '@vdt-webapp/common';
 	import { getContext, onDestroy } from 'svelte';
 	import { GeometryTypeEnum } from '@vdt-webapp/common';
 	import Konva from 'konva';
 	import { getGeometryResizePoints } from './utils';
 	import type { CanvasContext } from '../state';
 	import { AppError } from '@vdt-webapp/common/src/errors';
+	import { roundToDecimalPlaces } from '$lib/utils';
 
 	type Props = {
 		/** The ID of the canvas. */
@@ -20,8 +21,8 @@
 		/** Called when the geometry is transformed in the canvas. */
 		onTransform?: (
 			/** The updated geometry attributes after transformation. */
-			newGeometry: DeepPartial<Geometry>,
-			/** If true, the transform has ended.*/
+			newGeometry: GeometryPartial,
+			/** If true, the transform has ended. */
 			transformOver: boolean
 		) => void;
 	};
@@ -34,22 +35,35 @@
 		onTransform
 	}: Props = $props();
 
+	const ATTRIBUTE_DECIMALS = 2;
+
 	/** Retrieve canvas and initialize Konva constructs. */
 	const canvas = getContext<CanvasContext>(canvasId);
-
 	let group = new Konva.Group();
 	geometryGroup.add(group);
+	group.moveToTop();
 	let resizePoints: Array<Konva.Circle> = [];
 
+	/**
+	 * Store the geometry type and numbor of resize points.
+	 * If either changes, the shapes must be re-initialized.
+	 */
 	let previousGeometryType: (typeof GeometryTypeEnum)[number] = geometry.type;
 	let previousNumResizePoints: number = 0;
 
-	function handleResizePointDrag(index: number): DeepPartial<Geometry> {
-		const newGeometry: DeepPartial<Geometry> = {};
+	/**
+	 * Given an index of a point in the resize points array,
+	 * return a geometry update object which contains the changes
+	 * to that geometry given the position of the resize point.
+	 * @param index The index of the resize point.
+	 */
+	function handleResizePointDrag(index: number): GeometryPartial {
+		const newGeometry: GeometryPartial = {};
 
 		switch (geometry.type) {
 			case 'RECTANGLE':
 				newGeometry.type = 'RECTANGLE';
+
 				/**
 				 * If the index is even,
 				 * calculate the new width and height.
@@ -58,8 +72,14 @@
 					const newLength = Math.abs(resizePoints[index].x()) * 2;
 					const newWidth = Math.abs(resizePoints[index].y()) * 2;
 					newGeometry.rectangleAttributes = {
-						length: canvas.transform.modelDistance(newLength),
-						width: canvas.transform.modelDistance(newWidth)
+						length: roundToDecimalPlaces(
+							canvas.transform.modelDistance(newLength),
+							ATTRIBUTE_DECIMALS
+						),
+						width: roundToDecimalPlaces(
+							canvas.transform.modelDistance(newWidth),
+							ATTRIBUTE_DECIMALS
+						)
 					};
 
 					/**
@@ -73,7 +93,10 @@
 						resizePoints[index].x(0);
 						const newWidth = Math.abs(resizePoints[index].y()) * 2;
 						newGeometry.rectangleAttributes = {
-							width: canvas.transform.modelDistance(newWidth)
+							width: roundToDecimalPlaces(
+								canvas.transform.modelDistance(newWidth),
+								ATTRIBUTE_DECIMALS
+							)
 						};
 
 						/** Side points. */
@@ -81,36 +104,88 @@
 						resizePoints[index].y(0);
 						const newLength = Math.abs(resizePoints[index].x()) * 2;
 						newGeometry.rectangleAttributes = {
-							length: canvas.transform.modelDistance(newLength)
+							length: roundToDecimalPlaces(
+								canvas.transform.modelDistance(newLength),
+								ATTRIBUTE_DECIMALS
+							)
 						};
 					}
 				}
+				break;
 
 			case 'POLYGON':
+				newGeometry.type = 'POLYGON';
+
 				/**
 				 * Calculate the new radius,
 				 * and constrain the movement to
-				 * a straight line from the center.
+				 * a vertical line.
 				 */
+				resizePoints[index].x(0);
+				const newRadius = Math.abs(resizePoints[index].y());
+				newGeometry.polygonAttributes = {
+					radius: roundToDecimalPlaces(
+						canvas.transform.modelDistance(newRadius),
+						ATTRIBUTE_DECIMALS
+					)
+				};
 				break;
 
 			case 'ELLIPSE':
+				newGeometry.type = 'ELLIPSE';
 				/**
-				 * If the index is even, calculate the
-				 * new width and constrain movement
-				 * to the Y axis.
+				 * If the index is even (top/bottom point),
+				 * calculate the new width and
+				 * constrain movement to the Y axis.
 				 */
+				if (index % 2 === 0) {
+					resizePoints[index].x(0);
+					const newWidthDiameter = Math.abs(resizePoints[index].y()) * 2;
+					newGeometry.ellipseAttributes = {
+						widthDiameter: roundToDecimalPlaces(
+							canvas.transform.modelDistance(newWidthDiameter),
+							ATTRIBUTE_DECIMALS
+						)
+					};
 
-				/**
-				 * If the index is odd, calculate the new
-				 * length and constrain movement to the X axis.
-				 */
+					/**
+					 * If the index is odd (side point),
+					 * calculate the new length and
+					 * constrain movement to the X axis.
+					 */
+				} else {
+					resizePoints[index].y(0);
+					const newLengthDiameter = Math.abs(resizePoints[index].x()) * 2;
+					newGeometry.ellipseAttributes = {
+						lengthDiameter: roundToDecimalPlaces(
+							canvas.transform.modelDistance(newLengthDiameter),
+							ATTRIBUTE_DECIMALS
+						)
+					};
+				}
+
 				break;
 
 			case 'LINES':
+				newGeometry.type = 'LINES';
+
 				/**
-				 * Each index changes its own point in the array.
+				 * Each point updates the whole coordinate array to the current state.
 				 */
+				newGeometry.linesAttributes = {
+					coordinates: resizePoints.map((point) => {
+						return {
+							x: roundToDecimalPlaces(
+								canvas.transform.modelXPos(point.x()),
+								ATTRIBUTE_DECIMALS
+							),
+							y: roundToDecimalPlaces(
+								canvas.transform.modelYPos(point.y()),
+								ATTRIBUTE_DECIMALS
+							)
+						};
+					})
+				};
 				break;
 		}
 		return newGeometry;
@@ -130,7 +205,6 @@
 			previousGeometryType != geometry.type ||
 			previousNumResizePoints != coordinates.length
 		) {
-			console.log('this should happen once');
 			resizePoints = [];
 			group.destroyChildren();
 			coordinates.forEach((coordinate, index) => {
@@ -143,6 +217,12 @@
 					stroke: strokeColor,
 					fill: fillColor
 				});
+
+				/**
+				 * Note that events aren't bubbled,
+				 * this prevents triggering the events
+				 * on the parent group.
+				 */
 				point.on('mouseover', (event) => {
 					document.body.style.cursor = 'grab';
 					event.cancelBubble = true;
@@ -163,6 +243,7 @@
 					}
 					event.cancelBubble = true;
 				});
+
 				resizePoints.push(point);
 				group.add(point);
 			});
@@ -171,20 +252,23 @@
 				if (resizePoints[index]) {
 					resizePoints[index].x(canvas.transform.canvasXPos(coordinate.x));
 					resizePoints[index].y(canvas.transform.canvasYPos(coordinate.y));
+				} else {
+					throw new AppError('Geometry resize points caught in an invalid state.');
 				}
 			});
 		}
 
-		/** Update color on change. */
-		$effect(() => {
-			resizePoints.forEach((point) => {
-				point.stroke(strokeColor);
-				point.fill(fillColor);
-			});
-		});
-
+		group.moveToTop();
 		previousGeometryType = geometry.type;
 		previousNumResizePoints = coordinates.length;
+	});
+
+	/** Update color on change. */
+	$effect(() => {
+		resizePoints.forEach((point) => {
+			point.stroke(strokeColor);
+			point.fill(fillColor);
+		});
 	});
 
 	onDestroy(() => {

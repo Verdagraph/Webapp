@@ -91,8 +91,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				geometryId: 'rectangleAreaGeometry',
 				locationHistoryId: 'rectangleGeometryLocations',
 				description: 'Rectangle Description.'
-			}
-			/*
+			},
 			{
 				gardenId: 'garden1',
 				name: 'Ellipse Area',
@@ -106,9 +105,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				geometryId: 'polygonAreaGeometry',
 				locationHistoryId: 'polygonGeometryLocations',
 				description: 'Polygon Description.'
-			}
-			*/
-			/*
+			},
 			{
 				gardenId: 'garden1',
 				name: 'Lines Area',
@@ -116,7 +113,6 @@ export default function seed(): BulkInsert<typeof schema> {
 				locationHistoryId: 'linesGeometryLocations',
 				description: 'Lines Description.'
 			}
-			*/
 		],
 		geometries: [
 			{

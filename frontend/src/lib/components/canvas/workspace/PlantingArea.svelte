@@ -7,7 +7,7 @@
 		type GeometryType,
 		type Geometry,
 		type GridAttributes,
-		type DeepPartial
+		type GeometryPartial
 	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
@@ -43,7 +43,7 @@
 		/** Called when the geometry is transformed in the canvas. */
 		onTransform?: (
 			/** The updated geometry attributes after transformation. */
-			newGeometry: DeepPartial<Geometry>,
+			newGeometry: GeometryPartial,
 			/** If true, the transform has ended.*/
 			transformOver: boolean
 		) => void;
@@ -64,6 +64,9 @@
 		onTransform: onTransformContainer,
 		onClick
 	}: Props = $props();
+
+	/** The number of pixels the label is offset from the top of the shape. */
+	const LABEL_OFFSET_PX = 10;
 
 	/** Retrieve canvas and initialize Konva constructs. */
 	const canvas = getContext<CanvasContext>(canvasId);
@@ -87,8 +90,11 @@
 	 * If the geometry type is changed, a new shape may be rendered.
 	 * Otherwise, the current shape can simply be updated.
 	 */
-	let previousGeometryType: GeometryType = geometry.type;
+	let previousGeometryType = geometry.type;
 
+	/**
+	 * Shape config settings.
+	 */
 	let strokeColor = $derived(
 		selected ? getColor('accent', 8, mode.value) : getColor('brown', 10, mode.value)
 	);
@@ -102,6 +108,7 @@
 
 	/** Update shapes upon geometry change. */
 	$effect(() => {
+		/** If the geometry type has changed or the shape hasn't been initialized, initialize. */
 		if (geometry.type !== previousGeometryType || !plantingAreaShape) {
 			plantingAreaShape?.destroy();
 			plantingAreaShape = getClosedShape(canvas, geometry, {
@@ -114,8 +121,11 @@
 				group.rotation(geometry.rotation);
 				nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
 			}
+
+			/** Otherwise, update the existing shape.*/
 		} else {
 			updateShape(canvas, geometry, plantingAreaShape);
+			nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
 		}
 
 		previousGeometryType = geometry.type;
@@ -146,7 +156,7 @@
 	$effect(() => {
 		nameText.text(name);
 		nameText.offsetX(nameText.width() / 2);
-		nameText.offsetY(nameText.height() + 10);
+		nameText.offsetY(nameText.height() + LABEL_OFFSET_PX);
 	});
 
 	/** Add events. */
@@ -181,7 +191,11 @@
 		}
 	});
 
-	function onTransform(newGeometry: DeepPartial<Geometry>, transformOver: boolean) {
+	/**
+	 * Wrap the container's onTransform to optimistically update
+	 * the shape before the geometry is updated in Triplit.
+	 */
+	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
 		if (plantingAreaShape) {
 			updateShape(canvas, newGeometry, plantingAreaShape);
 		}
