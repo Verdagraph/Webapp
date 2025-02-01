@@ -2,11 +2,11 @@ import { AppError } from '../errors';
 import type {
 	Geometry,
 	GeometryAttributesMap,
-	GeometryTypeEnum,
 	RectangleGeometry,
 	EllipseGeometry,
 	PolygonGeometry,
-	LinesGeometry
+	LinesGeometry,
+	GeometryType
 } from './schema';
 
 /**
@@ -29,7 +29,7 @@ export function isSameDay(date1: Date, date2: Date): boolean {
  * @param geometry The geometry to extract from.
  * @returns The attributes.
  */
-export function getGeometryAttributes<T extends (typeof GeometryTypeEnum)[number]>(
+export function getGeometryAttributes<T extends GeometryType>(
 	geometry: Extract<Geometry, { type: T }>
 ): GeometryAttributesMap[T] {
 	switch (geometry.type) {

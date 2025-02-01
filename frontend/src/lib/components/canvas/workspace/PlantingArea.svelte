@@ -4,6 +4,7 @@
 	import { getContext, onDestroy } from 'svelte';
 	import {
 		getGeometryHeight,
+		type GeometryType,
 		type Geometry,
 		type GridAttributes,
 		type DeepPartial
@@ -81,57 +82,43 @@
 	});
 	group.add(nameText);
 
-	let strokeColor = $derived.by(() => {
-		if (selected) {
-			return getColor('accent', 8, mode.value);
-		} else {
-			return getColor('brown', 10, mode.value);
-		}
-	});
-
 	/**
-	 * Retrives the shape settings based on state.
-	 * @param selected Whether the planting area is selected.
+	 * Store the geometry type.
+	 * If the geometry type is changed, a new shape may be rendered.
+	 * Otherwise, the current shape can simply be updated.
 	 */
-	function getShapeConfig(selected: boolean) {
-		if (selected) {
-			return {
-				plantingAreaShapeConfig: {
-					fill: getColor('accent', 5, mode.value),
-					stroke: strokeColor,
-					strokeWidth: 3
-				},
-				nameTextShapeConfig: {
-					fill: getColor('accent', 11, mode.value)
-				}
-			};
-		} else {
-			return {
-				plantingAreaShapeConfig: {
-					fill: getColor('brown', 3, mode.value),
-					stroke: strokeColor,
-					strokeWidth: 2
-				},
-				nameTextShapeConfig: {
-					fill: getColor('brown', 11, mode.value)
-				}
-			};
-		}
-	}
+	let previousGeometryType: GeometryType = geometry.type;
+
+	let strokeColor = $derived(
+		selected ? getColor('accent', 8, mode.value) : getColor('brown', 10, mode.value)
+	);
+	let fillColor = $derived(
+		selected ? getColor('accent', 5, mode.value) : getColor('brown', 3, mode.value)
+	);
+	let strokeWidth = $derived(selected ? 3 : 2);
+	let nameTextFillColor = $derived(
+		selected ? getColor('accent', 11, mode.value) : getColor('brown', 11, mode.value)
+	);
 
 	/** Update shapes upon geometry change. */
 	$effect(() => {
-		plantingAreaShape?.destroy();
-		plantingAreaShape = getClosedShape(
-			canvas,
-			geometry,
-			getShapeConfig(selected).plantingAreaShapeConfig
-		);
-		if (plantingAreaShape) {
-			group.add(plantingAreaShape);
-			group.rotation(geometry.rotation);
-			nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
+		if (geometry.type !== previousGeometryType || !plantingAreaShape) {
+			plantingAreaShape?.destroy();
+			plantingAreaShape = getClosedShape(canvas, geometry, {
+				stroke: strokeColor,
+				fill: fillColor,
+				strokeWidth: strokeWidth
+			});
+			if (plantingAreaShape) {
+				group.add(plantingAreaShape);
+				group.rotation(geometry.rotation);
+				nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
+			}
+		} else {
+			updateShape(canvas, geometry, plantingAreaShape);
 		}
+
+		previousGeometryType = geometry.type;
 	});
 
 	/** Update position upon position change. */
@@ -149,11 +136,10 @@
 
 	/** Update color on selection change. */
 	$effect(() => {
-		const { plantingAreaShapeConfig, nameTextShapeConfig } = getShapeConfig(selected);
-		plantingAreaShape?.fill(plantingAreaShapeConfig.fill);
-		plantingAreaShape?.stroke(plantingAreaShapeConfig.stroke);
-		plantingAreaShape?.strokeWidth(plantingAreaShapeConfig.strokeWidth);
-		nameText.fill(nameTextShapeConfig.fill);
+		plantingAreaShape?.fill(fillColor);
+		plantingAreaShape?.stroke(strokeColor);
+		plantingAreaShape?.strokeWidth(strokeWidth);
+		nameText.fill(nameTextFillColor);
 	});
 
 	/** Update name text on name change. */
@@ -197,10 +183,10 @@
 
 	function onTransform(newGeometry: DeepPartial<Geometry>, transformOver: boolean) {
 		if (plantingAreaShape) {
-			//updateShape(canvas, newGeometry, plantingAreaShape)
+			updateShape(canvas, newGeometry, plantingAreaShape);
 		}
 		if (onTransformContainer) {
-			//onTransformContainer(newGeometry, transformOver);
+			onTransformContainer(newGeometry, transformOver);
 		}
 	}
 
@@ -213,7 +199,8 @@
 	<EditableGeometryResizePoints
 		{canvasId}
 		{geometry}
-		color={strokeColor}
+		{strokeColor}
+		{fillColor}
 		geometryGroup={group}
 		{onTransform}
 	/>

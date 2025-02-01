@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Coordinate, DeepPartial, Geometry } from '@vdt-webapp/common';
-	import { getContext } from 'svelte';
+	import { getContext, onDestroy } from 'svelte';
 	import { GeometryTypeEnum } from '@vdt-webapp/common';
 	import Konva from 'konva';
 	import { getGeometryResizePoints } from './utils';
@@ -14,8 +14,9 @@
 		geometry: Omit<Geometry, 'id' | 'gardenId'>;
 		/** A konva group already made that stores the geometry's shapes. */
 		geometryGroup: Konva.Group;
-		/** A color to make the points. */
-		color: string;
+		/** Colors to make the points. */
+		strokeColor: string;
+		fillColor: string;
 		/** Called when the geometry is transformed in the canvas. */
 		onTransform?: (
 			/** The updated geometry attributes after transformation. */
@@ -24,7 +25,14 @@
 			transformOver: boolean
 		) => void;
 	};
-	let { canvasId, geometry, geometryGroup, color, onTransform }: Props = $props();
+	let {
+		canvasId,
+		geometry,
+		geometryGroup,
+		strokeColor,
+		fillColor,
+		onTransform
+	}: Props = $props();
 
 	/** Retrieve canvas and initialize Konva constructs. */
 	const canvas = getContext<CanvasContext>(canvasId);
@@ -39,8 +47,9 @@
 	function handleResizePointDrag(index: number): DeepPartial<Geometry> {
 		const newGeometry: DeepPartial<Geometry> = {};
 
-		switch (newGeometry.type) {
+		switch (geometry.type) {
 			case 'RECTANGLE':
+				newGeometry.type = 'RECTANGLE';
 				/**
 				 * If the index is even,
 				 * calculate the new width and height.
@@ -121,31 +130,38 @@
 			previousGeometryType != geometry.type ||
 			previousNumResizePoints != coordinates.length
 		) {
+			console.log('this should happen once');
 			resizePoints = [];
 			group.destroyChildren();
 			coordinates.forEach((coordinate, index) => {
 				const point = new Konva.Circle({
-					radius: 8,
+					radius: 6,
+					strokeWidth: 3,
 					x: canvas.transform.canvasXPos(coordinate.x),
 					y: canvas.transform.canvasYPos(coordinate.y),
 					draggable: true,
-					fill: color
+					stroke: strokeColor,
+					fill: fillColor
 				});
-				point.on('mouseover', () => {
+				point.on('mouseover', (event) => {
 					document.body.style.cursor = 'grab';
+					event.cancelBubble = true;
 				});
-				point.on('mouseout', () => {
+				point.on('mouseout', (event) => {
 					document.body.style.cursor = 'default';
+					event.cancelBubble = true;
 				});
-				point.on('dragmove', () => {
+				point.on('dragmove', (event) => {
 					if (onTransform) {
 						onTransform(handleResizePointDrag(index), false);
 					}
+					event.cancelBubble = true;
 				});
-				point.on('dragend', () => {
+				point.on('dragend', (event) => {
 					if (onTransform) {
 						onTransform(handleResizePointDrag(index), true);
 					}
+					event.cancelBubble = true;
 				});
 				resizePoints.push(point);
 				group.add(point);
@@ -153,13 +169,25 @@
 		} else {
 			coordinates.forEach((coordinate, index) => {
 				if (resizePoints[index]) {
-					resizePoints[index].x(coordinate.x);
-					resizePoints[index].y(coordinate.y);
+					resizePoints[index].x(canvas.transform.canvasXPos(coordinate.x));
+					resizePoints[index].y(canvas.transform.canvasYPos(coordinate.y));
 				}
 			});
 		}
 
+		/** Update color on change. */
+		$effect(() => {
+			resizePoints.forEach((point) => {
+				point.stroke(strokeColor);
+				point.fill(fillColor);
+			});
+		});
+
 		previousGeometryType = geometry.type;
 		previousNumResizePoints = coordinates.length;
+	});
+
+	onDestroy(() => {
+		group.destroy();
 	});
 </script>

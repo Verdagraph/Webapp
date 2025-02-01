@@ -8,7 +8,8 @@ import type {
 	PolygonGeometry,
 	RectangleGeometry,
 	Coordinate,
-	Geometry
+	Geometry,
+	DeepPartial
 } from '@vdt-webapp/common';
 import { getGeometryAttributes } from '@vdt-webapp/common';
 
@@ -131,7 +132,7 @@ export function getClosedShape(
 
 export function updateShape(
 	canvas: CanvasContext,
-	newGeometry: Partial<Geometry>,
+	newGeometry: DeepPartial<Geometry>,
 	shape: SupportedShape
 ) {
 	if (!newGeometry.type) {

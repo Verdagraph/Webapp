@@ -57,7 +57,7 @@
 
 			transformMutationHandler.execute(plantingArea.geometryId, newData);
 		},
-		2000,
+		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
 		{
 			onStart: workspaceContext.timelineSelection.disable,
 			onEnd: workspaceContext.timelineSelection.enable
@@ -113,7 +113,6 @@
 
 	/** Update the change handler on transformation. */
 	function onTransform(newGeometry: DeepPartial<Geometry>, transformOver: boolean) {
-		console.log(newGeometry);
 		transformChangeHandler.change(transformOver, newGeometry);
 	}
 </script>
@@ -135,6 +134,7 @@ area in the workspace editor, ie., editable
 		{editable}
 		{selected}
 		{onTranslate}
+		{onTransform}
 		onClick={() => {
 			if (toolbox.isToolActive('addPlantingArea')) {
 				return;

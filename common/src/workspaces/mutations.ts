@@ -1,5 +1,5 @@
 import z from 'zod';
-import { GeometryTypeEnum } from './schema';
+import { GeometryTypeEnum, type GeometryType } from './schema';
 
 /** The maximum supported magnitude of a coordinate. */
 const maxCoordinateMagnitude = 1000000;
@@ -124,7 +124,7 @@ export const workspaceFields = {
  * @returns
  */
 function validateGeometryAttributes(
-	type: (typeof GeometryTypeEnum)[number],
+	type: GeometryType,
 	rectangleAttributesNullish: boolean,
 	polygonAttributesNullish: boolean,
 	ellipseAttributesNullish: boolean,

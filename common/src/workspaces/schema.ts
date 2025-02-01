@@ -551,6 +551,7 @@ export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
 export type Position = Pick<Coordinate, 'x' | 'y'>;
 
 export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
+export type GeometryType = (typeof GeometryTypeEnum)[number];
 export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>;
 export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>;
 export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>;
