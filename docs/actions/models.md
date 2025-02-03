@@ -43,9 +43,10 @@ An Action may be tied to another entity. The options are:
 - Plant
 - PlantingArea
 - Workspace
+- Garden
 - Other
 
-If `targetType` is `other`, the `plant`, `plantingArea`, and `workspace`, attributes will be undefined. Otherwise, they will be defined based on the value of `targetType`.
+If `targetType` is `other` or `garden`, the `plant`, `plantingArea`, and `workspace`, attributes will be undefined. Otherwise, they will be defined based on the value of `targetType`.
 
 ## assignees
 
