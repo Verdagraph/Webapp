@@ -79,13 +79,13 @@ export const gardenSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['visibility', '!=', 'HIDDEN'],
@@ -137,13 +137,13 @@ export const gardenSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],

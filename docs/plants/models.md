@@ -23,6 +23,8 @@ classDiagram
         seedDate: date
         germDate: date
         expiryDate: date
+        dormancyDates: set of Date
+        growthDates: set of Date
         harvests: set of Harvest
     }
     class Harvest {
@@ -36,7 +38,7 @@ classDiagram
         name: string
         recordedLifespan: Lifespan
         expectedLifespan: Lifespan
-        batched: boolean
+        aggregate: boolean
     }
     class PlantGroup {
         name: string
@@ -68,13 +70,15 @@ In direct seed mode, most plants will have one location: the one they were seede
 
 Both location and geometry may vary over time, as plants move around or grow.
 
-## seedDate, germDate, expiryDate
+## seedDate, germDate, expiryDate, dormancyDates, growthDates
 
 Stores the key dates for the plants.
 
 - seedDate: The date at which the plant is seeded.
 - germDate: The date at which the seed germinated.
 - expiryDate: The date at which the plant is removed from the space.
+- dormancyDates: This is defined only for biennial or perennial plants. A set of dates which the plant became dormant until the following year. For example, includes the dates a berry bush has stopped producing fruit and vegetation.
+- growthDates: This is defined only for biennial or perennial plants. A set of dates which the plant exited dormancy for the year. For example, includes the dates a berry bush has begun vegetative growth again.
 
 ## harvests
 
@@ -100,7 +104,7 @@ The plant model may store the name associated with a Cultivar, correlating with 
 
 The purpose of storing two Lifespan objects is to clearly delineate between the attributes in the Plant model which have been planned with the software, and those which have been recorded from real life. When a Plant is created, its expectedLifespan is populated based on its Cultivar and any user-provided settings, while its recordedLifespan is empty. In this state, the plant is considered 'uncomitted' and is only a model-instance. Once the user records data about the plant, for example to say that this plant has germinated or been harvested, the recordedLifespan is populated and the plant instance becomes tied to a real entity.
 
-## batched
+## aggregate
 
 If true, the model represents several different plants in real life. In this mode, less attention is paid to, for example, how geometry changes over time as plants grow, because the same model represents multiple plants. Instead of tracking individual carrots, we can use one model instance to track a square foot of space which has carrots in it, all planted at the same time.
 
