@@ -24,6 +24,9 @@ export const environmentSchema = {
 			/** Non-unique name of the environment. */
 			name: S.String(),
 
+			/** Optional description. */
+			description: S.String({ default: '' }),
+
 			/** Type of the parent entity of the environment. */
 			parentType: S.String({ enum: EnvironmentParentTypeEnum, default: 'GARDEN' }),
 
