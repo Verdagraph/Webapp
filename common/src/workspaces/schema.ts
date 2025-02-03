@@ -39,13 +39,13 @@ export const workspaceSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
@@ -169,13 +169,13 @@ export const workspaceSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
@@ -233,13 +233,13 @@ export const workspaceSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
@@ -307,13 +307,13 @@ export const workspaceSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
@@ -372,13 +372,13 @@ export const workspaceSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
@@ -462,13 +462,13 @@ export const workspaceSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
@@ -514,13 +514,13 @@ export const workspaceSchema = {
 		permissions: {
 			anon: {
 				read: {
-					/** Allow anonymous reads if the garden is public. */
+					/** Allow anonymous reads if the garden is not hidden. */
 					filter: [['garden.visibility', '!=', 'HIDDEN']]
 				}
 			},
 			user: {
 				read: {
-					/** Allow reads if the garden is public or the user is a member. */
+					/** Allow reads if the garden is not hidden or the user is a member. */
 					filter: [
 						or([
 							['garden.visibility', '!=', 'HIDDEN'],
