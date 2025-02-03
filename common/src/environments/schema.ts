@@ -36,16 +36,16 @@ export const environmentSchema = {
 				where: [['id', '=', '$gardenId']]
 			}),
 
-			/** The workspace the garden environment to. Defined only if parentType = 'WORKSPACE'. */
-			workspaceId: S.Optional(S.String()),
-			workspace: S.RelationOne('workspaces', {
-				where: [['id', '=', '$workspaceId']]
+			/** The workspaces the environment applies to. Defined only if parentType = 'WORKSPACE'. */
+			workspaceIds: S.Optional(S.Set(S.String())),
+			workspaces: S.RelationMany('workspaces', {
+				where: [['id', 'in', '$workspaceIds']]
 			}),
 
-			/** The planting area the environment applies to. Defined only if parentType = 'PLANTING_AREA'. */
-			plantingAreaId: S.Optional(S.String()),
-			plantingArea: S.RelationOne('plantingAreas', {
-				where: [['id', '=', '$plantingAreaId']]
+			/** The planting areas the environment applies to. Defined only if parentType = 'PLANTING_AREA'. */
+			plantingAreaIds: S.Optional(S.Set(S.String())),
+			plantingAreas: S.RelationOne('plantingAreas', {
+				where: [['id', 'in', '$plantingAreaIds']]
 			}),
 
 			/** The geometry the environment applies to. Defined only if parentType = 'INDEPENDENT'. */

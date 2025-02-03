@@ -105,6 +105,29 @@
 				<Menubar.Trigger>Select</Menubar.Trigger>
 				<Menubar.Content>
 					<Menubar.Group>
+						<Menubar.GroupHeading>Tools</Menubar.GroupHeading>
+						<Menubar.Item>
+							<Button.Root class="flex h-full w-full items-center justify-between">
+								<span> Pointer </span>
+								<Icon
+									icon={iconIds.pointerSelectIcon}
+									width="1.25rem"
+									class="text-neutral-10"
+								/>
+							</Button.Root>
+						</Menubar.Item>
+						<Menubar.Item>
+							<Button.Root class="flex h-full w-full items-center justify-between">
+								<span> Group </span>
+								<Icon
+									icon={iconIds.groupSelectIcon}
+									width="1.25rem"
+									class="text-neutral-10"
+								/>
+							</Button.Root>
+						</Menubar.Item>
+					</Menubar.Group>
+					<Menubar.Group>
 						<Menubar.GroupHeading>Planting Areas</Menubar.GroupHeading>
 						{#if selectedPlantingAreas.results && selectedPlantingAreas.results.length > 0}
 							{#each selectedPlantingAreas.results as plantingArea}
@@ -202,7 +225,7 @@
 							<Button.Root
 								class="flex h-full w-full items-center justify-between"
 								onclick={() => {
-									toolbox.activate('addPlantingArea');
+									toolbox.activate('plantingAreaCreate');
 								}}
 							>
 								<Icon

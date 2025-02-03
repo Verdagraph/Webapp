@@ -43,13 +43,15 @@
 		</Select.Root>
 	</div>
 
-	<div class="flex flex-col gap-2">
-		<div class="flex items-center justify-between">
-			<span class="text-neutral-11">Background Grid Spacing</span>
-			<FormInfoPopover
+	<!--
+		<div class="flex flex-col gap-2">
+			<div class="flex items-center justify-between">
+				<span class="text-neutral-11">Background Grid Spacing</span>
+				<FormInfoPopover
 				description="Sets the distance between gridlines on the background grid."
-			/>
+				/>
+			</div>
+			<UnitAwareInput bind:value quantityType="distance"></UnitAwareInput>
 		</div>
-		<UnitAwareInput bind:value quantityType="distance"></UnitAwareInput>
-	</div>
+	-->
 </div>

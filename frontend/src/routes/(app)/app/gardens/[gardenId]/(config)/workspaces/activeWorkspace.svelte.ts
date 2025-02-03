@@ -9,11 +9,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { type CanvasContext, createCanvasContext } from '$components/canvas';
 import { setContext, getContext } from 'svelte';
 import { createTimelineSelection } from '$components/timeline';
-import activeGardenId from '$state/activeGarden.svelte';
 import toolbox from './tools';
 
 /** Workspace config persisted to local storage. */
-type WorkspaceConfig = {
+type WorkspaceViewConfig = {
 	/** Whether the tree pane is open. */
 	treeEnabled: boolean;
 	/** Whether the layout pane is open. */
@@ -47,7 +46,7 @@ function createWorkspaceContext() {
 	const selectedPlantingAreaIds: Set<string> = $state(new SvelteSet());
 
 	/** Persisted config. */
-	const config = localStore<WorkspaceConfig>('workspaceConfig', {
+	const config = localStore<WorkspaceViewConfig>('workspaceConfig', {
 		treeEnabled: defaultTreeEnabled,
 		layoutEnabled: true,
 		contentPaneDirection: defaultContentPaneDirection
@@ -59,7 +58,7 @@ function createWorkspaceContext() {
 	/** Forms. */
 	const plantingAreaCreateHandler = createMutationHandler(plantingAreaCreate.mutation, {
 		onSuccess: () => {
-			toolbox.deactivate('addPlantingArea');
+			toolbox.deactivate('plantingAreaCreate');
 		}
 	});
 	const plantingAreaCreateSuperform = superForm(

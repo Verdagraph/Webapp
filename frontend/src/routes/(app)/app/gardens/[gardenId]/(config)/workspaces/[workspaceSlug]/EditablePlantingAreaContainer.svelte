@@ -97,7 +97,7 @@
 
 	/** Editable only if editing is enabled and a new planting area isn't being created. */
 	let editable: boolean = $derived(
-		workspaceContext.editing && !toolbox.isToolActive('addPlantingArea')
+		workspaceContext.editing && !toolbox.isToolActive('plantingAreaCreate')
 	);
 
 	/** Selected if included in the list of selected IDs. */
@@ -138,7 +138,7 @@ area in the workspace editor, ie., editable
 		{onTranslate}
 		{onTransform}
 		onClick={() => {
-			if (toolbox.isToolActive('addPlantingArea')) {
+			if (toolbox.isToolActive('plantingAreaCreate')) {
 				return;
 			}
 			workspaceContext.selectPlantingArea(plantingAreaId);

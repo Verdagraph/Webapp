@@ -32,7 +32,7 @@
 	<Canvas.Gridlines {canvasId} />
 
 	<PlantingAreas {canvasId} {plantingAreaLayerId}>
-		{#if toolbox.isToolActive('addPlantingArea')}
+		{#if toolbox.isToolActive('plantingAreaCreate')}
 			<CreatePlantingAreaContainer {plantingAreaLayerId} />
 		{/if}
 
