@@ -6,15 +6,16 @@ status: This document is up to date with the implementation.
 
 ```mermaid
 ---
-title: Plants Domain Model
+title: Workspaces Domain Model
 ---
 classDiagram
 
-    PlantingArea --> Workspace : refers to one
     PlantingArea --> Geometry : refers to one
     PlantingArea --> LocationHistory : refers to one
     LocationHistory --> Location : refers to N
+    Location --> Workspace : refers to one
     GeometryHistory --> Geometry : refers to N
+    Geometry --> Coordinate : refers to one
 
     class Workspace{
         garden: Garden
