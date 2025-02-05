@@ -31,6 +31,7 @@
 				{variant}
 				size="xsm"
 				class="mx-1 flex h-fit items-center rounded-2xl p-0 outline outline-1"
+				disabled={selection.disabled}
 				{onclick}
 			>
 				<Icon icon={iconId} width="1rem" class="m-1" />
@@ -112,7 +113,7 @@
 	)}
 {/snippet}
 
-<div class="flex flex-row items-center justify-between px-2 py-2 md:px-4">
+<div class="flex h-12 flex-row items-center justify-between px-2 py-2 md:px-4">
 	<Tooltip.Root>
 		<Tooltip.Trigger>
 			<DatePicker
@@ -125,6 +126,7 @@
 				}}
 				minValue={selection.focus.subtract(selection.maxSelectOffset)}
 				maxValue={selection.focus.subtract(selection.minSelectOffset)}
+				disabled={selection.disabled}
 			/>
 		</Tooltip.Trigger>
 		<Tooltip.Content>Beginning date of timeline selection</Tooltip.Content>
@@ -159,11 +161,11 @@
 						value={selection.focus}
 						compact={isMobile.current}
 						onValueChange={(newDate: DateValue | undefined) => {
-							console.log(newDate);
 							if (newDate) {
 								selection.refocus(newDate);
 							}
 						}}
+						disabled={selection.disabled}
 					/>
 				</Tooltip.Trigger>
 				<Tooltip.Content>Focused date</Tooltip.Content>
@@ -204,6 +206,7 @@
 				}}
 				minValue={selection.focus.add(selection.minSelectOffset)}
 				maxValue={selection.focus.add(selection.maxSelectOffset)}
+				disabled={selection.disabled}
 			/>
 		</Tooltip.Trigger>
 		<Tooltip.Content>Ending date of timeline selection</Tooltip.Content>

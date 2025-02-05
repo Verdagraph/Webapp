@@ -20,6 +20,7 @@ export async function load({ params }) {
 	}
 
 	/** Update the active garden upon loading a new garden. */
+	console.log(garden.id);
 	if (activeGardenId.value != garden.id) {
 		activeGardenId.value = garden.id;
 	}

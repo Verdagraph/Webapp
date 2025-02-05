@@ -1,16 +1,18 @@
+import { SvelteSet } from 'svelte/reactivity';
 import * as Resizable from '$components/ui/resizable';
 import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
 import { plantingAreaCreate } from '$data/workspaces/commands';
-import useAsync from '$state/asyncHandler.svelte';
+import createMutationHandler from '$state/mutationHandler.svelte';
 import { superForm, defaults } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { type CanvasContext, createCanvasContext } from '$components/canvas';
 import { setContext, getContext } from 'svelte';
 import { createTimelineSelection } from '$components/timeline';
+import toolbox from './tools';
 
 /** Workspace config persisted to local storage. */
-type WorkspaceConfig = {
+type WorkspaceViewConfig = {
 	/** Whether the tree pane is open. */
 	treeEnabled: boolean;
 	/** Whether the layout pane is open. */
@@ -41,10 +43,10 @@ function createWorkspaceContext() {
 	/** If true, the workspace is being edited by the user. */
 	let editing: boolean = $state(false);
 	/** Selected entities. */
-	const selectedPlantingAreaIds: Set<string> = $state(new Set());
+	const selectedPlantingAreaIds: Set<string> = $state(new SvelteSet());
 
 	/** Persisted config. */
-	const config = localStore<WorkspaceConfig>('workspaceConfig', {
+	const config = localStore<WorkspaceViewConfig>('workspaceConfig', {
 		treeEnabled: defaultTreeEnabled,
 		layoutEnabled: true,
 		contentPaneDirection: defaultContentPaneDirection
@@ -54,7 +56,11 @@ function createWorkspaceContext() {
 	const timelineSelection = createTimelineSelection();
 
 	/** Forms. */
-	const plantingAreaCreateHandler = useAsync(plantingAreaCreate.mutation);
+	const plantingAreaCreateHandler = createMutationHandler(plantingAreaCreate.mutation, {
+		onSuccess: () => {
+			toolbox.deactivate('plantingAreaCreate');
+		}
+	});
 	const plantingAreaCreateSuperform = superForm(
 		defaults(zod(plantingAreaCreate.schema)),
 		{
@@ -108,11 +114,9 @@ function createWorkspaceContext() {
 		}
 	}
 
-	function isPlantingAreaSelected(plantingAreaId: string): boolean {
+	function unselectPlantingArea(plantingAreaId: string) {
 		if (selectedPlantingAreaIds.has(plantingAreaId)) {
-			return true;
-		} else {
-			return false;
+			selectedPlantingAreaIds.delete(plantingAreaId);
 		}
 	}
 
@@ -171,7 +175,7 @@ function createWorkspaceContext() {
 		reset,
 		setWorkspace,
 		selectPlantingArea,
-		isPlantingAreaSelected
+		unselectPlantingArea
 	};
 }
 export type WorkspaceContext = ReturnType<typeof createWorkspaceContext>;

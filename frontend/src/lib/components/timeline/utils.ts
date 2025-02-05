@@ -18,10 +18,9 @@ const monthStrings = {
 	12: 'Dec'
 };
 
-/*
 export function calendarDateToUtc(date: DateValue) {
-    return date.toDate('UTC+00:00')
-}*/
+	return date.toDate('UTC');
+}
 
 export function calculateDeltaDays(current: DateValue, prev: DateValue): number {
 	return Math.round(
@@ -32,5 +31,6 @@ export function calculateDeltaDays(current: DateValue, prev: DateValue): number 
 }
 
 export function getMonthString(monthNumber: number) {
+	/** @ts-expect-error */
 	return monthStrings[monthNumber];
 }

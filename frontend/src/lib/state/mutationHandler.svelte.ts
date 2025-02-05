@@ -5,29 +5,13 @@ import type { AxiosError } from 'axios';
 import { toast } from 'svelte-sonner';
 
 /**
- * Options which may be set on the async handler.
+ * Options which may be set on the handler.
  */
 export type HandlerOptions<ResultType = Record<string, unknown>> = {
 	/** Called after a successful call to the async function. */
 	onSuccess?: (result: ResultType) => void;
 	/** Called after an error is raised by the async function. */
 	onError?: (errors: AppErrors) => void;
-};
-
-/**
- * Stores the state of the async handler.
- */
-type AsyncState<TResult> = {
-	/** If true, the async function is being executed. */
-	isLoading: boolean;
-	/** If true, the async function has concluded with an error. */
-	isError: boolean;
-	/** If true, the async function has concluded with an success. */
-	isSuccess: boolean;
-	/** If not null, the result returned by the async function. */
-	result: TResult | null;
-	/** If not null, the errors raised by the async function. */
-	errors: AppErrors | null;
 };
 
 /**
@@ -39,45 +23,48 @@ type AsyncState<TResult> = {
  * @param options Handler options.
  * @returns An async handler rune.
  */
-export function useAsync<TParams = void, TResult = void>(
-	asyncFn: (params: TParams) => Promise<TResult>,
+export function createMutationHandler<TParams extends any[], TResult>(
+	asyncFn: (...args: TParams) => Promise<TResult>,
 	options?: HandlerOptions<TResult>
 ) {
-	let _rune: AsyncState<TResult> = $state({
-		isLoading: false,
-		isError: false,
-		isSuccess: false,
-		result: null,
-		errors: null
-	});
+	/** If true, the async function is being executed. */
+	let isLoading: boolean = $state(false);
+	/** If true, the async function has concluded with an error. */
+	let isError: boolean = $state(false);
+	/** If true, the async function has concluded with an success. */
+	let isSuccess: boolean = $state(false);
+	/** If not null, the result returned by the async function. */
+	let result: TResult | null = $state(null);
+	/** If not null, the errors raised by the async function. */
+	let errors: AppErrors | null = $state(null);
 
 	/**
 	 * Calls the provided async function, updates state,
 	 * stores results or errors, and executes side effects.
 	 * @param params Parameters to pass into the async function.
 	 */
-	function execute(params: TParams) {
+	function execute(...params: TParams) {
 		reset();
-		_rune.isLoading = true;
+		isLoading = true;
 
-		asyncFn(params)
+		asyncFn(...params)
 			.then((result: TResult) => {
-				_rune.isSuccess = true;
-				_rune.result = result;
+				isSuccess = true;
+				result = result;
 				if (options?.onSuccess) {
 					options.onSuccess(result);
 				}
 			})
 			.catch((error: AppError | AxiosError<ServerErrorResponse> | Error) => {
-				_rune.isError = true;
-				_rune.errors = convertErrors(error);
-				handleErrors(_rune.errors);
+				isError = true;
+				errors = convertErrors(error);
+				handleErrors(errors);
 				if (options?.onError) {
-					options.onError(_rune.errors);
+					options.onError(errors);
 				}
 			})
 			.finally(() => {
-				_rune.isLoading = false;
+				isLoading = false;
 			});
 	}
 
@@ -85,46 +72,44 @@ export function useAsync<TParams = void, TResult = void>(
 	 * Resets the handler's state.
 	 */
 	function reset() {
-		_rune = {
-			isLoading: false,
-			isError: false,
-			isSuccess: false,
-			result: null,
-			errors: null
-		};
+		(isLoading = false),
+			(isError = false),
+			(isSuccess = false),
+			(result = null),
+			(errors = null);
 	}
 
 	return {
 		get isLoading() {
-			return _rune.isLoading;
+			return isLoading;
 		},
 		get isSuccess() {
-			return _rune.isSuccess;
+			return isSuccess;
 		},
 		get isError() {
-			return _rune.isError;
+			return isError;
 		},
 		get result() {
-			return _rune.result;
+			return result;
 		},
 		get errors() {
-			return _rune.errors;
+			return errors;
 		},
 		get fieldErrors() {
-			return _rune.errors?.fieldErrors;
+			return errors?.fieldErrors;
 		},
 		get nonFieldErrors() {
-			return _rune.errors?.nonFieldErrors;
+			return errors?.nonFieldErrors;
 		},
 		get nonFormErrors() {
-			return _rune.errors?.nonFormErrors;
+			return errors?.nonFormErrors;
 		},
 		execute,
 		reset
 	};
 }
-export default useAsync;
-export type AsyncHandler = ReturnType<typeof useAsync>;
+export default createMutationHandler;
+export type MutationHandler = ReturnType<typeof createMutationHandler>;
 
 /**
  * Converts any type of error which may be raised by the async function

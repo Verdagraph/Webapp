@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	//import { Tabs } from 'bits-ui';
 	import * as Tabs from '$components/ui/tabs';
 	import { ScrollArea } from 'bits-ui';
 	import { Button } from '$lib/components/ui/button';
@@ -29,16 +28,16 @@
 	bind:value={toolbox.lastActivatedId}
 	class="bg-neutral-1 flex h-full flex-col"
 >
-	<Tabs.List bind:ref={list} class="h-8">
+	<Tabs.List bind:ref={list} class="h-8 shadow-none">
 		{#each toolbox.activeTools as tool}
 			<Tabs.Trigger
 				value={tool.id}
-				class="border-neutral-5 text-neutral-11 flex w-full items-center justify-between border-b p-0 px-8 py-1 {toolbox.lastActivatedId ===
+				class="border-neutral-5 text-neutral-11 flex w-full items-center justify-between border-b p-0 px-4 py-1 {toolbox.lastActivatedId ===
 				tool.id
 					? 'bg-neutral-2 hover:bg-neutral-3'
 					: 'bg-neutral-1 hover:bg-neutral-2'}"
 			>
-				<span>
+				<span class="truncate">
 					{tool.label}
 				</span>
 				<Button
@@ -54,7 +53,8 @@
 	{#each toolbox.activeTools as tool}
 		<Tabs.Content
 			value={tool.id}
-			class="mt-0 overflow-hidden {`h-[${contentHeight}px]`}"
+			class="mt-0 overflow-hidden"
+			style="height: {contentHeight}px"
 		>
 			<ScrollArea.Root class="relative h-full">
 				<ScrollArea.Viewport class="h-full max-h-full w-full">

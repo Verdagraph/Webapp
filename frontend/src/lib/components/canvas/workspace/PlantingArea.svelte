@@ -2,17 +2,27 @@
 	import Konva from 'konva';
 	import type { Vector2d } from 'konva/lib/types';
 	import { getContext, onDestroy } from 'svelte';
-	import { type Geometry, type GridAttributes } from '@vdt-webapp/common';
+	import {
+		getGeometryHeight,
+		type GeometryType,
+		type Geometry,
+		type GridAttributes,
+		type GeometryPartial
+	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
-	import { getClosedShape, type SupportedShape } from '../utils';
+	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
 	import { getColor } from '$lib/utils';
 	import mode from '$state/theme.svelte';
+	import EditableGeometryResizePoints from './EditableGeometryResizePoints.svelte';
 
 	type Props = {
 		/** The ID of the canvas. */
 		canvasId: string;
 		/** The ID of the layer which holds the planting areas. */
 		plantingAreaLayerId: string;
+		/** Name of the planting area. Can be disabled */
+		name: string;
+		showName: boolean;
 		/** The current position of the planting area in the workspace, in model quantity (meters). */
 		position: Vector2d | null;
 		/** The geometry of the planting area. */
@@ -23,30 +33,40 @@
 		selected: boolean;
 		/** The grid attributes of the planting area. */
 		grid?: GridAttributes;
-		/** Called when the planting area is moved in the canvas. */
+		/** Called when the position is moved in the canvas. */
 		onTranslate?: (
 			/** The new position, in canvas quantity (pixels). */
 			newPos: Vector2d,
 			/** If true, the movement has ended (dragend).*/
 			movementOver: boolean
 		) => void;
-		/** Called when the planting area is transformed in the canvas. */
-		onTransform?: (newGeometry: Geometry) => void;
+		/** Called when the geometry is transformed in the canvas. */
+		onTransform?: (
+			/** The updated geometry attributes after transformation. */
+			newGeometry: GeometryPartial,
+			/** If true, the transform has ended.*/
+			transformOver: boolean
+		) => void;
 		/** Called when the planting area is clicked. */
 		onClick?: () => void;
 	};
 	let {
 		canvasId,
 		plantingAreaLayerId,
+		name,
+		showName = true,
 		position,
 		geometry,
 		editable,
 		selected,
 		grid,
 		onTranslate,
-		onTransform,
+		onTransform: onTransformContainer,
 		onClick
 	}: Props = $props();
+
+	/** The number of pixels the label is offset from the top of the shape. */
+	const LABEL_OFFSET_PX = 10;
 
 	/** Retrieve canvas and initialize Konva constructs. */
 	const canvas = getContext<CanvasContext>(canvasId);
@@ -54,33 +74,61 @@
 	const group: Konva.Group = new Konva.Group({ draggable: editable });
 	layer.add(group);
 
-	/** Border shape of the planting area. */
+	/** Shapes. */
 	let plantingAreaShape: SupportedShape | null = null;
+	let nameText = new Konva.Text({
+		fontFamily: 'sans',
+		fontSize: 15,
+		opacity: 0.7,
+		text: name,
+		visible: showName
+	});
+	group.add(nameText);
 
-	function getShapeConfig(selected: boolean) {
-		if (selected) {
-			return {
-				fill: getColor('accent', 3, mode.value),
-				stroke: getColor('accent', 6, mode.value),
-				strokeWidth: 3
-			};
-		} else {
-			return {
-				fill: getColor('brown', 3, mode.value),
-				stroke: getColor('brown', 10, mode.value),
-				strokeWidth: 2
-			};
-		}
-	}
+	/**
+	 * Store the geometry type.
+	 * If the geometry type is changed, a new shape may be rendered.
+	 * Otherwise, the current shape can simply be updated.
+	 */
+	let previousGeometryType = geometry.type;
+
+	/**
+	 * Shape config settings.
+	 */
+	let strokeColor = $derived(
+		selected ? getColor('accent', 8, mode.value) : getColor('brown', 10, mode.value)
+	);
+	let fillColor = $derived(
+		selected ? getColor('accent', 5, mode.value) : getColor('brown', 3, mode.value)
+	);
+	let strokeWidth = $derived(selected ? 3 : 2);
+	let nameTextFillColor = $derived(
+		selected ? getColor('accent', 11, mode.value) : getColor('brown', 11, mode.value)
+	);
 
 	/** Update shapes upon geometry change. */
 	$effect(() => {
-		group.destroyChildren();
-		plantingAreaShape = getClosedShape(canvas, geometry, getShapeConfig(selected));
-		if (plantingAreaShape) {
-			group.add(plantingAreaShape);
-			group.rotation(geometry.rotation);
+		/** If the geometry type has changed or the shape hasn't been initialized, initialize. */
+		if (geometry.type !== previousGeometryType || !plantingAreaShape) {
+			plantingAreaShape?.destroy();
+			plantingAreaShape = getClosedShape(canvas, geometry, {
+				stroke: strokeColor,
+				fill: fillColor,
+				strokeWidth: strokeWidth
+			});
+			if (plantingAreaShape) {
+				group.add(plantingAreaShape);
+				group.rotation(geometry.rotation);
+				nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
+			}
+
+			/** Otherwise, update the existing shape.*/
+		} else {
+			updateShape(canvas, geometry, plantingAreaShape);
+			nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
 		}
+
+		previousGeometryType = geometry.type;
 	});
 
 	/** Update position upon position change. */
@@ -98,19 +146,27 @@
 
 	/** Update color on selection change. */
 	$effect(() => {
-		const config = getShapeConfig(selected);
-		plantingAreaShape?.fill(config.fill);
-		plantingAreaShape?.stroke(config.stroke);
-		plantingAreaShape?.strokeWidth(config.strokeWidth);
+		plantingAreaShape?.fill(fillColor);
+		plantingAreaShape?.stroke(strokeColor);
+		plantingAreaShape?.strokeWidth(strokeWidth);
+		nameText.fill(nameTextFillColor);
+	});
+
+	/** Update name text on name change. */
+	$effect(() => {
+		nameText.text(name);
+		nameText.offsetX(nameText.width() / 2);
+		nameText.offsetY(nameText.height() + LABEL_OFFSET_PX);
 	});
 
 	/** Add events. */
 	$effect(() => {
 		if (editable) {
-			group.on('mouseover', () => {
-				document.body.style.cursor = 'grab';
+			group.draggable(true);
+			plantingAreaShape?.on('mouseover', () => {
+				document.body.style.cursor = 'move';
 			});
-			group.on('mouseout', () => {
+			plantingAreaShape?.on('mouseout', () => {
 				document.body.style.cursor = 'default';
 			});
 			group.on('dragmove', () => {
@@ -130,11 +186,36 @@
 				}
 			});
 		} else {
+			group.draggable(false);
 			group.off('mouseover mouseout dragmove dragend pointerclick');
 		}
 	});
+
+	/**
+	 * Wrap the container's onTransform to optimistically update
+	 * the shape before the geometry is updated in Triplit.
+	 */
+	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
+		if (plantingAreaShape) {
+			updateShape(canvas, newGeometry, plantingAreaShape);
+		}
+		if (onTransformContainer) {
+			onTransformContainer(newGeometry, transformOver);
+		}
+	}
 
 	onDestroy(() => {
 		group.destroy();
 	});
 </script>
+
+{#if editable}
+	<EditableGeometryResizePoints
+		{canvasId}
+		{geometry}
+		{strokeColor}
+		{fillColor}
+		geometryGroup={group}
+		{onTransform}
+	/>
+{/if}

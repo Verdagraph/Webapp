@@ -24,8 +24,14 @@
 	/* Queries */
 	let activeGarden = useQuery(
 		triplit,
-		activeGardenQuery.vars({ activeGardenId: activeGardenId })
+		activeGardenQuery.vars({ activeGardenId: activeGardenId.value })
 	);
+	$effect(() => {
+		activeGarden.updateQuery(
+			activeGardenQuery.vars({ activeGardenId: activeGardenId.value })
+		);
+	});
+
 	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
 	let adminGardens = useQuery(triplit, adminGardensQuery);
 	let editorGardens = useQuery(triplit, editorGardensQuery);
@@ -55,9 +61,11 @@
 	});
 
 	let gardenTabs = $derived.by(() => {
-		if (activeGarden.results && activeGarden.results.length > 0) {
+		console.log(activeGarden.results);
+		if (activeGarden.results && activeGarden.results[0]) {
 			return getGardenSpecifcTabs(activeGarden.results[0]);
 		} else {
+			console.log(activeGarden.results);
 			return [];
 		}
 	});

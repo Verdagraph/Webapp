@@ -1,18 +1,19 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
 	import * as Form from '$lib/components/ui/form';
 	import * as Textarea from '$lib/components/ui/textarea';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator';
-	import UnitAwareInput from '$components/units/UnitAwareInput.svelte';
+	import { UnitAwareInput, CoordinateInput } from '$components/units';
 	import { Input } from '$lib/components/ui/input';
 	import { plantingAreaCreate } from '$data/workspaces/commands';
 	import iconIds from '$lib/assets/icons';
-	import { getLocalTimeZone } from '@internationalized/date';
-	import type { DateValue } from '@internationalized/date';
 	import Checkbox from '$components/ui/checkbox/checkbox.svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
+	import { toast } from 'svelte-sonner';
+	import { AppError } from '@vdt-webapp/common/src/errors';
 
 	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;
@@ -32,11 +33,16 @@
 		}
 	);
 
-	let geometryDateValue: DateValue | undefined = $state();
 	$effect(() => {
-		if (geometryDateValue) {
-			$formData.geometry.date = geometryDateValue.toDate(getLocalTimeZone());
+		if (!workspaceContext.id) {
+			toast.error('Error retrieving workspace context.');
+			throw new AppError('Error retrieving workspace contxet.');
 		}
+
+		$formData.gardenId = page.params.gardenId;
+		$formData.workspaceId = workspaceContext.id;
+		$formData.geometry.date = workspaceContext.timelineSelection.focusUtc;
+		$formData.location.date = workspaceContext.timelineSelection.focusUtc;
 	});
 
 	let generateGridSpacing: number = $state(0.3048);
@@ -78,60 +84,22 @@
 	</Form.Field>
 
 	<!-- Position. -->
-	<fieldset>
-		<div class="my-2 flex items-center">
-			<span class="text-neutral-11 mr-2"> Position </span>
-			<span class="w-full">
-				<Separator class="w-full" />
-			</span>
-		</div>
-
-		<!-- X Coordinate. -->
-		<Form.Field {form} name="location.coordinate.x">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label
-						description={plantingAreaCreate.schema.shape.location.shape.coordinate.innerType()
-							.shape.x.description}
-						optional={plantingAreaCreate.schema.shape.location.shape.coordinate
-							.innerType()
-							.shape.x.isOptional()}>X</Form.Label
-					>
-					<UnitAwareInput
-						{...props}
-						quantityType="distance"
-						bind:value={$formData.location.coordinate.x}
-					/>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors
-				handlerErrors={handler.fieldErrors?.['location.coordinate.x']}
-			/>
-		</Form.Field>
-
-		<!-- Y Coordinate. -->
-		<Form.Field {form} name="location.coordinate.y">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label
-						description={plantingAreaCreate.schema.shape.location.shape.coordinate.innerType()
-							.shape.y.description}
-						optional={plantingAreaCreate.schema.shape.location.shape.coordinate
-							.innerType()
-							.shape.y.isOptional()}>Y</Form.Label
-					>
-					<UnitAwareInput
-						{...props}
-						quantityType="distance"
-						bind:value={$formData.location.coordinate.y}
-					/>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors
-				handlerErrors={handler.fieldErrors?.['location.coordinate.y']}
-			/>
-		</Form.Field>
-	</fieldset>
+	<Form.Field {form} name="location">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={plantingAreaCreate.schema.shape.location.description}
+					optional={plantingAreaCreate.schema.shape.location.isOptional()}
+					>Position</Form.Label
+				>
+				<CoordinateInput
+					{...props}
+					bind:x={$formData.location.coordinate.x}
+					bind:y={$formData.location.coordinate.y}
+				/>
+			{/snippet}
+		</Form.Control>
+	</Form.Field>
 
 	<!-- Geometry. -->
 	<fieldset>
@@ -191,9 +159,7 @@
 					</Select.Root>
 				{/snippet}
 			</Form.Control>
-			<Form.FieldErrors
-				handlerErrors={handler.fieldErrors?.['location.coordinate.x']}
-			/>
+			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.type']} />
 		</Form.Field>
 
 		<!-- Rotation. -->
@@ -213,6 +179,7 @@
 			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.rotation']} />
 		</Form.Field>
 
+		<!-- RECTANGLE GEOMETRY. -->
 		{#if $formData.geometry.type === 'RECTANGLE'}
 			<!-- Length. -->
 			<Form.Field {form} name="geometry.rectangleAttributes.length">
@@ -261,6 +228,8 @@
 					handlerErrors={handler.fieldErrors?.['geometry.rectangleAttributes.width']}
 				/>
 			</Form.Field>
+
+			<!-- POLYGON GEOMETRY. -->
 		{:else if $formData.geometry.type === 'POLYGON'}
 			<!-- Side count. -->
 			<Form.Field {form} name="geometry.polygonAttributes.numSides">
@@ -310,6 +279,8 @@
 					handlerErrors={handler.fieldErrors?.['geometry.polygonAttributes.radius']}
 				/>
 			</Form.Field>
+
+			<!-- ELLIPSE GEOMETRY. -->
 		{:else if $formData.geometry.type === 'ELLIPSE'}
 			<!-- Length diameter. -->
 			<Form.Field {form} name="geometry.ellipseAttributes.lengthDiameter">
@@ -364,7 +335,37 @@
 					]}
 				/>
 			</Form.Field>
+
+			<!-- LINES GEOMETRY. -->
 		{:else if $formData.geometry.type === 'LINES'}
+			<!-- Coordinate. -->
+			{#each $formData.geometry.linesAttributes.coordinates as coordinate, index}
+				<Form.Field {form} name={`geometry.linesAttributes.coordinates[${index}]`}>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label
+								description={plantingAreaCreate.schema.shape.geometry.innerType().shape
+									.linesAttributes.shape.coordinates._def.innerType._def.description}
+								optional={plantingAreaCreate.schema.shape.geometry
+									.innerType()
+									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.isOptional()}
+								>Coordinate {index}</Form.Label
+							>
+							<CoordinateInput
+								{...props}
+								bind:x={$formData.geometry.linesAttributes.coordinates[index].x}
+								bind:y={$formData.geometry.linesAttributes.coordinates[index].y}
+							/>
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors
+						handlerErrors={handler.fieldErrors?.[
+							`geometry.linesAttributes.coordinates[${index}]`
+						]}
+					/>
+				</Form.Field>
+			{/each}
+
 			<!-- Coordinate add button. -->
 			<Button
 				onclick={() => {
@@ -379,65 +380,6 @@
 				<span> Add Point </span>
 				<Icon icon={iconIds.addIcon} width="1.5rem" />
 			</Button>
-
-			<!-- Coordinate. -->
-			{#each $formData.geometry.linesAttributes.coordinates as coordinate, index (index)}
-				<!-- X Coordinate. -->
-				<Form.Field {form} name={`geometry.linesAttributes.coordinates[${index}]`}>
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label
-								description={plantingAreaCreate.schema.shape.geometry
-									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.x.description}
-								optional={plantingAreaCreate.schema.shape.geometry
-									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.x.isOptional()}>X-{index}</Form.Label
-							>
-							<UnitAwareInput
-								{...props}
-								quantityType="distance"
-								bind:value={$formData.geometry.linesAttributes.coordinates[index].x}
-							/>
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors
-						handlerErrors={handler.fieldErrors?.[
-							`geometry.linesAttributes.coordinates[${index}].x`
-						]}
-					/>
-				</Form.Field>
-
-				<!-- Y Coordinate. -->
-				<Form.Field {form} name={`geometry.linesAttributes.coordinates[${index}]`}>
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label
-								description={plantingAreaCreate.schema.shape.geometry
-									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.y.description}
-								optional={plantingAreaCreate.schema.shape.geometry
-									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.innerType()
-									.shape.y.isOptional()}>Y-{index}</Form.Label
-							>
-							<UnitAwareInput
-								{...props}
-								quantityType="distance"
-								bind:value={$formData.geometry.linesAttributes.coordinates[index].y}
-							/>
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors
-						handlerErrors={handler.fieldErrors?.[
-							`geometry.linesAttributes.coordinates[${index}]`
-						]}
-					/>
-				</Form.Field>
-			{/each}
 		{/if}
 	</fieldset>
 

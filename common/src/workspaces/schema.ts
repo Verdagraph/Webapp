@@ -548,8 +548,30 @@ export const workspaceSchema = {
 } satisfies ClientSchema;
 
 export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
+export type Position = Pick<Coordinate, 'x' | 'y'>;
 
 export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
+export type GeometryType = (typeof GeometryTypeEnum)[number];
+
+/**
+ * Applies a partial to the geometry type and also all the attribute sub-objects.
+ * Used to specify just fields which need to be updated when geometries are changed.
+ */
+export type GeometryPartial = Partial<
+	Omit<
+		Geometry,
+		| 'rectangleAttributes'
+		| 'polygonAttributes'
+		| 'ellipseAttributes'
+		| 'linesAttributes'
+	>
+> & {
+	rectangleAttributes?: Partial<RectangleAttributes>;
+	polygonAttributes?: Partial<PolygonAttributes>;
+	ellipseAttributes?: Partial<EllipseAttributes>;
+	linesAttributes?: Partial<LinesAttributes>;
+};
+
 export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>;
 export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>;
 export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>;
@@ -560,6 +582,8 @@ export type GeometryAttributesMap = {
 	ELLIPSE: EllipseAttributes;
 	LINES: LinesAttributes;
 };
+
+/** TODO: Fix these types. */
 export type RectangleGeometry = Extract<Geometry, { type: 'RECTANGLE' }>;
 export type PolygonGeometry = Extract<Geometry, { type: 'POLYGON' }>;
 export type EllipseGeometry = Extract<Geometry, { type: 'ELLIPSE' }>;

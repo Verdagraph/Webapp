@@ -4,7 +4,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userCreate } from '$data/users/commands';
-	import useAsync from '$state/asyncHandler.svelte';
+	import createMutationHandler from '$state/mutationHandler.svelte';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -16,7 +16,7 @@
 	let { succeeded = $bindable(false), registeredEmail = $bindable('') }: Props =
 		$props();
 
-	let formHandler = useAsync(userCreate.mutation, {
+	let formHandler = createMutationHandler(userCreate.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}

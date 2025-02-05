@@ -5,7 +5,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userConfirmPasswordReset } from '$data/users/commands';
-	import useAsync from '$state/asyncHandler.svelte';
+	import createMutationHandler from '$state/mutationHandler.svelte';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -13,7 +13,7 @@
 	};
 	let { succeeded = $bindable(false) }: Props = $props();
 
-	let formHandler = useAsync(userConfirmPasswordReset.mutation, {
+	let formHandler = createMutationHandler(userConfirmPasswordReset.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}

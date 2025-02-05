@@ -29,6 +29,10 @@ const iconIds = {
 	sortReverseAlphaIcon: 'icons8:alphabetical-sorting-2',
 	homeIcon: 'material-symbols:home',
 
+	/** Selection. */
+	pointerSelectIcon: 'mdi:cursor-default-outline',
+	groupSelectIcon: 'mdi:select-multiple',
+
 	/* Navigation and UI. */
 	gardenDrawerIcon: 'material-symbols:menu-open-rounded',
 

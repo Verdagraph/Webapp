@@ -1,6 +1,6 @@
 import type { AppErrors, FieldErrors } from '@vdt-webapp/common/src/errors';
 import { z } from 'zod';
-import useAsync, { type HandlerOptions } from './asyncHandler.svelte';
+import createMutationHandler, { type HandlerOptions } from './mutationHandler.svelte';
 
 /**
  * @note
@@ -41,7 +41,7 @@ export function createForm<TSchema extends z.ZodObject<any>, TResult = void>(
 	/** Stores the result of zod validation. */
 	let validationErrors: FieldErrors | null = $state(null);
 	/** Used to execute the async function. */
-	const handler = useAsync(asyncFn, options?.handler);
+	const handler = createMutationHandler(asyncFn, options?.handler);
 	/** All validation errors and those returned by the handler. */
 	const errors = $derived.by(() => {
 		if (validationErrors == null) {

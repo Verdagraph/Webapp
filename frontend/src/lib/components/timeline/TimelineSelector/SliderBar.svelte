@@ -39,6 +39,7 @@
 	}}
 	min={selection.minSliderValue}
 	max={selection.maxSliderValue}
+	disabled={selection.disabled}
 	class="relative flex h-12 w-full touch-none select-none"
 >
 	{#snippet children({ thumbs, ticks })}

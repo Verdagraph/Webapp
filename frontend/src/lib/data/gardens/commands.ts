@@ -179,6 +179,20 @@ export const gardenCreate = {
 					status: 'CREATED'
 				});
 			}
+
+			/** Add a default workspace. */
+			await transaction.insert('workspaces', {
+				gardenId: garden.id,
+				name: 'Default',
+				slug: 'default'
+			});
+
+			/** Add a default environment. */
+			await transaction.insert('environments', {
+				gardenId: garden.id,
+				name: 'Garden',
+				parentType: 'GARDEN'
+			});
 		});
 
 		if (garden == null) {

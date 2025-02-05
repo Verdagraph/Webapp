@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
-	import type { CanvasContext } from '$components/canvas';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import { UnitAwareInput } from '$components/units/';
+	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 
-	const layoutCanvas = getContext<CanvasContext>('workspaceLayout');
+	const workspaceContext = getWorkspaceContext();
+	const layoutCanvas = workspaceContext.layoutCanvasContext;
 
 	const buttonsPositionOptions = [
 		{ value: 'tl', label: 'Top Left' },
@@ -43,13 +43,15 @@
 		</Select.Root>
 	</div>
 
-	<div class="flex flex-col gap-2">
-		<div class="flex items-center justify-between">
-			<span class="text-neutral-11">Background Grid Spacing</span>
-			<FormInfoPopover
+	<!--
+		<div class="flex flex-col gap-2">
+			<div class="flex items-center justify-between">
+				<span class="text-neutral-11">Background Grid Spacing</span>
+				<FormInfoPopover
 				description="Sets the distance between gridlines on the background grid."
-			/>
+				/>
+			</div>
+			<UnitAwareInput bind:value quantityType="distance"></UnitAwareInput>
 		</div>
-		<UnitAwareInput bind:value quantityType="distance"></UnitAwareInput>
-	</div>
+	-->
 </div>

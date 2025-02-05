@@ -5,14 +5,14 @@
 	import { userConfirmEmailConfirmation } from '$data/users/commands';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
-	import useAsync from '$state/asyncHandler.svelte';
+	import createMutationHandler from '$state/mutationHandler.svelte';
 	import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
 	import z from 'zod';
 
 	/* Initialize the mutation on page load with url parameter. */
 	const confirmationToken = $page.params.confirmationToken;
 
-	let formHandler = useAsync(userConfirmEmailConfirmation.mutation, {
+	let formHandler = createMutationHandler(userConfirmEmailConfirmation.mutation, {
 		onSuccess: () => {
 			goto('/login');
 		}

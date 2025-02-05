@@ -1,79 +1,60 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
 	import * as Resizable from '$components/ui/resizable';
 	import Toolbar from './Toolbar.svelte';
-	import createViewSettings from './state/viewSettings.svelte';
+	import { toolbox } from './tools/index';
+	import TabToolbox from '$components/tabToolbox';
 	import Calendar from './calendar/Calendar.svelte';
 	import Layout from './layout/Layout.svelte';
 	import Tree from './tree/Tree.svelte';
 	import { TimelineSelector } from '$components/timeline';
-	import Form from './forms/Form.svelte';
-	import forms from './state/forms.svelte';
 	import { setVerdagraphContext } from './verdagraphContext.svelte';
 
 	const verdagraphContext = setVerdagraphContext();
 
-	let viewSettings = createViewSettings();
-	setContext('viewSettings', viewSettings);
+	/** Force a re-render of the PaneGroup if the direction is changed. */
+	let initialized = $state(true);
+	$effect(() => {
+		if (verdagraphContext.contentPaneDirection) {
+			initialized = false;
+			initialized = true;
+		}
+	});
 </script>
 
 <div class="bg-neutral-1 flex h-full flex-col">
 	<Toolbar />
 
 	<div class="overflow-none grow">
-		<!-- Content Panes / Form Pane group-->
-		<Resizable.PaneGroup
-			direction={viewSettings.value.formPaneDirection}
-			autoSaveId={'formPaneState'}
-		>
-			<Resizable.Pane defaultSize={80} order={0}>
-				<!-- Content Panes group-->
-				<Resizable.PaneGroup
-					direction={viewSettings.value.contentPaneDirection}
-					autoSaveId={'verdagraphContentPaneState'}
-				>
-					{#if viewSettings.value.layoutEnabled}
-						<Resizable.Pane
-							defaultSize={40}
-							minSize={viewSettings.value.minContentPaneSize}
-							order={0}
-						>
-							<Layout />
-						</Resizable.Pane>
-						<Resizable.Handle withHandle={false} />
-					{/if}
-					{#if viewSettings.value.calendarEnabled}
-						<Resizable.Pane
-							defaultSize={40}
-							minSize={viewSettings.value.minContentPaneSize}
-							order={1}
-						>
-							<Calendar />
-						</Resizable.Pane>
-						<Resizable.Handle withHandle={false} />
-					{/if}
-					{#if viewSettings.value.treeEnabled}
-						<Resizable.Pane
-							defaultSize={20}
-							minSize={viewSettings.value.minContentPaneSize}
-							order={2}
-						>
-							<Tree />
-						</Resizable.Pane>
-					{/if}
-				</Resizable.PaneGroup>
-			</Resizable.Pane>
-			<Resizable.Handle withHandle={false} />
-
-			{#if forms.anyFormsActive}
-				<Resizable.Pane defaultSize={20} minSize={10} order={1}>
-					<Form />
-				</Resizable.Pane>
-			{/if}
-		</Resizable.PaneGroup>
+		{#if initialized}
+			<Resizable.PaneGroup direction={verdagraphContext.contentPaneDirection}>
+				{#if verdagraphContext.layoutEnabled}
+					<Resizable.Pane defaultSize={30} minSize={5} order={0}>
+						<Layout />
+					</Resizable.Pane>
+					<Resizable.Handle withHandle={false} />
+				{/if}
+				{#if verdagraphContext.calendarEnabled}
+					<Resizable.Pane defaultSize={30} minSize={5} order={1}>
+						<Calendar />
+					</Resizable.Pane>
+					<Resizable.Handle withHandle={false} />
+				{/if}
+				{#if toolbox.isActive}
+					<Resizable.Pane defaultSize={15} minSize={5} order={2}>
+						<TabToolbox {toolbox} />
+					</Resizable.Pane>
+					<Resizable.Handle withHandle={false} />
+				{/if}
+				{#if verdagraphContext.treeEnabled}
+					<Resizable.Pane defaultSize={25} minSize={5} order={3}>
+						<Tree />
+					</Resizable.Pane>
+				{/if}
+			</Resizable.PaneGroup>
+		{/if}
 	</div>
 
-	<div class="w-full">
+	<div class="bottom-0 h-24">
 		<TimelineSelector selection={verdagraphContext.timelineSelection} />
 	</div>
 </div>
