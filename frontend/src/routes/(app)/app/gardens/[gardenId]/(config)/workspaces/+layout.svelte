@@ -65,7 +65,7 @@
 											`/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
 										);
 									}}
-									class="text-light h-full w-full"
+									class="text-light italic h-full w-full"
 								>
 									{workspace.name}
 								</Button.Root>
@@ -293,5 +293,7 @@
 			</Menubar.Menu>
 		{/if}
 	</Menubar.Root>
+	
+	
 	{@render children()}
 </div>
