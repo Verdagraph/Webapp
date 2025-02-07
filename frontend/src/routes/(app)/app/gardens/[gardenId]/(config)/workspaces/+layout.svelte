@@ -34,13 +34,13 @@
 	const selectedPlantingAreas = useQuery(
 		triplit,
 		plantingAreaSelectionQuery.vars({
-			plantingAreaIds: [...workspaceContext.selectedPlantingAreaIds]
+			plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
 		})
 	);
 	$effect(() => {
 		selectedPlantingAreas.updateQuery(
 			plantingAreaSelectionQuery.vars({
-				plantingAreaIds: [...workspaceContext.selectedPlantingAreaIds]
+				plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
 			})
 		);
 	});
@@ -137,7 +137,7 @@
 									</span>
 									<Button.Root
 										onclick={() => {
-											workspaceContext.unselectPlantingArea(plantingArea.id);
+											workspaceContext.selections.deselect('plantingArea', plantingArea.id);
 										}}
 									>
 										<Icon icon={iconIds.defaultClose} width="1.25rem" />

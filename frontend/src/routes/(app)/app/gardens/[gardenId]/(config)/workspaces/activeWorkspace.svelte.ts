@@ -10,6 +10,7 @@ import { type CanvasContext, createCanvasContext } from '$components/canvas';
 import { setContext, getContext } from 'svelte';
 import { createTimelineSelection } from '$components/timeline';
 import toolbox from './tools';
+import { createSelectionManager } from '$components/selection';
 
 /** Workspace config persisted to local storage. */
 type WorkspaceViewConfig = {
@@ -43,7 +44,7 @@ function createWorkspaceContext() {
 	/** If true, the workspace is being edited by the user. */
 	let editing: boolean = $state(false);
 	/** Selected entities. */
-	const selectedPlantingAreaIds: Set<string> = $state(new SvelteSet());
+	const selections = createSelectionManager(['plantingArea', 'environment'])
 
 	/** Persisted config. */
 	const config = localStore<WorkspaceViewConfig>('workspaceConfig', {
@@ -84,7 +85,7 @@ function createWorkspaceContext() {
 	function reset() {
 		activeWorkspaceId = null;
 		editing = false;
-		selectedPlantingAreaIds.clear();
+		selections.resetAll();
 		plantingAreaCreateSuperform.reset();
 
 		/** Reset the canvas. */
@@ -105,21 +106,6 @@ function createWorkspaceContext() {
 		);
 	}
 
-	function selectPlantingArea(plantingAreaId: string) {
-		/** TODO: Listen for shift keyboard event, and if not, exclusive select. */
-		if (selectedPlantingAreaIds.has(plantingAreaId)) {
-			selectedPlantingAreaIds.delete(plantingAreaId);
-		} else {
-			selectedPlantingAreaIds.add(plantingAreaId);
-		}
-	}
-
-	function unselectPlantingArea(plantingAreaId: string) {
-		if (selectedPlantingAreaIds.has(plantingAreaId)) {
-			selectedPlantingAreaIds.delete(plantingAreaId);
-		}
-	}
-
 	return {
 		/* Getters. */
 		get id(): string | null {
@@ -127,9 +113,6 @@ function createWorkspaceContext() {
 		},
 		get editing(): boolean {
 			return editing;
-		},
-		get selectedPlantingAreaIds() {
-			return selectedPlantingAreaIds;
 		},
 		get treeEnabled(): boolean {
 			return config.value.treeEnabled;
@@ -168,14 +151,13 @@ function createWorkspaceContext() {
 			config.value.contentPaneDirection = newVal;
 		},
 		timelineSelection,
+		selections,
 		plantingAreaCreateForm: {
 			handler: plantingAreaCreateHandler,
 			form: plantingAreaCreateSuperform
 		},
 		reset,
 		setWorkspace,
-		selectPlantingArea,
-		unselectPlantingArea
 	};
 }
 export type WorkspaceContext = ReturnType<typeof createWorkspaceContext>;

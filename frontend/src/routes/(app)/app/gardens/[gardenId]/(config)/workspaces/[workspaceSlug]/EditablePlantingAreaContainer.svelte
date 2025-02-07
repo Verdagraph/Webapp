@@ -102,7 +102,7 @@
 
 	/** Selected if included in the list of selected IDs. */
 	let selected: boolean = $derived(
-		workspaceContext.selectedPlantingAreaIds.has(plantingAreaId)
+		workspaceContext.selections.has('plantingArea', plantingAreaId)
 	);
 
 	/** Update the change handler on translation. */
@@ -141,7 +141,7 @@ area in the workspace editor, ie., editable
 			if (toolbox.isToolActive('plantingAreaCreate')) {
 				return;
 			}
-			workspaceContext.selectPlantingArea(plantingAreaId);
+			workspaceContext.selections.select('plantingArea', plantingAreaId);
 		}}
 	/>
 {/if}
