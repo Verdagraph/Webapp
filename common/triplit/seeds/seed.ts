@@ -106,6 +106,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				locationHistoryId: 'polygonGeometryLocations',
 				description: 'Polygon Description.'
 			},
+			/*
 			{
 				gardenId: 'garden1',
 				name: 'Lines Area',
@@ -113,6 +114,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				locationHistoryId: 'linesGeometryLocations',
 				description: 'Lines Description.'
 			}
+			*/
 		],
 		geometries: [
 			{

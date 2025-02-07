@@ -34,13 +34,13 @@
 	const selectedPlantingAreas = useQuery(
 		triplit,
 		plantingAreaSelectionQuery.vars({
-			plantingAreaIds: [...workspaceContext.selectedPlantingAreaIds]
+			plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
 		})
 	);
 	$effect(() => {
 		selectedPlantingAreas.updateQuery(
 			plantingAreaSelectionQuery.vars({
-				plantingAreaIds: [...workspaceContext.selectedPlantingAreaIds]
+				plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
 			})
 		);
 	});
@@ -65,7 +65,7 @@
 											`/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
 										);
 									}}
-									class="text-light h-full w-full"
+									class="text-light italic h-full w-full"
 								>
 									{workspace.name}
 								</Button.Root>
@@ -137,7 +137,7 @@
 									</span>
 									<Button.Root
 										onclick={() => {
-											workspaceContext.unselectPlantingArea(plantingArea.id);
+											workspaceContext.selections.deselect('plantingArea', plantingArea.id);
 										}}
 									>
 										<Icon icon={iconIds.defaultClose} width="1.25rem" />
@@ -293,5 +293,7 @@
 			</Menubar.Menu>
 		{/if}
 	</Menubar.Root>
+	
+	
 	{@render children()}
 </div>
