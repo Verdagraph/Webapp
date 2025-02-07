@@ -12,6 +12,7 @@
 	import { useQuery } from '@triplit/svelte';
 	import triplit from '$data/triplit';
 	import { plantingAreaSelectionQuery } from '$data/workspaces/queries';
+	import gardenContext from '$state/gardenContext.svelte';
 
 	let { children } = $props();
 
@@ -65,7 +66,7 @@
 											`/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
 										);
 									}}
-									class="text-light italic h-full w-full"
+									class="text-light h-full w-full italic"
 								>
 									{workspace.name}
 								</Button.Root>
@@ -82,8 +83,7 @@
 						</Button.Root>
 					</Menubar.Item>
 				</Menubar.Group>
-				<!-- TODO: Check admin. -->
-				{#if auth.isAuthenticated}
+				{#if gardenContext.authorize('WorkspaceCreate')}
 					<Menubar.Separator />
 					<Menubar.Item>
 						<Button.Root
@@ -137,7 +137,10 @@
 									</span>
 									<Button.Root
 										onclick={() => {
-											workspaceContext.selections.deselect('plantingArea', plantingArea.id);
+											workspaceContext.selections.deselect(
+												'plantingArea',
+												plantingArea.id
+											);
 										}}
 									>
 										<Icon icon={iconIds.defaultClose} width="1.25rem" />
@@ -154,67 +157,69 @@
 			</Menubar.Menu>
 
 			<!-- Edit Menu -->
-			<Menubar.Menu>
-				<Menubar.Trigger>Edit</Menubar.Trigger>
-				<Menubar.Content>
-					{#if workspaceContext.editing}
-						<Menubar.Item>
-							<Button.Root
-								class="flex h-full w-full items-center justify-start"
-								onclick={() => {
-									workspaceContext.editing = false;
-								}}
-							>
+			{#if gardenContext.authorize('WorkspaceEdit')}
+				<Menubar.Menu>
+					<Menubar.Trigger>Edit</Menubar.Trigger>
+					<Menubar.Content>
+						{#if workspaceContext.editing}
+							<Menubar.Item>
+								<Button.Root
+									class="flex h-full w-full items-center justify-start"
+									onclick={() => {
+										workspaceContext.editing = false;
+									}}
+								>
+									<Icon
+										icon={iconIds.endEditingIcon}
+										width="1.25rem"
+										class="text-neutral-11 mr-2"
+									/>
+									<span> End Editing </span>
+								</Button.Root>
+							</Menubar.Item>
+							<Menubar.Item>
+								<Button.Root
+									class="flex h-full w-full items-center justify-start"
+									onclick={() => {
+										toolbox.activate('translate');
+									}}
+								>
+									<Icon
+										icon={iconIds.verdagraphTranslateIcon}
+										width="1.25rem"
+										class="text-neutral-11 mr-2"
+									/>
+									<span> Translate </span>
+								</Button.Root>
+							</Menubar.Item>
+							<Menubar.Item class="flex items-center justify-start">
 								<Icon
-									icon={iconIds.endEditingIcon}
+									icon={iconIds.deleteIcon}
 									width="1.25rem"
 									class="text-neutral-11 mr-2"
 								/>
-								<span> End Editing </span>
-							</Button.Root>
-						</Menubar.Item>
-						<Menubar.Item>
-							<Button.Root
-								class="flex h-full w-full items-center justify-start"
-								onclick={() => {
-									toolbox.activate('translate');
-								}}
-							>
-								<Icon
-									icon={iconIds.verdagraphTranslateIcon}
-									width="1.25rem"
-									class="text-neutral-11 mr-2"
-								/>
-								<span> Translate </span>
-							</Button.Root>
-						</Menubar.Item>
-						<Menubar.Item class="flex items-center justify-start">
-							<Icon
-								icon={iconIds.deleteIcon}
-								width="1.25rem"
-								class="text-neutral-11 mr-2"
-							/>
-							<span> Delete </span>
-						</Menubar.Item>
-					{:else}
-						<Menubar.Item>
-							<Button.Root
-								class="flex h-full w-full items-center justify-start"
-								onclick={() => {
-									workspaceContext.editing = true;
-								}}
-							>
-								<Icon
-									icon={iconIds.startEditingIcon}
-									width="1.25rem"
-									class="text-neutral-11 mr-2"
-								/>
-								<span> Start Editing </span>
-							</Button.Root>
-						</Menubar.Item>
-					{/if}
-				</Menubar.Content>
-			</Menubar.Menu>
+								<span> Delete </span>
+							</Menubar.Item>
+						{:else}
+							<Menubar.Item>
+								<Button.Root
+									class="flex h-full w-full items-center justify-start"
+									onclick={() => {
+										workspaceContext.editing = true;
+									}}
+								>
+									<Icon
+										icon={iconIds.startEditingIcon}
+										width="1.25rem"
+										class="text-neutral-11 mr-2"
+									/>
+									<span> Start Editing </span>
+								</Button.Root>
+							</Menubar.Item>
+						{/if}
+					</Menubar.Content>
+				</Menubar.Menu>
+			{/if}
 
 			<!-- Add Menu -->
 			{#if workspaceContext.editing}
@@ -293,7 +298,6 @@
 			</Menubar.Menu>
 		{/if}
 	</Menubar.Root>
-	
-	
+
 	{@render children()}
 </div>

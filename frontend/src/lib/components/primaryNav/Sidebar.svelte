@@ -5,7 +5,7 @@
 	import { Button } from 'bits-ui';
 	import type { PrimaryTabSpec } from './tabs.svelte';
 	import Tab from './Tab.svelte';
-	import activeGardenId from '$state/activeGarden.svelte';
+	import gardenContext from '$state/gardenContext.svelte';
 
 	type Props = {
 		gardensTab: PrimaryTabSpec;
@@ -39,7 +39,7 @@ Large screens sidebar.
 		<!-- Gardens tab. -->
 		<Tab spec={gardensTab} side="right" iconSize="2rem" />
 
-		{#if activeGardenId.value}
+		{#if gardenContext.id}
 			<Separator class="bg-neutral-6" />
 
 			<!-- Garden specific links. -->
