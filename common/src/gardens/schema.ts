@@ -181,3 +181,4 @@ export const gardenSchema = {
 } satisfies ClientSchema;
 export type Garden = Entity<typeof gardenSchema, 'gardens'>;
 export type GardenMembership = Entity<typeof gardenSchema, 'gardenMemberships'>;
+export type GardenRole = (typeof GardenMembershipRoleEnum)[number];

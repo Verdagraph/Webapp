@@ -9,7 +9,7 @@
 	} from './tabs.svelte';
 	import triplit from '$data/triplit';
 	import { activeGardenQuery } from '$data/gardens/queries';
-	import activeGardenId from '$state/activeGarden.svelte';
+	import gardenContext from '$state/gardenContext.svelte';
 	import PrimaryNav from './PrimaryNav.svelte';
 
 	let { children } = $props();
@@ -17,7 +17,7 @@
 	/* Queries */
 	let activeGarden = useQuery(
 		triplit,
-		activeGardenQuery.vars({ activeGardenId: activeGardenId })
+		activeGardenQuery.vars({ activeGardenId: gardenContext.id })
 	);
 
 	/** Retrieve the tabs. */

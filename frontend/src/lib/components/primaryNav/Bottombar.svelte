@@ -3,7 +3,7 @@
 	import type { PrimaryTabSpec } from './tabs.svelte';
 	import Tab from './Tab.svelte';
 	import BottombarGardenDrawer from './BottombarGardenDrawer.svelte';
-	import activeGardenId from '$state/activeGarden.svelte';
+	import gardenContext from '$state/gardenContext.svelte';
 
 	type Props = {
 		gardensTab: PrimaryTabSpec;
@@ -35,7 +35,7 @@ Small screens bottom bar.
 		<Tab spec={resourcesTab} side="top" flipped={true} iconSize="3rem" />
 		<Tab spec={traitsTab} side="top" flipped={true} iconSize="3rem" />
 		<Tab spec={gardensTab} side="top" flipped={true} iconSize="3rem" />
-		{#if activeGardenId.value}
+		{#if gardenContext.id}
 			<BottombarGardenDrawer {gardenTabs} />
 		{/if}
 	</ul>

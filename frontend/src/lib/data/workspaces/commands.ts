@@ -308,7 +308,7 @@ export const workspaceCreate = {
 		data: zod.infer<typeof WorkspaceCreateCommand>
 	): Promise<Workspace> {
 		/** Retrieve client and authorize. */
-		await requireRole(data.gardenId, 'ADMIN');
+		await requireRole(data.gardenId, 'WorkspaceCreate');
 
 		/** Generate workspace slug from name. */
 		const workspaceSlug = slugify(data.name);
@@ -349,7 +349,7 @@ export const workspaceCreate = {
 export const plantingAreaCreate = {
 	schema: PlantingAreaCreateCommand,
 	mutation: async (data: zod.infer<typeof PlantingAreaCreateCommand>) => {
-		const { garden } = await requireRole(data.gardenId, 'ADMIN');
+		const { garden } = await requireRole(data.gardenId, 'PlantingAreaCreate');
 
 		/** Retrieve workspace. */
 		const workspace = await triplit.fetchOne(

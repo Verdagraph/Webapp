@@ -1,4 +1,4 @@
-import type { Garden, GardenMembershipRoleEnum } from './schema';
+import type { Garden, GardenRole } from './schema';
 
 /**
  * Returns a set of all profile IDs which are members of a garden.
@@ -38,7 +38,7 @@ export const isProfileMember = (garden: Garden, profileId: string): boolean => {
 export const isUserAuthorized = (
 	garden: Garden,
 	profileId: string,
-	role: (typeof GardenMembershipRoleEnum)[number]
+	role: GardenRole
 ) => {
 	switch (role) {
 		case 'ADMIN':

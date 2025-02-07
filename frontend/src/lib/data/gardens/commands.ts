@@ -10,28 +10,24 @@ import {
 	GardenMembershipRevokeCommand,
 	GardenMembershipRoleChangeCommand
 } from '@vdt-webapp/common';
-import type {
-	Garden,
-	GardenMembershipRoleEnum,
-	UserAccount,
-	UserProfile
-} from '@vdt-webapp/common';
+import type { Garden, UserAccount, UserProfile } from '@vdt-webapp/common';
 import triplit from '../triplit';
 import { getClientOrError } from '$data/users/auth';
+import { ActionType, requiredRole } from '$lib/permissions';
 
 /** Helpers. */
 
 /**
- * Given a garden and a role, retrieve the client
+ * Given a garden and an action, retrieve the client
  * and throw an error if the client does not have at least
  * that role.
  * @param gardenId The garden to retrieve.
- * @param role The role to authorize for.
+ * @param action The action to authorize for.
  * @returns The client and garden objects.
  */
 export async function requireRole(
 	gardenId: string,
-	role: (typeof GardenMembershipRoleEnum)[number]
+	action: ActionType
 ): Promise<{
 	client: {
 		account: UserAccount;
@@ -51,6 +47,7 @@ export async function requireRole(
 	}
 
 	/** Ensure client is of the specified role. */
+	const role = requiredRole(action);
 	if (!isUserAuthorized(garden, client.profile.id, role)) {
 		throw new AppError(`Requires ${role} access.`, {
 			nonFormErrors: [`This action requires the ${role} role.`]
@@ -209,7 +206,7 @@ export const gardenMembershipCreate = {
 	schema: GardenMembershipCreateCommand,
 	mutation: async function (data: zod.infer<typeof GardenMembershipCreateCommand>) {
 		/** Retrieve client and authorize. */
-		const { client, garden } = await requireRole(data.gardenId, 'ADMIN');
+		const { client, garden } = await requireRole(data.gardenId, 'MembershipCreate');
 
 		/** Retrieve all invitee IDs. Drop all IDs which are already members */
 		const adminIds = await getNewMembershipIdsFromUsernames(data.adminInvites);
@@ -341,7 +338,7 @@ export const gardenMembershipRevoke = {
 	schema: GardenMembershipRevokeCommand,
 	mutation: async function (data: zod.infer<typeof GardenMembershipRevokeCommand>) {
 		/** Retrieve client and authorize. */
-		const { client } = await requireRole(data.gardenId, 'ADMIN');
+		const { client } = await requireRole(data.gardenId, 'MembershipRevoke');
 
 		/** Ensure the command is valid. */
 		if (client.profile.id === data.profileId) {
@@ -385,7 +382,7 @@ export const gardenMembershipRoleChange = {
 	schema: GardenMembershipRoleChangeCommand,
 	mutation: async function (data: zod.infer<typeof GardenMembershipRoleChangeCommand>) {
 		/** Retrieve client and authorize. */
-		const { client, garden } = await requireRole(data.gardenId, 'ADMIN');
+		const { client, garden } = await requireRole(data.gardenId, 'MembershipRoleChange');
 
 		/** Ensure the command is valid. */
 		if (client.profile.id === data.profileId) {

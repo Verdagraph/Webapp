@@ -16,7 +16,7 @@
 		viewerGardensQuery,
 		favoriteMembershipsQuery
 	} from '$data/gardens/queries';
-	import activeGardenId from '$state/activeGarden.svelte';
+	import gardenContext from '$state/gardenContext.svelte';
 	import PrimaryNav from './PrimaryNav.svelte';
 
 	let { children } = $props();
@@ -24,11 +24,11 @@
 	/* Queries */
 	let activeGarden = useQuery(
 		triplit,
-		activeGardenQuery.vars({ activeGardenId: activeGardenId.value })
+		activeGardenQuery.vars({ activeGardenId: gardenContext.id })
 	);
 	$effect(() => {
 		activeGarden.updateQuery(
-			activeGardenQuery.vars({ activeGardenId: activeGardenId.value })
+			activeGardenQuery.vars({ activeGardenId: gardenContext.id })
 		);
 	});
 
