@@ -44,11 +44,7 @@ function createWorkspaceContext() {
 	/** If true, the workspace is being edited by the user. */
 	let editing: boolean = $state(false);
 	/** Selected entities. */
-<<<<<<< HEAD
 	const selections = createSelectionManager(['plantingArea', 'environment']);
-=======
-	const selections = createSelectionManager(['plantingArea', 'environment'])
->>>>>>> main
 
 	/** Persisted config. */
 	const config = localStore<WorkspaceViewConfig>('workspaceConfig', {
@@ -161,11 +157,7 @@ function createWorkspaceContext() {
 			form: plantingAreaCreateSuperform
 		},
 		reset,
-<<<<<<< HEAD
 		setWorkspace
-=======
-		setWorkspace,
->>>>>>> main
 	};
 }
 export type WorkspaceContext = ReturnType<typeof createWorkspaceContext>;
