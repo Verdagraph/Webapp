@@ -66,7 +66,11 @@
 											`/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
 										);
 									}}
+<<<<<<< HEAD
 									class="text-light h-full w-full italic"
+=======
+									class="text-light italic h-full w-full"
+>>>>>>> main
 								>
 									{workspace.name}
 								</Button.Root>
@@ -137,10 +141,14 @@
 									</span>
 									<Button.Root
 										onclick={() => {
+<<<<<<< HEAD
 											workspaceContext.selections.deselect(
 												'plantingArea',
 												plantingArea.id
 											);
+=======
+											workspaceContext.selections.deselect('plantingArea', plantingArea.id);
+>>>>>>> main
 										}}
 									>
 										<Icon icon={iconIds.defaultClose} width="1.25rem" />
@@ -298,6 +306,11 @@
 			</Menubar.Menu>
 		{/if}
 	</Menubar.Root>
+<<<<<<< HEAD
 
+=======
+	
+	
+>>>>>>> main
 	{@render children()}
 </div>
