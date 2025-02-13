@@ -62,6 +62,7 @@
 		"@triplit/svelte": "^0.2.32",
 		"@vdt-webapp/common": "workspace:*",
 		"axios": "^1.7.9",
-		"konva": "^9.3.18"
+		"konva": "^9.3.18",
+		"melt": "^0.10.3"
 	}
 }
