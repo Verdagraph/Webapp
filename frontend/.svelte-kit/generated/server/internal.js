@@ -6,7 +6,7 @@ import {
 	set_private_env,
 	set_public_env,
 	set_safe_public_env
-} from '../../../../node_modules/.pnpm/@sveltejs+kit@2.15.2_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.18.0_vite@5.4.11_@types+node_wkh2akprx3jotystccszguqlse/node_modules/@sveltejs/kit/src/runtime/shared-server.js';
+} from '../../../../node_modules/.pnpm/@sveltejs+kit@2.15.2_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.20.0_vite@5.4.11_@types+node_ay37qmaak63vvkunv3cdvsofxa/node_modules/@sveltejs/kit/src/runtime/shared-server.js';
 
 export const options = {
 	app_dir: '_app',
@@ -46,7 +46,7 @@ export const options = {
 			message +
 			'</h1>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>\n'
 	},
-	version_hash: '1c0ians'
+	version_hash: '1kxgxy7'
 };
 
 export async function get_hooks() {

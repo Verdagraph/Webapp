@@ -3,7 +3,7 @@
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
 	import TabToolbox from '$components/tabToolbox';
-	import Tree from './Tree.svelte';
+	import Tree from './Tree';
 	import Layout from './Layout.svelte';
 	import { TimelineSelector } from '$components/timeline';
 

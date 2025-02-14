@@ -1,13 +1,14 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Tree, type TreeItem } from 'melt/builders';
 	import { Toolbar } from 'bits-ui';
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
-	import { type PaneAPI } from 'paneforge';
 	import { localStore } from '$state/localStore.svelte';
 	import iconIds from '$lib/assets/icons';
+	import PlantingAreaTree from './PlantingAreaTree.svelte';
 
+	/** View config for the tree. */
 	type TreeViewConfig = {
+		/** Controls the open state of the panes. */
 		toggles: {
 			workspaceEnabled: boolean;
 			plantingAreasEnabled: boolean;
@@ -21,20 +22,19 @@
 			environmentsEnabled: true
 		}
 	});
+
+	/** Contains a key string for every content pane that is enabled. */
 	let treeViewConfigToolbarState = $derived(
 		Object.entries(treeViewConfig.value.toggles)
 			.filter(([key, value]) => value === true)
 			.map(([key, value]) => key)
-	);s
-
-	type Item = TreeItem<{ label: string; icon: string; description: string }>;
-
-	//const tree = new Tree()
+	);
 </script>
 
 <div class="flex h-full flex-col">
 	<!-- Toolbar. -->
 	<Toolbar.Root class="bg-neutral-1 border-neutral-7 border-b p-0">
+		<!-- Pane toggle options. -->
 		<Toolbar.Group
 			class="flex w-full items-center justify-around p-0"
 			type="multiple"
@@ -50,6 +50,7 @@
 				}
 			}
 		>
+			<!-- Workspace pane toggle. -->
 			<Toolbar.GroupItem
 				value="workspaceEnabled"
 				class="bg-neutral-1 data-[state=on]:bg-neutral-3 flex h-6 w-full items-center justify-center transition-colors"
@@ -59,6 +60,8 @@
 					width="1rem"
 					class="text-neutral-10 data-[state=on]:text-neutral-11"
 				/>
+
+				<!-- Planting areas pane toggle. -->
 			</Toolbar.GroupItem>
 			<Toolbar.GroupItem
 				value="plantingAreasEnabled"
@@ -70,6 +73,8 @@
 					class="text-neutral-10 data-[state=on]:text-neutral-11"
 				/>
 			</Toolbar.GroupItem>
+
+			<!-- Environments pane toggle. -->
 			<Toolbar.GroupItem
 				value="environmentsEnabled"
 				class="bg-neutral-1 data-[state=on]:bg-neutral-3 flex h-6 w-full items-center justify-center transition-colors"
@@ -82,21 +87,26 @@
 			</Toolbar.GroupItem>
 		</Toolbar.Group>
 	</Toolbar.Root>
+
+	<!-- Tree panes. -->
 	<div class="grow">
 		<Resizable.PaneGroup direction="vertical">
 			{#if treeViewConfig.value.toggles.workspaceEnabled}
+				<!-- Workspace tree. -->
 				<Resizable.Pane defaultSize={20} order={1} minSize={10}>
 					workspace
 				</Resizable.Pane>
 				<Resizable.Handle withHandle={false} />
 			{/if}
 			{#if treeViewConfig.value.toggles.plantingAreasEnabled}
+				<!-- Planting area tree. -->
 				<Resizable.Pane defaultSize={40} order={2} minSize={10}>
-					planting area
+					<PlantingAreaTree />
 				</Resizable.Pane>
 				<Resizable.Handle withHandle={false} />
 			{/if}
 			{#if treeViewConfig.value.toggles.environmentsEnabled}
+				<!-- Environments tree. -->
 				<Resizable.Pane defaultSize={40} order={3} minSize={10}>
 					environment
 				</Resizable.Pane>
@@ -104,39 +114,3 @@
 		</Resizable.PaneGroup>
 	</div>
 </div>
-
-<!-- Workspace name -->
-
-<!-- Workspace description -->
-
-<!-- Planting area trees -->
-
-<!-- Planting area name -->
-
-<!-- Planting area description -->
-
-<!-- Planting area geometries -->
-
-<!-- Geometry type -->
-
-<!-- Geometry attributes -->
-
-<!-- Rectangle attributes -->
-
-<!-- Polygon attributes -->
-
-<!-- Ellipse attributes -->
-
-<!-- Lines attributes -->
-
-<!-- Scale factor -->
-
-<!-- Rotation -->
-
-<!-- Nulled -->
-
-<!-- Planting area locations -->
-
-<!-- Planting area depth -->
-
-<!-- Planting area movable -->

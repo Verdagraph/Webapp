@@ -1,4 +1,6 @@
 import triplit from '$data/triplit';
+import type { QueryResult } from '@triplit/client';
+import { schema } from '@vdt-webapp/common';
 
 export const workspaceSlugQuery = triplit.query('workspaces').where([
 	['gardenId', '=', '$query.gardenId'],
@@ -19,6 +21,21 @@ export const plantingAreaQuery = triplit
 		rel('locationHistory').include('locations').build()
 	)
 	.limit(1);
+
+/** TODO: Update this query once linesCoordinates can be moved to linesAttributes.coordinates. */
+export const plantingAreasQuery = triplit
+	.query('plantingAreas')
+	.where('id', 'in', '$query.ids')
+	.include('geometry', (rel) => rel('geometry').include('linesCoordinates').build())
+	.include('locationHistory', (rel) =>
+		rel('locationHistory').include('locations').build()
+	);
+
+const plantingAreasQueryBuilt = plantingAreasQuery.build();
+export type PlantingAreasQueryResult = QueryResult<
+	typeof schema,
+	typeof plantingAreasQueryBuilt
+>;
 
 export const plantingAreaSelectionQuery = triplit
 	.query('plantingAreas')
