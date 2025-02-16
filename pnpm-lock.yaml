@@ -55,8 +55,8 @@ importers:
         specifier: ^9.3.18
         version: 9.3.18
       melt:
-        specifier: ^0.12.0
-        version: 0.12.0(@floating-ui/dom@1.6.13)(svelte@5.20.0)
+        specifier: ^0.14.0
+        version: 0.14.0(@floating-ui/dom@1.6.13)(svelte@5.20.0)
     devDependencies:
       '@iconify/svelte':
         specifier: ^4.2.0
@@ -2807,8 +2807,8 @@ packages:
   md5@2.3.0:
     resolution: {integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==}
 
-  melt@0.12.0:
-    resolution: {integrity: sha512-QyaslYNG5hZD0t8Xp9WYc1tpL7yfiU2V2N4QGF/hZpMEtV7+SgBXEFWxeYFRLlBQp+aOzlXUmk8ZpD/7rxo9VA==}
+  melt@0.14.0:
+    resolution: {integrity: sha512-V8AcLnqZaRTqR8YZaqC74zvjZTbZw15qYeoyJvyo2tTAdwv21liM95n7XY3sCrY1uGTbdHymf5SN+uivtAsoIQ==}
     peerDependencies:
       '@floating-ui/dom': ^1.6.0
       svelte: ^5.0.0
@@ -6889,7 +6889,7 @@ snapshots:
       crypt: 0.0.2
       is-buffer: 1.1.6
 
-  melt@0.12.0(@floating-ui/dom@1.6.13)(svelte@5.20.0):
+  melt@0.14.0(@floating-ui/dom@1.6.13)(svelte@5.20.0):
     dependencies:
       '@floating-ui/dom': 1.6.13
       jest-axe: 9.0.0

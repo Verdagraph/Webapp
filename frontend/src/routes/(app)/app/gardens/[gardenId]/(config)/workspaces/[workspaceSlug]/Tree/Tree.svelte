@@ -6,6 +6,11 @@
 	import iconIds from '$lib/assets/icons';
 	import PlantingAreaTree from './PlantingAreaTree.svelte';
 
+	type Props = {
+		plantingAreaIds: string[];
+	};
+	let { plantingAreaIds }: Props = $props();
+
 	/** View config for the tree. */
 	type TreeViewConfig = {
 		/** Controls the open state of the panes. */
@@ -101,7 +106,7 @@
 			{#if treeViewConfig.value.toggles.plantingAreasEnabled}
 				<!-- Planting area tree. -->
 				<Resizable.Pane defaultSize={40} order={2} minSize={10}>
-					<PlantingAreaTree />
+					<PlantingAreaTree {plantingAreaIds} />
 				</Resizable.Pane>
 				<Resizable.Handle withHandle={false} />
 			{/if}

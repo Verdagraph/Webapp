@@ -63,6 +63,6 @@
 		"@vdt-webapp/common": "workspace:*",
 		"axios": "^1.7.9",
 		"konva": "^9.3.18",
-		"melt": "^0.12.0"
+		"melt": "^0.14.0"
 	}
 }

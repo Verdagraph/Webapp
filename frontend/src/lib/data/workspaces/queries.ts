@@ -31,12 +31,6 @@ export const plantingAreasQuery = triplit
 		rel('locationHistory').include('locations').build()
 	);
 
-const plantingAreasQueryBuilt = plantingAreasQuery.build();
-export type PlantingAreasQueryResult = QueryResult<
-	typeof schema,
-	typeof plantingAreasQueryBuilt
->;
-
 export const plantingAreaSelectionQuery = triplit
 	.query('plantingAreas')
 	.where('id', 'in', '$query.plantingAreaIds')

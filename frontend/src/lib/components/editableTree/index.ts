@@ -1,4 +1,4 @@
 import EditableTree from './EditableTree.svelte';
-import { editableStringAttribute } from './attributes.svelte';
+import { editableStringAttribute, editableNumberAttribute } from './attributes.svelte';
 
-export { EditableTree, editableStringAttribute };
+export { EditableTree, editableStringAttribute, editableNumberAttribute };
