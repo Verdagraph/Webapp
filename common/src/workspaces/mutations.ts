@@ -75,7 +75,7 @@ export const workspaceFields = {
 			'Must contain only alphanumeric characters, spaces, hyphens, and underscores.'
 		)
 		.describe(
-			'Must be between 3 and 30 characters long and contain only alphanumeric characters, spaces, hyphens, and  underscores. Must be unique within a garden.'
+			'The name of the planting area. Must be between 3 and 30 characters long and contain only alphanumeric characters, spaces, hyphens, and  underscores.'
 		),
 	plantingAreaDescription: z
 		.string()

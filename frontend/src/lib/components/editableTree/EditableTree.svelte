@@ -3,6 +3,7 @@
 	import { type Snippet } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
+	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 
 	/** Describes the structure of an item in the tree. */
 	type Item = TreeItem & {
@@ -13,7 +14,7 @@
 		/** Icon for the item. */
 		icon?: string;
 		/**
-		 * The value of the item. Must be defined to render it.
+		 * The value of the item.
 		 * Mutually exclusive with the item having children.
 		 */
 		value?: any;
@@ -52,20 +53,23 @@
 </script>
 
 <!-- Snippet for rendering a tree item. Allows arbitrary nesting. -->
-{#snippet treeItems(items: (typeof tree)['children'], depth: number = 0)}
+{#snippet treeItems(items: (typeof tree)['children'], depth: number)}
 	{#each items as item (item.id)}
 		<!-- Item element. -->
 		<li {...item.attrs} class="cursor-pointer py-3">
 			<!-- Item row. -->
-			<div class="flex justify-between">
+			<div class="flex justify-between gap-4" style="padding-left: {depth * 1}rem">
 				<!-- Left of the item row. -->
-				<div class="flex items-center">
+				<div class="flex items-center gap-2 {depth > 0 ? 'pl-2' : ''}">
 					{#if item.item.icon}
 						<Icon icon={item.item.icon} width="1.25rem" />
 					{/if}
-					<span class="px-1">
+					<span>
 						{item.item.label}
 					</span>
+					{#if item.item.description}
+						<FormInfoPopover description={item.item.description} />
+					{/if}
 				</div>
 
 				<!-- Right of the item row. -->
@@ -78,7 +82,7 @@
 					/>
 
 					<!-- Editable value. -->
-				{:else if item.item.value && item.item.valueSnippet && item.item.onChange}
+				{:else if item.item.valueSnippet && item.item.onChange}
 					<div
 						onclick={(e) => e.stopPropagation()}
 						onkeydown={(e) => e.stopPropagation()}
@@ -97,8 +101,14 @@
 			{#if item.children?.length && !item.item.value}
 				<ul
 					{...tree.group}
-					class={item.expanded ? 'h-auto opacity-100' : 'h-0 opacity-0'}
+					class="{item.expanded
+						? 'h-auto opacity-100'
+						: 'pointer-events-none h-0 opacity-0'} relative origin-left"
 				>
+					<div
+						class="bg-neutral-7 absolute bottom-2 top-2 w-[1px]"
+						style="left: {0.5 + depth * 1}rem"
+					></div>
 					{@render treeItems(item.children, depth + 1)}
 				</ul>
 			{/if}
@@ -107,5 +117,5 @@
 {/snippet}
 
 <ul {...tree.root} class="px-2">
-	{@render treeItems(tree.children)}
+	{@render treeItems(tree.children, 0)}
 </ul>

@@ -3,7 +3,8 @@
 	import {
 		EditableTree,
 		editableStringAttribute,
-		editableNumberAttribute
+		editableDistanceAttribute,
+		editableTextareaAttribute
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery } from '$data/workspaces/queries';
@@ -52,7 +53,7 @@
 								id: plantingArea.id + '+description',
 								label: 'Description',
 								description: workspaceFields.plantingAreaDescription.description,
-								valueSnippet: editableStringAttribute,
+								valueSnippet: editableTextareaAttribute,
 								value: plantingArea.description,
 								onChange: (changeOver: boolean, newData: string) => {}
 							},
@@ -62,7 +63,7 @@
 								id: plantingArea.id + '+depth',
 								label: 'Depth',
 								description: workspaceFields.plantingAreaDepth.description,
-								valueSnippet: editableNumberAttribute,
+								valueSnippet: editableDistanceAttribute,
 								value: plantingArea.depth,
 								onChange: (changeOver: boolean, newData: number) => {}
 							}
@@ -77,7 +78,7 @@
 {#if plantingAreaIds.length === 0}
 	<span class="p-2 italic"> No planting areas. </span>
 {:else}
-	<ScrollArea class="h-full w-full p-2">
+	<ScrollArea class="h-full w-full px-2">
 		<EditableTree {items} editing={workspace.editing} />
 	</ScrollArea>
 {/if}
