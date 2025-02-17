@@ -25,8 +25,8 @@ export async function load({ params }) {
 	if (activeGarden.id != garden.id) {
 		activeGarden.id = garden.id;
 
-		console.log('client')
-		console.log(client)
+		console.log('client');
+		console.log(client);
 
 		if (client === null) {
 			activeGarden.role = null;

@@ -45,7 +45,7 @@ export const gardenContext = {
 	},
 	set role(newVal) {
 		role = newVal;
-		console.log(role)
+		console.log(role);
 	},
 	authorize
 };

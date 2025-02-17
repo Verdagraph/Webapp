@@ -1,5 +1,17 @@
 <script lang="ts" module>
 	export { editableStringAttribute, editableNumberAttribute };
+	function getOninput(onChange: (changeOver: boolean, newData: any) => void) {
+		return (
+			event: Event & {
+				currentTarget: EventTarget & HTMLInputElement;
+			}
+		) => {
+			if (!(event.target instanceof HTMLInputElement) || !event.target.value) {
+				return;
+			}
+			onChange(false, event.target.value);
+		};
+	}
 </script>
 
 <script lang="ts">
@@ -20,22 +32,7 @@
 	{#if !editing}
 		{@render defaultStaticValue(value)}
 	{:else}
-		<Input
-			{value}
-			class="select-none"
-			oninput={(
-				event: Event & {
-					currentTarget: EventTarget & HTMLInputElement;
-				}
-			) => {
-				event.stopPropagation()
-				event.preventDefault()
-				if (!(event.target instanceof HTMLInputElement) || !event.target.value) {
-					return;
-				}
-				onChange(false, event.target.value);
-			}}
-		/>
+		<Input {value} class="select-none" oninput={getOninput(onChange)} />
 	{/if}
 {/snippet}
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import {
 		EditableTree,
 		editableStringAttribute,
@@ -16,14 +17,12 @@
 	};
 	let { plantingAreaIds }: Props = $props();
 
-	const workspace = getWorkspaceContext()
+	const workspace = getWorkspaceContext();
 
 	const query = useQuery(triplit, plantingAreasQuery.vars({ ids: plantingAreaIds }));
 	$effect(() => {
 		query.updateQuery(plantingAreasQuery.vars({ ids: plantingAreaIds }));
 	});
-
-
 
 	/** Given the planting areas, construct the editable tree items. */
 	let items = $derived(
@@ -78,5 +77,7 @@
 {#if plantingAreaIds.length === 0}
 	<span class="p-2 italic"> No planting areas. </span>
 {:else}
-	<EditableTree {items} editing={workspace.editing} />
+	<ScrollArea class="h-full w-full p-2">
+		<EditableTree {items} editing={workspace.editing} />
+	</ScrollArea>
 {/if}

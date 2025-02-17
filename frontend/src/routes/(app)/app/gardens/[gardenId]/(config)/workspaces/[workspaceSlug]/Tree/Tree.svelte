@@ -43,17 +43,15 @@
 		<Toolbar.Group
 			class="flex w-full items-center justify-around p-0"
 			type="multiple"
-			bind:value={
-				() => treeViewConfigToolbarState,
-				(newVal) => {
-					treeViewConfig.value.toggles.workspaceEnabled =
-						newVal.includes('workspaceEnabled');
-					treeViewConfig.value.toggles.plantingAreasEnabled =
-						newVal.includes('plantingAreasEnabled');
-					treeViewConfig.value.toggles.environmentsEnabled =
-						newVal.includes('environmentsEnabled');
-				}
-			}
+			bind:value={() => treeViewConfigToolbarState,
+			(newVal) => {
+				treeViewConfig.value.toggles.workspaceEnabled =
+					newVal.includes('workspaceEnabled');
+				treeViewConfig.value.toggles.plantingAreasEnabled =
+					newVal.includes('plantingAreasEnabled');
+				treeViewConfig.value.toggles.environmentsEnabled =
+					newVal.includes('environmentsEnabled');
+			}}
 		>
 			<!-- Workspace pane toggle. -->
 			<Toolbar.GroupItem

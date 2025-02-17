@@ -33,12 +33,10 @@
 </script>
 
 <Slider.Root
-	bind:value={
-		() => selection.sliderValue,
-		(newVal) => {
-			selection.updateSlider(newVal);
-		}
-	}
+	bind:value={() => selection.sliderValue,
+	(newVal) => {
+		selection.updateSlider(newVal);
+	}}
 	min={selection.minSliderValue}
 	max={selection.maxSliderValue}
 	disabled={selection.disabled}
