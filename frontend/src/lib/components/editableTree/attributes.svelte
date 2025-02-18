@@ -48,7 +48,8 @@
 {#snippet editableStringAttribute(
 	value: string,
 	editing: boolean,
-	onChange: (changeOver: boolean, newData: string) => void
+	onChange: (changeOver: boolean, newData: string) => void,
+	errors: boolean
 )}
 	{#if editing}
 		<Input
@@ -65,7 +66,8 @@
 {#snippet editableTextareaAttribute(
 	value: string,
 	editing: boolean,
-	onChange: (changeOver: boolean, newData: string) => void
+	onChange: (changeOver: boolean, newData: string) => void,
+	errors: boolean
 )}
 	{#if editing}
 		<Textarea
@@ -82,7 +84,8 @@
 {#snippet editableNumberAttribute(
 	value: number,
 	editing: boolean,
-	onChange: (changeOver: boolean, newData: number) => void
+	onChange: (changeOver: boolean, newData: number) => void,
+	errors: boolean
 )}
 	{#if editing}
 		<Input
@@ -100,7 +103,8 @@
 {#snippet editableDistanceAttribute(
 	value: number,
 	editing: boolean,
-	onChange: (changeOver: boolean, newData: number) => void
+	onChange: (changeOver: boolean, newData: number) => void,
+	errors: boolean
 )}
 	{#if editing}
 		<UnitAwareInput

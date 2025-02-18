@@ -3,9 +3,9 @@
 	import iconIds from '$lib/assets/icons';
 	import * as Popover from '$components/ui/popover';
 
-	type Props = { description: string; errorAttrs?: unknown };
+	type Props = { errors: string[] };
 
-	let { description, errorAttrs = {} }: Props = $props();
+	let { errors }: Props = $props();
 </script>
 
 <Popover.Root>
@@ -16,7 +16,7 @@
 			class="text-destructive-9 hover:text-destructive-10 ml-2"
 		/>
 	</Popover.Trigger>
-	<Popover.Content {...errorAttrs} class="max-w-2xl">
-		{description}
+	<Popover.Content class="max-w-2xl">
+		{errors.join(' ')}
 	</Popover.Content>
 </Popover.Root>

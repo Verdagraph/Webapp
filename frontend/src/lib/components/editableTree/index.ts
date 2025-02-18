@@ -6,6 +6,8 @@ import {
 	editableTextareaAttribute
 } from './attributes.svelte';
 
+export * from './utils';
+export * from './tree.svelte';
 export {
 	EditableTree,
 	editableStringAttribute,

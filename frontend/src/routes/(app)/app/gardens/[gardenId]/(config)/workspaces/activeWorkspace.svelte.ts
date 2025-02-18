@@ -1,4 +1,3 @@
-import { SvelteSet } from 'svelte/reactivity';
 import * as Resizable from '$components/ui/resizable';
 import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';

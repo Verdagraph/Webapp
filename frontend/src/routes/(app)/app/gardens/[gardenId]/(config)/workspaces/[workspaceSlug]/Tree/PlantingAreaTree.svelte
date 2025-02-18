@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import {
+		createEditableTree,
 		EditableTree,
 		editableStringAttribute,
 		editableDistanceAttribute,
-		editableTextareaAttribute
+		editableTextareaAttribute,
+		fromTreeId,
+		toTreeId
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery } from '$data/workspaces/queries';
@@ -18,8 +21,13 @@
 	};
 	let { plantingAreaIds }: Props = $props();
 
+	/** The types of entities in the tree whose selections must be synchronized. */
+	type Entities = 'plantingArea';
+
+	/** Workspace context. */
 	const workspace = getWorkspaceContext();
 
+	/** Queries. */
 	const query = useQuery(triplit, plantingAreasQuery.vars({ ids: plantingAreaIds }));
 	$effect(() => {
 		query.updateQuery(plantingAreasQuery.vars({ ids: plantingAreaIds }));
@@ -35,7 +43,7 @@
 				children: [
 					{
 						/** Name. */
-						id: plantingArea.id + '+name',
+						id: toTreeId<Entities>('plantingArea', plantingArea.id),
 						label: 'Name',
 						description: workspaceFields.plantingAreaName.description,
 						valueSnippet: editableStringAttribute,
@@ -45,12 +53,12 @@
 
 					/** Details. */
 					{
-						id: plantingArea.id + '+details',
+						id: toTreeId<Entities>('plantingArea', plantingArea.id, 'details'),
 						label: 'Details',
 						children: [
 							/** Description. */
 							{
-								id: plantingArea.id + '+description',
+								id: toTreeId('PlantingArea', plantingArea.id, 'description'),
 								label: 'Description',
 								description: workspaceFields.plantingAreaDescription.description,
 								valueSnippet: editableTextareaAttribute,
@@ -60,7 +68,7 @@
 
 							/** Depth. */
 							{
-								id: plantingArea.id + '+depth',
+								id: toTreeId<Entities>('plantingArea', plantingArea.id, 'depth'),
 								label: 'Depth',
 								description: workspaceFields.plantingAreaDepth.description,
 								valueSnippet: editableDistanceAttribute,
@@ -73,12 +81,30 @@
 			};
 		})
 	);
+
+	/** Create the editable tree. */
+	const editableTree = createEditableTree<Entities>(() => items, {
+		plantingArea: {
+			add: (id: string) => {
+				workspace.selections.select('plantingArea', id);
+			},
+			remove: (id: string) => {
+				workspace.selections.deselect('plantingArea', id);
+			}
+		}
+	});
+
+	/** Synchronize changes in the workspace selection with the tree. */
+	$effect(() => {
+		// TODO
+		workspace.selections.get('plantingArea');
+	});
 </script>
 
 {#if plantingAreaIds.length === 0}
 	<span class="p-2 italic"> No planting areas. </span>
 {:else}
 	<ScrollArea class="h-full w-full px-2">
-		<EditableTree {items} editing={workspace.editing} />
+		<EditableTree {editableTree} editing={workspace.editing} />
 	</ScrollArea>
 {/if}
