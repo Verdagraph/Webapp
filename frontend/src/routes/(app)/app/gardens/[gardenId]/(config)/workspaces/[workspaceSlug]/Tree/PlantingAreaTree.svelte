@@ -96,10 +96,18 @@
 	});
 
 	/** Synchronize changes in the workspace selection with the tree. */
-	$effect(() => {
-		// TODO
-		workspace.selections.get('plantingArea');
-	});
+	workspace.selections.addSelectionChangeHandler(
+		'plantingArea',
+		(addedIds, removedIds) => {
+			addedIds.forEach((id) => {
+				editableTree.tree.select(toTreeId<Entities>('plantingArea', id));
+			});
+
+			removedIds.forEach((id) => {
+				editableTree.deselectFieldsOfEntity(id);
+			});
+		}
+	);
 </script>
 
 {#if plantingAreaIds.length === 0}
