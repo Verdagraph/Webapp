@@ -37,13 +37,13 @@
 	let items = $derived(
 		(query.results || []).map((plantingArea) => {
 			return {
-				id: plantingArea.id,
+				id: toTreeId<Entities>('plantingArea', plantingArea.id),
 				label: plantingArea.name,
 				icon: iconIds.plantingAreaIcon,
 				children: [
 					{
 						/** Name. */
-						id: toTreeId<Entities>('plantingArea', plantingArea.id),
+						id: toTreeId<Entities>('plantingArea', plantingArea.id, 'name'),
 						label: 'Name',
 						description: workspaceFields.plantingAreaName.description,
 						valueSnippet: editableStringAttribute,
@@ -89,6 +89,7 @@
 				workspace.selections.select('plantingArea', id);
 			},
 			remove: (id: string) => {
+				console.log(`deselecting: ${id}`)
 				workspace.selections.deselect('plantingArea', id);
 			}
 		}

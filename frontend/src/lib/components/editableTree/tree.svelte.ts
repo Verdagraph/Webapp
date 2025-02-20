@@ -61,9 +61,10 @@ export function createEditableTree<EntityTypeT extends string>(
 ) {
 	/** Stores a previous selection for diffing. */
 	let previousSelection: Set<string> = new Set();
+
 	/**
 	 * Diffs the previous and new selections to find the IDs which
-	 * have been added and remove, then calls the appropriate handlers.
+	 * have been added and removed, then calls the appropriate handlers.
 	 * @param newSelection The new selection returned by Melt.
 	 */
 	function onSelectedChangeHandler(newSelection: Set<string>) {
@@ -80,7 +81,7 @@ export function createEditableTree<EntityTypeT extends string>(
 		/** Remove unselected items from the workspace context. */
 		for (const id of removedIds) {
 			const { entityType, entityId } = fromTreeId<EntityTypeT>(id);
-			entitySelectionHandlers[entityType].add(entityId);
+			entitySelectionHandlers[entityType].remove(entityId);
 		}
 
 		previousSelection = new Set([...newSelection]);

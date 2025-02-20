@@ -49,7 +49,7 @@ export function fromTreeId<EntityTypeT extends string>(
 ): { entityType: EntityTypeT; entityId: string; field?: string } {
 	const parts = id.split(TREE_ID_DELIMITER);
 	if (parts.length < 2 || parts.length > 3) {
-		throw new AppError('Invalid Tree ID format');
+		throw new AppError(`Invalid Tree ID format: ${id}`);
 	}
 	return parts[3]
 		? { entityType: parts[0] as EntityTypeT, entityId: parts[1], field: parts[2] }
