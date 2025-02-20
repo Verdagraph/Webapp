@@ -89,7 +89,7 @@
 				workspace.selections.select('plantingArea', id);
 			},
 			remove: (id: string) => {
-				console.log(`deselecting: ${id}`)
+				console.log(`deselecting: ${id}`);
 				workspace.selections.deselect('plantingArea', id);
 			}
 		}

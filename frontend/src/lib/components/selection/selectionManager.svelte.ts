@@ -13,6 +13,11 @@ type SelectionTool = 'pointer' | 'group';
 function createSelection() {
 	let selection = $state(new SvelteSet<string>());
 
+	/** Allows executing side effects on selection change. */
+	const onSelectionChangeHandlers: Array<
+		(addedIds: Array<string>, removedIds: Array<string>) => void
+	> = [];
+
 	/**
 	 * Returns true if the given entityID is selected.
 	 * @param entityId The entity ID to check.
@@ -28,6 +33,7 @@ function createSelection() {
 	 */
 	function select(entityId: string) {
 		selection.add(entityId);
+		onSelectionChangeHandlers.forEach((handler) => handler([entityId], []));
 	}
 
 	/**
@@ -36,13 +42,27 @@ function createSelection() {
 	 */
 	function deselect(entityId: string) {
 		selection.delete(entityId);
+		onSelectionChangeHandlers.forEach((handler) => handler([], [entityId]));
 	}
 
 	/**
 	 * Resets the entity selection.
 	 */
 	function reset() {
+		const removedIds = [...selection];
 		selection.clear();
+		onSelectionChangeHandlers.forEach((handler) => handler([], removedIds));
+	}
+
+	/**
+	 * Adds a side effect handler for selection change.
+	 * @param handler Handler for the selection change.
+	 * Takes the IDs which have been added and removed.
+	 */
+	function addSelectionChangeHandler(
+		handler: (addedIds: Array<string>, removedIds: Array<string>) => void
+	) {
+		onSelectionChangeHandlers.push(handler);
 	}
 
 	return {
@@ -52,7 +72,8 @@ function createSelection() {
 		has,
 		select,
 		deselect,
-		reset
+		reset,
+		addSelectionChangeHandler
 	};
 }
 type Selection = ReturnType<typeof createSelection>;
@@ -131,6 +152,18 @@ export function createSelectionManager<const EntityTypes extends readonly string
 		});
 	}
 
+	/**
+	 * Adds a side effect handler for selection change for a selection.
+	 * @param handler Handler for the selection change.
+	 * Takes the IDs which have been added and removed.
+	 */
+	function addSelectionChangeHandler(
+		entityType: EntityType,
+		handler: (addedIds: Array<string>, removedIds: Array<string>) => void
+	) {
+		selections[entityType].addSelectionChangeHandler(handler);
+	}
+
 	return {
 		get tool() {
 			return tool;
@@ -143,7 +176,8 @@ export function createSelectionManager<const EntityTypes extends readonly string
 		select,
 		deselect,
 		reset,
-		resetAll
+		resetAll,
+		addSelectionChangeHandler
 	};
 }
 export type SelectionManager = ReturnType<typeof createSelectionManager>;
