@@ -32,6 +32,7 @@ function createSelection() {
 	 * @param entityId The entity ID to add.
 	 */
 	function select(entityId: string) {
+		if (has(entityId)) return;
 		selection.add(entityId);
 		onSelectionChangeHandlers.forEach((handler) => handler([entityId], []));
 	}
@@ -41,6 +42,7 @@ function createSelection() {
 	 * @param entityId The entity ID to remove.
 	 */
 	function deselect(entityId: string) {
+		if (!has(entityId)) return;
 		selection.delete(entityId);
 		onSelectionChangeHandlers.forEach((handler) => handler([], [entityId]));
 	}

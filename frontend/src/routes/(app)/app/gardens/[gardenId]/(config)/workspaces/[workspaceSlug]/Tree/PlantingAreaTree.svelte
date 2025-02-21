@@ -39,7 +39,6 @@
 			return {
 				id: toTreeId<Entities>('plantingArea', plantingArea.id),
 				label: plantingArea.name,
-				icon: iconIds.plantingAreaIcon,
 				children: [
 					{
 						/** Name. */
@@ -104,7 +103,7 @@
 			});
 
 			removedIds.forEach((id) => {
-				editableTree.deselectFieldsOfEntity(id);
+				editableTree.tree.deselect(toTreeId<Entities>('plantingArea', id));
 			});
 		}
 	);

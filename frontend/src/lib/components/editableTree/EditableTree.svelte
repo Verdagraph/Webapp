@@ -4,6 +4,7 @@
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import FormErrorsPopover from '$components/misc/FormErrorsPopover.svelte';
 	import type { EditableTree } from './tree.svelte';
+	import { fromTreeId } from './utils';
 
 	type Props = {
 		/** The tree. */
@@ -12,22 +13,77 @@
 		editing: boolean;
 	};
 	let { editableTree, editing }: Props = $props();
+
+	/**
+	 * Copied from Melt-ui's source as this is not exported.
+	 */
+	export function isMac(): boolean {
+		return /mac/i.test(navigator.platform);
+	}
+
+	/**
+	 * Copied from Melt-ui's source as this is not exported.
+	 */
+	export function isControlOrMeta(event: KeyboardEvent | MouseEvent): boolean {
+		return isMac() ? event.metaKey : event.ctrlKey;
+	}
 </script>
 
 <!-- Snippet for rendering a tree item. Allows arbitrary nesting. -->
 {#snippet treeItems(items: (typeof editableTree.tree)['children'], depth: number = 0)}
 	{#each items as item (item.id)}
 		<!-- Item element. -->
-		<li {...item.attrs} class="cursor-pointer py-3">
+		<li
+			{...item.attrs}
+			onclick={(e: MouseEvent) => {
+				/**
+				 * Because we don't want to select every
+				 * item that we click, we need to override the
+				 * onclick handler to seperate out the expanding
+				 * and selecting of the item.
+				 * This code is copied from Melt-ui's source and modified.
+				 */
+
+				e.stopPropagation();
+				if (
+					item.tree.expandOnClick &&
+					item.canExpand &&
+					(!item.tree.multiple || (!isControlOrMeta(e) && !e.shiftKey))
+				) {
+					item.toggleExpand();
+				}
+				item.focus();
+			}}
+			class="cursor-pointer py-3"
+		>
 			<!-- Item row. -->
 			<div
-				class="flex justify-between gap-4 rounded-md py-2 pr-2 {item.selected
-					? 'bg-accent-4'
-					: ''} {depth == 0 ? '' : 'pl-2'}"
+				class="flex justify-between gap-4 rounded-md py-2 pr-2 {depth == 0
+					? ''
+					: 'pl-2'}"
 				style="margin-left: {depth * 1}rem"
 			>
 				<!-- Left of the item row. -->
 				<div class="flex items-center gap-2 pl-2">
+					<!-- Selection button. Only allow for entity root items. -->
+					{#if !fromTreeId(item.id).field}
+						<button
+							onclick={(e: MouseEvent) => {
+								e.stopPropagation();
+								if (!isControlOrMeta(e) && !e.shiftKey) item.tree.clearSelection();
+								if (isControlOrMeta(e)) item.toggleSelect();
+								else item.tree.select(item.id);
+								if (e.shiftKey) item.tree.selectUntil(item.id);
+								item.focus();
+							}}
+							aria-label="select"
+							class="border-accent-8 mr-1 flex h-5 w-5 items-center justify-center rounded-sm border-2"
+						>
+							{#if item.selected}
+								<span class="bg-accent-8 h-3 w-3 rounded-sm"> </span>
+							{/if}
+						</button>
+					{/if}
 					{#if item.item.icon}
 						<Icon icon={item.item.icon} width="1.25rem" />
 					{/if}
@@ -43,11 +99,7 @@
 				<!-- Open/close chevron. -->
 				{#if item.children?.length}
 					<div class="flex grow items-center">
-						<div
-							class="h-[1px] w-full {item.selected
-								? 'bg-accent-6'
-								: 'bg-neutral-3'} mx-3"
-						></div>
+						<div class="bg-neutral-3 mx-3 h-[1px] w-full"></div>
 						<Icon
 							icon={iconIds.chevronRight}
 							width="1rem"

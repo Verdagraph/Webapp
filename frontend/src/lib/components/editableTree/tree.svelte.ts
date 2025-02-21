@@ -102,19 +102,6 @@ export function createEditableTree<EntityTypeT extends string>(
 		onSelectedChange: onSelectedChangeHandler
 	});
 
-	/**
-	 * Unselects all tree items associated with a given entity.
-	 * @param entityId The ID of the entity to deselect.
-	 */
-	function deselectFieldsOfEntity(entityId: string) {
-		tree.selected.forEach((treeId) => {
-			const { entityId: selectedEntityId } = fromTreeId<EntityTypeT>(treeId);
-			if (selectedEntityId == entityId) {
-				tree.deselect(treeId);
-			}
-		});
-	}
-
 	function validateField(id: string, spec: z.ZodType): boolean {
 		/** TODO */
 		return true;
@@ -123,7 +110,6 @@ export function createEditableTree<EntityTypeT extends string>(
 	return {
 		tree,
 		errors,
-		deselectFieldsOfEntity,
 		validateField
 	};
 }

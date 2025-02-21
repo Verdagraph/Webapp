@@ -51,7 +51,7 @@ export function fromTreeId<EntityTypeT extends string>(
 	if (parts.length < 2 || parts.length > 3) {
 		throw new AppError(`Invalid Tree ID format: ${id}`);
 	}
-	return parts[3]
+	return parts[2]
 		? { entityType: parts[0] as EntityTypeT, entityId: parts[1], field: parts[2] }
 		: { entityType: parts[0] as EntityTypeT, entityId: parts[1] };
 }
