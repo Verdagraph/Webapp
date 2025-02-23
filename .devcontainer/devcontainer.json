@@ -24,9 +24,9 @@
 		"vscode": {
 			"extensions": [
 				"ms-vscode.vscode-typescript-next",
-				"1YiB.svelte-bundle",
+				"svelte.svelte-vscode",
+				"fivethree.vscode-svelte-snippets",
 				"pmneo.tsimporter",
-				"sidthesloth.html5-boilerplate",
 				"bradlc.vscode-tailwindcss",
 				"YoavBls.pretty-ts-errors",
 				"christian-kohler.path-intellisense",
