@@ -33,6 +33,29 @@
 		query.updateQuery(plantingAreasQuery.vars({ ids: plantingAreaIds }));
 	});
 
+	/** Handlers. */
+	/** Translation. */
+	const plantingAreaMutationHandler = createMutationHandler(plantingAreaUpdate);
+	const translateChangeHandler = createChangeHandler(
+		(newData: Position) => {
+			if (!plantingArea || !workspaceContext.id) {
+				return;
+			}
+
+			translateMutationHandler.execute(
+				plantingArea.locationHistoryId,
+				workspaceContext.id,
+				newData,
+				workspaceContext.timelineSelection.focusUtc
+			);
+		},
+		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
+		{
+			onStart: workspaceContext.timelineSelection.disable,
+			onEnd: workspaceContext.timelineSelection.enable
+		}
+	);
+
 	/** Given the planting areas, construct the editable tree items. */
 	let items = $derived(
 		(query.results || []).map((plantingArea) => {
@@ -47,7 +70,9 @@
 						description: workspaceFields.plantingAreaName.description,
 						valueSnippet: editableStringAttribute,
 						value: plantingArea.name,
-						onChange: (changeOver: boolean, newData: string) => {}
+						onChange: (changeOver: boolean, newData: string) => {
+
+						}
 					},
 
 					/** Details. */

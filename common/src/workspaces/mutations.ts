@@ -88,21 +88,16 @@ export const workspaceFields = {
 		.min(0, 'May not be negative')
 		.max(1000, 'May be at most 1000m.')
 		.describe('The depth of the planting area.'),
-	plantingAreaMovable: z
-		.boolean()
-		.default(false)
-		.describe('If true the planting area may change location.'),
-	plantingAreaGrid: z.object({
-		numRows: z
-			.number()
-			.int()
-			.min(2)
-			.max(100)
-			.describe(
-				'The number of rows in the grid. Must be between 2 and 100, and be whole number.'
-			)
-			.default(2),
-		numColumns: z
+	plantingAreaGridNumRows: z
+	.number()
+	.int()
+	.min(2)
+	.max(100)
+	.describe(
+		'The number of rows in the grid. Must be between 2 and 100, and be whole number.'
+	)
+	.default(2),
+		plantingAreaGridNumColumns: z
 			.number()
 			.int()
 			.min(2)
@@ -111,7 +106,6 @@ export const workspaceFields = {
 				'The number of columns in the grid. Must be between 2 and 100, and be a whole number.'
 			)
 			.default(2)
-	})
 };
 
 /**
@@ -270,5 +264,12 @@ export const PlantingAreaCreateCommand = z.object({
 	includeGrid: z.boolean().default(true),
 	grid: workspaceFields.plantingAreaGrid,
 	depth: workspaceFields.plantingAreaDepth,
-	movable: workspaceFields.plantingAreaMovable
 });
+
+export const PlantingAreaUpdateCommand = z.object({
+	plantingAreaId: z.string(),
+	name: workspaceFields.plantingAreaName.optional(),
+	description: workspaceFields.plantingAreaDescription.optional(),
+	includeGrid: z.boolean().optional(),
+	grid: workspaceFields.plantingAreaGrid.optional(),
+})

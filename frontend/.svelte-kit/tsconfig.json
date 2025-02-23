@@ -1,21 +1,48 @@
 {
 	"compilerOptions": {
 		"paths": {
-			"$data": ["../src/lib/data"],
-			"$data/*": ["../src/lib/data/*"],
-			"$codegen": ["../src/lib/codegen"],
-			"$codegen/*": ["../src/lib/codegen/*"],
-			"$state": ["../src/lib/state"],
-			"$state/*": ["../src/lib/state/*"],
-			"$components": ["../src/lib/components"],
-			"$components/*": ["../src/lib/components/*"],
-			"$lib": ["../src/lib"],
-			"$lib/*": ["../src/lib/*"]
+			"$data": [
+				"../src/lib/data"
+			],
+			"$data/*": [
+				"../src/lib/data/*"
+			],
+			"$codegen": [
+				"../src/lib/codegen"
+			],
+			"$codegen/*": [
+				"../src/lib/codegen/*"
+			],
+			"$state": [
+				"../src/lib/state"
+			],
+			"$state/*": [
+				"../src/lib/state/*"
+			],
+			"$components": [
+				"../src/lib/components"
+			],
+			"$components/*": [
+				"../src/lib/components/*"
+			],
+			"$lib": [
+				"../src/lib"
+			],
+			"$lib/*": [
+				"../src/lib/*"
+			]
 		},
-		"rootDirs": ["..", "./types"],
+		"rootDirs": [
+			"..",
+			"./types"
+		],
 		"verbatimModuleSyntax": true,
 		"isolatedModules": true,
-		"lib": ["esnext", "DOM", "DOM.Iterable"],
+		"lib": [
+			"esnext",
+			"DOM",
+			"DOM.Iterable"
+		],
 		"moduleResolution": "bundler",
 		"module": "esnext",
 		"noEmit": true,

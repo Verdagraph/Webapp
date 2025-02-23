@@ -102,15 +102,9 @@ export function createEditableTree<EntityTypeT extends string>(
 		onSelectedChange: onSelectedChangeHandler
 	});
 
-	function validateField(id: string, spec: z.ZodType): boolean {
-		/** TODO */
-		return true;
-	}
-
 	return {
 		tree,
 		errors,
-		validateField
 	};
 }
 export type EditableTree = ReturnType<typeof createEditableTree>;

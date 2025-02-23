@@ -386,3 +386,7 @@ export const plantingAreaCreate = {
 		});
 	}
 };
+
+export const plantingAreaUpdate = {
+	schema: PlantingAreaUpdateCommand
+}
