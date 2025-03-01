@@ -2,6 +2,7 @@ import { z as zod } from 'zod';
 import {
 	WorkspaceCreateCommand,
 	PlantingAreaCreateCommand,
+	PlantingAreaUpdateCommand,
 	LocationCreateCommand,
 	type Workspace,
 	type Geometry,
@@ -389,7 +390,19 @@ export const plantingAreaCreate = {
 
 export const plantingAreaUpdate = {
 	schema: PlantingAreaUpdateCommand,
-	mutation: async (data: zod.infer<typeof PlantingAreaUpdateCommand>) => {
+	validate: (data: zod.infer<typeof PlantingAreaUpdateCommand>): zod.infer<typeof PlantingAreaUpdateCommand> => {
+
+	}
+	mutation: async (data: zod.infer<typeof PlantingAreaUpdateCommand>): Promise<void> => {
+		
+	}
+}
+
+function validateZodField(data: unknown, schema: zod.ZodType): string[] | undefined {
+	const parseResult = schema.safeParse(data)
+	if (parseResult.success) {
 		return
 	}
+
+	return parseResult.error.issues.map(error => error.message)
 }

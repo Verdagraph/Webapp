@@ -94,6 +94,27 @@ export function createEditableTree<EntityTypeT extends string>(
 		}
 	}
 
+	function validateField(id: string, value: unknown, schema: zod.ZodType): boolean {
+		const parseResult = schema.safeParse(value)
+		if (parseResult.success) {
+			clearError(id)
+			return true
+		} else {
+			setError(id, parseResult.error.issues.map(error => error.message))
+			return false
+		}
+	}
+
+	function setError(id: string, errors: string[]) {
+		errors[id] = errors
+	}
+
+	function clearError(id: string) {
+		if (errors[id]) {
+			errors[id] = []
+		}
+	}
+
 	/** The Melt-UI builder. */
 	const tree = new Tree({
 		items: items,
@@ -104,7 +125,9 @@ export function createEditableTree<EntityTypeT extends string>(
 
 	return {
 		tree,
-		errors,
+		readonly errors,
+		setError,
+		clearError
 	};
 }
 export type EditableTree = ReturnType<typeof createEditableTree>;

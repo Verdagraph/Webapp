@@ -11,11 +11,12 @@
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery } from '$data/workspaces/queries';
+	import {plantingAreaUpdate} from '$data/workspaces/commands'
 	import iconIds from '$lib/assets/icons';
 	import createMutationHandler from '$state/mutationHandler.svelte';
 	import { createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
-	import { workspaceFields } from '@vdt-webapp/common';
+	import { workspaceFields, type PlantingArea } from '@vdt-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
 
 	type Props = {
@@ -37,25 +38,14 @@
 
 	/** Handlers. */
 	/** PlantingArea change. */
-	const plantingAreaMutationHandler = createMutationHandler(plantingAreaUpdate);
-	const translateChangeHandler = createChangeHandler(
-		(newData: Position) => {
-			if (!plantingArea || !workspaceContext.id) {
-				return;
+	const plantingAreaMutationHandler = createMutationHandler(plantingAreaUpdate.mutation);
+	const plantingAreaChangeHandler = createChangeHandler(
+		async (newData: Record<string, Partial<PlantingArea>>) => {
+			for (const plantingAreaId of Object.keys(newData)) {
+				plantingAreaMutationHandler.execute({id: plantingAreaId, newData.name, newData.description, newData.grid.numRows, newData.grid.numCols, newData.depth})
 			}
-
-			translateMutationHandler.execute(
-				plantingArea.locationHistoryId,
-				workspaceContext.id,
-				newData,
-				workspaceContext.timelineSelection.focusUtc
-			);
 		},
 		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
-		{
-			onStart: workspaceContext.timelineSelection.disable,
-			onEnd: workspaceContext.timelineSelection.enable
-		}
 	);
 
 	/** Given the planting areas, construct the editable tree items. */
@@ -73,7 +63,9 @@
 						valueSnippet: editableStringAttribute,
 						value: plantingArea.name,
 						onChange: (changeOver: boolean, newData: string) => {
-
+							if (tree.validateField(toTreeId<Entities>('plantingArea', plantingArea.id, 'name'), newData, workspaceFields.plantingAreaName)) {
+								plantingAreaChangeHandler.change(changeOver, {name: newData})
+							}
 						}
 					},
 

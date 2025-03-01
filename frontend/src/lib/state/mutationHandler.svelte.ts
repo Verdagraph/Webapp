@@ -23,7 +23,7 @@ export type HandlerOptions<ResultType = Record<string, unknown>> = {
  * @param options Handler options.
  * @returns An async handler rune.
  */
-export function createMutationHandler<TParams extends any[], TResult>(
+export function createMutationHandler<TParams extends any[], TResult = unknown>(
 	asyncFn: (...args: TParams) => Promise<TResult>,
 	options?: HandlerOptions<TResult>
 ) {
