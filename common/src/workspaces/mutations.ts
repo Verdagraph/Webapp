@@ -262,7 +262,8 @@ export const PlantingAreaCreateCommand = z.object({
 	location: LocationCreateCommand,
 	geometry: GeometryCreateCommand,
 	includeGrid: z.boolean().default(true),
-	grid: workspaceFields.plantingAreaGrid,
+	gridNumRows: workspaceFields.plantingAreaGridNumRows.optional(),
+	gridNumCols: workspaceFields.plantingAreaGridNumColumns.optional(),
 	depth: workspaceFields.plantingAreaDepth,
 });
 
@@ -271,5 +272,7 @@ export const PlantingAreaUpdateCommand = z.object({
 	name: workspaceFields.plantingAreaName.optional(),
 	description: workspaceFields.plantingAreaDescription.optional(),
 	includeGrid: z.boolean().optional(),
-	grid: workspaceFields.plantingAreaGrid.optional(),
+	gridNumRows: workspaceFields.plantingAreaGridNumRows.optional(),
+	gridNumCols: workspaceFields.plantingAreaGridNumColumns.optional(),
+	depth: workspaceFields.plantingAreaDepth.optional()
 })

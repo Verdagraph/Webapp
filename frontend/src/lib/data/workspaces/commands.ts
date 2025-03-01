@@ -388,5 +388,8 @@ export const plantingAreaCreate = {
 };
 
 export const plantingAreaUpdate = {
-	schema: PlantingAreaUpdateCommand
+	schema: PlantingAreaUpdateCommand,
+	mutation: async (data: zod.infer<typeof PlantingAreaUpdateCommand>) => {
+		return
+	}
 }

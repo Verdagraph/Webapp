@@ -12,6 +12,8 @@
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery } from '$data/workspaces/queries';
 	import iconIds from '$lib/assets/icons';
+	import createMutationHandler from '$state/mutationHandler.svelte';
+	import { createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import { workspaceFields } from '@vdt-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
@@ -34,7 +36,7 @@
 	});
 
 	/** Handlers. */
-	/** Translation. */
+	/** PlantingArea change. */
 	const plantingAreaMutationHandler = createMutationHandler(plantingAreaUpdate);
 	const translateChangeHandler = createChangeHandler(
 		(newData: Position) => {
