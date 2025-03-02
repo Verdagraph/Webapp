@@ -107,8 +107,18 @@ export const GardenMembershipRoleChangeCommandSchema = z.object({
 });
 
 export type GardenCreateCommand = z.infer<typeof GardenCreateCommandSchema>;
-export type GardenMembershipCreateCommand = z.infer<typeof GardenMembershipCreateCommandSchema>;
-export type GardenMembershipAcceptCommand = z.infer<typeof GardenMembershipAcceptCommandSchema>;
-export type GardenMembershipDeleteCommand = z.infer<typeof GardenMembershipDeleteCommandSchema>;
-export type GardenMembershipRevokeCommand = z.infer<typeof GardenMembershipRevokeCommandSchema>;
-export type GardenMembershipRoleChangeCommand = z.infer<typeof GardenMembershipRoleChangeCommandSchema>;
+export type GardenMembershipCreateCommand = z.infer<
+	typeof GardenMembershipCreateCommandSchema
+>;
+export type GardenMembershipAcceptCommand = z.infer<
+	typeof GardenMembershipAcceptCommandSchema
+>;
+export type GardenMembershipDeleteCommand = z.infer<
+	typeof GardenMembershipDeleteCommandSchema
+>;
+export type GardenMembershipRevokeCommand = z.infer<
+	typeof GardenMembershipRevokeCommandSchema
+>;
+export type GardenMembershipRoleChangeCommand = z.infer<
+	typeof GardenMembershipRoleChangeCommandSchema
+>;

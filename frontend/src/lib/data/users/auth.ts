@@ -14,9 +14,7 @@ const TRIPLIT_ANON_TOKEN =
  */
 export const userLogin = {
 	schema: UserLoginCommandSchema,
-	mutation: async function (data: UserLoginCommand
-		
-	) {
+	mutation: async function (data: UserLoginCommand) {
 		/** Don't allow re-logging in. */
 		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
 			return;

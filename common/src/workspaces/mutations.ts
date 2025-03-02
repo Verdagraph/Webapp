@@ -89,23 +89,23 @@ export const workspaceFields = {
 		.max(1000, 'May be at most 1000m.')
 		.describe('The depth of the planting area.'),
 	plantingAreaGridNumRows: z
-	.number()
-	.int()
-	.min(2)
-	.max(100)
-	.describe(
-		'The number of rows in the grid. Must be between 2 and 100, and be whole number.'
-	)
-	.default(2),
-		plantingAreaGridNumColumns: z
-			.number()
-			.int()
-			.min(2)
-			.max(100)
-			.describe(
-				'The number of columns in the grid. Must be between 2 and 100, and be a whole number.'
-			)
-			.default(2)
+		.number()
+		.int()
+		.min(2)
+		.max(100)
+		.describe(
+			'The number of rows in the grid. Must be between 2 and 100, and be whole number.'
+		)
+		.default(2),
+	plantingAreaGridNumColumns: z
+		.number()
+		.int()
+		.min(2)
+		.max(100)
+		.describe(
+			'The number of columns in the grid. Must be between 2 and 100, and be a whole number.'
+		)
+		.default(2)
 };
 
 /**
@@ -264,7 +264,7 @@ export const PlantingAreaCreateCommandSchema = z.object({
 	includeGrid: z.boolean().default(true),
 	gridNumRows: workspaceFields.plantingAreaGridNumRows.optional(),
 	gridNumCols: workspaceFields.plantingAreaGridNumColumns.optional(),
-	depth: workspaceFields.plantingAreaDepth,
+	depth: workspaceFields.plantingAreaDepth
 });
 
 export const PlantingAreaUpdateCommandSchema = z.object({
@@ -275,7 +275,7 @@ export const PlantingAreaUpdateCommandSchema = z.object({
 	gridNumRows: workspaceFields.plantingAreaGridNumRows.optional(),
 	gridNumCols: workspaceFields.plantingAreaGridNumColumns.optional(),
 	depth: workspaceFields.plantingAreaDepth.optional()
-})
+});
 
 export type LocationCreateCommand = z.infer<typeof LocationCreateCommandSchema>;
 export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;

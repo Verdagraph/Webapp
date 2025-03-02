@@ -1,8 +1,6 @@
-import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserLoginCommandSchema } from '@vdt-webapp/common/src/users/mutations';
+import { UserLoginCommand } from '@vdt-webapp/common/src/users/mutations';
 import { NotFoundError, AuthenticationError } from 'common/errors';
-
 import { verifyPassword } from '../auth/passwords';
 import { encodeAccessToken, encodeRefreshToken } from '../auth/tokens';
 
@@ -20,7 +18,7 @@ export type UserLoginResult = {
  * @returns The encoded access and refresh tokens and the access expiry time.
  */
 const login = async (
-	command: z.infer<typeof UserLoginCommandSchema>,
+	command: UserLoginCommand,
 	container: typeof diContainer
 ): Promise<UserLoginResult> => {
 	const users = container.resolve('userRepo');

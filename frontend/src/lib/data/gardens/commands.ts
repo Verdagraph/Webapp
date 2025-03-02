@@ -1,14 +1,20 @@
 import { z as zod } from 'zod';
 import { AppError } from '@vdt-webapp/common/src/errors';
 import {
-	GardenCreateCommand, GardenCreateCommandSchema,
-	GardenMembershipCreateCommand, GardenMembershipCreateCommandSchema,
+	GardenCreateCommand,
+	GardenCreateCommandSchema,
+	GardenMembershipCreateCommand,
+	GardenMembershipCreateCommandSchema,
 	isProfileMember,
 	isUserAuthorized,
-	GardenMembershipAcceptCommand, GardenMembershipAcceptCommandSchema, 
-	GardenMembershipDeleteCommand, GardenMembershipDeleteCommandSchema,
-	GardenMembershipRevokeCommand, GardenMembershipRevokeCommandSchema,
-	GardenMembershipRoleChangeCommand, GardenMembershipRoleChangeCommandSchema
+	GardenMembershipAcceptCommand,
+	GardenMembershipAcceptCommandSchema,
+	GardenMembershipDeleteCommand,
+	GardenMembershipDeleteCommandSchema,
+	GardenMembershipRevokeCommand,
+	GardenMembershipRevokeCommandSchema,
+	GardenMembershipRoleChangeCommand,
+	GardenMembershipRoleChangeCommandSchema
 } from '@vdt-webapp/common';
 import type { Garden, UserAccount, UserProfile } from '@vdt-webapp/common';
 import triplit from '../triplit';
@@ -93,9 +99,7 @@ async function getNewMembershipIdsFromUsernames(
  */
 export const gardenCreate = {
 	schema: GardenCreateCommandSchema,
-	mutation: async function (
-		data: GardenCreateCommand
-	): Promise<Garden> {
+	mutation: async function (data: GardenCreateCommand): Promise<Garden> {
 		/** Retrieve client. */
 		const client = await getClientOrError();
 

@@ -109,7 +109,15 @@ export const UserConfirmPasswordResetCommandSchema = z
 export type UserLoginCommand = z.infer<typeof UserLoginCommandSchema>;
 export type UserCreateCommand = z.infer<typeof UserCreateCommandSchema>;
 export type UserUpdateCommand = z.infer<typeof UserUpdateCommandSchema>;
-export type UserRequestEmailConfirmationCommand = z.infer<typeof UserRequestEmailConfirmationCommandSchema>;
-export type UserConfirmEmailConfirmationCommand = z.infer<typeof UserConfirmEmailConfirmationCommandSchema>;
-export type UserRequestPasswordResetCommand = z.infer<typeof UserRequestPasswordResetCommandSchema>;
-export type UserConfirmPasswordResetCommand = z.infer<typeof UserConfirmPasswordResetCommandSchema>;
+export type UserRequestEmailConfirmationCommand = z.infer<
+	typeof UserRequestEmailConfirmationCommandSchema
+>;
+export type UserConfirmEmailConfirmationCommand = z.infer<
+	typeof UserConfirmEmailConfirmationCommandSchema
+>;
+export type UserRequestPasswordResetCommand = z.infer<
+	typeof UserRequestPasswordResetCommandSchema
+>;
+export type UserConfirmPasswordResetCommand = z.infer<
+	typeof UserConfirmPasswordResetCommandSchema
+>;

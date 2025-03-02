@@ -1,14 +1,19 @@
 import { z as zod } from 'zod';
 import {
-	WorkspaceCreateCommandSchema, WorkspaceCreateCommand,
-	PlantingAreaCreateCommandSchema, PlantingAreaCreateCommand,
-	PlantingAreaUpdateCommandSchema, PlantingAreaUpdateCommand,
-	LocationCreateCommandSchema, LocationCreateCommand,
+	WorkspaceCreateCommandSchema,
+	WorkspaceCreateCommand,
+	PlantingAreaCreateCommandSchema,
+	PlantingAreaCreateCommand,
+	PlantingAreaUpdateCommandSchema,
+	PlantingAreaUpdateCommand,
+	LocationCreateCommandSchema,
+	LocationCreateCommand,
 	type Workspace,
 	type Geometry,
 	type Location,
 	type LocationHistory,
-	GeometryCreateCommandSchema, GeometryCreateCommand,
+	GeometryCreateCommandSchema,
+	GeometryCreateCommand,
 	TriplitTransaction,
 	historySelectDay,
 	type Position,
@@ -305,9 +310,7 @@ export async function locationHistoryUpdate(
 /** Creates a new workspace in a garden. */
 export const workspaceCreate = {
 	schema: WorkspaceCreateCommandSchema,
-	mutation: async function (
-		data: WorkspaceCreateCommand
-	): Promise<Workspace> {
+	mutation: async function (data: WorkspaceCreateCommand): Promise<Workspace> {
 		/** Retrieve client and authorize. */
 		await requireRole(data.gardenId, 'WorkspaceCreate');
 
@@ -390,16 +393,14 @@ export const plantingAreaCreate = {
 
 export const plantingAreaUpdate = {
 	schema: PlantingAreaUpdateCommandSchema,
-	mutation: async function (data: PlantingAreaUpdateCommand) {
-		
-	}
-}
+	mutation: async function (data: PlantingAreaUpdateCommand) {}
+};
 
 function validateZodField(data: unknown, schema: zod.ZodType): string[] | undefined {
-	const parseResult = schema.safeParse(data)
+	const parseResult = schema.safeParse(data);
 	if (parseResult.success) {
-		return
+		return;
 	}
 
-	return parseResult.error.issues.map(error => error.message)
+	return parseResult.error.issues.map((error) => error.message);
 }
