@@ -40,11 +40,11 @@ importers:
   frontend:
     dependencies:
       '@triplit/client':
-        specifier: ^0.6.14
-        version: 0.6.14
+        specifier: ^0.6.15
+        version: 0.6.15
       '@triplit/svelte':
-        specifier: ^0.2.33
-        version: 0.2.33(svelte@5.20.0)
+        specifier: ^0.2.34
+        version: 0.2.34(svelte@5.20.0)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
@@ -1369,8 +1369,8 @@ packages:
     resolution: {integrity: sha512-xqKCOFibj4JaZNM+mCrLcq1kV+IoxhdTj9izW0uLGEzK9gaSwGEEHp5oH5R4zvsVTtTrcKIfvkxSJAPxgh33xA==}
     engines: {node: '>=18.0.0'}
 
-  '@triplit/client@0.6.14':
-    resolution: {integrity: sha512-r68JEtBMBlYuYGa4oCDIeo6jror+OJk2W7PB6YS8pF5e8tzQLag0BNlbi0rcIkjxZJSVXbYUfF1ga0Ab+uhs2w==}
+  '@triplit/client@0.6.15':
+    resolution: {integrity: sha512-3qCwINi6Mp6TN7shVDdn+NJhewIaDG5NUVm6Gg9H+B9jYYa5tYNLmWxGgQIsKmCVbhg1NtE18o7UyUrJY0Llew==}
     engines: {node: '>=18.0.0'}
 
   '@triplit/db@0.5.20':
@@ -1379,8 +1379,8 @@ packages:
   '@triplit/db@0.5.21':
     resolution: {integrity: sha512-Gd41BMiOkB3sg32qA9AT+1/StkLvQDh918QBdp1irourW8fGMtLTzI6C56VA2n5JmjLMrEoP7lxZG513w5cMhg==}
 
-  '@triplit/svelte@0.2.33':
-    resolution: {integrity: sha512-+612URVkwbs78WIYH8cVYLKcALCoMyl7k99Rt2RlR6n6crldSzCMfSEicQvp74XpMNLS/Q35K3rwXyLWHP+T2A==}
+  '@triplit/svelte@0.2.34':
+    resolution: {integrity: sha512-+SfC7rpDEW/jlJ8ptVM8OJ1IrLyGVOp0fgd0l9ysNIPl7HyjFR8pYXhqZW9m0W2zEu6dRf7sDAwEBlofYh9quw==}
     peerDependencies:
       svelte: '*'
 
@@ -5128,7 +5128,7 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/client@0.6.14':
+  '@triplit/client@0.6.15':
     dependencies:
       '@sinclair/typebox': 0.34.21
       '@triplit/db': 0.5.21
@@ -5164,9 +5164,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@triplit/svelte@0.2.33(svelte@5.20.0)':
+  '@triplit/svelte@0.2.34(svelte@5.20.0)':
     dependencies:
-      '@triplit/client': 0.6.14
+      '@triplit/client': 0.6.15
       svelte: 5.20.0
     transitivePeerDependencies:
       - react

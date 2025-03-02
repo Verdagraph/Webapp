@@ -2,7 +2,7 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import {
 		createEditableTree,
-		EditableTree,
+		EditableTree, EditableTreeContext,
 		editableStringAttribute,
 		editableDistanceAttribute,
 		editableTextareaAttribute,
@@ -42,10 +42,9 @@
 	const plantingAreaChangeHandler = createChangeHandler(
 		async (newData: Record<string, Partial<PlantingArea>>) => {
 			for (const plantingAreaId of Object.keys(newData)) {
-				plantingAreaMutationHandler.execute({id: plantingAreaId, name: newData.name, description: newData.description, newData.grid.numRows, newData.grid.numCols, newData.depth})
+				plantingAreaMutationHandler.execute({plantingAreaId, name: newData[plantingAreaId].name, description: newData[plantingAreaId].description, newData[plantingAreaId].grid.numRows, newData.grid.numCols, newData.depth})
 			}
-		},
-		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
+		}
 	);
 
 	/** Given the planting areas, construct the editable tree items. */
@@ -62,8 +61,8 @@
 						description: workspaceFields.plantingAreaName.description,
 						valueSnippet: editableStringAttribute,
 						value: plantingArea.name,
-						onChange: (changeOver: boolean, newData: string) => {
-							if (tree.validateField(toTreeId<Entities>('plantingArea', plantingArea.id, 'name'), newData, workspaceFields.plantingAreaName)) {
+						onChange: (changeOver: boolean, newData: string, ctx: EditableTreeContext) => {
+							if (ctx.validateField(toTreeId<Entities>('plantingArea', plantingArea.id, 'name'), newData, workspaceFields.plantingAreaName)) {
 								plantingAreaChangeHandler.change(changeOver, {name: newData})
 							}
 						}
