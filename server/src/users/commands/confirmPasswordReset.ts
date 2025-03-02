@@ -1,6 +1,6 @@
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserConfirmPasswordResetCommand } from '@vdt-webapp/common';
+import { UserConfirmPasswordResetCommandSchema } from '@vdt-webapp/common';
 import { decodePasswordResetToken } from 'users/auth/tokens';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from 'users/auth/passwords';
@@ -11,7 +11,7 @@ import { hashPassword } from 'users/auth/passwords';
  * @param container The service locator.
  */
 const confirmPasswordReset = async (
-	command: z.infer<typeof UserConfirmPasswordResetCommand>,
+	command: z.infer<typeof UserConfirmPasswordResetCommandSchema>,
 	container: typeof diContainer
 ) => {
 	const users = container.resolve('userRepo');

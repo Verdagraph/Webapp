@@ -1,6 +1,6 @@
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
+import { UserConfirmEmailConfirmationCommandSchema } from '@vdt-webapp/common';
 import { decodeEmailConfirmationToken } from 'users/auth/tokens';
 import { ValidationError } from 'common/errors';
 
@@ -10,7 +10,7 @@ import { ValidationError } from 'common/errors';
  * @param container The service locator.
  */
 const confirmEmailConfirmation = async (
-	command: z.infer<typeof UserConfirmEmailConfirmationCommand>,
+	command: z.infer<typeof UserConfirmEmailConfirmationCommandSchema>,
 	container: typeof diContainer
 ) => {
 	const users = container.resolve('userRepo');

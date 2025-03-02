@@ -2,7 +2,7 @@ import { userLoginOp, userRefreshOp } from '$codegen';
 import triplit from '$data/triplit';
 import { UserAccount, UserProfile } from '@vdt-webapp/common';
 import { AppError } from '@vdt-webapp/common/src/errors';
-import { UserLoginCommand } from '@vdt-webapp/common';
+import { UserLoginCommand, UserLoginCommandSchema } from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
 import { z } from 'zod';
 
@@ -13,8 +13,10 @@ const TRIPLIT_ANON_TOKEN =
  * Sends an authentication request to the backend.
  */
 export const userLogin = {
-	schema: UserLoginCommand,
-	mutation: async function (data: z.infer<typeof UserLoginCommand>) {
+	schema: UserLoginCommandSchema,
+	mutation: async function (data: UserLoginCommand
+		
+	) {
 		/** Don't allow re-logging in. */
 		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
 			return;

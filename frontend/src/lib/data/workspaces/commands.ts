@@ -1,14 +1,14 @@
 import { z as zod } from 'zod';
 import {
-	WorkspaceCreateCommand,
-	PlantingAreaCreateCommand,
-	PlantingAreaUpdateCommand,
-	LocationCreateCommand,
+	WorkspaceCreateCommandSchema, WorkspaceCreateCommand,
+	PlantingAreaCreateCommandSchema, PlantingAreaCreateCommand,
+	PlantingAreaUpdateCommandSchema, PlantingAreaUpdateCommand,
+	LocationCreateCommandSchema, LocationCreateCommand,
 	type Workspace,
 	type Geometry,
 	type Location,
 	type LocationHistory,
-	GeometryCreateCommand,
+	GeometryCreateCommandSchema, GeometryCreateCommand,
 	TriplitTransaction,
 	historySelectDay,
 	type Position,
@@ -30,7 +30,7 @@ import { requireRole } from '$data/gardens/commands';
  */
 export async function geometryCreate(
 	gardenId: string,
-	data: zod.infer<typeof GeometryCreateCommand>,
+	data: GeometryCreateCommand,
 	transaction: TriplitTransaction
 ): Promise<Geometry> {
 	let geometry: Omit<Geometry, 'id'> = {
@@ -224,7 +224,7 @@ export async function geometryUpdate(geometryId: string, newGeometry: GeometryPa
 export async function locationHistoryCreate(
 	gardenId: string,
 	workspaceId: string,
-	data: zod.infer<typeof LocationCreateCommand>,
+	data: LocationCreateCommand,
 	transaction: TriplitTransaction
 ): Promise<LocationHistory> {
 	const location = await transaction.insert('locations', {
@@ -304,9 +304,9 @@ export async function locationHistoryUpdate(
 
 /** Creates a new workspace in a garden. */
 export const workspaceCreate = {
-	schema: WorkspaceCreateCommand,
+	schema: WorkspaceCreateCommandSchema,
 	mutation: async function (
-		data: zod.infer<typeof WorkspaceCreateCommand>
+		data: WorkspaceCreateCommand
 	): Promise<Workspace> {
 		/** Retrieve client and authorize. */
 		await requireRole(data.gardenId, 'WorkspaceCreate');
@@ -348,8 +348,8 @@ export const workspaceCreate = {
 
 /** Creates a new planting area in a workspace. */
 export const plantingAreaCreate = {
-	schema: PlantingAreaCreateCommand,
-	mutation: async (data: zod.infer<typeof PlantingAreaCreateCommand>) => {
+	schema: PlantingAreaCreateCommandSchema,
+	mutation: async (data: PlantingAreaCreateCommand) => {
 		const { garden } = await requireRole(data.gardenId, 'PlantingAreaCreate');
 
 		/** Retrieve workspace. */
@@ -378,7 +378,7 @@ export const plantingAreaCreate = {
 			await transaction.insert('plantingAreas', {
 				gardenId: garden.id,
 				name: data.name,
-				description: data.description,
+				description: data.description || '',
 				geometryId: geometry.id,
 				locationHistoryId: locationHistory.id,
 				grid: data.grid,
@@ -389,8 +389,8 @@ export const plantingAreaCreate = {
 };
 
 export const plantingAreaUpdate = {
-	schema: PlantingAreaUpdateCommand,
-	mutation: async function (data: zod.infer<typeof PlantingAreaUpdateCommand>) {
+	schema: PlantingAreaUpdateCommandSchema,
+	mutation: async function (data: PlantingAreaUpdateCommand) {
 		
 	}
 }

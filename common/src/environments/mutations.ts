@@ -26,7 +26,7 @@ export const environmentFields = {
 /**
  * Command to create a new environment.
  */
-export const EnvironmentCreateCommand = z.object({
+export const EnvironmentCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	parendId: z.string(),
 	parentType: z.enum(EnvironmentParentTypeEnum),

@@ -37,7 +37,7 @@ export const gardenFields = {
 /**
  * Command to create a new garden.
  */
-export const GardenCreateCommand = z.object({
+export const GardenCreateCommandSchema = z.object({
 	id: gardenFields.id,
 	name: gardenFields.name,
 	description: gardenFields.description.optional(),
@@ -62,7 +62,7 @@ export const GardenCreateCommand = z.object({
 /**
  * Command to invite a user to a garden.
  */
-export const GardenMembershipCreateCommand = z.object({
+export const GardenMembershipCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	adminInvites: gardenFields.usernameInvitesList
 		.describe('A list of usernames to invite as admins.')
@@ -78,21 +78,21 @@ export const GardenMembershipCreateCommand = z.object({
 /**
  * Command to accept a garden membership invite.
  */
-export const GardenMembershipAcceptCommand = z.object({
+export const GardenMembershipAcceptCommandSchema = z.object({
 	gardenId: z.string()
 });
 
 /**
  * Command to leave a garden.
  */
-export const GardenMembershipDeleteCommand = z.object({
+export const GardenMembershipDeleteCommandSchema = z.object({
 	gardenId: z.string()
 });
 
 /**
  * Command to revoke a user's membership.
  */
-export const GardenMembershipRevokeCommand = z.object({
+export const GardenMembershipRevokeCommandSchema = z.object({
 	gardenId: z.string(),
 	profileId: z.string()
 });
@@ -100,8 +100,15 @@ export const GardenMembershipRevokeCommand = z.object({
 /**
  * Command to change the role on a user's membership.
  */
-export const GardenMembershipRoleChangeCommand = z.object({
+export const GardenMembershipRoleChangeCommandSchema = z.object({
 	gardenId: z.string(),
 	profileId: z.string(),
 	newRole: z.enum(GardenMembershipRoleEnum)
 });
+
+export type GardenCreateCommand = z.infer<typeof GardenCreateCommandSchema>;
+export type GardenMembershipCreateCommand = z.infer<typeof GardenMembershipCreateCommandSchema>;
+export type GardenMembershipAcceptCommand = z.infer<typeof GardenMembershipAcceptCommandSchema>;
+export type GardenMembershipDeleteCommand = z.infer<typeof GardenMembershipDeleteCommandSchema>;
+export type GardenMembershipRevokeCommand = z.infer<typeof GardenMembershipRevokeCommandSchema>;
+export type GardenMembershipRoleChangeCommand = z.infer<typeof GardenMembershipRoleChangeCommandSchema>;

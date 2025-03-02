@@ -1,7 +1,7 @@
 import env from 'env';
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserCreateCommand } from '@vdt-webapp/common';
+import { UserCreateCommandSchema } from '@vdt-webapp/common';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from '../auth/passwords';
 import { encodeEmailConfirmationToken } from '../auth/tokens';
@@ -12,7 +12,7 @@ import { encodeEmailConfirmationToken } from '../auth/tokens';
  * @param container The service locator.
  */
 const create = async (
-	command: z.infer<typeof UserCreateCommand>,
+	command: z.infer<typeof UserCreateCommandSchema>,
 	container: typeof diContainer
 ) => {
 	const users = container.resolve('userRepo');

@@ -6,7 +6,7 @@
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
 	import createMutationHandler from '$state/mutationHandler.svelte';
-	import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
+	import { UserConfirmEmailConfirmationCommandSchema } from '@vdt-webapp/common';
 	import z from 'zod';
 
 	/* Initialize the mutation on page load with url parameter. */
@@ -18,7 +18,7 @@
 		}
 	});
 	formHandler.execute({ token: confirmationToken } satisfies z.infer<
-		typeof UserConfirmEmailConfirmationCommand
+		typeof UserConfirmEmailConfirmationCommandSchema
 	>);
 </script>
 

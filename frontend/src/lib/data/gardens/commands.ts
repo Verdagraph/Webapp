@@ -1,14 +1,14 @@
 import { z as zod } from 'zod';
 import { AppError } from '@vdt-webapp/common/src/errors';
 import {
-	GardenCreateCommand,
-	GardenMembershipCreateCommand,
+	GardenCreateCommand, GardenCreateCommandSchema,
+	GardenMembershipCreateCommand, GardenMembershipCreateCommandSchema,
 	isProfileMember,
 	isUserAuthorized,
-	GardenMembershipAcceptCommand,
-	GardenMembershipDeleteCommand,
-	GardenMembershipRevokeCommand,
-	GardenMembershipRoleChangeCommand
+	GardenMembershipAcceptCommand, GardenMembershipAcceptCommandSchema, 
+	GardenMembershipDeleteCommand, GardenMembershipDeleteCommandSchema,
+	GardenMembershipRevokeCommand, GardenMembershipRevokeCommandSchema,
+	GardenMembershipRoleChangeCommand, GardenMembershipRoleChangeCommandSchema
 } from '@vdt-webapp/common';
 import type { Garden, UserAccount, UserProfile } from '@vdt-webapp/common';
 import triplit from '../triplit';
@@ -92,9 +92,9 @@ async function getNewMembershipIdsFromUsernames(
  * Creates a new garden.
  */
 export const gardenCreate = {
-	schema: GardenCreateCommand,
+	schema: GardenCreateCommandSchema,
 	mutation: async function (
-		data: zod.infer<typeof GardenCreateCommand>
+		data: GardenCreateCommand
 	): Promise<Garden> {
 		/** Retrieve client. */
 		const client = await getClientOrError();
@@ -203,8 +203,8 @@ export const gardenCreate = {
  * Invites users to an existing garden.
  */
 export const gardenMembershipCreate = {
-	schema: GardenMembershipCreateCommand,
-	mutation: async function (data: zod.infer<typeof GardenMembershipCreateCommand>) {
+	schema: GardenMembershipCreateCommandSchema,
+	mutation: async function (data: GardenMembershipCreateCommand) {
 		/** Retrieve client and authorize. */
 		const { client, garden } = await requireRole(data.gardenId, 'MembershipCreate');
 
@@ -261,8 +261,8 @@ export const gardenMembershipCreate = {
  * Sends a garden membership acceptance request.
  */
 export const gardenMembershipAccept = {
-	schema: GardenMembershipAcceptCommand,
-	mutation: async function (data: zod.infer<typeof GardenMembershipAcceptCommand>) {
+	schema: GardenMembershipAcceptCommandSchema,
+	mutation: async function (data: GardenMembershipAcceptCommand) {
 		/** Retrieve client. */
 		const client = await getClientOrError();
 
@@ -301,8 +301,8 @@ export const gardenMembershipAccept = {
  * Deletes a user's own membership in a garden.
  */
 export const gardenMembershipDelete = {
-	schema: GardenMembershipDeleteCommand,
-	mutation: async function (data: zod.infer<typeof GardenMembershipDeleteCommand>) {
+	schema: GardenMembershipDeleteCommandSchema,
+	mutation: async function (data: GardenMembershipDeleteCommand) {
 		/** Retrieve client. */
 		const client = await getClientOrError();
 
@@ -335,8 +335,8 @@ export const gardenMembershipDelete = {
  * Revokes a membership of a different user.
  */
 export const gardenMembershipRevoke = {
-	schema: GardenMembershipRevokeCommand,
-	mutation: async function (data: zod.infer<typeof GardenMembershipRevokeCommand>) {
+	schema: GardenMembershipRevokeCommandSchema,
+	mutation: async function (data: GardenMembershipRevokeCommand) {
 		/** Retrieve client and authorize. */
 		const { client } = await requireRole(data.gardenId, 'MembershipRevoke');
 
@@ -379,8 +379,8 @@ export const gardenMembershipRevoke = {
  * Revokes a membership of a different user.
  */
 export const gardenMembershipRoleChange = {
-	schema: GardenMembershipRoleChangeCommand,
-	mutation: async function (data: zod.infer<typeof GardenMembershipRoleChangeCommand>) {
+	schema: GardenMembershipRoleChangeCommandSchema,
+	mutation: async function (data: GardenMembershipRoleChangeCommand) {
 		/** Retrieve client and authorize. */
 		const { client, garden } = await requireRole(data.gardenId, 'MembershipRoleChange');
 

@@ -136,7 +136,7 @@ function validateGeometryAttributes(
 	return true;
 }
 
-export const LocationCreateCommand = z.object({
+export const LocationCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	workspaceId: z.string(),
 	coordinate: workspaceFields.coordinate,
@@ -218,7 +218,7 @@ const LinesAttributesCreateUpdateCommand = z.object({
 		.default(true)
 });
 
-export const GeometryCreateCommand = z
+export const GeometryCreateCommandSchema = z
 	.object({
 		type: workspaceFields.geometryType,
 		date: workspaceFields.geometryDate,
@@ -248,26 +248,26 @@ export const GeometryCreateCommand = z
 /**
  * Command to create a new workspace.
  */
-export const WorkspaceCreateCommand = z.object({
+export const WorkspaceCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	name: workspaceFields.workspaceName,
 	description: workspaceFields.workspaceDescription.optional()
 });
 
-export const PlantingAreaCreateCommand = z.object({
+export const PlantingAreaCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	workspaceId: z.string(),
 	name: workspaceFields.plantingAreaName,
 	description: workspaceFields.plantingAreaDescription.optional(),
-	location: LocationCreateCommand,
-	geometry: GeometryCreateCommand,
+	location: LocationCreateCommandSchema,
+	geometry: GeometryCreateCommandSchema,
 	includeGrid: z.boolean().default(true),
 	gridNumRows: workspaceFields.plantingAreaGridNumRows.optional(),
 	gridNumCols: workspaceFields.plantingAreaGridNumColumns.optional(),
 	depth: workspaceFields.plantingAreaDepth,
 });
 
-export const PlantingAreaUpdateCommand = z.object({
+export const PlantingAreaUpdateCommandSchema = z.object({
 	plantingAreaId: z.string(),
 	name: workspaceFields.plantingAreaName.optional(),
 	description: workspaceFields.plantingAreaDescription.optional(),
@@ -276,3 +276,9 @@ export const PlantingAreaUpdateCommand = z.object({
 	gridNumCols: workspaceFields.plantingAreaGridNumColumns.optional(),
 	depth: workspaceFields.plantingAreaDepth.optional()
 })
+
+export type LocationCreateCommand = z.infer<typeof LocationCreateCommandSchema>;
+export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
+export type WorkspaceCreateCommand = z.infer<typeof WorkspaceCreateCommandSchema>;
+export type PlantingAreaCreateCommand = z.infer<typeof PlantingAreaCreateCommandSchema>;
+export type PlantingAreaUpdateCommand = z.infer<typeof PlantingAreaUpdateCommandSchema>;

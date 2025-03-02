@@ -34,7 +34,7 @@ export const userFields = {
 /**
  * Command to authenticate a user.
  */
-export const UserLoginCommand = z.object({
+export const UserLoginCommandSchema = z.object({
 	email: userFields.email,
 	password: z.string()
 });
@@ -42,7 +42,7 @@ export const UserLoginCommand = z.object({
 /**
  * Command to register a new user.
  */
-export const UserCreateCommand = z
+export const UserCreateCommandSchema = z
 	.object({
 		email: userFields.email,
 		password1: userFields.password,
@@ -57,7 +57,7 @@ export const UserCreateCommand = z
 /**
  * Command to update a user.
  */
-export const UserUpdateCommand = z
+export const UserUpdateCommandSchema = z
 	.object({
 		newEmail: userFields.email.optional(),
 		newPassword1: userFields.password.optional(),
@@ -73,28 +73,28 @@ export const UserUpdateCommand = z
 /**
  * Command to request a verification email be sent.
  */
-export const UserRequestEmailConfirmationCommand = z.object({
+export const UserRequestEmailConfirmationCommandSchema = z.object({
 	email: userFields.email
 });
 
 /**
  * Command to respond to a verification email.
  */
-export const UserConfirmEmailConfirmationCommand = z.object({
+export const UserConfirmEmailConfirmationCommandSchema = z.object({
 	token: z.string()
 });
 
 /**
  * Command to request a password reset email be sent.
  */
-export const UserRequestPasswordResetCommand = z.object({
+export const UserRequestPasswordResetCommandSchema = z.object({
 	email: userFields.email
 });
 
 /**
  * Command to respont to a password reset email.
  */
-export const UserConfirmPasswordResetCommand = z
+export const UserConfirmPasswordResetCommandSchema = z
 	.object({
 		userId: z.string().nanoid(),
 		token: z.string(),
@@ -105,3 +105,11 @@ export const UserConfirmPasswordResetCommand = z
 		message: 'Passwords must match',
 		path: ['password2']
 	});
+
+export type UserLoginCommand = z.infer<typeof UserLoginCommandSchema>;
+export type UserCreateCommand = z.infer<typeof UserCreateCommandSchema>;
+export type UserUpdateCommand = z.infer<typeof UserUpdateCommandSchema>;
+export type UserRequestEmailConfirmationCommand = z.infer<typeof UserRequestEmailConfirmationCommandSchema>;
+export type UserConfirmEmailConfirmationCommand = z.infer<typeof UserConfirmEmailConfirmationCommandSchema>;
+export type UserRequestPasswordResetCommand = z.infer<typeof UserRequestPasswordResetCommandSchema>;
+export type UserConfirmPasswordResetCommand = z.infer<typeof UserConfirmPasswordResetCommandSchema>;

@@ -1,7 +1,7 @@
 import env from 'env';
 import z from 'zod';
 import { diContainer } from '@fastify/awilix';
-import { UserUpdateCommand } from '@vdt-webapp/common/src/user/mutations';
+import { UserUpdateCommandSchema } from '@vdt-webapp/common/src/user/mutations';
 import { ValidationError } from 'common/errors';
 import { hashPassword, verifyPassword } from '../auth/passwords';
 import { UserAccount } from '@vdt-webapp/common/src/user/schema';
@@ -13,7 +13,7 @@ import { AuthenticationError } from 'common/errors';
  * @param container The service locator.
  */
 const update = async (
-	command: z.infer<typeof UserUpdateCommand>,
+	command: z.infer<typeof UserUpdateCommandSchema>,
 	container: typeof diContainer,
 	client: UserAccount
 ) => {
