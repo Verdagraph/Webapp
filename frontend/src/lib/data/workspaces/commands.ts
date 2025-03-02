@@ -390,10 +390,7 @@ export const plantingAreaCreate = {
 
 export const plantingAreaUpdate = {
 	schema: PlantingAreaUpdateCommand,
-	validate: (data: zod.infer<typeof PlantingAreaUpdateCommand>): zod.infer<typeof PlantingAreaUpdateCommand> => {
-
-	}
-	mutation: async (data: zod.infer<typeof PlantingAreaUpdateCommand>): Promise<void> => {
+	mutation: async function (data: zod.infer<typeof PlantingAreaUpdateCommand>) {
 		
 	}
 }

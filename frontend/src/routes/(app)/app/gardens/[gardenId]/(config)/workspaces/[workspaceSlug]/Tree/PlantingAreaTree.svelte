@@ -42,7 +42,7 @@
 	const plantingAreaChangeHandler = createChangeHandler(
 		async (newData: Record<string, Partial<PlantingArea>>) => {
 			for (const plantingAreaId of Object.keys(newData)) {
-				plantingAreaMutationHandler.execute({id: plantingAreaId, newData.name, newData.description, newData.grid.numRows, newData.grid.numCols, newData.depth})
+				plantingAreaMutationHandler.execute({id: plantingAreaId, name: newData.name, description: newData.description, newData.grid.numRows, newData.grid.numCols, newData.depth})
 			}
 		},
 		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
