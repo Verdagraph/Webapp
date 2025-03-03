@@ -31,7 +31,8 @@
 				"YoavBls.pretty-ts-errors",
 				"christian-kohler.path-intellisense",
 				"pomdtr.excalidraw-editor",
-				"bierner.markdown-mermaid"
+				"bierner.markdown-mermaid",
+				"arktypeio.arkdark"
 			]
 		}
 	},

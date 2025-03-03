@@ -5,20 +5,16 @@ services:
     init: true
     expose:
       - 5173
-    volumes:
-      - /app/node_modules
-      - .:/app
-      - .:/workspace:cached
     build:
       context: ./
       dockerfile: ./Dockerfile
+      args:
+        BUILDKIT_INLINE_CACHE: 0
     command: sleep infinity
 
   mailpit:
     image: axllent/mailpit
     restart: unless-stopped
-    volumes:
-      - ./data:/data
     expose:
       - 1025
       - 8025

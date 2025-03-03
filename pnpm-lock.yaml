@@ -29,9 +29,9 @@ importers:
       '@triplit/client':
         specifier: ^0.6.13
         version: 0.6.13
-      zod:
-        specifier: ^3.24.1
-        version: 3.24.1
+      arktype:
+        specifier: ^2.1.2
+        version: 2.1.2
     devDependencies:
       '@triplit/cli':
         specifier: ^0.6.35
@@ -278,8 +278,14 @@ packages:
   '@ark/schema@0.26.0':
     resolution: {integrity: sha512-b6hk1+M0U4jgZK7ZOGsWKSXgjhfPAqqSCczViM/gQ0Hu0awKLx9SpZYsFhl0j67j3hwlY2+mVZQPKy6GlYDCbQ==}
 
+  '@ark/schema@0.43.1':
+    resolution: {integrity: sha512-B28ceusolthB9bmHQEG9Lp16keUTt5JhuoB9Uhaw7MQh9+ODSbH4d2KJDD/yrMSeoXiNqEGuWmhlR6YO2pdNvA==}
+
   '@ark/util@0.26.0':
     resolution: {integrity: sha512-6FSqj6xl3jQ9bD9EU25ThMVcsvaeq6c3gecONgPQ+wDYOUEqBBIAkpjA+LEZMiY0AxVhSF3UF6BlVFspXmef2Q==}
+
+  '@ark/util@0.43.1':
+    resolution: {integrity: sha512-sRx5bZiNoilA7mr5lAu78ZHOJx88nCagLER9Ns1FfoWWHrDWj8J8xU+VFj0g1ujJrAxWsVJRVElOEZ0XzXCrDw==}
 
   '@asyncapi/specs@6.8.0':
     resolution: {integrity: sha512-1i6xs8+IOh6U5T7yH+bCMGQBF+m7kP/NpwyAlt++XaDQutoGCgACf24mQBgcDVqDWWoY81evQv+9ABvw0BviVg==}
@@ -1575,6 +1581,9 @@ packages:
 
   arktype@2.0.0-rc.26:
     resolution: {integrity: sha512-OdV40SQNY0CFJH+anT0N7Go9Tl+av+hxzMGPccv47sPHdekZuEPd61MfNmwn1J5H2SIrycdwGPD8jYBZSkhKjQ==}
+
+  arktype@2.1.2:
+    resolution: {integrity: sha512-+uwghWzB1C0WoN6TpVB6wqXpshbRu19LykgddVcD8fk2SZHSgXWcxaTnq+cHnAqtZZOfJ/OI/QDTBmf9SiUFCw==}
 
   array-buffer-byte-length@1.0.2:
     resolution: {integrity: sha512-LHE+8BuR7RYGDKvnrmcuSq3tDcKv9OFEXQt/HpbZhY7V6h0zlUXutnAD82GiFx9rdieCMjkvtcsPqBwgUl1Iiw==}
@@ -4043,8 +4052,14 @@ snapshots:
       '@ark/util': 0.26.0
     optional: true
 
+  '@ark/schema@0.43.1':
+    dependencies:
+      '@ark/util': 0.43.1
+
   '@ark/util@0.26.0':
     optional: true
+
+  '@ark/util@0.43.1': {}
 
   '@asyncapi/specs@6.8.0':
     dependencies:
@@ -5288,6 +5303,11 @@ snapshots:
       '@ark/schema': 0.26.0
       '@ark/util': 0.26.0
     optional: true
+
+  arktype@2.1.2:
+    dependencies:
+      '@ark/schema': 0.43.1
+      '@ark/util': 0.43.1
 
   array-buffer-byte-length@1.0.2:
     dependencies:
