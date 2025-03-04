@@ -1,117 +1,63 @@
-import z from 'zod';
+import { type } from 'arktype';
 import { GeometryTypeEnum, type GeometryType } from './schema';
+import { commonFields } from '@common/commands';
 
 /** The maximum supported magnitude of a coordinate. */
 const maxCoordinateMagnitude = 1000000;
+const maxCoordinateMagnitudeSquared = maxCoordinateMagnitude ** 2;
 
 /** Field specifications. */
 export const workspaceFields = {
-	coordinate: z
-		.object({
-			x: z.number().describe('The horizontal X component of the coordinate.'),
-			y: z.number().describe('The vertical Y component of the coordinate.')
+	/** Geometries. */
+	coordinate: type({
+		x: type('number').configure({
+			details: 'The horizontal X component of the coordinate.'
+		}),
+		y: type('number').configure({
+			details: 'The vertical Y component of the coordinate.'
 		})
-		.describe('A position relative to the origin of a workspace.')
-		.refine(
-			(data) => {
-				if (data.x ** 2 + data.y ** 2 > maxCoordinateMagnitude ** 2) {
-					return false;
-				}
-				return true;
-			},
-			{
-				message: 'Coordinate magnitude limited to 1 000 000 meters.',
-				path: ['x', 'y']
-			}
-		),
-	geometryType: z
-		.enum(GeometryTypeEnum)
-		.describe(
-			'Describes the type of geometry. Each type has a unique set of attributes associated with it.'
-		),
-	geometryDate: z
-		.date()
-		.describe('The date at which the geometry applies to the object.'),
-	geometryScaleFactor: z
-		.number()
-		.min(0.01, 'Must be at least 1%.')
-		.max(10, 'May be at most 1000$')
-		.describe(
-			'Factor used to scale the geometry up or down. Must be within 1 and 1000 percent.'
-		),
-	geometryRotation: z
-		.number()
-		.min(-360, 'Must be at least negative 360 degrees.')
-		.max(360, 'May be at most 360 degrees.')
-		.describe(
-			'The rotation of the geometry in degrees. Must be between 0 and 360 degrees.'
-		),
-
-	workspaceName: z
-		.string()
-		.trim()
-		.min(3, 'Must be at least 3 characters.')
-		.max(30, 'May be at most 30 characters.')
-		.regex(
-			/^[a-zA-Z0-9 _-]*$/,
-			'Must contain only alphanumeric characters, spaces, hyphens, and underscores.'
-		)
-		.describe(
-			'Must be between 3 and 30 characters long and contain only alphanumeric characters, spaces, hyphens, and  underscores. Must be unique within a garden.'
-		),
-	workspaceDescription: z
-		.string()
-		.trim()
-		.max(700, 'May be at most 1400 characters.')
-		.describe('May be at most 1400 characters.')
-		.default(''),
-	plantingAreaName: z
-		.string()
-		.trim()
-		.min(3, 'Must be at least 3 characters.')
-		.max(30, 'May be at most 30 characters.')
-		.regex(
-			/^[a-zA-Z0-9 _-]*$/,
-			'Must contain only alphanumeric characters, spaces, hyphens, and underscores.'
-		)
-		.describe(
-			'Must be between 3 and 30 characters long and contain only alphanumeric characters, spaces, hyphens, and  underscores. Must be unique within a garden.'
-		),
-	plantingAreaDescription: z
-		.string()
-		.trim()
-		.max(700, 'May be at most 1400 characters.')
-		.describe('May be at most 1400 characters.')
-		.default(''),
-	plantingAreaDepth: z
-		.number()
-		.min(0, 'May not be negative')
-		.max(1000, 'May be at most 1000m.')
-		.describe('The depth of the planting area.'),
-	plantingAreaMovable: z
-		.boolean()
-		.default(false)
-		.describe('If true the planting area may change location.'),
-	plantingAreaGrid: z.object({
-		numRows: z
-			.number()
-			.int()
-			.min(2)
-			.max(100)
-			.describe(
-				'The number of rows in the grid. Must be between 2 and 100, and be whole number.'
-			)
-			.default(2),
-		numColumns: z
-			.number()
-			.int()
-			.min(2)
-			.max(100)
-			.describe(
-				'The number of columns in the grid. Must be between 2 and 100, and be a whole number.'
-			)
-			.default(2)
 	})
+		.configure({ details: 'A position relative to the origin of a workspace.' })
+		.narrow((data, ctx) => {
+			if (data.x ** 2 + data.y ** 2 > maxCoordinateMagnitudeSquared) {
+				return true;
+			}
+			return ctx.reject({
+				expected: 'a magnitude less than 1 000 000 meters',
+				actual: '',
+				path: []
+			});
+		}),
+	geometryType: type.enumerated(...GeometryTypeEnum).configure({
+		details:
+			'Describes the type of geometry. Each type has a unique set of attributes associated with it.'
+	}),
+	geometryDate: type('Date').configure({
+		details: 'The date at which the geometry applies to the object.'
+	}),
+	geometryScaleFactor: type('0 <= number <= 100')
+		.describe('between 0 and 10000 percent')
+		.configure({ details: 'Factor used to scale the geometry up or down.' }),
+	geometryRotation: type('-360 <= number <= 360')
+		.describe('between negative and positive 360 degrees')
+		.configure({ details: 'The rotation of the geometry in degrees.' }),
+
+	/** Workspaces. */
+	workspaceName: commonFields.name.configure({ details: 'Name of the workspace.' }),
+	workspaceDescription: commonFields.description.configure({
+		details: 'Optional description.'
+	}),
+
+	/** Planting areas. */
+	plantingAreaName: commonFields.name.configure({
+		details: 'Name of the planting area.'
+	}),
+	plantingAreaDescription: commonFields.description.configure({
+		details: 'Optional description.'
+	}),
+	plantingAreaDepth: type('0 <= number <= 1000')
+		.describe('between 0 and 1000 meters')
+		.configure({ details: 'The depth the planting area. Used for calculating volume.' })
 };
 
 /**
@@ -123,6 +69,7 @@ export const workspaceFields = {
  * @param linesAttributesNullish True if the lines attributes aren't included.
  * @returns
  */
+/*
 function validateGeometryAttributes(
 	type: GeometryType,
 	rectangleAttributesNullish: boolean,
@@ -140,13 +87,14 @@ function validateGeometryAttributes(
 		return false;
 	}
 	return true;
-}
+}*/
 
-export const LocationCreateCommand = z.object({
-	gardenId: z.string(),
-	workspaceId: z.string(),
+/** Creates a new location. */
+export const LocationCreateCommandSchema = type({
+	gardenId: 'string',
+	workspaceId: 'string',
 	coordinate: workspaceFields.coordinate,
-	date: z.date()
+	date: 'Date'
 });
 
 const RectangleAttributesCreateUpdateCommand = z.object({
@@ -223,6 +171,19 @@ const LinesAttributesCreateUpdateCommand = z.object({
 		.describe('If true, the line segments form a closed shape.')
 		.default(true)
 });
+
+export const GeometryCommand = type({
+	type: workspaceFields.geometryType,
+	date: workspaceFields.geometryDate,
+	scaleFactor: workspaceFields.geometryScaleFactor.default(1),
+	rotation: workspaceFields.geometryRotation.default(0),
+	rectangle: "number"
+}).narrow((data, ctx) => {
+	if (data.type === 'RECTANGLE' && !data.rectangle) {
+		ctx.mustBe('defined')
+	}
+	return true
+})
 
 export const GeometryCreateCommand = z
 	.object({

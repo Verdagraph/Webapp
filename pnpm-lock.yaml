@@ -217,6 +217,9 @@ importers:
       handlebars:
         specifier: ^4.7.8
         version: 4.7.8
+      hono:
+        specifier: ^4.7.2
+        version: 4.7.2
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -233,6 +236,9 @@ importers:
       '@fastify/swagger-ui':
         specifier: ^5.2.1
         version: 5.2.1
+      '@hono/arktype-validator':
+        specifier: ^2.0.0
+        version: 2.0.0(arktype@2.1.2)(hono@4.7.2)
       '@triplit/cli':
         specifier: ^0.6.35
         version: 0.6.35
@@ -245,6 +251,9 @@ importers:
       '@types/nodemailer':
         specifier: ^6.4.17
         version: 6.4.17
+      hono-openapi:
+        specifier: ^0.4.6
+        version: 0.4.6(@hono/arktype-validator@2.0.0(arktype@2.1.2)(hono@4.7.2))(@sinclair/typebox@0.34.13)(arktype@2.1.2)(effect@3.12.4)(hono@4.7.2)(openapi-types@12.1.3)(valibot@1.0.0-beta.11(typescript@5.7.3))(zod@3.24.1)
       tsx:
         specifier: ^4.19.2
         version: 4.19.2
@@ -967,6 +976,12 @@ packages:
 
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
+
+  '@hono/arktype-validator@2.0.0':
+    resolution: {integrity: sha512-ICNZrK6Qcw6gyPfW53ONXI4JomRcks0fQhqzn9EWsfr6nlL6BNXQ96vIgVDU8qimcbJ2m3GJFAqgzOvWbZk3jw==}
+    peerDependencies:
+      arktype: ^2.0.0-dev.14
+      hono: '*'
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1742,6 +1757,10 @@ packages:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
 
+  clone@2.1.2:
+    resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
+    engines: {node: '>=0.8'}
+
   close-with-grace@2.2.0:
     resolution: {integrity: sha512-OdcFxnxTm/AMLPHA4Aq3J1BLpkojXP7I4G5QBQLN5TT55ED/rk04rAoDbtfNnfZ988kGXPxh1bdRLeIU9bz/lA==}
 
@@ -2356,6 +2375,57 @@ packages:
   help-me@5.0.0:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
 
+  hono-openapi@0.4.6:
+    resolution: {integrity: sha512-wSDySp2cS5Zcf1OeLG7nCP3eMsCpcDomN137T9B6/Z5Qq3D0nWgMf0I3Gl41SE1rE37OBQ0Smqx3LOP9Hk//7A==}
+    peerDependencies:
+      '@hono/arktype-validator': ^2.0.0
+      '@hono/effect-validator': ^1.2.0
+      '@hono/typebox-validator': ^0.2.0 || ^0.3.0
+      '@hono/valibot-validator': ^0.5.1
+      '@hono/zod-validator': ^0.4.1
+      '@sinclair/typebox': ^0.34.9
+      '@valibot/to-json-schema': ^1.0.0-beta.3
+      arktype: ^2.0.0-rc.25
+      effect: ^3.11.3
+      hono: ^4.6.13
+      openapi-types: ^12.1.3
+      valibot: ^1.0.0-beta.9
+      zod: ^3.23.8
+      zod-openapi: ^4.0.0
+    peerDependenciesMeta:
+      '@hono/arktype-validator':
+        optional: true
+      '@hono/effect-validator':
+        optional: true
+      '@hono/typebox-validator':
+        optional: true
+      '@hono/valibot-validator':
+        optional: true
+      '@hono/zod-validator':
+        optional: true
+      '@sinclair/typebox':
+        optional: true
+      '@valibot/to-json-schema':
+        optional: true
+      arktype:
+        optional: true
+      effect:
+        optional: true
+      hono:
+        optional: true
+      openapi-types:
+        optional: true
+      valibot:
+        optional: true
+      zod:
+        optional: true
+      zod-openapi:
+        optional: true
+
+  hono@4.7.2:
+    resolution: {integrity: sha512-8V5XxoOF6SI12jkHkzX/6aLBMU5GEF5g387EjVSQipS0DlxWgWGSMeEayY3CRBjtTUQYwLHx9JYouWqKzy2Vng==}
+    engines: {node: '>=16.9.0'}
+
   http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
@@ -2587,6 +2657,10 @@ packages:
 
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
+
+  json-schema-walker@2.0.0:
+    resolution: {integrity: sha512-nXN2cMky0Iw7Af28w061hmxaPDaML5/bQD9nwm1lOoIKEGjHcRGxqWe4MfrkYThYAPjSUhmsp4bJNoLAyVn9Xw==}
+    engines: {node: '>=10'}
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
@@ -4506,6 +4580,11 @@ snapshots:
       '@hapi/hoek': 9.3.0
     optional: true
 
+  '@hono/arktype-validator@2.0.0(arktype@2.1.2)(hono@4.7.2)':
+    dependencies:
+      arktype: 2.1.2
+      hono: 4.7.2
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -5489,6 +5568,8 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
+  clone@2.1.2: {}
+
   close-with-grace@2.2.0: {}
 
   clsx@2.1.1: {}
@@ -6310,6 +6391,21 @@ snapshots:
 
   help-me@5.0.0: {}
 
+  hono-openapi@0.4.6(@hono/arktype-validator@2.0.0(arktype@2.1.2)(hono@4.7.2))(@sinclair/typebox@0.34.13)(arktype@2.1.2)(effect@3.12.4)(hono@4.7.2)(openapi-types@12.1.3)(valibot@1.0.0-beta.11(typescript@5.7.3))(zod@3.24.1):
+    dependencies:
+      json-schema-walker: 2.0.0
+    optionalDependencies:
+      '@hono/arktype-validator': 2.0.0(arktype@2.1.2)(hono@4.7.2)
+      '@sinclair/typebox': 0.34.13
+      arktype: 2.1.2
+      effect: 3.12.4
+      hono: 4.7.2
+      openapi-types: 12.1.3
+      valibot: 1.0.0-beta.11(typescript@5.7.3)
+      zod: 3.24.1
+
+  hono@4.7.2: {}
+
   http-errors@2.0.0:
     dependencies:
       depd: 2.0.0
@@ -6536,6 +6632,11 @@ snapshots:
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
+
+  json-schema-walker@2.0.0:
+    dependencies:
+      '@apidevtools/json-schema-ref-parser': 11.7.2
+      clone: 2.1.2
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 

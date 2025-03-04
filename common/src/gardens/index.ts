@@ -1,3 +1,3 @@
 export * from './schema';
-export * from './mutations';
+export * from './commands';
 export * from './helpers';

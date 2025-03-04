@@ -11,52 +11,51 @@ type SelectionTool = 'pointer' | 'group';
  * @returns Selection.
  */
 function createSelection() {
-    let selection = $state(new SvelteSet<string>())
+	let selection = $state(new SvelteSet<string>());
 
-    /**
-     * Returns true if the given entityID is selected.
-     * @param entityId The entity ID to check.
-     * @returns True if the entity ID is selected.
-     */
-    function has(entityId: string) {
-        return selection.has(entityId)
-    }
+	/**
+	 * Returns true if the given entityID is selected.
+	 * @param entityId The entity ID to check.
+	 * @returns True if the entity ID is selected.
+	 */
+	function has(entityId: string) {
+		return selection.has(entityId);
+	}
 
-    /**
-     * Adds the given entity ID to the selection.
-     * @param entityId The entity ID to add.
-     */
-    function select(entityId: string) {
-        selection.add(entityId)
-    }
+	/**
+	 * Adds the given entity ID to the selection.
+	 * @param entityId The entity ID to add.
+	 */
+	function select(entityId: string) {
+		selection.add(entityId);
+	}
 
-    /**
-     * Removes the given entity ID from the selection.
-     * @param entityId The entity ID to remove.
-     */
-    function deselect(entityId: string) {
-        selection.delete(entityId)
-    }
+	/**
+	 * Removes the given entity ID from the selection.
+	 * @param entityId The entity ID to remove.
+	 */
+	function deselect(entityId: string) {
+		selection.delete(entityId);
+	}
 
-    /**
-     * Resets the entity selection.
-     */
-    function reset() {
-        selection.clear()
-    }
+	/**
+	 * Resets the entity selection.
+	 */
+	function reset() {
+		selection.clear();
+	}
 
-    return {
-        get selection() {
-            return selection
-        },
-        has,
-        select,
-        deselect,
-        reset
-    }
-
+	return {
+		get selection() {
+			return selection;
+		},
+		has,
+		select,
+		deselect,
+		reset
+	};
 }
-type Selection = ReturnType<typeof createSelection>
+type Selection = ReturnType<typeof createSelection>;
 /**
  * Creates a manager for multiple sets of selected entity IDs.
  * @param entityTypes A list of strings to use for accessing each entity type.
