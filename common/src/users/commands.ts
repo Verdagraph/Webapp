@@ -1,22 +1,24 @@
 import { type } from 'arktype';
 
 /** Field specifications. */
-export const userFields = {
-	username: type('string.trim & /^[a-zA-Z0-9_-]*$/')
-		.to('3 <= string <= 50')
-		.describe(
-			'between 3 and 50 characters, contain only letters, numbers, underscores, or hyphens, and be unique.'
-		)
-		.configure({ details: 'Public username for account identification.' }),
-	email: type('string.email').describe('a valid email address.'),
-	password: type('6 <= string <= 255').describe('between 6 and 255 characters long.')
-};
+export const userUsernameSchema = type('string.trim & /^[a-zA-Z0-9_-]*$/')
+	.to('3 <= string <= 50')
+	.describe(
+		'between 3 and 50 characters, contain only letters, numbers, underscores, or hyphens, and be unique.'
+	)
+	.configure({ details: 'Public username for account identification.' });
+export const userEmailSchema = type('string.email').describe('a valid email address.');
+export const userPasswordSchema = type('6 <= string <= 255').describe(
+	'between 6 and 255 characters long.'
+);
+
+/** Commands. */
 
 /**
  * Command to authenticate a user.
  */
 export const UserLoginCommandSchema = type({
-	email: userFields.email,
+	email: userEmailSchema,
 	password: type('string')
 });
 export type UserLoginCommand = typeof UserLoginCommandSchema.infer;
@@ -25,10 +27,10 @@ export type UserLoginCommand = typeof UserLoginCommandSchema.infer;
  * Command to register a new user.
  */
 export const UserCreateCommandSchema = type({
-	email: userFields.email,
-	username: userFields.username,
-	password: userFields.password,
-	confirmPassword: userFields.password
+	email: userEmailSchema,
+	username: userUsernameSchema,
+	password: userPasswordSchema,
+	confirmPassword: userPasswordSchema
 }).narrow((data, ctx) => {
 	if (data.password === data.confirmPassword) {
 		return true;
@@ -45,11 +47,11 @@ export type UserCreateCommand = typeof UserCreateCommandSchema.infer;
  * Command to update a new user.
  */
 export const UserUpdateCommandSchema = type({
-	'newEmail?': userFields.email,
-	'newUsername?': userFields.username,
-	'newPassword?': userFields.password,
-	'confirmNewPassword?': userFields.password,
-	password: userFields.password
+	'newEmail?': userEmailSchema,
+	'newUsername?': userUsernameSchema,
+	'newPassword?': userPasswordSchema,
+	'confirmNewPassword?': userPasswordSchema,
+	password: userPasswordSchema
 }).narrow((data, ctx) => {
 	if (data.newPassword === data.confirmNewPassword) {
 		return true;
@@ -66,7 +68,7 @@ export type UserUpdateCommand = typeof UserUpdateCommandSchema.infer;
  * Command to request a verification email be sent.
  */
 export const UserRequestEmailConfirmationCommandSchema = type({
-	email: userFields.email
+	email: userEmailSchema
 });
 export type UserRequestEmailConfirmationCommand =
 	typeof UserRequestEmailConfirmationCommandSchema.infer;
@@ -84,7 +86,7 @@ export type UserConfirmEmailConfirmationCommand =
  * Command to request a password reset email be sent.
  */
 export const UserRequestPasswordResetCommandSchema = type({
-	email: userFields.email
+	email: userEmailSchema
 });
 export type UserRequestPasswordResetCommand =
 	typeof UserRequestPasswordResetCommandSchema.infer;
@@ -95,8 +97,8 @@ export type UserRequestPasswordResetCommand =
 export const UserConfirmPasswordResetCommandSchema = type({
 	userId: 'string',
 	token: 'string',
-	password: userFields.password,
-	confirmPassword: userFields.password
+	password: userPasswordSchema,
+	confirmPassword: userPasswordSchema
 }).narrow((data, ctx) => {
 	if (data.password === data.confirmPassword) {
 		return true;

@@ -1,45 +1,49 @@
 import { type } from 'arktype';
-import { userFields } from '../users/commands';
+import { userUsernameSchema } from '../users/commands';
 import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
 import { commonFields } from '@common/commands';
 
 /** Field specifications. */
-export const gardenFields = {
-	id: type('string.trim & string.lower & /[0-9A-Za-z-]+/')
-		.to('4 <= string <= 21')
-		.describe(
-			'betwwen 4 and 21 characters, contain only letters, numbers, and hyphens, and be unique.'
-		)
-		.configure({ details: 'Shorthand name for the garden used in URLs.' }),
-	name: commonFields.name.configure({ details: 'Name of the garden.' }),
-	description: commonFields.description.configure({ details: 'Optional description.' }),
-	visibility: type
-		.enumerated(...GardenVisibilityEnum)
-		.configure({
-			details:
-				'Hidden gardens can only be viewed by members. Unlisted gardens can be viewed by anyone with a link. Public gardens are searchable.'
-		})
-		.default('HIDDEN'),
-	usernameInvitesList: userFields.username
-		.array()
-		.lessThanLength(10)
-		.describe('at most 10 users.')
-};
+export const gardenIdSchema = type('string.trim & string.lower & /[0-9A-Za-z-]+/')
+	.to('4 <= string <= 21')
+	.describe(
+		'betwwen 4 and 21 characters, contain only letters, numbers, and hyphens, and be unique.'
+	)
+	.configure({ details: 'Shorthand name for the garden used in URLs.' });
+export const gardenNameSchema = commonFields.name.configure({
+	details: 'Name of the garden.'
+});
+export const gardenDescriptionSchema = commonFields.description.configure({
+	details: 'Optional description.'
+});
+export const garednVisibilitySchema = type
+	.enumerated(...GardenVisibilityEnum)
+	.configure({
+		details:
+			'Hidden gardens can only be viewed by members. Unlisted gardens can be viewed by anyone with a link. Public gardens are searchable.'
+	})
+	.default('HIDDEN');
+export const gardenUsernameInvitesListSchema = userUsernameSchema
+	.array()
+	.lessThanLength(10)
+	.describe('at most 10 users.');
+
+/** Commands. */
 
 /**
  * Command to create a new garden.
  */
 export const GardenCreateCommandSchema = type({
-	id: gardenFields.id,
-	name: gardenFields.name,
-	description: gardenFields.description.optional(),
-	adminInvites: gardenFields.usernameInvitesList
+	id: gardenIdSchema,
+	name: gardenNameSchema,
+	description: gardenDescriptionSchema.optional(),
+	adminInvites: gardenUsernameInvitesListSchema
 		.configure({ details: 'A list of usernames to invite as admins.' })
 		.default(() => []),
-	editorInvites: gardenFields.usernameInvitesList
+	editorInvites: gardenUsernameInvitesListSchema
 		.configure({ details: 'A list of usernames to invite as editors.' })
 		.default(() => []),
-	viewerInvites: gardenFields.usernameInvitesList
+	viewerInvites: gardenUsernameInvitesListSchema
 		.configure({ details: 'A list of usernames to invite as viewers.' })
 		.default(() => [])
 });
@@ -50,13 +54,13 @@ export type GardenCreateCommand = typeof GardenCreateCommandSchema.infer;
  */
 export const GardenMembershipCreateCommandSchema = type({
 	gardenId: 'string',
-	adminInvites: gardenFields.usernameInvitesList
+	adminInvites: gardenUsernameInvitesListSchema
 		.configure({ details: 'A list of usernames to invite as admins.' })
 		.default(() => []),
-	editorInvites: gardenFields.usernameInvitesList
+	editorInvites: gardenUsernameInvitesListSchema
 		.configure({ details: 'A list of usernames to invite as editors.' })
 		.default(() => []),
-	viewerInvites: gardenFields.usernameInvitesList
+	viewerInvites: gardenUsernameInvitesListSchema
 		.configure({ details: 'A list of usernames to invite as viewers.' })
 		.default(() => [])
 });

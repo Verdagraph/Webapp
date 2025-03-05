@@ -436,17 +436,6 @@ export const workspaceSchema = {
 				where: [['id', '=', '$geometryId']]
 			}),
 
-			/**
-			 * Describes a grid overlaid onto the geometry.
-			 * Used for placing plants.
-			 */
-			grid: S.Optional(
-				S.Record({
-					numRows: S.Number(),
-					numColumns: S.Number()
-				})
-			),
-
 			/** The location history of the planting area. */
 			locationHistoryId: S.String(),
 			locationHistory: S.RelationOne('locationHistories', {
