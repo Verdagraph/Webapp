@@ -36,7 +36,7 @@ export const gardenUsernameInvitesListSchema = userUsernameSchema
 export const GardenCreateCommandSchema = type({
 	id: gardenIdSchema,
 	name: gardenNameSchema,
-	description: gardenDescriptionSchema.optional(),
+	description: gardenDescriptionSchema.default(''),
 	adminInvites: gardenUsernameInvitesListSchema
 		.configure({ details: 'A list of usernames to invite as admins.' })
 		.default(() => []),

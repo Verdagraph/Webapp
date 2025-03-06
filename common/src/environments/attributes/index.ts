@@ -1,15 +1,17 @@
 import { Schema as S } from '@triplit/client';
-import { z } from 'zod';
+import { type } from 'arktype';
 
 import * as FrostDates from './frostDates';
 import * as AnnualTemperature from './annualTemperature';
 
 export const EnvironmentAttributes = S.Record({
-	frostDates: S.Optional(FrostDates.profile),
-	annualTemperature: S.Optional(AnnualTemperature.profile)
+	frostDates: S.Optional(FrostDates.FrostDateProfile),
+	annualTemperature: S.Optional(AnnualTemperature.AnnualTemperatureProfile)
 });
 
-export const EnvironmentAttributesUpdateCommand = z.object({
-	frostDates: FrostDates.command.optional(),
-	annualTemperature: AnnualTemperature.command.optional()
+export const EnvironmentAttributesUpdateCommandSchema = type({
+	frostDates: FrostDates.FrostDateUpdateCommandSchema.optional(),
+	annualTemperature: AnnualTemperature.AnnualTemperatureUpdateCommandSchema.optional()
 });
+export const EnvironmentAttributesUpdateCommand =
+	typeof EnvironmentAttributesUpdateCommandSchema.infer;

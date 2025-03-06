@@ -100,6 +100,7 @@ export const LocationCreateCommandSchema = type({
 	coordinate: geometryLinesCoordinatesSchema,
 	date: 'Date'
 });
+export type LocationCreateCommand = typeof LocationCreateCommandSchema.infer;
 
 /** Creates a new geometry. */
 export const GeometryCreateCommandSchema = type({
@@ -128,6 +129,7 @@ export const GeometryCreateCommandSchema = type({
 		closed: geometryLinesClosedSchema.default(true)
 	})
 });
+export type GeometryCreateCommand = typeof GeometryCreateCommandSchema.infer;
 
 /**
  * Command to create a new workspace.
@@ -135,16 +137,18 @@ export const GeometryCreateCommandSchema = type({
 export const WorkspaceCreateCommandSchema = type({
 	gardenId: 'string',
 	name: workspaceNameSchema,
-	description: workspaceDescriptionSchema.optional()
+	description: workspaceDescriptionSchema.default('')
 });
+export type WorkspaceCreateCommand = typeof WorkspaceCreateCommandSchema.infer;
 
 /** Command to create a new planting area. */
 export const PlantingAreaCreateCommandSchema = type({
 	gardenId: 'string',
 	workspaceId: 'string',
 	name: plantingAreaNameSchema,
-	description: plantingAreaDescriptionSchema.optional(),
+	description: plantingAreaDescriptionSchema.default(''),
 	location: LocationCreateCommandSchema,
 	geometry: GeometryCreateCommandSchema,
 	depth: plantingAreaDepthSchema.default(1)
 });
+export const PlantingAreaCreateCommand = typeof PlantingAreaCreateCommandSchema.infer;
