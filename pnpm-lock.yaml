@@ -202,6 +202,9 @@ importers:
       argon2:
         specifier: ^0.41.1
         version: 0.41.1
+      arktype:
+        specifier: ^2.1.2
+        version: 2.1.2
       awilix:
         specifier: ^12.0.4
         version: 12.0.4

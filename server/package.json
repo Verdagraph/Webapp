@@ -17,6 +17,7 @@
 		"@triplit/client": "^0.5.17",
 		"@vdt-webapp/common": "workspace:*",
 		"argon2": "^0.41.1",
+		"arktype": "^2.1.2",
 		"awilix": "^12.0.4",
 		"fastify": "^5.2.1",
 		"fastify-cli": "^7.3.0",
