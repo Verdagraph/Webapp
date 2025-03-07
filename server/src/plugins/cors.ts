@@ -1,12 +1,15 @@
-import { FastifyInstance } from 'fastify';
-import cors from '@fastify/cors';
+import type { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import env from 'env';
-export const registerCors = (app: FastifyInstance) => {
-	app.register(cors, {
-		origin: env.CLIENT_BASE_URL,
-		credentials: true,
-		methods: ['GET', 'POST', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie', 'Cookie'],
-		exposedHeaders: ['Set-Cookie', 'Authorization']
-	});
-};
+
+export function registerCors(app: Hono) {
+	app.use(
+		cors({
+			origin: env.CLIENT_BASE_URL,
+			credentials: true,
+			allowMethods: ['GET', 'POST', 'OPTIONS'],
+			allowHeaders: ['Content-Type', 'Authorization', 'Set-Cookie', 'Cookie'],
+			exposeHeaders: ['Set-Cookie', 'Authorization']
+		})
+	);
+}

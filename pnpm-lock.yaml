@@ -223,6 +223,9 @@ importers:
       hono:
         specifier: ^4.7.2
         version: 4.7.2
+      hono-simple-di:
+        specifier: ^0.2.1
+        version: 0.2.1(hono@4.7.2)(typescript@5.7.3)
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -2424,6 +2427,12 @@ packages:
         optional: true
       zod-openapi:
         optional: true
+
+  hono-simple-di@0.2.1:
+    resolution: {integrity: sha512-QxfitwAre3Jb6Y5bLXclobz3CLZ0RvO4SWmPe9gQ+rZvD9z2piVnEeHY3mdyVW8tVp/1ZVRtxMb3ukMwbf/t/w==}
+    peerDependencies:
+      hono: '>=4.0.0'
+      typescript: '>=5.0.0'
 
   hono@4.7.2:
     resolution: {integrity: sha512-8V5XxoOF6SI12jkHkzX/6aLBMU5GEF5g387EjVSQipS0DlxWgWGSMeEayY3CRBjtTUQYwLHx9JYouWqKzy2Vng==}
@@ -6406,6 +6415,11 @@ snapshots:
       openapi-types: 12.1.3
       valibot: 1.0.0-beta.11(typescript@5.7.3)
       zod: 3.24.1
+
+  hono-simple-di@0.2.1(hono@4.7.2)(typescript@5.7.3):
+    dependencies:
+      hono: 4.7.2
+      typescript: 5.7.3
 
   hono@4.7.2: {}
 

@@ -1,7 +1,8 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import type { Context } from 'hono';
+import { setSignedCookie, getSignedCookie } from 'hono/cookie';
+import jwt from 'jsonwebtoken';
 import { InternalFailureException } from 'common/errors';
 import env from 'env';
-import { FastifyRequest, FastifyReply } from 'fastify';
 import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
 
 const ACCESS_HEADER_KEY = 'Authorization';
@@ -44,11 +45,11 @@ type PasswordResetTokenPayload = {
  * @param username The username of the user to encode.
  * @returns The encoded token.
  */
-export const encodeAccessToken = (
+export function encodeAccessToken(
 	accountId: string,
 	profileId: string,
 	username: string
-): Promise<string> => {
+): Promise<string> {
 	const payload: AccessTokenPayload = { type: 'user', accountId, profileId, username };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
@@ -62,14 +63,14 @@ export const encodeAccessToken = (
 			}
 		);
 	});
-};
+}
 
 /**
  * Encodes a refresh JWT token for a user.
  * @param accountId The ID of the user's account to encode.
  * @returns The encoded token.
  */
-export const encodeRefreshToken = (accountId: string): Promise<string> => {
+export function encodeRefreshToken(accountId: string): Promise<string> {
 	const payload: RefreshTokenPayload = { accountId };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
@@ -83,14 +84,14 @@ export const encodeRefreshToken = (accountId: string): Promise<string> => {
 			}
 		);
 	});
-};
+}
 
 /**
  * Encodes an email verification JWT token for a user.
  * @param accountId The ID of the user's account to encode.
  * @returns The encoded token.
  */
-export const encodeEmailConfirmationToken = (accountId: string): Promise<string> => {
+export function encodeEmailConfirmationToken(accountId: string): Promise<string> {
 	const payload: EmailConfirmationTokenPayload = { accountId };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
@@ -104,14 +105,14 @@ export const encodeEmailConfirmationToken = (accountId: string): Promise<string>
 			}
 		);
 	});
-};
+}
 
 /**
  * Encodes a password reset JWT token for a user.
  * @param accountId The ID of the user's account to encode.
  * @returns The encoded token.
  */
-export const encodePasswordResetToken = (accountId: string): Promise<string> => {
+export function encodePasswordResetToken(accountId: string): Promise<string> {
 	const payload: PasswordResetTokenPayload = { accountId };
 	return new Promise((resolve, reject) => {
 		jwt.sign(
@@ -125,16 +126,14 @@ export const encodePasswordResetToken = (accountId: string): Promise<string> => 
 			}
 		);
 	});
-};
+}
 
 /**
  * Decodes an access token.
  * @param token The encoded access token.
  * @returns The payload of the token if it was sucessfully verified, otherwise null.
  */
-export const decodeAccessToken = (
-	token: string
-): Promise<AccessTokenPayload | null> => {
+export function decodeAccessToken(token: string): Promise<AccessTokenPayload | null> {
 	return new Promise((resolve) => {
 		jwt.verify(token, env.ACCESS_TOKEN_SECRET, (error, payload) => {
 			if (error) {
@@ -142,16 +141,14 @@ export const decodeAccessToken = (
 			} else resolve(payload as AccessTokenPayload);
 		});
 	});
-};
+}
 
 /**
  * Decodes a refresh token.
  * @param token The encoded refresh token.
  * @returns The payload of the token if it was sucessfully verified, otherwise null.
  */
-export const decodeRefreshToken = (
-	token: string
-): Promise<RefreshTokenPayload | null> => {
+export function decodeRefreshToken(token: string): Promise<RefreshTokenPayload | null> {
 	return new Promise((resolve) => {
 		jwt.verify(token, env.REFRESH_TOKEN_SECRET, (error, payload) => {
 			if (error) {
@@ -159,16 +156,16 @@ export const decodeRefreshToken = (
 			} else resolve(payload as RefreshTokenPayload);
 		});
 	});
-};
+}
 
 /**
  * Decodes an email confirmation token.
  * @param token The encoded email confirmation token.
  * @returns The payload of the token if it was sucessfully verified, otherwise null.
  */
-export const decodeEmailConfirmationToken = (
+export function decodeEmailConfirmationToken(
 	token: string
-): Promise<EmailConfirmationTokenPayload | null> => {
+): Promise<EmailConfirmationTokenPayload | null> {
 	return new Promise((resolve) => {
 		jwt.verify(token, env.REFRESH_TOKEN_SECRET, (error, payload) => {
 			if (error) {
@@ -176,16 +173,16 @@ export const decodeEmailConfirmationToken = (
 			} else resolve(payload as EmailConfirmationTokenPayload);
 		});
 	});
-};
+}
 
 /**
  * Decodes a password reset token.
  * @param token The encoded password reset token.
  * @returns The payload of the token if it was sucessfully verified, otherwise null.
  */
-export const decodePasswordResetToken = (
+export function decodePasswordResetToken(
 	token: string
-): Promise<PasswordResetTokenPayload | null> => {
+): Promise<PasswordResetTokenPayload | null> {
 	return new Promise((resolve) => {
 		jwt.verify(token, env.PASSWORD_RESET_TOKEN_SECRET, (error, payload) => {
 			if (error) {
@@ -193,49 +190,46 @@ export const decodePasswordResetToken = (
 			} else resolve(payload as PasswordResetTokenPayload);
 		});
 	});
-};
+}
 
 /**
  * Sets an encoded refresh token on the appropriate HTTP-only response cookie.
  * @param token The encoded refresh token.
- * @param reply Fastify reply object.
+ * @param ctx Hono context object.
  */
-export const setRefreshTokenCookie = (token: string, reply: FastifyReply) => {
-	reply.cookie(REFRESH_COOKIE_KEY, token, {
+export async function setRefreshTokenCookie(token: string, ctx: Context) {
+	await setSignedCookie(ctx, REFRESH_COOKIE_KEY, token, env.COOKIE_SECRET, {
 		secure: env.USING_HTTPS,
 		httpOnly: true,
-		sameSite: env.CLIENT_SAMESITE
+		sameSite: env.COOKIE_SAMESITE
 	});
-};
+}
 
 /**
  * Retrieves the refresh token value from the request cookies.
- * @param request Fastify request object.
+ * @param ctx Hono context object.
  * @returns The refresh token value, or null if none exists.
  */
-export const getRefreshTokenCookie = (request: FastifyRequest): string | null => {
-	return request.cookies[REFRESH_COOKIE_KEY] || null;
-};
+export async function getRefreshTokenCookie(
+	ctx: Context
+): Promise<string | undefined | false> {
+	return await getSignedCookie(ctx, env.COOKIE_SECRET, REFRESH_COOKIE_KEY);
+}
 
 /**
  * Sets an encoded access token on the appropriate response header.
  * @param token The encoded access token.
- * @param reply Fastify reply object.
+ * @param ctx Hono context object.
  */
-export const setAccessTokenHeader = (token: string, reply: FastifyReply) => {
-	reply.header(ACCESS_HEADER_KEY, token);
-};
+export function setAccessTokenHeader(token: string, ctx: Context) {
+	ctx.res.headers.append(ACCESS_HEADER_KEY, token);
+}
 
 /**
  * Retrieves the access JWT from the request object.
- * @param request Fastify request object.
+ * @param ctx Hono context object.
  * @returns The access token JWT or null.
  */
-export const getAccessTokenHeader = (request: FastifyRequest): string | null => {
-	const header = request.headers[ACCESS_HEADER_KEY];
-	if (Array.isArray(header)) {
-		return header[0];
-	} else {
-		return header || null;
-	}
-};
+export function getAccessTokenHeader(ctx: Context): string | undefined {
+	return ctx.req.header(ACCESS_HEADER_KEY);
+}

@@ -1,5 +1,8 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod';
+import type { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
+import type { Type } from 'arktype';
+import { arktypeValidator } from '@hono/arktype-validator';
 import { ServerError } from '../common/errors';
 import {
 	ServerErrorResponse,
@@ -7,45 +10,62 @@ import {
 	AppErrors
 } from '@vdt-webapp/common/src/errors';
 
-export const registerErrorHandler = (app: FastifyInstance) => {
-	app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply) => {
-		let statusCode = 500;
+/**
+ * Wraps the default arktype-validator validator
+ * to return an error response conforming to the
+ * ServerErrorResponse type.
+ * @param schema The Arktype type to validate against.
+ * @returns The error response.
+ */
+export function fieldValidator(schema: Type) {
+	return arktypeValidator('json', schema, (result, c) => {
+		if (result.success) return;
+
+		const fieldErrors: FieldErrors = {};
+		const errorDetails: AppErrors = {};
+		result.errors.forEach((error) => {
+			const fieldPath = error.propString;
+			if (!fieldErrors[fieldPath]) {
+				fieldErrors[fieldPath] = [];
+			}
+			fieldErrors[fieldPath].push(error.message);
+		});
+		errorDetails['fieldErrors'] = fieldErrors;
+
+		return c.json(
+			{
+				message: 'Request body validation failed.',
+				details: errorDetails
+			} satisfies ServerErrorResponse,
+			400
+		);
+	});
+}
+
+export function registerErrorHandler(app: Hono) {
+	app.onError((error, c) => {
+		let statusCode: ContentfulStatusCode = 500;
 		let errorMessage = 'No error message set on response.';
 		let errorDetails: AppErrors = {
 			nonFormErrors: ['Something unexpected happened on the server.']
 		};
 
-		/** If the error resulted from an invalid request body schema. */
-		if (hasZodFastifySchemaValidationErrors(error)) {
-			const fieldErrors: FieldErrors = {};
-
-			/** For each error, put the error message in the array of field errors in the response */
-			for (const validationError of error.validation) {
-				const fieldName = validationError.instancePath.split('/').join('.');
-				if (fieldErrors[fieldName]) {
-					fieldErrors[fieldName].push(validationError.message);
-				} else {
-					fieldErrors[fieldName] = [validationError.message];
-				}
-			}
-
-			statusCode = 400;
-			errorMessage = 'Request body validation failed.';
-			errorDetails = {};
-			errorDetails['fieldErrors'] = fieldErrors;
-
-			/** Catch all application exceptions. */
-		} else if (error instanceof ServerError) {
-			statusCode = error.statusCode;
+		if (error instanceof ServerError) {
+			statusCode = error.statusCode as ContentfulStatusCode;
 			errorMessage = error.message;
 			errorDetails = error.details;
-		} else {
-			console.error(error);
+		} else if (error instanceof HTTPException) {
+			statusCode = error.status;
+			errorMessage = error.message;
+			errorDetails.nonFormErrors = [error.message];
 		}
 
-		reply.code(statusCode).send({
-			message: errorMessage,
-			details: errorDetails
-		} satisfies ServerErrorResponse);
+		return c.json(
+			{
+				message: errorMessage,
+				details: errorDetails
+			} satisfies ServerErrorResponse,
+			statusCode
+		);
 	});
-};
+}

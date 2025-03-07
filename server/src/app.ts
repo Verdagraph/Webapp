@@ -1,35 +1,21 @@
-import Fastify from 'fastify';
-import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
-import {
-	registerDiContainer,
-	registerAuth,
-	registerRouters,
-	registerErrorHandler,
-	registerOpenapi,
-	registerCors,
-	registerCookies
-} from './plugins';
+import { Hono } from 'hono';
+import * as plugins from './plugins';
 import env from 'env';
 
 export const buildApp = () => {
-	const app = Fastify({ logger: true });
+	const app = new Hono();
 
 	/** Basic middlewares. */
-	registerCors(app);
-	registerCookies(app);
+	plugins.registerCors(app);
 
 	/** Dependency injection. */
-	registerDiContainer(app);
+	plugins.registerDependencies(app);
 
 	/** Error handling. */
-	registerErrorHandler(app);
+	plugins.registerErrorHandler(app);
 
 	/** Authentication support. */
-	registerAuth(app);
-
-	/** ZOD request body handling. */
-	app.setValidatorCompiler(validatorCompiler);
-	app.setSerializerCompiler(serializerCompiler);
+	plugins.registerAuth(app);
 
 	/** OpenAPI schema. */
 	registerOpenapi(app);

@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import {ArkErrors, type} from 'arktype'
+import { ArkErrors, type } from 'arktype';
 import { Exception } from 'handlebars';
 
 /** Default value for JWT key expiry. */
-const defaultKeyExpiry = 3 * 24 * 60 * 60
+const defaultKeyExpiry = 3 * 24 * 60 * 60;
 
 const EnvSchema = type({
 	/** Email verification. */
@@ -14,8 +14,8 @@ const EnvSchema = type({
 	/** The URL of the Triplit database server. */
 	TRIPLIT_URL: 'string.url = "http://localhost:6543"',
 	/** The service JWT token provided by triplit for access to the database by the server. */
-	TRIPLIT_SERVER_TOKEN: 'string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6InNlY3JldCIsIngtdHJpcGxpdC1wcm9qZWN0LWlkIjoibG9jYWwtcHJvamVjdC1pZCJ9.8Z76XXPc9esdlZb2b7NDC7IVajNXKc4eVcPsO7Ve0ug"',
-
+	TRIPLIT_SERVER_TOKEN:
+		'string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6InNlY3JldCIsIngtdHJpcGxpdC1wcm9qZWN0LWlkIjoibG9jYWwtcHJvamVjdC1pZCJ9.8Z76XXPc9esdlZb2b7NDC7IVajNXKc4eVcPsO7Ve0ug"',
 
 	/** Networking. */
 	/** The base URL which points to the frontend. */
@@ -28,6 +28,11 @@ const EnvSchema = type({
 	APP_HOST: 'string = "localhost"',
 	/** The port the server process is running on. */
 	APP_PORT: 'number.integer = 8000',
+
+	/** Cookies. */
+	/** The secret used to encode cookie signatures. */
+	COOKIE_SECRET: 'string = "secret"',
+	COOKIE_SAMESITE: '"strict" | "lax" | "none" = "lax"',
 
 	/** JWTs. */
 	/** The secret used to encode JWT access tokens. */
@@ -44,8 +49,6 @@ const EnvSchema = type({
 	EMAIL_CONFIRMATION_TOKEN_EXPIRY_S: type('number.integer').default(defaultKeyExpiry),
 	/** The expiry duration for JWT password reset tokens, in seconds. */
 	PASSWORD_RESET_TOKEN_EXPIRY_S: type('number.integer').default(defaultKeyExpiry),
-	/** The secret used to encode cookie signatures. */
-	COOKIE_SECRET: 'string = "secret"',
 
 	/** Emails. */
 	/** The host of the SMTP server used for sending emails. */
@@ -58,10 +61,11 @@ const EnvSchema = type({
 	SMTP_PASSWORD: 'string = "serverSmtpPassword"',
 	/** The email address of the server's user on the SMTP server. */
 	SMTP_SENDER: 'string.email = "verdantech@email.com"'
-})
+});
+type Env = typeof EnvSchema.infer;
 
 const env = EnvSchema(process.env);
 if (env instanceof ArkErrors) {
-	throw new Exception(env.summary)
+	throw new Exception(env.summary);
 }
-export default env;
+export default env satisfies Env;

@@ -1,8 +1,8 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { type Hono } from 'hono';
+import { createMiddleware } from 'hono/factory';
 import { getAccessTokenHeader, decodeAccessToken } from 'users/auth/tokens';
 import { AuthenticationError } from 'common/errors';
-import { asValue } from 'awilix';
-import { UserAccount } from '@vdt-webapp/common/src/users/schema';
+import { UserAccount } from '@vdt-webapp/common';
 
 /**
  * Given a request, parse the request api key stored in the header
@@ -12,30 +12,39 @@ import { UserAccount } from '@vdt-webapp/common/src/users/schema';
  * routes to be open to non-authenticated users but return different
  * content when authenticated users access it.
  */
-export const registerAuth = (app: FastifyInstance) => {
-	app.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
-		/** Retrieve the access token. */
-		const encodedAccessToken = getAccessTokenHeader(request);
-		if (encodedAccessToken == null) {
-			request.diScope.register({ client: asValue(null) });
-			return;
-		}
+const authMiddleware = createMiddleware<{
+	Variables: {
+		client: UserAccount | null;
+	};
+}>(async (ctx, next) => {
+	/** Retrieve the access token. */
+	const encodedAccessToken = getAccessTokenHeader(ctx);
+	if (encodedAccessToken == null) {
+		ctx.set('client', null);
+		return;
+	}
 
-		/** Decode the token. */
-		const token = await decodeAccessToken(encodedAccessToken);
-		if (token == null) {
-			request.diScope.register({ client: asValue(null) });
-			return;
-		}
+	/** Decode the token. */
+	const token = await decodeAccessToken(encodedAccessToken);
+	if (token == null) {
+		ctx.set('client', null);
+		return;
+	}
 
-		/** Retrieve the user the token represents. */
-		const users = app.diContainer.resolve('userRepo');
-		const user = await users.getAccountById(token.uid);
+	/** Retrieve the user the token represents. */
+	const users = ctx.get('users');
+	const user = await users.getAccountById(token.accountId);
 
-		/** Add the user to the request dependencies. */
-		request.diScope.register({ client: asValue(user) });
-	});
-};
+	/** Add the user to the request dependencies. */
+	ctx.set('client', user);
+
+	/** Proceed with the request cycle. */
+	await next();
+});
+
+export function registerAuth(app: Hono) {
+	app.use(authMiddleware);
+}
 
 /**
  * Throws an exception if no user was provided by the authentication middleware.
