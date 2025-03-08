@@ -21,14 +21,16 @@ const authMiddleware = createMiddleware<{
 	const encodedAccessToken = getAccessTokenHeader(ctx);
 	if (encodedAccessToken == null) {
 		ctx.set('client', null);
-		return;
+		await next();
+		return
 	}
 
 	/** Decode the token. */
 	const token = await decodeAccessToken(encodedAccessToken);
 	if (token == null) {
 		ctx.set('client', null);
-		return;
+		await next();
+		return
 	}
 
 	/** Retrieve the user the token represents. */

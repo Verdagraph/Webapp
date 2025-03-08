@@ -3,7 +3,7 @@ import { type } from 'arktype';
 import { resolver } from 'hono-openapi/arktype';
 import { describeRoute } from 'hono-openapi';
 import {
-	UserLoginCommandSchema,
+	UserLoginCommandSchema, UserLoginCommand,
 	UserCreateCommandSchema,
 	UserUpdateCommandSchema,
 	UserRequestEmailConfirmationCommandSchema,
@@ -34,7 +34,7 @@ userRouter.post(
 				description: 'The access token.',
 				content: { 'application/json': { schema: resolver(type('string')) } }
 			}
-		}
+		},
 	}),
 	fieldValidator(UserLoginCommandSchema),
 	async (ctx) => {

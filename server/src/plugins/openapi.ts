@@ -17,5 +17,5 @@ export const registerOpenapi = (app: Hono) => {
 		})
 	);
 
-	app.get('/schema', apiReference({ spec: { url: '/openapi.json' } }));
+	app.get('/schema', apiReference({ spec: { url: '/openapi' } }));
 };

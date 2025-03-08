@@ -1,17 +1,17 @@
 import * as nodemailer from 'nodemailer';
 import type { Transporter as NodemailerTransporter } from 'nodemailer';
-import * as handlebars from 'handlebars';
 import * as fs from 'fs';
 import * as path from 'path';
 import env from 'env';
+import Handlebars from "handlebars"
 
 const files: Record<string, Record<string, string>> = {
 	emailConfirmation: {
-		path: './emailConfirmation.html',
+		path: 'src/common/emails/emailConfirmation.html',
 		subject: 'VerdanTech - Confirm your Email'
 	},
 	passwordReset: {
-		path: './passwordReset.html',
+		path: 'src/common/emails/passwordReset.html',
 		subject: 'VerdanTech - Reset your Password'
 	}
 };
@@ -36,7 +36,7 @@ class EmailSender {
 		for (const [name, email] of Object.entries(files)) {
 			const filepath = path.join(dirname, email.path);
 			const source = fs.readFileSync(filepath, 'utf-8').toString();
-			this.templates[name] = handlebars.compile(source);
+			this.templates[name] = Handlebars.compile(source);
 		}
 	}
 

@@ -2,8 +2,9 @@ import type { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import type { Type } from 'arktype';
-import { validator } from 'hono-openapi/arktype';
 import { ServerError } from '../common/errors';
+//import { validator } from 'hono-openapi/arktype';
+import { arktypeValidator as validator} from '@hono/arktype-validator';
 import {
 	ServerErrorResponse,
 	FieldErrors,
@@ -18,6 +19,7 @@ import {
  * @returns The error response.
  */
 export function fieldValidator<T extends Type>(schema: T) {
+	/** TODO: Change validator to hono-openapi validator once it supports Arktype better. */
 	return validator('json', schema, (result, c) => {
 		if (result.success) return;
 
@@ -58,6 +60,8 @@ export function registerErrorHandler(app: Hono) {
 			statusCode = error.status;
 			errorMessage = error.message;
 			errorDetails.nonFormErrors = [error.message];
+		} else {
+			console.log(error)
 		}
 
 		return c.json(
