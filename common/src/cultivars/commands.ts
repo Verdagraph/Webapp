@@ -1,10 +1,11 @@
 import { type } from 'arktype';
 import { CultivarCollectionVisibilityEnum } from './schema';
-import { commonFields } from '@common/commands';
+import { commonFields } from '../commands';
 
 /** Field specifications. */
 /** Cultivars. */
-export const cultivarNameSchema = type('string.trim & /^[0-9A-Za-z _-]+$/')
+export const cultivarNameSchema = type('string.trim')
+	.to(/^[0-9A-Za-z _-]+$/)
 	.to('3 <= string <= 30')
 	.describe(
 		'between 3 and 30 characters and contain only letters, numbers, spaces, underscores, or hyphens'
@@ -20,7 +21,8 @@ export const cultivarNamesSchema = cultivarNameSchema
 	.atLeastLength(1)
 	.atMostLength(20)
 	.configure({ details: 'A set of common names associated with this plant species' });
-export const cultivarAbbreviationSchema = type('string.trim & /^[0-9A-Za-z]+$/')
+export const cultivarAbbreviationSchema = type('string.trim')
+	.to(/^[0-9A-Za-z]+$/)
 	.to('1 <= string <= 6')
 	.describe('between 1 and 6 characters and contain only letters and numbers')
 	.configure({
@@ -44,7 +46,8 @@ export const cultivarCollectionVisiblitySchema = type
             Unlisted collections may be viewed by anyone with the link. \
             Private collections may only be accessed by the creator or members of the associated garden.'
 	});
-export const cultivarCollectionTagSchema = type('string.trim & /^[0-9A-Za-z ]+$/')
+export const cultivarCollectionTagSchema = type('string.trim')
+	.to(/^[0-9A-Za-z ]+$/)
 	.to('string <= 150')
 	.describe(
 		'under 150 characters and contain only letters, numbers, hyphens, and spaces'

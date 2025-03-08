@@ -1,22 +1,21 @@
-import z from 'zod';
-import { diContainer } from '@fastify/awilix';
 import { UserRequestPasswordResetCommand } from '@vdt-webapp/common/src';
 import { NotFoundError } from 'common/errors';
 
 import { encodePasswordResetToken } from 'users/auth/tokens';
 import env from 'env';
+import { UserRepository } from 'users/repository';
+import EmailSender from 'common/emails/sender';
 /**
  * Requests a new password reset.
  * @param command The request command.
- * @param container The service locator.
+ * @param users The user repository.
+ * @param emailSender The email sending class.
  */
 const requestPasswordReset = async (
-	command: z.infer<typeof UserRequestPasswordResetCommand>,
-	container: typeof diContainer
+	command: UserRequestPasswordResetCommand,
+	users: UserRepository,
+	emailSender: EmailSender
 ) => {
-	const users = container.resolve('userRepo');
-	const emailSender = container.resolve('emailSender');
-
 	const user = await users.getAccountByVerifiedEmail(command.email);
 	if (user == null) {
 		throw new NotFoundError('No email exists', {

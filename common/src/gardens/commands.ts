@@ -1,10 +1,12 @@
 import { type } from 'arktype';
 import { userUsernameSchema } from '../users/commands';
 import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
-import { commonFields } from '@common/commands';
+import { commonFields } from '../commands';
 
 /** Field specifications. */
-export const gardenIdSchema = type('string.trim & string.lower & /[0-9A-Za-z-]+/')
+export const gardenIdSchema = type('string.trim')
+	.to('string.lower')
+	.to(/[0-9A-Za-z-]+/)
 	.to('4 <= string <= 21')
 	.describe(
 		'betwwen 4 and 21 characters, contain only letters, numbers, and hyphens, and be unique.'

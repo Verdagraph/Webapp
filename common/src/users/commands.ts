@@ -1,7 +1,8 @@
 import { type } from 'arktype';
 
 /** Field specifications. */
-export const userUsernameSchema = type('string.trim & /^[a-zA-Z0-9_-]*$/')
+export const userUsernameSchema = type('string.trim')
+	.to(/^[a-zA-Z0-9_-]*$/)
 	.to('3 <= string <= 50')
 	.describe(
 		'between 3 and 50 characters, contain only letters, numbers, underscores, or hyphens, and be unique.'
@@ -47,10 +48,10 @@ export type UserCreateCommand = typeof UserCreateCommandSchema.infer;
  * Command to update a new user.
  */
 export const UserUpdateCommandSchema = type({
-	'newEmail?': userEmailSchema,
-	'newUsername?': userUsernameSchema,
-	'newPassword?': userPasswordSchema,
-	'confirmNewPassword?': userPasswordSchema,
+	newEmail: userEmailSchema.optional(),
+	newUsername: userUsernameSchema.optional(),
+	newPassword: userPasswordSchema.optional(),
+	confirmNewPassword: userPasswordSchema.optional(),
 	password: userPasswordSchema
 }).narrow((data, ctx) => {
 	if (data.newPassword === data.confirmNewPassword) {

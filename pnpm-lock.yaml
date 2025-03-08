@@ -193,6 +193,9 @@ importers:
       '@fastify/cors':
         specifier: ^10.0.2
         version: 10.0.2
+      '@scalar/hono-api-reference':
+        specifier: ^0.5.183
+        version: 0.5.183(hono@4.7.2)
       '@triplit/client':
         specifier: ^0.5.17
         version: 0.5.17
@@ -245,6 +248,9 @@ importers:
       '@hono/arktype-validator':
         specifier: ^2.0.0
         version: 2.0.0(arktype@2.1.2)(hono@4.7.2)
+      '@hono/node-server':
+        specifier: ^1.13.8
+        version: 1.13.8(hono@4.7.2)
       '@triplit/cli':
         specifier: ^0.6.35
         version: 0.6.35
@@ -989,6 +995,12 @@ packages:
       arktype: ^2.0.0-dev.14
       hono: '*'
 
+  '@hono/node-server@1.13.8':
+    resolution: {integrity: sha512-fsn8ucecsAXUoVxrUil0m13kOEq4mkX4/4QozCqmY+HpGfKl74OYSn8JcMA8GnG0ClfdRI4/ZSeG7zhFaVg+wg==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
+
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
     engines: {node: '>=18.18.0'}
@@ -1237,6 +1249,24 @@ packages:
     resolution: {integrity: sha512-D6qjsXGcvhTjv0kI4fU8tUuBDF/Ueee4SVX79VfNDXZa64TfCW1Slkb6Z7O1p7vflqZjcmOVdZlqf8gvJxc6og==}
     cpu: [x64]
     os: [win32]
+
+  '@scalar/core@0.1.0':
+    resolution: {integrity: sha512-LnszTA7JmdtmEX1qqhkIKTKFQiFstRYiDs0NrXdYtMk/WB55Bnoz0Lk8BWw1qC1NhMpP5It+PRYZke727Gxrbw==}
+    engines: {node: '>=18'}
+
+  '@scalar/hono-api-reference@0.5.183':
+    resolution: {integrity: sha512-rzWxFDjBW2VvMRAPqcwgkC+7ZMmBZZVIMFUejwjF+618jKvQ09ooVyBb9hUnW4KaUElUqx/iIFflLKf0A95iLA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      hono: ^4.0.0
+
+  '@scalar/openapi-types@0.1.9':
+    resolution: {integrity: sha512-HQQudOSQBU7ewzfnBW9LhDmBE2XOJgSfwrh5PlUB7zJup/kaRkBGNgV2wMjNz9Af/uztiU/xNrO179FysmUT+g==}
+    engines: {node: '>=18'}
+
+  '@scalar/types@0.0.39':
+    resolution: {integrity: sha512-oAMBWC5B0I8IViCuaV1ydoUAm7KJSwHZfCuLMea15tSKh0/wj9H1KQvDJF8gE/cUVwjQvj4q94GB22kBT4XGNQ==}
+    engines: {node: '>=18'}
 
   '@sideway/address@4.1.5':
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
@@ -1493,6 +1523,9 @@ packages:
   '@typescript-eslint/visitor-keys@8.20.0':
     resolution: {integrity: sha512-v/BpkeeYAsPkKCkR8BDwcno0llhzWVqPOamQrAEMdpZav2Y9OVjd9dwJyBLJWwf335B5DmlifECIkZRJCaGaHA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@unhead/schema@1.11.20':
+    resolution: {integrity: sha512-0zWykKAaJdm+/Y7yi/Yds20PrUK7XabLe9c3IRcjnwYmSWY6z0Cr19VIs3ozCj8P+GhR+/TI2mwtGlueCEYouA==}
 
   '@vinejs/compiler@2.5.1':
     resolution: {integrity: sha512-efiO/SCQSMCqz6LDZTI4R3Ceq1ik3K2IqefEbbch+ko4dZncaYmQWJpX/fXVwgmO78jTZuerzD4I2WphPJUCwg==}
@@ -2437,6 +2470,9 @@ packages:
   hono@4.7.2:
     resolution: {integrity: sha512-8V5XxoOF6SI12jkHkzX/6aLBMU5GEF5g387EjVSQipS0DlxWgWGSMeEayY3CRBjtTUQYwLHx9JYouWqKzy2Vng==}
     engines: {node: '>=16.9.0'}
+
+  hookable@5.5.3:
+    resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
 
   http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
@@ -4092,6 +4128,9 @@ packages:
   yup@1.6.1:
     resolution: {integrity: sha512-JED8pB50qbA4FOkDol0bYF/p60qSEDQqBD0/qeIrUCG1KbPBIQ776fCUNb9ldbPcSTxA69g/47XTo4TqWiuXOA==}
 
+  zhead@2.2.4:
+    resolution: {integrity: sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==}
+
   zimmerframe@1.1.2:
     resolution: {integrity: sha512-rAbqEGa8ovJy4pyBxZM70hg4pE6gDgaQ0Sl9M3enG3I0d6H4XSAM3GeNGLKnsBpuijUow064sf7ww1nutC5/3w==}
 
@@ -4597,6 +4636,10 @@ snapshots:
       arktype: 2.1.2
       hono: 4.7.2
 
+  '@hono/node-server@1.13.8(hono@4.7.2)':
+    dependencies:
+      hono: 4.7.2
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -4875,6 +4918,23 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.30.1':
     optional: true
+
+  '@scalar/core@0.1.0':
+    dependencies:
+      '@scalar/types': 0.0.39
+
+  '@scalar/hono-api-reference@0.5.183(hono@4.7.2)':
+    dependencies:
+      '@scalar/core': 0.1.0
+      hono: 4.7.2
+
+  '@scalar/openapi-types@0.1.9': {}
+
+  '@scalar/types@0.0.39':
+    dependencies:
+      '@scalar/openapi-types': 0.1.9
+      '@unhead/schema': 1.11.20
+      zod: 3.24.1
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -5296,6 +5356,11 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.20.0
       eslint-visitor-keys: 4.2.0
+
+  '@unhead/schema@1.11.20':
+    dependencies:
+      hookable: 5.5.3
+      zhead: 2.2.4
 
   '@vinejs/compiler@2.5.1':
     optional: true
@@ -6422,6 +6487,8 @@ snapshots:
       typescript: 5.7.3
 
   hono@4.7.2: {}
+
+  hookable@5.5.3: {}
 
   http-errors@2.0.0:
     dependencies:
@@ -8112,6 +8179,8 @@ snapshots:
       toposort: 2.0.2
       type-fest: 2.19.0
     optional: true
+
+  zhead@2.2.4: {}
 
   zimmerframe@1.1.2: {}
 

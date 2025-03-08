@@ -1,22 +1,21 @@
-import z from 'zod';
-import { diContainer } from '@fastify/awilix';
 import { UserRequestEmailConfirmationCommand } from '@vdt-webapp/common';
 import { InternalFailureException, NotFoundError } from 'common/errors';
 import { encodeEmailConfirmationToken } from 'users/auth/tokens';
 import env from 'env';
+import { UserRepository } from 'users/repository';
+import EmailSender from 'common/emails/sender';
 
 /**
  * Requests a new email confirmation.
  * @param command The request command.
- * @param container The service locator.
+ * @param users The user repository.
+ * @param emailSender The email sending class.
  */
 const requestEmailConfirmation = async (
-	command: z.infer<typeof UserRequestEmailConfirmationCommand>,
-	container: typeof diContainer
+	command: UserRequestEmailConfirmationCommand,
+	users: UserRepository,
+	emailSender: EmailSender
 ) => {
-	const users = container.resolve('userRepo');
-	const emailSender = container.resolve('emailSender');
-
 	/** Retrieve user. */
 	const account = await users.getAccountByUnverifiedEmail(command.email);
 	if (account == null) {

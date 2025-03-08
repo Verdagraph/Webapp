@@ -1,11 +1,11 @@
 import env from 'env';
-import z from 'zod';
-import { diContainer } from '@fastify/awilix';
-import { UserUpdateCommand } from '@vdt-webapp/common/src/user/mutations';
 import { ValidationError } from 'common/errors';
 import { hashPassword, verifyPassword } from '../auth/passwords';
-import { UserAccount } from '@vdt-webapp/common/src/user/schema';
+import { type UserAccount } from '@vdt-webapp/common';
 import { AuthenticationError } from 'common/errors';
+import { UserRepository } from 'users/repository';
+import EmailSender from 'common/emails/sender';
+import { type UserUpdateCommand } from '@vdt-webapp/common';
 
 /**
  * Updates an existing user in the database.
@@ -13,12 +13,11 @@ import { AuthenticationError } from 'common/errors';
  * @param container The service locator.
  */
 const update = async (
-	command: z.infer<typeof UserUpdateCommand>,
-	container: typeof diContainer,
-	client: UserAccount
+	command: UserUpdateCommand,
+	client: UserAccount,
+	users: UserRepository,
+	emailSender: EmailSender
 ) => {
-	const users = container.resolve('userRepo');
-
 	/** Validate command against existing database state. */
 	if (command.newEmail) {
 		const emailExists = await users.emailExists(command.newEmail);
@@ -66,8 +65,8 @@ const update = async (
 	}
 
 	/** Update the password. */
-	if (command.newPassword1) {
-		const passwordHash = await hashPassword(command.newPassword1);
+	if (command.newPassword) {
+		const passwordHash = await hashPassword(command.newPassword);
 		await users.updatePassword(client.id, passwordHash);
 	}
 };

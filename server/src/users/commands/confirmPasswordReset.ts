@@ -1,21 +1,18 @@
-import z from 'zod';
-import { diContainer } from '@fastify/awilix';
 import { UserConfirmPasswordResetCommand } from '@vdt-webapp/common';
 import { decodePasswordResetToken } from 'users/auth/tokens';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from 'users/auth/passwords';
+import { UserRepository } from 'users/repository';
 
 /**
  * Closes a password reset request.
  * @param command The request command.
- * @param container The service locator.
+ * @param users The user repository.
  */
 const confirmPasswordReset = async (
-	command: z.infer<typeof UserConfirmPasswordResetCommand>,
-	container: typeof diContainer
+	command: UserConfirmPasswordResetCommand,
+	users: UserRepository
 ) => {
-	const users = container.resolve('userRepo');
-
 	/** Decode the token. */
 	const token = await decodePasswordResetToken(command.token);
 	if (token == null) {
@@ -43,7 +40,7 @@ const confirmPasswordReset = async (
 	}
 
 	/** Update the password. */
-	const passwordHash = await hashPassword(command.password1);
+	const passwordHash = await hashPassword(command.password);
 	await users.updatePassword(user.id, passwordHash);
 };
 export default confirmPasswordReset;

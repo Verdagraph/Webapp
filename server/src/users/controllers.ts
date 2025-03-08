@@ -1,185 +1,209 @@
-import { FastifyInstance } from 'fastify';
-import { ZodTypeProvider } from 'fastify-type-provider-zod';
-import z from 'zod';
+import { Hono } from 'hono';
+import { type } from 'arktype';
+import { resolver } from 'hono-openapi/arktype';
+import { describeRoute } from 'hono-openapi';
 import {
-	UserLoginCommand,
-	UserCreateCommand,
-	UserUpdateCommand,
-	UserRequestEmailConfirmationCommand,
-	UserConfirmEmailConfirmationCommand,
-	UserRequestPasswordResetCommand,
-	UserConfirmPasswordResetCommand
+	UserLoginCommandSchema,
+	UserCreateCommandSchema,
+	UserUpdateCommandSchema,
+	UserRequestEmailConfirmationCommandSchema,
+	UserConfirmEmailConfirmationCommandSchema,
+	UserRequestPasswordResetCommandSchema,
+	UserConfirmPasswordResetCommandSchema
 } from '@vdt-webapp/common';
-import { setTag } from 'plugins/openapi';
-import {
-	login,
-	refresh,
-	create,
-	update,
-	requestEmailConfirmation,
-	confirmEmailConfirmation,
-	requestPasswordReset,
-	confirmPasswordReset
-} from './commands';
+import * as commands from './commands';
 import {
 	setRefreshTokenCookie,
 	getRefreshTokenCookie,
 	setAccessTokenHeader
 } from './auth/tokens';
-import { requireAuth } from 'plugins/auth';
+import { requireAuth, fieldValidator } from 'plugins';
 
-export const userRouter = async (app: FastifyInstance) => {
-	setTag(app, 'user');
+export const userRouter = new Hono().basePath('/users');
 
-	/** Login. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'login',
-		schema: {
-			operationId: 'UserLoginOp',
-			description:
-				'Grants an access and refresh token on a correct username and password.',
-			body: UserLoginCommand,
-			tags: ['user'],
-			response: {
-				200: z.string().describe('The access token.')
+/** Login. */
+userRouter.post(
+	'/login',
+	describeRoute({
+		operationId: 'UserLoginOp',
+		description:
+			'Grants an access and refresh token on a correct username and password.',
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'The access token.',
+				content: { 'application/json': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			const result = await login(request.body, app.diContainer);
-			setRefreshTokenCookie(result.refreshToken, reply);
-			setAccessTokenHeader(result.accessToken, reply);
-			reply.code(200).send(result.accessToken);
 		}
-	});
+	}),
+	fieldValidator(UserLoginCommandSchema),
+	async (ctx) => {
+		const result = await commands.login(ctx.req.valid('json'), ctx.get('users'));
+		await setRefreshTokenCookie(result.refreshToken, ctx);
+		setAccessTokenHeader(result.accessToken, ctx);
+		return ctx.text(result.accessToken, 200);
+	}
+);
 
-	/** Refresh. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'refresh',
-		schema: {
-			operationId: 'UserRefreshOp',
-			description: 'Grants an access and refresh token on a valid refresh token.',
-			response: {
-				200: z.string().describe('The access token.')
+/** Refresh. */
+userRouter.post(
+	'/refresh',
+	describeRoute({
+		operationId: 'UserRefreshOp',
+		description: 'Grants an access and refresh token on a valid refresh token.',
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'The access token.',
+				content: { 'application/json': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			const refreshToken = getRefreshTokenCookie(request);
-			const result = await refresh(refreshToken, app.diContainer);
-			setRefreshTokenCookie(result.refreshToken, reply);
-			setAccessTokenHeader(result.accessToken, reply);
-			reply.code(200).send(result.accessToken);
 		}
-	});
+	}),
+	async (ctx) => {
+		const refreshToken = await getRefreshTokenCookie(ctx);
+		const result = await commands.refresh(refreshToken, ctx.get('users'));
+		await setRefreshTokenCookie(result.refreshToken, ctx);
+		setAccessTokenHeader(result.accessToken, ctx);
+		return ctx.text(result.accessToken, 200);
+	}
+);
 
-	/** Create. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'create',
-		schema: {
-			operationId: 'UserCreateOp',
-			description: 'Creates a new user.',
-			body: UserCreateCommand,
-			response: {
-				200: z.string()
+/** Create. */
+userRouter.post(
+	'/create',
+	describeRoute({
+		operationId: 'UserCreateOp',
+		description: 'Creates a new user.',
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'Returned if the user is created successfully.',
+				content: { 'text/plain': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			await create(request.body, app.diContainer);
-			reply.code(200).send('User created.');
 		}
-	});
+	}),
+	fieldValidator(UserCreateCommandSchema),
+	async (ctx) => {
+		await commands.create(ctx.req.valid('json'), ctx.get('users'), ctx.get('email'));
+		return ctx.text('User created', 200);
+	}
+);
 
-	/** Update. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'update',
-		schema: {
-			operationId: 'UserUpdateOp',
-			description: "Updates a user's username, email, or password",
-			body: UserUpdateCommand,
-			response: {
-				200: z.string()
+/** Update. */
+userRouter.post(
+	'/update',
+	describeRoute({
+		operationId: 'UserUpdateOp',
+		description: "Updates a user's username, email, or password.",
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'Returned if the user is updated successfully.',
+				content: { 'text/plain': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			const client = requireAuth(request.diScope.resolve('client'));
-			await update(request.body, app.diContainer, client);
-			reply.code(200).send('User updated.');
 		}
-	});
+	}),
+	fieldValidator(UserUpdateCommandSchema),
+	async (ctx) => {
+		const client = requireAuth(ctx.get('client'));
+		await commands.update(
+			ctx.req.valid('json'),
+			client,
+			ctx.get('users'),
+			ctx.get('email')
+		);
+		return ctx.text('User updated', 200);
+	}
+);
 
-	/** Request email confirmation. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'requestEmailConfirmationOp',
-		schema: {
-			operationId: 'UserRequestEmailConfirmationOp',
-			description: 'Requests an email confirmation be sent to the email address.',
-			body: UserRequestEmailConfirmationCommand,
-			response: {
-				200: z.string()
+/** Request email confirmation. */
+userRouter.post(
+	'/requestEmailConfirmation',
+	describeRoute({
+		operationId: 'UserRequestEmailConfirmationOp',
+		description: 'Requests an email confirmation be sent to the email address.',
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'Returned if the confirmation is requested successfully.',
+				content: { 'text/plain': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			await requestEmailConfirmation(request.body, app.diContainer);
-			reply.code(200).send('Confirmation requested.');
 		}
-	});
+	}),
+	fieldValidator(UserRequestEmailConfirmationCommandSchema),
+	async (ctx) => {
+		await commands.requestEmailConfirmation(
+			ctx.req.valid('json'),
+			ctx.get('users'),
+			ctx.get('email')
+		);
+		return ctx.text('Confirmation requested.', 200);
+	}
+);
 
-	/** Confirm email. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'confirmEmail',
-		schema: {
-			operationId: 'UserConfirmEmailOp',
-			description: 'Confirms an email confirmation and verifies the email.',
-			body: UserConfirmEmailConfirmationCommand,
-			response: {
-				200: z.string()
+/** Confirm email. */
+userRouter.post(
+	'/confirmEmail',
+	describeRoute({
+		operationId: 'UserConfirmEmailOp',
+		description: 'Confirms an email confirmation and verifies the email.',
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'Returned if the email is verified successfully.',
+				content: { 'text/plain': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			await confirmEmailConfirmation(request.body, app.diContainer);
-			reply.code(200).send('Email confirmed.');
 		}
-	});
+	}),
+	fieldValidator(UserConfirmEmailConfirmationCommandSchema),
+	async (ctx) => {
+		await commands.confirmEmailConfirmation(ctx.req.valid('json'), ctx.get('users'));
+		return ctx.text('Email confirmed.', 200);
+	}
+);
 
-	/** Request password reset. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'requestPasswordReset',
-		schema: {
-			operationId: 'UserRequestPasswordResetOp',
-			description: 'Requests a password reset confirmation be sent to the email.',
-			body: UserRequestPasswordResetCommand,
-			response: {
-				200: z.string()
+/** Request password reset. */
+userRouter.post(
+	'/requestPasswordReset',
+	describeRoute({
+		operationId: 'UserRequestPasswordResetOp',
+		description: 'Requests a password reset confirmation be sent to the email.',
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'Returned if the password reset is requested successfully.',
+				content: { 'text/plain': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			await requestPasswordReset(request.body, app.diContainer);
-			reply.code(200).send('Password reset requested.');
 		}
-	});
+	}),
+	fieldValidator(UserRequestPasswordResetCommandSchema),
+	async (ctx) => {
+		await commands.requestPasswordReset(
+			ctx.req.valid('json'),
+			ctx.get('users'),
+			ctx.get('email')
+		);
+		return ctx.text('Password reset requested.', 200);
+	}
+);
 
-	/** Confirm password reset. */
-	app.withTypeProvider<ZodTypeProvider>().route({
-		method: 'POST',
-		url: 'confirmPasswordReset',
-		schema: {
-			operationId: 'UserConfirmPasswordResetOp',
-			description: "Confirms a password reset and changes the user's password",
-			body: UserConfirmPasswordResetCommand,
-			response: {
-				200: z.string()
+/** Confirm password reset. */
+userRouter.post(
+	'/confirmPasswordReset',
+	describeRoute({
+		operationId: 'UserConfirmPasswordResetOp',
+		description: 'Confirms a password reset and changes the user\'s password"',
+		tags: ['user'],
+		responses: {
+			200: {
+				description: 'Returned if the password is reset successfully.',
+				content: { 'text/plain': { schema: resolver(type('string')) } }
 			}
-		},
-		handler: async (request, reply) => {
-			await confirmPasswordReset(request.body, app.diContainer);
-			reply.code(200).send('Password reset.');
 		}
-	});
-};
-export default userRouter;
+	}),
+	fieldValidator(UserConfirmPasswordResetCommandSchema),
+	async (ctx) => {
+		await commands.confirmPasswordReset(ctx.req.valid('json'), ctx.get('users'));
+		return ctx.text('Password reset.', 200);
+	}
+);

@@ -1,6 +1,6 @@
 import { type } from 'arktype';
 import { GeometryTypeEnum, type GeometryType } from './schema';
-import { commonFields } from '@common/commands';
+import { commonFields } from '../commands';
 
 /** The maximum supported magnitude of a coordinate. */
 const maxCoordinateMagnitude = 1000000;
@@ -39,7 +39,7 @@ export const geometryCoordinateSchema = type({
 })
 	.configure({ details: 'A position relative to the origin of a workspace.' })
 	.narrow((data, ctx) => {
-		if (data.x ** 2 + data.y ** 2 > maxCoordinateMagnitudeSquared) {
+		if (data.x ** 2 + data.y ** 2 <= maxCoordinateMagnitudeSquared) {
 			return true;
 		}
 		return ctx.reject({

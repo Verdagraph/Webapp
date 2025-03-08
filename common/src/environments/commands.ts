@@ -1,6 +1,6 @@
 import { type } from 'arktype';
 import { EnvironmentParentTypeEnum } from './schema';
-import { commonFields } from '@common/commands';
+import { commonFields } from '../commands';
 
 /** Field specifications. */
 export const environmentNameSchema = commonFields.name.configure({

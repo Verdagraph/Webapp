@@ -1,23 +1,22 @@
 import env from 'env';
-import z from 'zod';
-import { diContainer } from '@fastify/awilix';
 import { UserCreateCommand } from '@vdt-webapp/common';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from '../auth/passwords';
 import { encodeEmailConfirmationToken } from '../auth/tokens';
+import { UserRepository } from 'users/repository';
+import EmailSender from 'common/emails/sender';
 
 /**
  * Creates a new user in the database.
  * @param command The create command.
- * @param container The service locator.
+ * @param users The user repository.
+ * @param emailSender The email sending class.
  */
 const create = async (
-	command: z.infer<typeof UserCreateCommand>,
-	container: typeof diContainer
+	command: UserCreateCommand,
+	users: UserRepository,
+	emailSender: EmailSender
 ) => {
-	const users = container.resolve('userRepo');
-	const emailSender = container.resolve('emailSender');
-
 	/** Validate command against existing database state. */
 	const emailExists = await users.emailExists(command.email);
 	if (emailExists) {
@@ -33,7 +32,7 @@ const create = async (
 	}
 
 	/** Hash password. */
-	const passwordHash = await hashPassword(command.password1);
+	const passwordHash = await hashPassword(command.password);
 
 	/** Create the objects. */
 	const result = await users.create(

@@ -1,10 +1,8 @@
-import z from 'zod';
-import { diContainer } from '@fastify/awilix';
-import { UserLoginCommand } from '@vdt-webapp/common/src/users/mutations';
+import { UserLoginCommand } from '@vdt-webapp/common';
 import { NotFoundError, AuthenticationError } from 'common/errors';
-
 import { verifyPassword } from '../auth/passwords';
 import { encodeAccessToken, encodeRefreshToken } from '../auth/tokens';
+import { UserRepository } from 'users/repository';
 
 export type UserLoginResult = {
 	/** The encoded access token. */
@@ -16,15 +14,13 @@ export type UserLoginResult = {
 /**
  * Authenticates the user and provides encoded JWT tokens.
  * @param command The login command.
- * @param container The service locator.
+ * @param users The user repository
  * @returns The encoded access and refresh tokens and the access expiry time.
  */
 const login = async (
-	command: z.infer<typeof UserLoginCommand>,
-	container: typeof diContainer
+	command: UserLoginCommand,
+	users: UserRepository
 ): Promise<UserLoginResult> => {
-	const users = container.resolve('userRepo');
-
 	/** Fetch the user from the database. */
 	const userAccount = await users.getAccountByVerifiedEmail(command.email);
 	if (userAccount == null) {

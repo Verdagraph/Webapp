@@ -1,6 +1,4 @@
-import { z } from 'zod';
 import { ArkErrors, type } from 'arktype';
-import { Exception } from 'handlebars';
 
 /** Default value for JWT key expiry. */
 const defaultKeyExpiry = 3 * 24 * 60 * 60;
@@ -66,6 +64,6 @@ type Env = typeof EnvSchema.infer;
 
 const env = EnvSchema(process.env);
 if (env instanceof ArkErrors) {
-	throw new Exception(env.summary);
+	throw new Error(env.summary);
 }
 export default env satisfies Env;

@@ -1,6 +1,6 @@
-import type { FastifyInstance } from 'fastify';
-import userRouter from '../users/controllers';
+import { type Hono } from 'hono';
+import { userRouter } from 'users';
 
-export const registerRouters = (app: FastifyInstance) => {
-	app.register(userRouter, { prefix: 'users/' });
+export const registerRouters = (app: Hono) => {
+	app.route('/', userRouter);
 };

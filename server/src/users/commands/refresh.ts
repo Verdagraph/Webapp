@@ -1,5 +1,3 @@
-import env from 'env';
-import { diContainer } from '@fastify/awilix';
 import { AuthenticationError } from 'common/errors';
 
 import {
@@ -8,15 +6,14 @@ import {
 	encodeRefreshToken
 } from '../auth/tokens';
 import type { UserLoginResult } from './login';
+import { UserRepository } from 'users/repository';
 
 const refresh = async (
-	oldRefreshToken: string | null,
-	container: typeof diContainer
+	oldRefreshToken: string | false | undefined,
+	users: UserRepository
 ): Promise<UserLoginResult> => {
-	const users = container.resolve('userRepo');
-
 	/** If no refresh token was provided, false authentication. */
-	if (oldRefreshToken == null) {
+	if (!oldRefreshToken) {
 		throw new AuthenticationError('No refresh credential.', {
 			nonFormErrors: ['Authentication expired. Please login again.']
 		});
