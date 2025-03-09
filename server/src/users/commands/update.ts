@@ -1,6 +1,6 @@
 import env from 'env';
 import { diContainer } from '@fastify/awilix';
-import { UserUpdateCommand, UserAccount } from '@vdt-webapp/common';
+import { type UserUpdateCommand, type UserAccount } from '@vdt-webapp/common';
 import { ValidationError } from 'common/errors';
 import { hashPassword, verifyPassword } from '../auth/passwords';
 import { AuthenticationError } from 'common/errors';

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { CultivarCollectionVisibilityEnum } from './schema';
-import { commonDescriptionSchema } from '@common/commands';
+import { commonDescriptionSchema } from '../commands';
 
 /** Field specifications. */
 export const cultivarNameSchema = z

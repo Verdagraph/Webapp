@@ -1,5 +1,5 @@
 import { diContainer } from '@fastify/awilix';
-import { UserConfirmPasswordResetCommand } from '@vdt-webapp/common';
+import { type UserConfirmPasswordResetCommand } from '@vdt-webapp/common';
 import { decodePasswordResetToken } from 'users/auth/tokens';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from 'users/auth/passwords';

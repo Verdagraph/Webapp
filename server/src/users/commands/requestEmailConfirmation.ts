@@ -1,5 +1,5 @@
 import { diContainer } from '@fastify/awilix';
-import { UserRequestEmailConfirmationCommand } from '@vdt-webapp/common';
+import { type UserRequestEmailConfirmationCommand } from '@vdt-webapp/common';
 import { InternalFailureException, NotFoundError } from 'common/errors';
 import { encodeEmailConfirmationToken } from 'users/auth/tokens';
 import env from 'env';

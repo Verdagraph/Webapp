@@ -1,7 +1,7 @@
 import z from 'zod';
 import { usernameSchema } from '../users/commands';
 import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
-import { commonDescriptionSchema, commonNameSchema } from '@common/commands';
+import { commonDescriptionSchema, commonNameSchema } from '../commands';
 
 /** Field specifications. */
 export const gardenIdSchema = z

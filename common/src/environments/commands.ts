@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { EnvironmentParentTypeEnum } from './schema';
-import { commonDescriptionSchema, commonNameSchema } from '@common/commands';
+import { commonDescriptionSchema, commonNameSchema } from '../commands';
 
 /** Field specifications. */
 export const environmentNameSchema = commonNameSchema.describe(

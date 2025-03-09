@@ -1,6 +1,6 @@
 import z from 'zod';
 import { GeometryTypeEnum } from './schema';
-import { commonDescriptionSchema, commonNameSchema } from '@common/commands';
+import { commonDescriptionSchema, commonNameSchema } from '../commands';
 
 /** Field specifications. */
 
