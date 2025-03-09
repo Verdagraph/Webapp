@@ -1,4 +1,4 @@
-import { TRIPLIT_UPDATE_DEFAULT_INTERVAL } from "$data/triplit";
+import { TRIPLIT_UPDATE_DEFAULT_INTERVAL } from '$data/triplit';
 
 /**
  * Options to pass to the handler

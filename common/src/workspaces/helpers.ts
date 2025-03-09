@@ -11,6 +11,7 @@ import type {
 
 /**
  * Checks whether two dates are on the same day or not.
+ * Dates must be in the same timezone.
  * @param date1 The first date.
  * @param date2 The second date.
  * @returns If true, the two dates take place on the same day.
