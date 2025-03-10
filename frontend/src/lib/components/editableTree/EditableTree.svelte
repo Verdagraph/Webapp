@@ -3,16 +3,18 @@
 	import iconIds from '$lib/assets/icons';
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import FormErrorsPopover from '$components/misc/FormErrorsPopover.svelte';
-	import type { EditableTree } from './tree.svelte';
+	import type { EditableTreeContext } from './tree.svelte';
 	import { fromTreeId } from './utils';
 
 	type Props = {
 		/** The tree. */
-		editableTree: EditableTree;
+		editableTree: EditableTreeContext;
+		/** Field errors. */
+		fieldErrors: Record<string, string[]>;
 		/** If true the tree may be edited. */
 		editing: boolean;
 	};
-	let { editableTree, editing }: Props = $props();
+	let { editableTree, fieldErrors, editing }: Props = $props();
 
 	/**
 	 * Copied from Melt-ui's source as this is not exported.
@@ -112,21 +114,21 @@
 					</div>
 
 					<!-- Editable value. -->
-				{:else if item.item.valueSnippet && item.item.onChange}
+				{:else if item.item.valueComponent && item.item.onChange}
 					<div
 						onclick={(e) => e.stopPropagation()}
 						onkeydown={(e) => e.stopPropagation()}
 						role="none"
 					>
-						{#if Object.keys(editableTree.errors).includes(item.id)}
-							<FormErrorsPopover errors={editableTree.errors[item.id]} />
+						{#if Object.keys(fieldErrors).includes(item.id)}
+							<FormErrorsPopover errors={fieldErrors[item.id]} />
 						{/if}
-						{@render item.item.valueSnippet(
-							item.item.value,
-							editing,
-							item.item.onChange,
-							Object.keys(editableTree.errors).includes(item.id)
-						)}
+						<item.item.valueComponent
+							value={item.item.value}
+							{editing}
+							onChange={item.item.onChange}
+							errors={Object.keys(fieldErrors).includes(item.id)}
+						/>
 					</div>
 				{/if}
 			</div>

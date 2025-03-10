@@ -1,49 +1,11 @@
-import { Tree, type TreeItem } from 'melt/builders';
-import { type Snippet } from 'svelte';
+import { Tree } from 'melt/builders';
 import { fromTreeId } from './utils';
-import { z } from 'zod';
-
-/** Describes the structure of an item in the tree. */
-type Item = TreeItem & {
-	/** Label for the item. */
-	label: string;
-	/** Description. Displayed in a popover. */
-	description?: string;
-	/** Icon for the item. */
-	icon?: string;
-	/**
-	 * The value of the item.
-	 * Mutually exclusive with the item having children.
-	 */
-	value?: any;
-	/** The change callback to use for changing the item. */
-	onChange?: (changeOver: boolean, newData: any) => void;
-	/**
-	 * Must be defined to render an editable value for the item value.
-	 * The snippet can render any type of value, becomes editable if
-	 * the editable argument changes, and propogates any editing
-	 * via the onChange callback.
-	 */
-	valueSnippet?: Snippet<
-		[
-			value: any,
-			editing: boolean,
-			onChange: (changeOver: boolean, newData: any) => void,
-			errors: boolean
-		]
-	>;
-	/**
-	 * The children of the item.
-	 * Mutually exclusive with rendering a value for the item.
-	 */
-	children?: Item[];
-};
+import type { Item } from './types';
 
 /**
  * Creates a container for a Melt-UI tree,
- * allowing editing of items, synchronization
- * of selection state with app selections,
- * and validation of fields.
+ * allowing editing of items and synchronization
+ * of selection state with app selections..
  * @param items A getter for the tree items.
  * @param entitySelectionHandlers Handlers for adding
  * and removing selected tree items to/from app selections.
@@ -61,9 +23,6 @@ export function createEditableTree<EntityTypeT extends string>(
 ) {
 	/** Stores a previous selection for diffing. */
 	let previousSelection: Set<string> = new Set();
-
-	/** Stores the errors for each editable field. */
-	let errors: Record<string, string[]> = $state({});
 
 	/**
 	 * Diffs the previous and new selections to find the IDs which
@@ -94,27 +53,6 @@ export function createEditableTree<EntityTypeT extends string>(
 		}
 	}
 
-	function validateField(id: string, value: unknown, schema: zod.ZodType): boolean {
-		const parseResult = schema.safeParse(value)
-		if (parseResult.success) {
-			clearError(id)
-			return true
-		} else {
-			setError(id, parseResult.error.issues.map(error => error.message))
-			return false
-		}
-	}
-
-	function setError(id: string, errors: string[]) {
-		errors[id] = errors
-	}
-
-	function clearError(id: string) {
-		if (errors[id]) {
-			errors[id] = []
-		}
-	}
-
 	/** The Melt-UI builder. */
 	const tree = new Tree({
 		items: items,
@@ -124,10 +62,7 @@ export function createEditableTree<EntityTypeT extends string>(
 	});
 
 	return {
-		tree,
-		readonly errors,
-		setError,
-		clearError
+		tree
 	};
 }
-export type EditableTree = ReturnType<typeof createEditableTree>;
+export type EditableTreeContext = ReturnType<typeof createEditableTree>;

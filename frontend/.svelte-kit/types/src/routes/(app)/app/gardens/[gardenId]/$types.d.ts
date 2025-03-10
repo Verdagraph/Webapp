@@ -37,7 +37,6 @@ type LayoutRouteId =
 	| RouteId
 	| '/(app)/app/gardens/[gardenId]'
 	| '/(app)/app/gardens/[gardenId]/(config)/cultivars'
-	| '/(app)/app/gardens/[gardenId]/(config)/environments'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces/[workspaceSlug]'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces/create'

@@ -4,9 +4,7 @@
 	import { getContext, onDestroy } from 'svelte';
 	import {
 		getGeometryHeight,
-		type GeometryType,
 		type Geometry,
-		type GridAttributes,
 		type GeometryPartial
 	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
@@ -32,7 +30,7 @@
 		/** If true, the planting area is selected. */
 		selected: boolean;
 		/** The grid attributes of the planting area. */
-		grid?: GridAttributes;
+		grid?: { numRows: number; numCols: number };
 		/** Called when the position is moved in the canvas. */
 		onTranslate?: (
 			/** The new position, in canvas quantity (pixels). */

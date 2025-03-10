@@ -1,11 +1,9 @@
 import { z as zod } from 'zod';
 import {
 	WorkspaceCreateCommandSchema,
-	WorkspaceCreateCommand,
+	type WorkspaceCreateCommand,
 	PlantingAreaCreateCommandSchema,
-	PlantingAreaCreateCommand,
-	PlantingAreaUpdateCommandSchema,
-	PlantingAreaUpdateCommand,
+	type PlantingAreaCreateCommand,
 	LocationCreateCommandSchema,
 	LocationCreateCommand,
 	type Workspace,
@@ -17,7 +15,8 @@ import {
 	TriplitTransaction,
 	historySelectDay,
 	type Position,
-	GeometryPartial
+	GeometryPartial,
+	type PlantingArea
 } from '@vdt-webapp/common';
 import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
@@ -338,7 +337,7 @@ export const workspaceCreate = {
 			gardenId: data.gardenId,
 			name: data.name,
 			slug: workspaceSlug,
-			description: data.description
+			description: data.description || ''
 		});
 		if (result.output == null) {
 			throw new AppError('Failed to create workspace.', {
@@ -384,7 +383,6 @@ export const plantingAreaCreate = {
 				description: data.description || '',
 				geometryId: geometry.id,
 				locationHistoryId: locationHistory.id,
-				grid: data.grid,
 				depth: data.depth
 			});
 		});
@@ -392,15 +390,6 @@ export const plantingAreaCreate = {
 };
 
 export const plantingAreaUpdate = {
-	schema: PlantingAreaUpdateCommandSchema,
-	mutation: async function (data: PlantingAreaUpdateCommand) {}
+	//schema: PlantingAreaUpdateCommandSchema,
+	mutation: async function (data: Partial<PlantingArea>) {}
 };
-
-function validateZodField(data: unknown, schema: zod.ZodType): string[] | undefined {
-	const parseResult = schema.safeParse(data);
-	if (parseResult.success) {
-		return;
-	}
-
-	return parseResult.error.issues.map((error) => error.message);
-}

@@ -46,7 +46,6 @@ declare module '$env/static/private' {
 	export const COLORTERM: string;
 	export const REMOTE_CONTAINERS: string;
 	export const COLOR: string;
-	export const WAYLAND_DISPLAY: string;
 	export const REMOTE_CONTAINERS_IPC: string;
 	export const _: string;
 	export const npm_config_prefix: string;
@@ -57,13 +56,13 @@ declare module '$env/static/private' {
 	export const PATH: string;
 	export const NODE: string;
 	export const npm_package_name: string;
-	export const XDG_RUNTIME_DIR: string;
 	export const REMOTE_CONTAINERS_SOCKETS: string;
 	export const DISPLAY: string;
 	export const LANG: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const TERM_PROGRAM: string;
 	export const npm_lifecycle_script: string;
+	export const SSH_AUTH_SOCK: string;
 	export const REMOTE_CONTAINERS_DISPLAY_SOCK: string;
 	export const SHELL: string;
 	export const npm_package_version: string;
@@ -78,7 +77,6 @@ declare module '$env/static/private' {
 	export const npm_command: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
-	export const NODE_ENV: string;
 }
 
 /**
@@ -130,7 +128,6 @@ declare module '$env/dynamic/private' {
 		COLORTERM: string;
 		REMOTE_CONTAINERS: string;
 		COLOR: string;
-		WAYLAND_DISPLAY: string;
 		REMOTE_CONTAINERS_IPC: string;
 		_: string;
 		npm_config_prefix: string;
@@ -141,13 +138,13 @@ declare module '$env/dynamic/private' {
 		PATH: string;
 		NODE: string;
 		npm_package_name: string;
-		XDG_RUNTIME_DIR: string;
 		REMOTE_CONTAINERS_SOCKETS: string;
 		DISPLAY: string;
 		LANG: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		TERM_PROGRAM: string;
 		npm_lifecycle_script: string;
+		SSH_AUTH_SOCK: string;
 		REMOTE_CONTAINERS_DISPLAY_SOCK: string;
 		SHELL: string;
 		npm_package_version: string;
@@ -162,7 +159,6 @@ declare module '$env/dynamic/private' {
 		npm_command: string;
 		INIT_CWD: string;
 		EDITOR: string;
-		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	};

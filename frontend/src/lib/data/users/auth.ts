@@ -2,9 +2,8 @@ import { userLoginOp, userRefreshOp } from '$codegen';
 import triplit from '$data/triplit';
 import { UserAccount, UserProfile } from '@vdt-webapp/common';
 import { AppError } from '@vdt-webapp/common/src/errors';
-import { UserLoginCommand, UserLoginCommandSchema } from '@vdt-webapp/common';
+import { type UserLoginCommand, UserLoginCommandSchema } from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
-import { z } from 'zod';
 
 const TRIPLIT_ANON_TOKEN =
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.JzN7Erur8Y-MlFdCaZtovQwxN_m_fSyOIWNzYQ3uVcc';

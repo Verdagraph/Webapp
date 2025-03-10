@@ -1,17 +1,7 @@
 import EditableTree from './EditableTree.svelte';
-import {
-	editableStringAttribute,
-	editableNumberAttribute,
-	editableDistanceAttribute,
-	editableTextareaAttribute
-} from './attributes.svelte';
 
+export { EditableTree };
+export * from './attributes';
 export * from './utils';
+export * from './types';
 export * from './tree.svelte';
-export {
-	EditableTree,
-	editableStringAttribute,
-	editableNumberAttribute,
-	editableDistanceAttribute,
-	editableTextareaAttribute
-};

@@ -1,6 +1,4 @@
 import triplit from '$data/triplit';
-import type { QueryResult } from '@triplit/client';
-import { schema } from '@vdt-webapp/common';
 
 export const workspaceSlugQuery = triplit.query('workspaces').where([
 	['gardenId', '=', '$query.gardenId'],

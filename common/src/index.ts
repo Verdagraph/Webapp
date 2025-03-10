@@ -14,6 +14,7 @@ export * from './workspaces/index';
 export * from './cultivars/index';
 export * from './environments/index';
 export * from './plants/index';
+export * from './utils';
 
 /** Export Triplit schemas. */
 export const schema = {

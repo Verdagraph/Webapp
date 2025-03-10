@@ -11,8 +11,8 @@
 	"license": "ISC",
 	"packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
 	"devDependencies": {
-		"@types/node": "^22.13.8",
-		"prettier": "^3.5.2",
+		"@types/node": "^22.13.10",
+		"prettier": "^3.5.3",
 		"prettier-plugin-merge": "^0.7.2",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.11"

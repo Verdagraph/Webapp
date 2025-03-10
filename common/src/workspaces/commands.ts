@@ -152,7 +152,7 @@ export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
 export const WorkspaceCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	name: workspaceNameSchema,
-	description: workspaceDescriptionSchema.default('')
+	description: workspaceDescriptionSchema.optional()
 });
 export type WorkspaceCreateCommand = z.infer<typeof WorkspaceCreateCommandSchema>;
 
