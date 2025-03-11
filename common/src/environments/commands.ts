@@ -1,16 +1,23 @@
 import { z } from 'zod';
 import { EnvironmentParentTypeEnum } from './schema';
-import { commonDescriptionSchema, commonNameSchema } from '../commands';
+import { commonFields } from '../commands';
+import { attributesSchemas } from './attributes';
 
 /** Field specifications. */
-export const environmentNameSchema = commonNameSchema.describe(
+const environmentNameSchema = commonFields.nameSchema.describe(
 	'Name of the environment. Must be unique.'
 );
 
-export const environmentDescriptionSchema = commonDescriptionSchema.describe(
+const environmentDescriptionSchema = commonFields.descriptionSchema.describe(
 	'Optional description.'
 );
-export const environmentParentTypeSchema = z.enum(EnvironmentParentTypeEnum);
+const environmentParentTypeSchema = z.enum(EnvironmentParentTypeEnum);
+export const environmentFields = {
+	environmentNameSchema,
+	environmentDescriptionSchema,
+	environmentParentTypeSchema,
+	...attributesSchemas
+};
 
 /**
  * Command to create a new environment.

@@ -11,22 +11,30 @@ const TREE_ID_DELIMITER = '/~';
  * selects the Name field on a PlantingArea,
  * we want to be able to add that PlantingArea to the
  * selection.
- *
+ */
+
+/**
  * This function composes an entity type, ID, and field name
- * into a string ID for the tree item so it can be retrieved from the ID.
+ * into a string ID for the tree so that individual item IDs can be composed onto it.
  * @param entityType The name of the type of entity.
  * @param entityId The ID of the entity.
- * @param field If defined, the tree item represents a field of the entity.
  * @returns The Tree item id.
  */
-export function toTreeId<EntityTypeT extends string>(
+export function toTreeBaseId<EntityTypeT extends string>(
 	entityType: EntityTypeT,
-	entityId: string,
-	field?: string
+	entityId: string
 ): string {
-	return field
-		? `${entityType}${TREE_ID_DELIMITER}${entityId}${TREE_ID_DELIMITER}${field}`
-		: `${entityType}${TREE_ID_DELIMITER}${entityId}`;
+	return `${entityType}${TREE_ID_DELIMITER}${entityId}`;
+}
+
+/**
+ * This function composes a tree ID of a field given a base ID.
+ * @param baseId The base ID of the tree item.
+ * @param field The name of the field.
+ * @returns The Tree item id.
+ */
+export function toTreeId(baseId: string, field: string): string {
+	return `${baseId}${TREE_ID_DELIMITER}${field}`;
 }
 
 /**

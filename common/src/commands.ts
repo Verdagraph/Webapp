@@ -1,7 +1,7 @@
 import z from 'zod';
 
 /** Field specifications. */
-export const commonNameSchema = z
+const nameSchema = z
 	.string()
 	.trim()
 	.min(2, 'Must be at least 3 characters.')
@@ -10,6 +10,5 @@ export const commonNameSchema = z
 		/[0-9A-Za-z _-]+/,
 		'Must contain only letters, numbers, spaces, underscores, and hyphens.'
 	);
-export const commonDescriptionSchema = z
-	.string()
-	.max(1400, 'May be at most 1400 characters.');
+const descriptionSchema = z.string().max(1400, 'May be at most 1400 characters.');
+export const commonFields = { nameSchema, descriptionSchema };

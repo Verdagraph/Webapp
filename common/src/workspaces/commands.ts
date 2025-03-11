@@ -1,106 +1,132 @@
 import z from 'zod';
 import { GeometryTypeEnum } from './schema';
-import { commonDescriptionSchema, commonNameSchema } from '../commands';
+import { commonFields } from '../commands';
 
 /** Field specifications. */
 
 /** Workspaces. */
-export const workspaceNameSchema = commonNameSchema.describe(
+const workspaceNameSchema = commonFields.nameSchema.describe(
 	'Name of the workspace. Must be unique within a garden.'
 );
-export const workspaceDescriptionSchema = commonDescriptionSchema;
+const workspaceDescriptionSchema = commonFields.descriptionSchema.describe(
+	'Optional description.'
+);
 
 /** Planting areas. */
-export const plantingAreaNameSchema = commonNameSchema.describe(
+const plantingAreaNameSchema = commonFields.nameSchema.describe(
 	'The name of the planting area.'
 );
-export const plantingAreaDescriptionSchema = commonDescriptionSchema;
-export const plantingAreaDepthSchema = z
+const plantingAreaDescriptionSchema = commonFields.descriptionSchema.describe(
+	'Optional description.'
+);
+const plantingAreaDepthSchema = z
 	.number()
 	.min(0, 'May not be negative')
 	.max(1000, 'May be at most 1000m.')
 	.describe('The depth of the planting area.');
 
 /** Geometries.  */
-export const coordinateXSchema = z
+const coordinateXSchema = z
 	.number()
 	.min(-1000000, 'Limited to 1 000 000 meters.')
 	.max(1000000, 'Limited to 1 000 000 meters.')
 	.describe('The horizontal X component of the coordinate.');
-export const coordinateYSchema = z
+const coordinateYSchema = z
 	.number()
 	.min(-1000000, 'Limited to 1 000 000 meters.')
 	.max(1000000, 'Limited to 1 000 000 meters.')
 	.describe('The vertical Y component of the coordinate.');
-export const coordinateSchema = z
+const coordinateSchema = z
 	.object({
 		x: coordinateXSchema,
 		y: coordinateYSchema
 	})
 	.describe('A position relative to the origin of a workspace.');
-export const geometryTypeSchema = z
+const geometryTypeSchema = z
 	.enum(GeometryTypeEnum)
 	.describe(
 		'Describes the type of geometry. Each type has a unique set of attributes associated with it.'
 	);
-export const geometryDateSchema = z
+const geometryDateSchema = z
 	.date()
 	.describe('The date at which the geometry applies to the object.');
-export const geometryScaleFactorSchema = z
+const geometryScaleFactorSchema = z
 	.number()
 	.min(0.01, 'Must be at least 1%.')
 	.max(100, 'May be at most 10000%')
 	.describe(
 		'Factor used to scale the geometry up or down. Must be within 1 and 1000 percent.'
 	);
-export const geometryRotationSchema = z
+const geometryRotationSchema = z
 	.number()
 	.min(-360, 'Must be at least negative 360 degrees.')
 	.max(360, 'May be at most 360 degrees.')
 	.describe(
 		'The rotation of the geometry in degrees. Must be between 0 and 360 degrees.'
 	);
-export const geometryRectangleLengthSchema = z
+const geometryRectangleLengthSchema = z
 	.number()
 	.min(0, 'May not be negative.')
 	.max(1000, 'May be at most 1000m')
 	.describe('The horizontal, or x-axis length of the rectangle.');
-export const geometryRectangleWidthSchema = z
+const geometryRectangleWidthSchema = z
 	.number()
 	.min(0, 'May not be negative.')
 	.max(1000, 'May be at most 1000m')
 	.describe('The vertical, or y-axis width of the rectangle.');
-export const geometryPolygonNumSidesSchema = z
+const geometryPolygonNumSidesSchema = z
 	.number()
 	.min(3, 'Must have at least 3 sides.')
 	.max(20, 'May have at most 20 sides.')
 	.describe('The amount of sides the polygon has.');
-export const geometryPolygonRadiusSchema = z
+const geometryPolygonRadiusSchema = z
 	.number()
 	.min(0, 'May not be negative')
 	.max(1000, 'May be at most 1000m')
 	.describe('The distance from the center to any vertex of the polygon.');
-export const geometryEllipseLengthDiameterSchema = z
+const geometryEllipseLengthDiameterSchema = z
 	.number()
 	.min(0, 'May not be negative')
 	.max(1000, 'May be at most 1000m')
 	.describe('The horizontal, or x-axis diameter of the ellipse.');
-export const geometryEllipseWidthDiameterSchema = z
+const geometryEllipseWidthDiameterSchema = z
 	.number()
 	.min(0, 'May not be negative')
 	.max(1000, 'May be at most 1000m')
 	.describe(
 		'The vertical, or y-axis diameter of the ellipse. Must be between 0 and 1000 meters.'
 	);
-export const geometryLinesCoordinatesSchema = z
+const geometryLinesCoordinatesSchema = z
 	.array(coordinateSchema)
 	.min(3, 'Must have at least 3 points.')
 	.describe(
 		'A list of coordinates relative to the position of the geometry which define an irregular polygonal.'
 	);
-export const geometryLinesClosedSchema = z
+const geometryLinesClosedSchema = z
 	.boolean()
 	.describe('If true, the line segments form a closed shape.');
+export const workspaceFields = {
+	workspaceNameSchema,
+	workspaceDescriptionSchema,
+	plantingAreaNameSchema,
+	plantingAreaDescriptionSchema,
+	plantingAreaDepthSchema,
+	coordinateXSchema,
+	coordinateYSchema,
+	coordinateSchema,
+	geometryTypeSchema,
+	geometryDateSchema,
+	geometryScaleFactorSchema,
+	geometryRotationSchema,
+	geometryRectangleLengthSchema,
+	geometryRectangleWidthSchema,
+	geometryPolygonNumSidesSchema,
+	geometryPolygonRadiusSchema,
+	geometryEllipseLengthDiameterSchema,
+	geometryEllipseWidthDiameterSchema,
+	geometryLinesCoordinatesSchema,
+	geometryLinesClosedSchema
+};
 
 /** Commands. */
 

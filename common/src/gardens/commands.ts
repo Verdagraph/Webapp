@@ -1,10 +1,10 @@
 import z from 'zod';
-import { usernameSchema } from '../users/commands';
+import { userFields } from '../users/commands';
 import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
-import { commonDescriptionSchema, commonNameSchema } from '../commands';
+import { commonFields } from '../commands';
 
 /** Field specifications. */
-export const gardenIdSchema = z
+const gardenIdSchema = z
 	.string()
 	.trim()
 	.toLowerCase()
@@ -12,13 +12,23 @@ export const gardenIdSchema = z
 	.max(21, 'May be at most 21 characters.')
 	.regex(/[0-9A-Za-z-]+/, 'Must contain only alphanumeric characters and hyphens.')
 	.describe('Unique shorthand name for the garden used in URLs.');
-export const gardenNameSchema = commonNameSchema.describe('Name of the garden.');
-export const gardenDescriptionSchema = commonDescriptionSchema;
-export const gardenVisibilitySchema = z.enum(GardenVisibilityEnum);
-export const gardenMembershipRoleSchema = z.enum(GardenMembershipRoleEnum);
-export const usernameInvitesListSchema = z
-	.array(usernameSchema)
+const gardenNameSchema = commonFields.nameSchema.describe('Name of the garden.');
+const gardenDescriptionSchema = commonFields.descriptionSchema.describe(
+	'Optional description.'
+);
+const gardenVisibilitySchema = z.enum(GardenVisibilityEnum);
+const gardenMembershipRoleSchema = z.enum(GardenMembershipRoleEnum);
+const usernameInvitesListSchema = z
+	.array(userFields.usernameSchema)
 	.max(10, 'A maximum of 10 users can be invited at once.');
+export const gardenFields = {
+	gardenIdSchema,
+	gardenNameSchema,
+	gardenDescriptionSchema,
+	gardenVisibilitySchema,
+	gardenMembershipRoleSchema,
+	usernameInvitesListSchema
+};
 
 /**
  * Command to create a new garden.

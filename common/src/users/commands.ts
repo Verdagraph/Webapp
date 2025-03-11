@@ -1,7 +1,7 @@
 import z from 'zod';
 
 /** Field specifications. */
-export const usernameSchema = z
+const usernameSchema = z
 	.string()
 	.trim()
 	.min(3, 'Must be at least 3 characters.')
@@ -13,15 +13,16 @@ export const usernameSchema = z
 	.describe(
 		'Unique username to identify yourself in the application. May be changed later.'
 	);
-export const emailSchema = z
+const emailSchema = z
 	.string()
 	.email('Must be a valid email address.')
 	.describe('Must be a valid email address.');
-export const passwordSchema = z
+const passwordSchema = z
 	.string()
 	.min(6, 'Must be at least 6 characters.')
 	.max(255, 'Must be at most 255 characters.')
 	.describe('Must be between 6 and 255 characters long.');
+export const userFields = { usernameSchema, emailSchema, passwordSchema };
 
 /**
  * Command to authenticate a user.

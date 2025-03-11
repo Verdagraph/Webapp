@@ -7,7 +7,8 @@
 		Textarea,
 		Number,
 		Distance,
-		toTreeId as toTreeIdGeneric,
+		toTreeBaseId,
+		toTreeId,
 		type Item
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
@@ -21,9 +22,18 @@
 		plantingAreaDescriptionSchema,
 		plantingAreaDepthSchema,
 		type PlantingArea,
-		validateField, type Geometry
+		validateField,
+		type Geometry,
+		type GeometryType,
+		geometryTypeSchema,
+		geometryDateSchema,
+		geometryScaleFactorSchema,
+		geometryRotationSchema,
+		geometryRectangleLengthSchema,
+		geometryRectangleWidthSchema
 	} from '@vdt-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
+	import { type DateValue } from '@internationalized/date';
 
 	type Props = {
 		plantingAreaIds: string[];
@@ -32,7 +42,6 @@
 
 	/** The types of entities in the tree whose selections must be synchronized. */
 	type Entities = 'plantingArea';
-	const toTreeId = toTreeIdGeneric<Entities>;
 
 	/** Workspace context. */
 	const workspace = getWorkspaceContext();
@@ -64,15 +73,90 @@
 		}
 	);
 
-	function geometryTreeItem(id: string, geometry: Geometry): Item {
+	function geometryTreeItem(
+		baseId: string,
+		geometry: Geometry,
+		includeDate: boolean = true
+	): Item {
+		const typeId = toTreeId(baseId, 'geometryType');
+		const dateId = toTreeId(baseId, 'geometryDate');
+		const scaleFactorId = toTreeId(baseId, 'geometryScaleFactor');
+		const rotationId = toTreeId(baseId, 'geometryRotation');
 
+		const typeItem = {
+			id: typeId,
+			label: 'Type',
+			description: geometryTypeSchema.description,
+			valueComponent: String,
+			value: geometry.type,
+			onChange: (changeOver: boolean, newData: GeometryType) => {}
+		};
+		const dateItem = {
+			id: dateId,
+			label: 'Date',
+			description: geometryDateSchema.description,
+			valueComponent: String,
+			value: geometry.date,
+			onChange: (changeOver: boolean, newData: DateValue) => {}
+		};
+		const scaleFactorItem = {
+			id: scaleFactorId,
+			label: 'Scale Factor',
+			description: geometryScaleFactorSchema.description,
+			valueComponent: String,
+			value: geometry.scaleFactor,
+			onChange: (changeOver: boolean, newData: number) => {}
+		};
+		const rotationItem = {
+			id: rotationId,
+			label: 'Rotation',
+			description: geometryRotationSchema.description,
+			valueComponent: String,
+			value: geometry.rotation,
+			onChange: (changeOver: boolean, newData: number) => {}
+		};
+		let attributesItems = [];
+		switch (geometry.type) {
+			case 'RECTANGLE':
+				const rectangleLengthId = toTreeId(baseId, 'geometryRectangleLength');
+				const rectangleWidthId = toTreeId(baseId, 'geometryRectangleWidth');
+
+				attributesItems = [
+					{
+						id: rectangleLengthId,
+						label: 'Length',
+						description: geometryRectangleLengthSchema.description,
+						valueComponent: Distance,
+						value: geometry.rectangleAttributes?.length,
+						onChange: (changeOver: boolean, newData: number) => {}
+					},
+					{
+						id: rectangleWidthId,
+						label: 'Width',
+						description: geometryRectangleWidthSchema.description,
+						valueComponent: Distance,
+						value: geometry.rectangleAttributes?.width,
+						onChange: (changeOver: boolean, newData: number) => {}
+					}
+				];
+		}
+
+		return {
+			id: toTreeId(baseId, 'geometry'),
+			label: 'Geometry',
+			children: []
+		};
 	}
 
+	//function locationTreeItem(baseId: string, )
+
 	function plantingAreaTreeItem(plantingArea: PlantingArea): Item {
-		const baseId = toTreeId('plantingArea', plantingArea.id);
-		const nameId = toTreeId('plantingArea', plantingArea.id, 'name');
-		const descriptionId = toTreeId('plantingArea', plantingArea.id, 'description')
-		const depthId = toTreeId('plantingArea', plantingArea.id, 'depth')
+		const baseId = toTreeBaseId('plantingArea', plantingArea.id);
+		const nameId = toTreeId(baseId, 'name');
+		const descriptionId = toTreeId(baseId, 'description');
+		const depthId = toTreeId(baseId, 'depth');
+
+		const geometryItem = geometryTreeItem(baseId, plantingArea.geometry);
 
 		return {
 			id: baseId,
@@ -89,7 +173,7 @@
 						const errors = validateField(newData, plantingAreaNameSchema);
 						if (errors) {
 							fieldErrors[nameId] = errors;
-							return
+							return;
 						}
 						plantingAreaChangeHandler.change(changeOver, {
 							[plantingArea.id]: { name: newData }
@@ -99,7 +183,7 @@
 
 				/** Details. */
 				{
-					id: toTreeId('plantingArea', plantingArea.id, 'details'),
+					id: toTreeId(baseId, 'details'),
 					label: 'Details',
 					children: [
 						/** Description. */
@@ -113,7 +197,7 @@
 								const errors = validateField(newData, plantingAreaDescriptionSchema);
 								if (errors) {
 									fieldErrors[descriptionId] = errors;
-									return
+									return;
 								}
 								plantingAreaChangeHandler.change(changeOver, {
 									plantingAreaId: { description: newData }
@@ -132,7 +216,7 @@
 								const errors = validateField(newData, plantingAreaDepthSchema);
 								if (errors) {
 									fieldErrors[depthId] = errors;
-									return
+									return;
 								}
 								plantingAreaChangeHandler.change(changeOver, {
 									plantingAreaId: { depth: newData }
@@ -142,8 +226,14 @@
 					]
 				},
 
-				/** Geometry. */,
-				geometryTreeItem(toTreeId('plantingArea', plantingArea.id, 'geometry'), plantingArea.geometry)
+				/** Geometry. */
+				geometryItem,
+
+				{
+					id: 'arsoie',
+					label: 'Locations',
+					children: []
+				}
 			]
 		};
 	}
