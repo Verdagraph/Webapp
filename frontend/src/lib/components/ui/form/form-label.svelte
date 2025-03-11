@@ -13,7 +13,7 @@
 		children,
 		class: className,
 		description,
-		optional,
+		optional = false,
 		...restProps
 	}: WithoutChild<FormPrimitive.LabelProps> & {
 		description?: string;

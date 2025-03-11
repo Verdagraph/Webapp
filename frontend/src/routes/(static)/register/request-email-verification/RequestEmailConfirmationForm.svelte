@@ -5,6 +5,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestEmailConfirmation } from '$data/users/commands';
 	import createMutationHandler from '$state/mutationHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
 		succeeded: boolean;
@@ -42,8 +43,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={userRequestEmailConfirmation.schema.shape.email.description}
-					optional={userRequestEmailConfirmation.schema.shape.email.isOptional()}
+					description={userFields.emailSchema.description}
 					>Email</Form.Label
 				>
 				<Input

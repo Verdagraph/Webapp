@@ -5,6 +5,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestPasswordReset } from '$data/users/commands';
 	import createMutationHandler from '$state/mutationHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -39,7 +40,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={userRequestPasswordReset.schema.shape['email']?._def.description}
+					description={userFields.emailSchema.description}
 					optional={false}>Email</Form.Label
 				>
 				<Input

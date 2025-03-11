@@ -6,6 +6,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userConfirmPasswordReset } from '$data/users/commands';
 	import createMutationHandler from '$state/mutationHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -45,11 +46,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={userConfirmPasswordReset.schema.innerType().shape.password1
-						.description}
-					optional={userConfirmPasswordReset.schema
-						.innerType()
-						.shape.password1.isOptional()}>New Password</Form.Label
+					description={userFields.passwordSchema.description}>New Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password1} />
 			{/snippet}
@@ -57,16 +54,12 @@
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
 	</Form.Field>
 
-	<!-- Password2 -->
+	<!-- New Password2 -->
 	<Form.Field {form} name="password2">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={userConfirmPasswordReset.schema.innerType().shape.password2
-						.description}
-					optional={userConfirmPasswordReset.schema
-						.innerType()
-						.shape.password2.isOptional()}>Confirm Password</Form.Label
+					description={userFields.passwordSchema.description}>Confirm Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password2} />
 			{/snippet}

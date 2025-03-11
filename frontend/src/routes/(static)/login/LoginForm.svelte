@@ -6,6 +6,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$data/users/auth';
 	import createMutationHandler from '$state/mutationHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 
 	let formHandler = createMutationHandler(userLogin.mutation, {
 		onSuccess: () => {
@@ -34,8 +35,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={userLogin.schema.shape.email.description}
-					optional={userLogin.schema.shape.email.isOptional()}>Email</Form.Label
+					description={userFields.emailSchema.description}>Email</Form.Label
 				>
 				<Input
 					{...props}
@@ -53,8 +53,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={userLogin.schema.shape.password.description}
-					optional={userLogin.schema.shape.password.isOptional()}>Password</Form.Label
+					description={userFields.passwordSchema.description}>Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password} />
 			{/snippet}
