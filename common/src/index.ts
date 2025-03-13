@@ -1,3 +1,4 @@
+import { Schema as S } from '@triplit/client';
 import { userSchema, roles } from './users/schema';
 import { gardenSchema } from './gardens/schema';
 import { workspaceSchema } from './workspaces/schema';
@@ -15,14 +16,10 @@ export * from './plants/index';
 export * from './utils';
 
 /** Export Triplit schemas. */
-export const schema = {
+export const schema = S.Collections({
 	...userSchema,
-	...gardenSchema,
-	...workspaceSchema,
-	...cultivarSchema,
-	...environmentSchema,
-	...plantSchema
-};
+	...gardenSchema
+});
 
 /** Export Triplit roles. */
 export { roles };

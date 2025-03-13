@@ -1,4 +1,4 @@
-import { Schema as S, Entity, Roles } from '@triplit/client';
+import { Schema as S, Entity, Roles, ClientSchema } from '@triplit/client';
 
 export const roles: Roles = {
 	anon: {
@@ -16,7 +16,7 @@ export const roles: Roles = {
 	}
 };
 
-export const userSchema = S.Collections({
+export const userSchema = {
 	/** User profiles. */
 	profiles: {
 		schema: S.Schema({
@@ -51,32 +51,32 @@ export const userSchema = S.Collections({
 
 			/** The ID of the associated profile. */
 			profileId: S.String(),
-			
+
 			/** Hashed password */
 			passwordHash: S.String(),
-			
+
 			/** Primary email address. Only verified emails use this attribute. */
 			verifiedEmail: S.String({ nullable: true }),
-			
+
 			/**
 			 * Secondary email. Used to avoid replacing primary email when switching emails.
 			 * Upon verification, should be nulled and used to set primaryEmail.
-			*/
+			 */
 			unverifiedEmail: S.Record({
 				/** Address of the email. */
 				address: S.String({ nullable: true, default: null }),
 				/** JWT confirmation token which is sent to the user for verification. */
 				token: S.String({ nullable: true, default: null })
 			}),
-			
+
 			/** JWT confirmation key used to confirm a password reset. */
 			passwordResetToken: S.String({ nullable: true, default: null }),
-			
+
 			/** Set to false for inactive users. */
 			isActive: S.Boolean({ default: true })
 		}),
-		relationships: {			
-			profile: S.RelationById('profiles', '$profileId'),
+		relationships: {
+			profile: S.RelationById('profiles', '$profileId')
 		},
 		/** Accounts objects can only be modified by the server and viewed by the user. */
 		permissions: {
@@ -85,6 +85,6 @@ export const userSchema = S.Collections({
 			}
 		}
 	}
-})
+} satisfies ClientSchema;
 export type UserProfile = Entity<typeof userSchema, 'profiles'>;
 export type UserAccount = Entity<typeof userSchema, 'accounts'>;
