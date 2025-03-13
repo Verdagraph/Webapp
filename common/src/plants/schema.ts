@@ -1,16 +1,17 @@
 import { CultivarAttributes } from '../cultivars/attributes';
-import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
+import { Schema as S, type Entity, or, QueryResult } from '@triplit/client';
+import { environmentSchema } from '../environments/schema';
 
 /**
  *
  */
-export const OriginEnum = [
+export const OriginEnumOptions = [
 	'DIRECT_SEED',
 	'SEED_TO_TRANSPLANT',
 	'SEEDLING_TO_TRANSPLANT'
 ] as const;
 
-export const HarvestQualityEnum = [
+export const HarvestQualityEnumOptions = [
 	'COMPOST',
 	'LOW',
 	'MEDIUM',
@@ -18,7 +19,8 @@ export const HarvestQualityEnum = [
 	'PERFECT'
 ] as const;
 
-export const plantSchema = {
+export const plantSchema = S.Collections({
+	...environmentSchema,
 	/** Harvest schema. */
 	harvests: {
 		schema: S.Schema({
@@ -26,7 +28,6 @@ export const plantSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** The date of the harvest. */
 			date: S.Date(),
@@ -42,11 +43,14 @@ export const plantSchema = {
 			units: S.Optional(S.Number()),
 
 			/** The quality of the harvest. */
-			quality: S.Optional(S.String({ enum: HarvestQualityEnum })),
+			quality: S.Optional(S.String({ enum: [...HarvestQualityEnumOptions] })),
 
 			/** Optional description. */
 			description: S.String({ default: '' })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -103,22 +107,15 @@ export const plantSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** The origin of the lifespan. */
-			origin: S.String({ enum: OriginEnum }),
+			origin: S.String({ enum: [...OriginEnumOptions] }),
 
 			/** The geometries of the lifespan. */
 			geometryHistoryId: S.Optional(S.String()),
-			geometriHistory: S.RelationOne('geometryHistories', {
-				where: [['id', '=', '$geometryHistoryId']]
-			}),
 
 			/** The locations of the lifespan& */
 			locationHistoryId: S.Optional(S.String()),
-			locationHistory: S.RelationOne('locationHistories', {
-				where: [['id', '=', '$locationHistoryId']]
-			}),
 
 			/** The dates of the lifespan. */
 			dates: S.Record({
@@ -143,9 +140,14 @@ export const plantSchema = {
 			}),
 
 			/** A set of harvests over the lifespan. */
-			harvestIds: S.Set(S.String()),
-			harvests: S.RelationMany('harvests', { where: [['id', 'in', '$harvestIds']] })
+			harvestIds: S.Set(S.String())
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			geometryHistory: S.RelationById('geometryHistories', '$geometryHistoryId'),
+			locationHistory: S.RelationById('locationHistories', '$locationHistoryId'),
+			harvests: S.RelationMany('harvests', { where: [['id', 'in', '$harvestIds']] })
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -202,7 +204,6 @@ export const plantSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/**
 			 * The name correlating with one of the common names specified by a cultivar.
@@ -215,19 +216,18 @@ export const plantSchema = {
 
 			/** Lifespan attributes populated from the expected attributes based on the cultivar. */
 			expectedLifespanId: S.String(),
-			expectedLifespan: S.RelationOne('lifespans', {
-				where: [['id', '=', '$expectedLifespanId']]
-			}),
 
 			/** Lifespan attributes populated by observations of users. */
 			recordedLifespanId: S.String(),
-			recordedLifespan: S.RelationOne('lifespans', {
-				where: [['id', '=', '$recordedLifespanId']]
-			}),
 
 			/** If true, this plant entity represents multiple distinct plants which are managed together. */
 			aggregate: S.Boolean({ default: false })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			expectedLifespan: S.RelationById('lifespans', '$expectedLifespanId'),
+			recordedLifespan: S.RelationById('lifespans', '$recordedLifespanId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -284,18 +284,20 @@ export const plantSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** Name. */
 			name: S.String(),
 
 			/** A set of plants contained with the group. */
 			plantIds: S.Set(S.String()),
-			plants: S.RelationMany('plants', { where: [['id', 'in', '$plantIds']] }),
 
 			/** Optional description. */
 			description: S.String({ default: '' })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			plants: S.RelationMany('plants', { where: [['id', 'in', '$plantIds']] })
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -345,9 +347,14 @@ export const plantSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
-
+});
 export type Harvest = Entity<typeof plantSchema, 'harvests'>;
 export type Lifespan = Entity<typeof plantSchema, 'lifespans'>;
-export type Plant = Entity<typeof plantSchema, 'plants'>;
+export type Plant = QueryResult<
+	typeof plantSchema,
+	{
+		collectionName: 'plants';
+		include: { expectedLifespan: true; recordedLifespan: true };
+	}
+>;
 export type PlantGroup = Entity<typeof plantSchema, 'plantGroups'>;

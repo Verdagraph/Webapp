@@ -1,4 +1,4 @@
-import { Schema as S, Entity, Roles, ClientSchema } from '@triplit/client';
+import { Schema as S, Entity, Roles } from '@triplit/client';
 
 export const roles: Roles = {
 	anon: {
@@ -16,7 +16,7 @@ export const roles: Roles = {
 	}
 };
 
-export const userSchema = {
+export const userSchema = S.Collections({
 	/** User profiles. */
 	profiles: {
 		schema: S.Schema({
@@ -85,6 +85,7 @@ export const userSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
+});
 export type UserProfile = Entity<typeof userSchema, 'profiles'>;
 export type UserAccount = Entity<typeof userSchema, 'accounts'>;
+export type User = { account: UserAccount; profile: UserProfile };

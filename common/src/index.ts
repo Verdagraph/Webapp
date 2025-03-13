@@ -1,9 +1,4 @@
-import { Schema as S } from '@triplit/client';
-import { userSchema, roles } from './users/schema';
-import { gardenSchema } from './gardens/schema';
-import { workspaceSchema } from './workspaces/schema';
-import { cultivarSchema } from './cultivars/schema';
-import { environmentSchema } from './environments/schema';
+import { roles } from './users/schema';
 import { plantSchema } from './plants';
 
 /** Export common modules. */
@@ -15,11 +10,14 @@ export * from './environments/index';
 export * from './plants/index';
 export * from './utils';
 
-/** Export Triplit schemas. */
-export const schema = S.Collections({
-	...userSchema,
-	...gardenSchema
-});
+/**
+ * Export Triplit schemas.
+ * Note that only plantSchema is exported because currently
+ * schemas are included into eachother sequentially,
+ * ie., workspaceSchema includes gardenSchema which includes userSchema.
+ * This is required to maintain typing across the S.Collections()
+ */
+export const schema = plantSchema;
 
 /** Export Triplit roles. */
 export { roles };

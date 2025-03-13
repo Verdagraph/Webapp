@@ -1,5 +1,6 @@
-import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
+import { Schema as S, type Entity, or } from '@triplit/client';
 import { EnvironmentAttributes } from './attributes';
+import { workspaceSchema } from '../workspaces/schema';
 
 /**
  * Defines the parent entity that the environment describes characteristics for.
@@ -8,14 +9,15 @@ import { EnvironmentAttributes } from './attributes';
  * - PLANTING_AREA: the environment applies to a planting area.
  * - INDEPENDENT: the environment applies to an independent geometry.
  */
-export const EnvironmentParentTypeEnum = [
+export const EnvironmentParentTypeEnumOptions = [
 	'GARDEN',
 	'WORKSPACE',
 	'PLANTING_AREA',
 	'INDEPENDENT'
 ] as const;
 
-export const environmentSchema = {
+export const environmentSchema = S.Collections({
+	...workspaceSchema,
 	/** Environment schema. */
 	environments: {
 		schema: S.Schema({
@@ -28,37 +30,25 @@ export const environmentSchema = {
 			description: S.String({ default: '' }),
 
 			/** Type of the parent entity of the environment. */
-			parentType: S.String({ enum: EnvironmentParentTypeEnum, default: 'GARDEN' }),
+			parentType: S.String({
+				enum: [...EnvironmentParentTypeEnumOptions],
+				default: 'GARDEN'
+			}),
 
 			/** Garden the environment exists in. Defined regardless of parentType. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', {
-				where: [['id', '=', '$gardenId']]
-			}),
 
 			/** The workspaces the environment applies to. Defined only if parentType = 'WORKSPACE'. */
 			workspaceIds: S.Optional(S.Set(S.String())),
-			workspaces: S.RelationMany('workspaces', {
-				where: [['id', 'in', '$workspaceIds']]
-			}),
 
 			/** The planting areas the environment applies to. Defined only if parentType = 'PLANTING_AREA'. */
 			plantingAreaIds: S.Optional(S.Set(S.String())),
-			plantingAreas: S.RelationOne('plantingAreas', {
-				where: [['id', 'in', '$plantingAreaIds']]
-			}),
 
 			/** The geometry the environment applies to. Defined only if parentType = 'INDEPENDENT'. */
 			geometryHistoryId: S.Optional(S.String()),
-			geometriHistory: S.RelationOne('geometryHistories', {
-				where: [['id', '=', '$geometryHistoryId']]
-			}),
 
 			/** The locations the environment geometry exists at. Defined only if parentType = 'INDEPENDENT'. */
 			locationHistoryId: S.Optional(S.String()),
-			locationHistory: S.RelationOne('locationHistories', {
-				where: [['id', '=', '$locationHistoryId']]
-			}),
 
 			/**
 			 * If true, the environment will inherit the attributes of the environments
@@ -68,6 +58,17 @@ export const environmentSchema = {
 
 			attributes: EnvironmentAttributes
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			workspaces: S.RelationMany('workspaces', {
+				where: [['id', 'in', '$workspaceIds']]
+			}),
+			plantingAreas: S.RelationMany('plantingAreas', {
+				where: [['id', 'in', '$plantingAreaIds']]
+			}),
+			geometriHistory: S.RelationById('geometryHistories', '$geometryHistoryId'),
+			locationHistory: S.RelationById('locationHistories', '$locationHistoryId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -117,5 +118,6 @@ export const environmentSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
+});
 export type Environment = Entity<typeof environmentSchema, 'environments'>;
+export type EnvironmentParent = (typeof EnvironmentParentTypeEnumOptions)[number];

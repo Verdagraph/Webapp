@@ -1,4 +1,4 @@
-import { Schema as S, Entity, or, ClientSchema } from '@triplit/client';
+import { Schema as S, Entity, or } from '@triplit/client';
 import { userSchema } from '../users/schema';
 
 /**
@@ -31,7 +31,8 @@ export const GardenMembershipStatusEnumOptions = [
 	'ACCEPTED'
 ] as const;
 
-export const gardenSchema = {
+export const gardenSchema = S.Collections({
+	...userSchema,
 	/** Garden schema. */
 	gardens: {
 		schema: S.Schema({
@@ -185,7 +186,7 @@ export const gardenSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
+});
 export type Garden = Entity<typeof gardenSchema, 'gardens'>;
 export type GardenMembership = Entity<typeof gardenSchema, 'gardenMemberships'>;
 export type GardenVisibilityEnum = (typeof GardenVisibilityEnumOptions)[number];
