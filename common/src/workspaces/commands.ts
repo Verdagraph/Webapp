@@ -153,8 +153,8 @@ export const GeometryCreateCommandSchema = z.object({
 	rectangleWidth: geometryRectangleWidthSchema.default(1),
 	polygonNumSides: geometryPolygonNumSidesSchema.default(3),
 	polygonRadius: geometryPolygonRadiusSchema.default(1),
-	ellipseLengthDiameter: geometryEllipseLengthDiameterSchema.default(1),
-	ellipseWidthDiameter: geometryEllipseWidthDiameterSchema.default(1),
+	ellipseLength: geometryEllipseLengthDiameterSchema.default(1),
+	ellipseWidth: geometryEllipseWidthDiameterSchema.default(1),
 	linesCoordinates: geometryLinesCoordinatesSchema.default([
 		{ x: -1, y: 0 },
 		{ x: 0, y: 1 },
@@ -163,6 +163,25 @@ export const GeometryCreateCommandSchema = z.object({
 	linesClosed: geometryLinesClosedSchema.default(true)
 });
 export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
+
+/**
+ * Update a geometry.
+ */
+export const GeometryUpdateCommandSchema = z.object({
+	type: geometryTypeSchema.optional(),
+	date: geometryDateSchema.optional(),
+	scaleFactor: geometryScaleFactorSchema.optional(),
+	rotation: geometryRotationSchema.optional(),
+	rectangleLength: geometryRectangleLengthSchema.optional(),
+	rectangleWidth: geometryRectangleWidthSchema.optional(),
+	polygonNumSides: geometryPolygonNumSidesSchema.optional(),
+	polygonRadius: geometryPolygonRadiusSchema.optional(),
+	ellipseLength: geometryEllipseLengthDiameterSchema.optional(),
+	ellipseWidth: geometryEllipseWidthDiameterSchema.optional(),
+	linesCoordinates: geometryLinesCoordinatesSchema.optional(),
+	linesClosed: geometryLinesClosedSchema.optional()
+});
+export type GeometryUpdateCommand = z.infer<typeof GeometryUpdateCommandSchema>;
 
 /**
  * Create a new workspace.

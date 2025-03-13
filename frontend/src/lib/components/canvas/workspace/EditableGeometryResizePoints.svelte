@@ -1,7 +1,6 @@
 <script lang="ts">
-	import type { GeometryPartial, Geometry } from '@vdt-webapp/common';
+	import type { Geometry, GeometryUpdateCommand } from '@vdt-webapp/common';
 	import { getContext, onDestroy } from 'svelte';
-	import { GeometryTypeEnum } from '@vdt-webapp/common';
 	import Konva from 'konva';
 	import { getGeometryResizePoints } from './utils';
 	import type { CanvasContext } from '../state';
@@ -21,7 +20,7 @@
 		/** Called when the geometry is transformed in the canvas. */
 		onTransform?: (
 			/** The updated geometry attributes after transformation. */
-			newGeometry: GeometryPartial,
+			newGeometry: GeometryUpdateCommand,
 			/** If true, the transform has ended. */
 			transformOver: boolean
 		) => void;
@@ -45,10 +44,10 @@
 	let resizePoints: Array<Konva.Circle> = [];
 
 	/**
-	 * Store the geometry type and numbor of resize points.
+	 * Store the geometry type and number of resize points.
 	 * If either changes, the shapes must be re-initialized.
 	 */
-	let previousGeometryType: (typeof GeometryTypeEnum)[number] = geometry.type;
+	let previousGeometryType = geometry.type;
 	let previousNumResizePoints: number = 0;
 
 	/**
@@ -57,13 +56,11 @@
 	 * to that geometry given the position of the resize point.
 	 * @param index The index of the resize point.
 	 */
-	function handleResizePointDrag(index: number): GeometryPartial {
-		const newGeometry: GeometryPartial = {};
+	function handleResizePointDrag(index: number): GeometryUpdateCommand {
+		const newGeometry: GeometryUpdateCommand = {};
 
 		switch (geometry.type) {
 			case 'RECTANGLE':
-				newGeometry.type = 'RECTANGLE';
-
 				/**
 				 * If the index is even,
 				 * calculate the new width and height.
@@ -71,16 +68,15 @@
 				if (index % 2 === 0) {
 					const newLength = Math.abs(resizePoints[index].x()) * 2;
 					const newWidth = Math.abs(resizePoints[index].y()) * 2;
-					newGeometry.rectangleAttributes = {
-						length: roundToDecimalPlaces(
-							canvas.transform.modelDistance(newLength),
-							ATTRIBUTE_DECIMALS
-						),
-						width: roundToDecimalPlaces(
-							canvas.transform.modelDistance(newWidth),
-							ATTRIBUTE_DECIMALS
-						)
-					};
+					newGeometry.rectangleLength = roundToDecimalPlaces(
+						canvas.transform.modelDistance(newLength),
+						ATTRIBUTE_DECIMALS
+					);
+
+					newGeometry.rectangleWidth = roundToDecimalPlaces(
+						canvas.transform.modelDistance(newWidth),
+						ATTRIBUTE_DECIMALS
+					);
 
 					/**
 					 * If the index is odd,
@@ -92,30 +88,24 @@
 					if (index === 1 || index === 5) {
 						resizePoints[index].x(0);
 						const newWidth = Math.abs(resizePoints[index].y()) * 2;
-						newGeometry.rectangleAttributes = {
-							width: roundToDecimalPlaces(
-								canvas.transform.modelDistance(newWidth),
-								ATTRIBUTE_DECIMALS
-							)
-						};
+						newGeometry.rectangleWidth = roundToDecimalPlaces(
+							canvas.transform.modelDistance(newWidth),
+							ATTRIBUTE_DECIMALS
+						);
 
 						/** Side points. */
 					} else {
 						resizePoints[index].y(0);
 						const newLength = Math.abs(resizePoints[index].x()) * 2;
-						newGeometry.rectangleAttributes = {
-							length: roundToDecimalPlaces(
-								canvas.transform.modelDistance(newLength),
-								ATTRIBUTE_DECIMALS
-							)
-						};
+						newGeometry.rectangleLength = roundToDecimalPlaces(
+							canvas.transform.modelDistance(newLength),
+							ATTRIBUTE_DECIMALS
+						);
 					}
 				}
 				break;
 
 			case 'POLYGON':
-				newGeometry.type = 'POLYGON';
-
 				/**
 				 * Calculate the new radius,
 				 * and constrain the movement to
@@ -123,16 +113,13 @@
 				 */
 				resizePoints[index].x(0);
 				const newRadius = Math.abs(resizePoints[index].y());
-				newGeometry.polygonAttributes = {
-					radius: roundToDecimalPlaces(
-						canvas.transform.modelDistance(newRadius),
-						ATTRIBUTE_DECIMALS
-					)
-				};
+				newGeometry.polygonRadius = roundToDecimalPlaces(
+					canvas.transform.modelDistance(newRadius),
+					ATTRIBUTE_DECIMALS
+				);
 				break;
 
 			case 'ELLIPSE':
-				newGeometry.type = 'ELLIPSE';
 				/**
 				 * If the index is even (top/bottom point),
 				 * calculate the new width and
@@ -141,12 +128,10 @@
 				if (index % 2 === 0) {
 					resizePoints[index].x(0);
 					const newWidthDiameter = Math.abs(resizePoints[index].y()) * 2;
-					newGeometry.ellipseAttributes = {
-						widthDiameter: roundToDecimalPlaces(
-							canvas.transform.modelDistance(newWidthDiameter),
-							ATTRIBUTE_DECIMALS
-						)
-					};
+					newGeometry.ellipseWidth = roundToDecimalPlaces(
+						canvas.transform.modelDistance(newWidthDiameter),
+						ATTRIBUTE_DECIMALS
+					);
 
 					/**
 					 * If the index is odd (side point),
@@ -156,36 +141,30 @@
 				} else {
 					resizePoints[index].y(0);
 					const newLengthDiameter = Math.abs(resizePoints[index].x()) * 2;
-					newGeometry.ellipseAttributes = {
-						lengthDiameter: roundToDecimalPlaces(
-							canvas.transform.modelDistance(newLengthDiameter),
-							ATTRIBUTE_DECIMALS
-						)
-					};
+					newGeometry.ellipseLength = roundToDecimalPlaces(
+						canvas.transform.modelDistance(newLengthDiameter),
+						ATTRIBUTE_DECIMALS
+					);
 				}
 
 				break;
 
 			case 'LINES':
-				newGeometry.type = 'LINES';
-
 				/**
 				 * Each point updates the whole coordinate array to the current state.
 				 */
-				newGeometry.linesAttributes = {
-					coordinates: resizePoints.map((point) => {
-						return {
-							x: roundToDecimalPlaces(
-								canvas.transform.modelXPos(point.x()),
-								ATTRIBUTE_DECIMALS
-							),
-							y: roundToDecimalPlaces(
-								canvas.transform.modelYPos(point.y()),
-								ATTRIBUTE_DECIMALS
-							)
-						};
-					})
-				};
+				newGeometry.linesCoordinates = resizePoints.map((point) => {
+					return {
+						x: roundToDecimalPlaces(
+							canvas.transform.modelXPos(point.x()),
+							ATTRIBUTE_DECIMALS
+						),
+						y: roundToDecimalPlaces(
+							canvas.transform.modelYPos(point.y()),
+							ATTRIBUTE_DECIMALS
+						)
+					};
+				});
 				break;
 		}
 		return newGeometry;

@@ -3,9 +3,9 @@
 	import type { Vector2d } from 'konva/lib/types';
 	import { getContext, onDestroy } from 'svelte';
 	import {
+		type GeometryUpdateCommand,
 		getGeometryHeight,
-		type Geometry,
-		type GeometryPartial
+		type Geometry
 	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
@@ -41,7 +41,7 @@
 		/** Called when the geometry is transformed in the canvas. */
 		onTransform?: (
 			/** The updated geometry attributes after transformation. */
-			newGeometry: GeometryPartial,
+			newGeometry: GeometryUpdateCommand,
 			/** If true, the transform has ended.*/
 			transformOver: boolean
 		) => void;
@@ -193,7 +193,7 @@
 	 * Wrap the container's onTransform to optimistically update
 	 * the shape before the geometry is updated in Triplit.
 	 */
-	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
+	function onTransform(newGeometry: GeometryUpdateCommand, transformOver: boolean) {
 		if (plantingAreaShape) {
 			updateShape(canvas, newGeometry, plantingAreaShape);
 		}

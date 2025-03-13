@@ -1,11 +1,4 @@
-import {
-	type Geometry,
-	getGeometryAttributes,
-	RectangleGeometry,
-	LinesGeometry,
-	EllipseGeometry,
-	PolygonGeometry
-} from '@vdt-webapp/common';
+import { type Geometry } from '@vdt-webapp/common';
 
 /**
  * Given a geometry, returns an array of coordinates
@@ -60,13 +53,10 @@ import {
 export function getGeometryResizePoints(
 	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date'>
 ): Array<{ x: number; y: number }> {
-	let attributes;
 	switch (geometry.type) {
 		case 'RECTANGLE':
-			attributes = getGeometryAttributes<'RECTANGLE'>(geometry as RectangleGeometry);
-
-			const halfLength = attributes.length / 2;
-			const halfWidth = attributes.width / 2;
+			const halfLength = geometry.rectangleLength / 2;
+			const halfWidth = geometry.rectangleWidth / 2;
 
 			return [
 				{ x: -halfLength, y: halfWidth },
@@ -80,15 +70,11 @@ export function getGeometryResizePoints(
 			];
 
 		case 'POLYGON':
-			attributes = getGeometryAttributes<'POLYGON'>(geometry as PolygonGeometry);
-
-			return [{ x: 0, y: attributes.radius }];
+			return [{ x: 0, y: geometry.polygonRadius }];
 
 		case 'ELLIPSE':
-			attributes = getGeometryAttributes<'ELLIPSE'>(geometry as EllipseGeometry);
-
-			const radiusLength = attributes.lengthDiameter / 2;
-			const radiusWidth = attributes.widthDiameter / 2;
+			const radiusLength = geometry.ellipseLength / 2;
+			const radiusWidth = geometry.ellipseWidth / 2;
 
 			return [
 				{ x: 0, y: radiusWidth },
@@ -98,8 +84,8 @@ export function getGeometryResizePoints(
 			];
 
 		case 'LINES':
-			attributes = getGeometryAttributes<'LINES'>(geometry as LinesGeometry);
-
-			return attributes.coordinates as Array<{ x: number; y: number }>;
+			return geometry.linesCoordinates.map((coordinate) => {
+				return { x: coordinate.x, y: coordinate.y };
+			});
 	}
 }
