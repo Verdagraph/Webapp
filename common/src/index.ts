@@ -9,6 +9,7 @@ export * from './cultivars/index';
 export * from './environments/index';
 export * from './plants/index';
 export * from './utils';
+export * from './errors'
 
 /**
  * Export Triplit schemas.

@@ -1,8 +1,6 @@
-import { userLoginOp, userRefreshOp } from '$codegen';
 import triplit from '$data/triplit';
-import { UserAccount, UserProfile } from '@vdt-webapp/common';
-import { AppError } from '@vdt-webapp/common/src/errors';
-import { type UserLoginCommand, UserLoginCommandSchema } from '@vdt-webapp/common';
+import { userLoginOp, userRefreshOp } from '$codegen';
+import { type User, AppError, type UserLoginCommand, UserLoginCommandSchema } from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
 
 const TRIPLIT_ANON_TOKEN =
@@ -64,16 +62,13 @@ export const userLogout = {
  * If anonymous, null is returned.
  * @returns The client if it was found, else null.
  */
-export const getClient = async (): Promise<{
-	account: UserAccount;
-	profile: UserProfile;
-} | null> => {
+export const getClient = async (): Promise<User| null> => {
 	if (!auth.isAuthenticated) {
 		return null;
 	}
 
 	const account = await triplit.fetchOne(
-		triplit.query('accounts').id('$session.accountId').include('profile').build()
+		triplit.query('accounts').Id('$session.accountId').Include('profile')
 	);
 	if (!account || !account.profile) {
 		return null;
@@ -88,10 +83,7 @@ export const getClient = async (): Promise<{
  * If this fails, an AppError is raised.
  * @returns The client.
  */
-export const getClientOrError = async (): Promise<{
-	account: UserAccount;
-	profile: UserProfile;
-}> => {
+export const getClientOrError = async (): Promise<User> => {
 	/** Return the client if authenticated. */
 	const client = await getClient();
 	if (client) {
