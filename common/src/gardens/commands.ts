@@ -1,6 +1,6 @@
 import z from 'zod';
 import { userFields } from '../users/commands';
-import { GardenVisibilityEnum, GardenMembershipRoleEnum } from './schema';
+import { GardenVisibilityEnumOptions, GardenMembershipRoleEnumOptions } from './schema';
 import { commonFields } from '../commands';
 
 /** Field specifications. */
@@ -16,8 +16,8 @@ const gardenNameSchema = commonFields.nameSchema.describe('Name of the garden.')
 const gardenDescriptionSchema = commonFields.descriptionSchema.describe(
 	'Optional description.'
 );
-const gardenVisibilitySchema = z.enum(GardenVisibilityEnum);
-const gardenMembershipRoleSchema = z.enum(GardenMembershipRoleEnum);
+const gardenVisibilitySchema = z.enum(GardenVisibilityEnumOptions);
+const gardenMembershipRoleSchema = z.enum(GardenMembershipRoleEnumOptions);
 const usernameInvitesListSchema = z
 	.array(userFields.usernameSchema)
 	.max(10, 'A maximum of 10 users can be invited at once.');

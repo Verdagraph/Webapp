@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { EnvironmentParentTypeEnum } from './schema';
+import { EnvironmentParentTypeEnumOptions } from './schema';
 import { commonFields } from '../commands';
 import { attributesSchemas } from './attributes';
 
@@ -11,7 +11,7 @@ const environmentNameSchema = commonFields.nameSchema.describe(
 const environmentDescriptionSchema = commonFields.descriptionSchema.describe(
 	'Optional description.'
 );
-const environmentParentTypeSchema = z.enum(EnvironmentParentTypeEnum);
+const environmentParentTypeSchema = z.enum(EnvironmentParentTypeEnumOptions);
 export const environmentFields = {
 	environmentNameSchema,
 	environmentDescriptionSchema,

@@ -16,6 +16,10 @@ export default function seed(): BulkInsert<typeof schema> {
 				/** Password is 'password'. */
 				passwordHash: '$argon2i$v=19$m=16,t=2,p=1$MTIzNDU2Nzg5$e7G/IEd63Q/ZrZIiW6FUow',
 				verifiedEmail: 'nathanielarking@gmail.com',
+				unverifiedEmail: {
+					address: null,
+					token: null
+				},
 				passwordResetToken: null
 			}
 		],
@@ -33,6 +37,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				name: 'Editor Garden.',
 				visibility: 'PUBLIC',
 				creatorId: null,
+				adminIds: new Set(),
 				editorIds: new Set(['user1'])
 			},
 			{
@@ -40,6 +45,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				name: 'Viewer Garden.',
 				visibility: 'PUBLIC',
 				creatorId: null,
+				adminIds: new Set(),
 				viewerIds: new Set(['user1'])
 			}
 		],
@@ -122,46 +128,37 @@ export default function seed(): BulkInsert<typeof schema> {
 				gardenId: 'garden1',
 				type: 'RECTANGLE',
 				date: new Date(),
-				rectangleAttributes: {
-					length: 2,
-					width: 3
-				}
+				rectangleLength: 2,
+				rectangleWidth: 3
 			},
 			{
 				id: 'ellipseAreaGeometry',
 				gardenId: 'garden1',
 				type: 'ELLIPSE',
 				date: new Date(),
-				ellipseAttributes: {
-					widthDiameter: 1.5,
-					lengthDiameter: 2
-				}
+				ellipseWidth: 1.5,
+				ellipseLength: 2
 			},
 			{
 				id: 'polygonAreaGeometry',
 				gardenId: 'garden1',
 				type: 'POLYGON',
 				date: new Date(),
-				polygonAttributes: {
-					numSides: 5,
-					radius: 0.4
-				}
+				polygonNumSides: 5,
+				polygonRadius: 0.4
 			},
 			{
 				id: 'linesAreaGeometry',
 				gardenId: 'garden1',
 				type: 'LINES',
 				date: new Date(),
-				// @ts-ignore
-				linesAttributes: {
-					coordinateIds: new Set([
-						'linesAreaCoord1',
-						'linesAreaCoord2',
-						'linesAreaCoord3',
-						'linesAreaCoord4'
-					]),
-					closed: true
-				}
+				linesCoordinateIds: new Set([
+					'linesAreaCoord1',
+					'linesAreaCoord2',
+					'linesAreaCoord3',
+					'linesAreaCoord4'
+				]),
+				linesClosed: true
 			}
 		],
 		locationHistories: [

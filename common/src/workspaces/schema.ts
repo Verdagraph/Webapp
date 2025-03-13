@@ -10,7 +10,12 @@ import { gardenSchema } from '../gardens';
  * ELLIPSE: a closed shape specified by a major and minor radius.
  * LINES: a closed or open shape specified by a set of joined line segments.`
  */
-const GeometryTypeEnumOptions = ['RECTANGLE', 'POLYGON', 'ELLIPSE', 'LINES'] as const;
+export const GeometryTypeEnumOptions = [
+	'RECTANGLE',
+	'POLYGON',
+	'ELLIPSE',
+	'LINES'
+] as const;
 
 export const workspaceSchema = S.Collections({
 	...gardenSchema,
@@ -111,24 +116,24 @@ export const workspaceSchema = S.Collections({
 
 			/** Rectangular geometry attributes. */
 			/** Horizontal length of the rectangle in meters. */
-			rectangleLength: S.Number(),
+			rectangleLength: S.Number({ default: 1 }),
 
 			/** Vertical width of the rectangle in meters. */
-			rectangleWidth: S.Number(),
+			rectangleWidth: S.Number({ default: 1 }),
 
 			/** Polygon geometry attributes. */
 			/** Number of sides to the polygon. */
-			polygonNumSides: S.Number(),
+			polygonNumSides: S.Number({ default: 3 }),
 
 			/** Polygon radius. */
-			polygonRadius: S.Number(),
+			polygonRadius: S.Number({ default: 1 }),
 
 			/** Ellipe geometry attributes. */
 			/** The length of the horizontal diameter in meters. */
-			ellipseLength: S.Number(),
+			ellipseLength: S.Number({ default: 1 }),
 
 			/** The width of the vertical diameter in meters. */
-			ellipseWidth: S.Number(),
+			ellipseWidth: S.Number({ default: 1 }),
 
 			/** Lines geometry attributes. */
 			/** A set of coordinates which describe an open or closed shape of line segments. */

@@ -62,10 +62,10 @@ export const gardenSchema = S.Collections({
 			adminIds: S.Set(S.String()),
 
 			/** Set of users which have editing access. */
-			editorIds: S.Set(S.String()),
+			editorIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
 			/** Set of users which have viewing access. */
-			viewerIds: S.Set(S.String()),
+			viewerIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
 			/** Date of garden creation. */
 			createdAt: S.Date({ default: S.Default.now() })
@@ -189,7 +189,6 @@ export const gardenSchema = S.Collections({
 });
 export type Garden = Entity<typeof gardenSchema, 'gardens'>;
 export type GardenMembership = Entity<typeof gardenSchema, 'gardenMemberships'>;
-export type GardenVisibilityEnum = (typeof GardenVisibilityEnumOptions)[number];
-export type GardenRoleEnum = (typeof GardenMembershipRoleEnumOptions)[number];
-export type GardenMembershipStatusEnum =
-	(typeof GardenMembershipStatusEnumOptions)[number];
+export type GardenVisibility = (typeof GardenVisibilityEnumOptions)[number];
+export type GardenRole = (typeof GardenMembershipRoleEnumOptions)[number];
+export type GardenMembershipStatus = (typeof GardenMembershipStatusEnumOptions)[number];

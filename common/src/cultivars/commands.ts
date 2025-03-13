@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CultivarCollectionVisibilityEnum } from './schema';
+import { CultivarCollectionVisibilityEnumOptions } from './schema';
 import { commonFields } from '../commands';
 import { attributesSchemas } from './attributes';
 
@@ -46,7 +46,7 @@ const cultivarCollectionDescriptionSchema = commonFields.descriptionSchema.descr
 );
 
 const cultivarCollectionVisibilitySchema = z
-	.enum(CultivarCollectionVisibilityEnum)
+	.enum(CultivarCollectionVisibilityEnumOptions)
 	.describe(
 		'Public collections may be viewed by anyone and are publicly searchable. \
             Unlisted collections may be viewed by anyone with the link. \

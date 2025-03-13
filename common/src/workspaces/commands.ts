@@ -1,5 +1,5 @@
 import z from 'zod';
-import { GeometryTypeEnum } from './schema';
+import { GeometryTypeEnumOptions } from './schema';
 import { commonFields } from '../commands';
 
 /** Field specifications. */
@@ -43,7 +43,7 @@ const coordinateSchema = z
 	})
 	.describe('A position relative to the origin of a workspace.');
 const geometryTypeSchema = z
-	.enum(GeometryTypeEnum)
+	.enum(GeometryTypeEnumOptions)
 	.describe(
 		'Describes the type of geometry. Each type has a unique set of attributes associated with it.'
 	);
@@ -66,12 +66,12 @@ const geometryRotationSchema = z
 	);
 const geometryRectangleLengthSchema = z
 	.number()
-	.min(0, 'May not be negative.')
+	.min(0.01, 'May not be negative or zero.')
 	.max(1000, 'May be at most 1000m')
 	.describe('The horizontal, or x-axis length of the rectangle.');
 const geometryRectangleWidthSchema = z
 	.number()
-	.min(0, 'May not be negative.')
+	.min(0.01, 'May not be negative or zero.')
 	.max(1000, 'May be at most 1000m')
 	.describe('The vertical, or y-axis width of the rectangle.');
 const geometryPolygonNumSidesSchema = z
@@ -81,17 +81,17 @@ const geometryPolygonNumSidesSchema = z
 	.describe('The amount of sides the polygon has.');
 const geometryPolygonRadiusSchema = z
 	.number()
-	.min(0, 'May not be negative')
+	.min(0.01, 'May not be negative or zero.')
 	.max(1000, 'May be at most 1000m')
 	.describe('The distance from the center to any vertex of the polygon.');
 const geometryEllipseLengthDiameterSchema = z
 	.number()
-	.min(0, 'May not be negative')
-	.max(1000, 'May be at most 1000m')
+	.min(0.01, 'May not be negative or zero.')
+	.max(1000, 'May be at most 1000m.')
 	.describe('The horizontal, or x-axis diameter of the ellipse.');
 const geometryEllipseWidthDiameterSchema = z
 	.number()
-	.min(0, 'May not be negative')
+	.min(0.01, 'May not be negative or zero.')
 	.max(1000, 'May be at most 1000m')
 	.describe(
 		'The vertical, or y-axis diameter of the ellipse. Must be between 0 and 1000 meters.'
@@ -149,26 +149,18 @@ export const GeometryCreateCommandSchema = z.object({
 	date: geometryDateSchema,
 	scaleFactor: geometryScaleFactorSchema.default(1),
 	rotation: geometryRotationSchema.default(0),
-	rectangleAttributes: z.object({
-		length: geometryRectangleLengthSchema.default(1),
-		width: geometryRectangleWidthSchema.default(1)
-	}),
-	polygonAttributes: z.object({
-		numSides: geometryPolygonNumSidesSchema.default(3),
-		radius: geometryPolygonRadiusSchema.default(1)
-	}),
-	ellipseAttributes: z.object({
-		lengthDiameter: geometryEllipseLengthDiameterSchema.default(1),
-		widthDiameter: geometryEllipseWidthDiameterSchema.default(1)
-	}),
-	linesAttributes: z.object({
-		coordinates: geometryLinesCoordinatesSchema.default([
-			{ x: -1, y: 0 },
-			{ x: 0, y: 1 },
-			{ x: 1, y: 0 }
-		]),
-		closed: geometryLinesClosedSchema.default(true)
-	})
+	rectangleLength: geometryRectangleLengthSchema.default(1),
+	rectangleWidth: geometryRectangleWidthSchema.default(1),
+	polygonNumSides: geometryPolygonNumSidesSchema.default(3),
+	polygonRadius: geometryPolygonRadiusSchema.default(1),
+	ellipseLengthDiameter: geometryEllipseLengthDiameterSchema.default(1),
+	ellipseWidthDiameter: geometryEllipseWidthDiameterSchema.default(1),
+	linesCoordinates: geometryLinesCoordinatesSchema.default([
+		{ x: -1, y: 0 },
+		{ x: 0, y: 1 },
+		{ x: 1, y: 0 }
+	]),
+	linesClosed: geometryLinesClosedSchema.default(true)
 });
 export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
 
