@@ -1,6 +1,11 @@
 import triplit from '$data/triplit';
 import { userLoginOp, userRefreshOp } from '$codegen';
-import { type User, AppError, type UserLoginCommand, UserLoginCommandSchema } from '@vdt-webapp/common';
+import {
+	type User,
+	AppError,
+	type UserLoginCommand,
+	UserLoginCommandSchema
+} from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
 
 const TRIPLIT_ANON_TOKEN =
@@ -62,7 +67,7 @@ export const userLogout = {
  * If anonymous, null is returned.
  * @returns The client if it was found, else null.
  */
-export const getClient = async (): Promise<User| null> => {
+export const getClient = async (): Promise<User | null> => {
 	if (!auth.isAuthenticated) {
 		return null;
 	}

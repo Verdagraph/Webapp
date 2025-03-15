@@ -1,3 +1,4 @@
+import type { DBTransaction } from '@triplit/client';
 import { roles } from './users/schema';
 import { plantSchema } from './plants';
 
@@ -9,7 +10,7 @@ export * from './cultivars/index';
 export * from './environments/index';
 export * from './plants/index';
 export * from './utils';
-export * from './errors'
+export * from './errors';
 
 /**
  * Export Triplit schemas.
@@ -22,3 +23,5 @@ export const schema = plantSchema;
 
 /** Export Triplit roles. */
 export { roles };
+
+export type TriplitTransaction = DBTransaction<typeof schema>;

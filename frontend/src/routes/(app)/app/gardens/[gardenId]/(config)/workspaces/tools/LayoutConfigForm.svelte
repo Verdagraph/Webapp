@@ -18,8 +18,6 @@
 			(option) => option.value === layoutCanvas.transform.config.buttonsPosition
 		)?.label ?? 'Select a corner'
 	);
-
-	let value = $state(1);
 </script>
 
 <div class="mx-4 mt-6 flex flex-col gap-4">

@@ -20,7 +20,7 @@
 
 	let inviterProfile = useQuery(
 		triplit,
-		userProfilesQuery.vars({ profileIds: [invite.inviterId] })
+		userProfilesQuery.Vars({ profileIds: [invite.inviterId] })
 	);
 
 	/** Mutations. */

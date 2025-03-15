@@ -3,7 +3,7 @@
 	import TreeToolbar from './TreeToolbar.svelte';
 	import TreeWindowsScrollable from './TreeWindowsScrollable.svelte';
 	import TreePlantsScrollable from './TreePlantsScrollable.svelte';
-	import TreeActionsScrollable from './TreeActionsScrollable.svelte';
+	import TreeActionsScrollable from './TreeActionsScrollable.svelte.old';
 
 	let scrollable_pane_direction: Resizable.Direction = 'vertical';
 	let scrollable_pane_view_options: string[] | undefined = [

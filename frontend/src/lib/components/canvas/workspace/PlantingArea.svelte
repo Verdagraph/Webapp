@@ -24,7 +24,7 @@
 		/** The current position of the planting area in the workspace, in model quantity (meters). */
 		position: Vector2d | null;
 		/** The geometry of the planting area. */
-		geometry: Omit<Geometry, 'id' | 'gardenId'>;
+		geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>;
 		/** If true, the planting area may be moved and resized. */
 		editable: boolean;
 		/** If true, the planting area is selected. */

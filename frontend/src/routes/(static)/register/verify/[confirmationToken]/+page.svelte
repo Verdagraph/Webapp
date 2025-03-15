@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import * as Card from '$lib/components/ui/card';
 	import { userConfirmEmailConfirmation } from '$data/users/commands';
@@ -9,7 +9,7 @@
 	import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
 
 	/* Initialize the mutation on page load with url parameter. */
-	const confirmationToken = $page.params.confirmationToken;
+	const confirmationToken = page.params.confirmationToken;
 
 	let formHandler = createMutationHandler(userConfirmEmailConfirmation.mutation, {
 		onSuccess: () => {

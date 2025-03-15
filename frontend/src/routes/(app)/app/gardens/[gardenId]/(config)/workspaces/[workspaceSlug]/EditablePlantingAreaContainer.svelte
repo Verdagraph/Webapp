@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { GeometryPartial, Geometry, Position } from '@vdt-webapp/common';
+	import type { Geometry, Position } from '@vdt-webapp/common';
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
 	import { historySelect } from '@vdt-webapp/common';
-	import triplit, { TRIPLIT_UPDATE_DEFAULT_INTERVAL } from '$data/triplit';
+	import triplit, { TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS } from '$data/triplit';
 	import { locationHistoryUpdate, geometryUpdate } from '$data/workspaces/commands';
 	import { useQuery } from '@triplit/svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
@@ -24,7 +24,7 @@
 	const canvasId = canvasContext.canvasId;
 
 	/** Queries. */
-	const query = useQuery(triplit, plantingAreaQuery.vars({ plantingAreaId }));
+	const query = useQuery(triplit, plantingAreaQuery.Vars({ plantingAreaId }));
 
 	/** Handlers. */
 	/** Translation. */
@@ -42,7 +42,7 @@
 				workspaceContext.timelineSelection.focusUtc
 			);
 		},
-		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
+		TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS,
 		{
 			onStart: workspaceContext.timelineSelection.disable,
 			onEnd: workspaceContext.timelineSelection.enable
@@ -59,7 +59,7 @@
 
 			transformMutationHandler.execute(plantingArea.geometryId, newData);
 		},
-		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
+		TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS,
 		{
 			onStart: workspaceContext.timelineSelection.disable,
 			onEnd: workspaceContext.timelineSelection.enable

@@ -1,8 +1,7 @@
-import type { AppErrors } from '@vdt-webapp/common/src/errors';
-import { AppError, ServerErrorResponse } from '@vdt-webapp/common/src/errors';
+import { AppError, ServerErrorResponse, AppErrors } from '@vdt-webapp/common';
 import { isAxiosError } from 'axios';
 import type { AxiosError } from 'axios';
-import { toast } from 'svelte-sonner';
+import { handleErrors } from '$lib/errors';
 
 /**
  * Options which may be set on the handler.
@@ -17,7 +16,7 @@ export type HandlerOptions<ResultType = Record<string, unknown>> = {
 /**
  * Provides a rune and handler function which allows
  * executing an async function, tracking loading/success/error
- * states, storing the results and error of the function,
+ * states, storing the results and error of the function,a
  * and executing side effects.
  * @param asyncFn An async function to call.
  * @param options Handler options.
@@ -136,19 +135,4 @@ const convertErrors = (
 
 	/** Fallback to displaying other errors as nonFormError. */
 	return { nonFormErrors: [error.message] };
-};
-
-/**
- * Provides common error handling before the custom HandlerOptions
- * onError side effect.
- * 1. Pushes all NonFormErrors to toasts.
- * @param errors AppErrors raiesd by the handler function.
- */
-const handleErrors = (errors: AppErrors) => {
-	if (errors.nonFormErrors) {
-		for (const errorMessage of errors.nonFormErrors) {
-			/** Toast */
-			toast.error(errorMessage);
-		}
-	}
 };

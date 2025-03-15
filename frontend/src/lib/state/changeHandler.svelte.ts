@@ -1,4 +1,4 @@
-import { TRIPLIT_UPDATE_DEFAULT_INTERVAL } from '$data/triplit';
+import { TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS } from '$data/triplit';
 
 /**
  * Options to pass to the handler
@@ -27,7 +27,7 @@ type HandlerOptions = {
  */
 export function createChangeHandler<TData extends unknown>(
 	commitFunc: (newData: TData) => void,
-	interval: number = TRIPLIT_UPDATE_DEFAULT_INTERVAL,
+	interval: number = TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS,
 	options?: HandlerOptions
 ) {
 	/** The interval timeout for commiting the data. */

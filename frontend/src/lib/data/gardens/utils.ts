@@ -74,9 +74,7 @@ export async function generateGardenId(): Promise<string> {
 	for (let i = 0; i < MAX_PLANT_NAME_TRIES; i++) {
 		const id = generateGardenIdFromPlantName();
 
-		const existingGarden = await triplit.fetchOne(
-			triplit.query('gardens').Id(id)
-		);
+		const existingGarden = await triplit.fetchOne(triplit.query('gardens').Id(id));
 		if (existingGarden == null) {
 			return id;
 		}
@@ -86,9 +84,7 @@ export async function generateGardenId(): Promise<string> {
 	for (let i = 0; i < MAX_PLANT_NAME_TRIES; i++) {
 		const id = generateGardenIdFromRandomString();
 
-		const existingGarden = await triplit.fetchOne(
-			triplit.query('gardens').Id(id)
-		);
+		const existingGarden = await triplit.fetchOne(triplit.query('gardens').Id(id));
 		if (existingGarden == null) {
 			return id;
 		}

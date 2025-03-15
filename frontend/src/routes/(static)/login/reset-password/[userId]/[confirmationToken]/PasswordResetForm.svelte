@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
@@ -20,8 +20,8 @@
 		}
 	});
 	const initialData = {
-		userId: $page.params.userId,
-		token: $page.params.confirmationToken,
+		userId: page.params.userId,
+		token: page.params.confirmationToken,
 		password1: '',
 		password2: ''
 	};

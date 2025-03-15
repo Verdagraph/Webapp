@@ -1,12 +1,9 @@
-import { z as zod } from 'zod';
-import { AppError } from '@vdt-webapp/common/src/errors';
 import {
+	AppError,
 	type GardenCreateCommand,
 	GardenCreateCommandSchema,
 	type GardenMembershipCreateCommand,
 	GardenMembershipCreateCommandSchema,
-	isProfileMember,
-	isUserAuthorized,
 	type GardenMembershipAcceptCommand,
 	GardenMembershipAcceptCommandSchema,
 	type GardenMembershipDeleteCommand,
@@ -14,12 +11,16 @@ import {
 	type GardenMembershipRevokeCommand,
 	GardenMembershipRevokeCommandSchema,
 	type GardenMembershipRoleChangeCommand,
-	GardenMembershipRoleChangeCommandSchema
+	GardenMembershipRoleChangeCommandSchema,
+	isUserAuthorized,
+	isProfileMember
 } from '@vdt-webapp/common';
-import type { Garden, UserAccount, UserProfile } from '@vdt-webapp/common';
+import type { Garden, User } from '@vdt-webapp/common';
 import triplit from '../triplit';
 import { getClientOrError } from '$data/users/auth';
 import { ActionType, requiredRole } from '$lib/permissions';
+import { gardenQuery, membershipQuery } from './queries';
+import { userProfilesUsernameQuery } from '../users/queries';
 
 /** Helpers. */
 
@@ -35,17 +36,14 @@ export async function requireRole(
 	gardenId: string,
 	action: ActionType
 ): Promise<{
-	client: {
-		account: UserAccount;
-		profile: UserProfile;
-	};
+	client: User;
 	garden: Garden;
 }> {
 	/** Retrieve client. */
 	const client = await getClientOrError();
 
 	/** Retrieve garden. */
-	const garden = await triplit.fetchOne(triplit.query('gardens').id(gardenId).build());
+	const garden = await triplit.fetchOne(gardenQuery.Vars({ id: gardenId }));
 	if (garden == null) {
 		throw new AppError('Garden key does not exist.', {
 			nonFormErrors: ['Garden key does not exist.']
@@ -79,12 +77,7 @@ async function getNewMembershipIdsFromUsernames(
 		return new Set();
 	}
 
-	const profiles = await triplit.fetch(
-		triplit
-			.query('profiles')
-			.where([['username', 'in', usernames]])
-			.build()
-	);
+	const profiles = await triplit.fetch(userProfilesUsernameQuery.Vars({ usernames }));
 	return new Set(
 		profiles
 			.filter((profile) => garden === undefined || !isProfileMember(garden, profile.id))
@@ -104,9 +97,7 @@ export const gardenCreate = {
 		const client = await getClientOrError();
 
 		/** Validate unique key constraint. */
-		const existingGarden = await triplit.fetchOne(
-			triplit.query('gardens').id(data.id).build()
-		);
+		const existingGarden = await triplit.fetchOne(gardenQuery.Vars({ id: data.id }));
 		if (existingGarden) {
 			throw new AppError('Garden ID already exists.', {
 				fieldErrors: { id: ['Key already exists.'] }
@@ -192,7 +183,8 @@ export const gardenCreate = {
 			await transaction.insert('environments', {
 				gardenId: garden.id,
 				name: 'Garden',
-				parentType: 'GARDEN'
+				parentType: 'GARDEN',
+				attributes: {}
 			});
 		});
 
@@ -272,13 +264,7 @@ export const gardenMembershipAccept = {
 
 		/** Retrieve the membership. */
 		const membership = await triplit.fetchOne(
-			triplit
-				.query('gardenMemberships')
-				.where([
-					['gardenId', '=', data.gardenId],
-					['userId', '=', client.profile.id]
-				])
-				.build()
+			membershipQuery.Vars({ gardenId: data.gardenId, userId: client.profile.id })
 		);
 		if (!membership) {
 			throw new AppError('Membership does not exist in the collection.', {
@@ -312,13 +298,7 @@ export const gardenMembershipDelete = {
 
 		/** Retrieve the membership. */
 		const membership = await triplit.fetchOne(
-			triplit
-				.query('gardenMemberships')
-				.where([
-					['gardenId', '=', data.gardenId],
-					['userId', '=', client.profile.id]
-				])
-				.build()
+			membershipQuery.Vars({ gardenId: data.gardenId, userId: client.profile.id })
 		);
 		if (!membership) {
 			throw new AppError('Membership does not exist in the collection.', {
@@ -356,13 +336,7 @@ export const gardenMembershipRevoke = {
 
 		/** Retrieve the membership. */
 		const membership = await triplit.fetchOne(
-			triplit
-				.query('gardenMemberships')
-				.where([
-					['gardenId', '=', data.gardenId],
-					['userId', '=', data.profileId]
-				])
-				.build()
+			membershipQuery.Vars({ gardenId: data.gardenId, userId: client.profile.id })
 		);
 		if (!membership) {
 			throw new AppError('Membership does not exist in the collection.', {
@@ -402,13 +376,7 @@ export const gardenMembershipRoleChange = {
 
 		/** Retrieve membership. */
 		const membership = await triplit.fetchOne(
-			triplit
-				.query('gardenMemberships')
-				.where([
-					['gardenId', '=', data.gardenId],
-					['userId', '=', data.profileId]
-				])
-				.build()
+			membershipQuery.Vars({ gardenId: data.gardenId, userId: client.profile.id })
 		);
 		if (!membership) {
 			throw new AppError('Membership does not exist in the collection.', {

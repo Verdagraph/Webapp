@@ -41,7 +41,9 @@ const coordinateSchema = z
 		x: coordinateXSchema,
 		y: coordinateYSchema
 	})
-	.describe('A position relative to the origin of a workspace.');
+	.describe('A position relative to the origin of a workspace or a geometry.');
+const locationDateSchema = z.date().describe('The date at which the location applies.');
+
 const geometryTypeSchema = z
 	.enum(GeometryTypeEnumOptions)
 	.describe(
@@ -137,9 +139,19 @@ export const LocationCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	workspaceId: z.string(),
 	coordinate: coordinateSchema,
-	date: z.date()
+	date: locationDateSchema
 });
 export type LocationCreateCommand = z.infer<typeof LocationCreateCommandSchema>;
+
+export const LocationHistoryUpdateCommandSchema = z.object({
+	id: z.string(),
+	workspaceId: z.string(),
+	coordinate: coordinateSchema,
+	date: locationDateSchema
+});
+export type LocationHistoryUpdateCommand = z.infer<
+	typeof LocationHistoryUpdateCommandSchema
+>;
 
 /**
  * Create a new geometry.
@@ -168,6 +180,7 @@ export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
  * Update a geometry.
  */
 export const GeometryUpdateCommandSchema = z.object({
+	id: z.string(),
 	type: geometryTypeSchema.optional(),
 	date: geometryDateSchema.optional(),
 	scaleFactor: geometryScaleFactorSchema.optional(),
@@ -206,3 +219,14 @@ export const PlantingAreaCreateCommandSchema = z.object({
 	depth: plantingAreaDepthSchema.default(0)
 });
 export type PlantingAreaCreateCommand = z.infer<typeof PlantingAreaCreateCommandSchema>;
+
+/**
+ * Update a planting area.
+ */
+export const PlantingAreaUpdateCommandSchema = z.object({
+	id: z.string(),
+	name: plantingAreaNameSchema.optional(),
+	description: plantingAreaDescriptionSchema.optional(),
+	depth: plantingAreaDepthSchema.optional()
+});
+export type PlantingAreaUpdateCommand = z.infer<typeof PlantingAreaUpdateCommandSchema>;

@@ -1,22 +1,19 @@
-import { z as zod } from 'zod';
 import {
+	historySelectDay,
+	type TriplitTransaction,
 	WorkspaceCreateCommandSchema,
 	type WorkspaceCreateCommand,
 	PlantingAreaCreateCommandSchema,
 	type PlantingAreaCreateCommand,
-	LocationCreateCommandSchema,
 	LocationCreateCommand,
 	type Workspace,
 	type Geometry,
-	type Location,
 	type LocationHistory,
-	GeometryCreateCommandSchema,
 	GeometryCreateCommand,
-	TriplitTransaction,
-	historySelectDay,
-	type Position,
-	GeometryPartial,
-	type PlantingArea
+	GeometryUpdateCommand,
+	type LocationHistoryUpdateCommand,
+	PlantingAreaUpdateCommandSchema,
+	type PlantingAreaUpdateCommand
 } from '@vdt-webapp/common';
 import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
@@ -36,47 +33,37 @@ export async function geometryCreate(
 	gardenId: string,
 	data: GeometryCreateCommand,
 	transaction: TriplitTransaction
-): Promise<Geometry> {
-	let geometry: Omit<Geometry, 'id'> = {
+): Promise<Omit<Geometry, 'linesCoordinates'>> {
+	const coordinateIds: string[] = [];
+	if (data.linesCoordinates && data.type === 'LINES') {
+		for (const point of data.linesCoordinates) {
+			const coordinate = await transaction.insert('coordinates', {
+				gardenId: gardenId,
+				x: point.x,
+				y: point.y
+			});
+			coordinateIds.push(coordinate.id);
+		}
+	}
+
+	let geometry: Omit<Geometry, 'id' | 'linesCoordinates'> = {
 		gardenId: gardenId,
 		type: data.type,
 		date: data.date,
 		scaleFactor: data.scaleFactor,
-		rotation: data.rotation
+		rotation: data.rotation,
+		rectangleLength: data.rectangleLength,
+		rectangleWidth: data.rectangleWidth,
+		polygonNumSides: data.polygonNumSides,
+		polygonRadius: data.polygonRadius,
+		ellipseLength: data.ellipseLength,
+		ellipseWidth: data.ellipseWidth,
+		linesCoordinateIds: new Set(coordinateIds),
+		linesClosed: data.linesClosed
 	};
-	switch (data.type) {
-		case 'RECTANGLE':
-			geometry.rectangleAttributes = data.rectangleAttributes;
-			break;
-		case 'POLYGON':
-			geometry.polygonAttributes = data.polygonAttributes;
-			break;
-		case 'ELLIPSE':
-			geometry.ellipseAttributes = data.ellipseAttributes;
-			break;
-		case 'LINES': {
-			const coordinateIds: string[] = [];
-			for (const point of data.linesAttributes.coordinates) {
-				const coordinate = await transaction.insert('coordinates', {
-					gardenId: gardenId,
-					x: point.x,
-					y: point.y
-				});
-				coordinateIds.push(coordinate.id);
-			}
-			geometry.linesAttributes = {
-				coordinateIds: new Set(coordinateIds),
-				coordinates: data.linesAttributes.coordinates,
-				closed: data.linesAttributes.closed
-			};
-			break;
-		}
-	}
+
 	return await transaction.insert('geometries', geometry);
 }
-
-/** TODO: Add validation using the zod schemas to this function.
- */
 
 /**
  * Given a geometry partial object, which is a geometry object
@@ -85,10 +72,8 @@ export async function geometryCreate(
  * @param geometryId The ID of the geometry to update.
  * @param newGeometry The attributes to update.
  */
-export async function geometryUpdate(geometryId: string, newGeometry: GeometryPartial) {
-	const geometry = await triplit.fetchOne(
-		triplit.query('geometries').id(geometryId).build()
-	);
+export async function geometryUpdate(data: GeometryUpdateCommand) {
+	const geometry = await triplit.fetchOne(triplit.query('geometries').Id(data.id));
 	if (!geometry) {
 		throw new AppError('Geometry does not exist.', {
 			nonFormErrors: ['Failed to update object geometry.']
@@ -106,113 +91,62 @@ export async function geometryUpdate(geometryId: string, newGeometry: GeometryPa
 		 * This is only necessary if the new geometry has specified
 		 * a new list of coordinates.
 		 */
-		let newCoordinateIds: Set<string> | null = null;
-		if (newGeometry.type === 'LINES') {
-			if (
-				newGeometry.linesAttributes?.coordinates &&
-				geometry.linesAttributes?.coordinateIds
-			) {
-				for (const coordinateId of geometry.linesAttributes.coordinateIds) {
+		const coordinateIds: string[] = [];
+		if (data.linesCoordinates) {
+			/** Delete existing coordinates. */
+			if (geometry.linesCoordinateIds) {
+				for (const coordinateId of geometry.linesCoordinateIds) {
 					await transaction.delete('coordinates', coordinateId);
 				}
 			}
 
-			if (newGeometry.linesAttributes?.coordinates) {
-				newCoordinateIds = new Set();
-				for (const newCoordinate of newGeometry.linesAttributes.coordinates) {
-					const coordinate = await transaction.insert('coordinates', {
-						gardenId: geometry.gardenId,
-						x: newCoordinate.x,
-						y: newCoordinate.y
-					});
-					newCoordinateIds.add(coordinate.id);
-				}
+			/** Add new coordinates. */
+			for (const point of data.linesCoordinates) {
+				const coordinate = await transaction.insert('coordinates', {
+					gardenId: geometry.gardenId,
+					x: point.x,
+					y: point.y
+				});
+				coordinateIds.push(coordinate.id);
 			}
 		}
 
-		await transaction.update('geometries', geometryId, (geometry) => {
-			if (newGeometry.type) {
-				geometry.type = newGeometry.type;
+		await transaction.update('geometries', data.id, (geometry) => {
+			if (data.type) {
+				geometry.type = data.type;
 			}
-			if (newGeometry.date) {
-				geometry.date = newGeometry.date;
+			if (data.date) {
+				geometry.date = data.date;
 			}
-			if (newGeometry.scaleFactor) {
-				geometry.scaleFactor = newGeometry.scaleFactor;
+			if (data.scaleFactor) {
+				geometry.scaleFactor = data.scaleFactor;
 			}
-			if (newGeometry.rotation) {
-				geometry.rotation = newGeometry.rotation;
+			if (data.rotation) {
+				geometry.rotation = data.rotation;
 			}
-
-			switch (newGeometry.type) {
-				case 'RECTANGLE':
-					if (!geometry.rectangleAttributes) {
-						geometry.rectangleAttributes = { length: 1, width: 1 };
-					}
-
-					if (newGeometry.rectangleAttributes) {
-						if (newGeometry.rectangleAttributes.length) {
-							geometry.rectangleAttributes.length =
-								newGeometry.rectangleAttributes.length;
-						}
-						if (newGeometry.rectangleAttributes.width) {
-							geometry.rectangleAttributes.width =
-								newGeometry.rectangleAttributes.width;
-						}
-					}
-					break;
-
-				case 'POLYGON':
-					if (!geometry.polygonAttributes) {
-						geometry.polygonAttributes = { radius: 1, numSides: 3 };
-					}
-
-					if (newGeometry.polygonAttributes) {
-						if (newGeometry.polygonAttributes.numSides) {
-							geometry.polygonAttributes.numSides =
-								newGeometry.polygonAttributes.numSides;
-						}
-						if (newGeometry.polygonAttributes.radius) {
-							geometry.polygonAttributes.radius = newGeometry.polygonAttributes.radius;
-						}
-					}
-					break;
-
-				case 'ELLIPSE':
-					if (!geometry.ellipseAttributes) {
-						geometry.ellipseAttributes = { lengthDiameter: 1, widthDiameter: 1 };
-					}
-
-					if (newGeometry.ellipseAttributes) {
-						if (newGeometry.ellipseAttributes.lengthDiameter) {
-							geometry.ellipseAttributes.lengthDiameter =
-								newGeometry.ellipseAttributes.lengthDiameter;
-						}
-						if (newGeometry.ellipseAttributes.widthDiameter) {
-							geometry.ellipseAttributes.widthDiameter =
-								newGeometry.ellipseAttributes.widthDiameter;
-						}
-					}
-					break;
-
-				case 'LINES': {
-					if (!geometry.linesAttributes) {
-						geometry.linesAttributes = {
-							coordinateIds: new Set(),
-							closed: true,
-							coordinates: []
-						};
-					}
-
-					if (newGeometry.linesAttributes?.closed) {
-						geometry.linesAttributes.closed = newGeometry.linesAttributes.closed;
-					}
-					if (newCoordinateIds) {
-						geometry.linesAttributes.coordinateIds = newCoordinateIds;
-					}
-
-					break;
-				}
+			if (data.rectangleLength) {
+				geometry.rectangleLength = data.rectangleLength;
+			}
+			if (data.rectangleWidth) {
+				geometry.rectangleWidth = data.rectangleWidth;
+			}
+			if (data.polygonNumSides) {
+				geometry.polygonNumSides = data.polygonNumSides;
+			}
+			if (data.polygonRadius) {
+				geometry.polygonRadius = data.polygonRadius;
+			}
+			if (data.ellipseLength) {
+				geometry.ellipseLength = data.ellipseLength;
+			}
+			if (data.ellipseWidth) {
+				geometry.ellipseWidth = data.ellipseWidth;
+			}
+			if (data.linesCoordinates) {
+				geometry.linesCoordinateIds = new Set(coordinateIds);
+			}
+			if (data.linesClosed) {
+				geometry.linesClosed = data.linesClosed;
 			}
 		});
 	});
@@ -220,28 +154,25 @@ export async function geometryUpdate(geometryId: string, newGeometry: GeometryPa
 
 /**
  * Insert a new location history into the database.
- * @param gardenId The ID of the garden.
  * @param data The location create command.
  * @param transaction The database transaction.
  * @returns The location history after insertion.
  */
 export async function locationHistoryCreate(
-	gardenId: string,
-	workspaceId: string,
 	data: LocationCreateCommand,
 	transaction: TriplitTransaction
-): Promise<LocationHistory> {
+): Promise<Omit<LocationHistory, 'locations'>> {
 	const location = await transaction.insert('locations', {
-		gardenId: gardenId,
-		workspaceId: workspaceId,
+		gardenId: data.gardenId,
+		workspaceId: data.workspaceId,
 		x: data.coordinate.x,
 		y: data.coordinate.y,
 		date: data.date
 	});
 	return await transaction.insert('locationHistories', {
-		gardenId: gardenId,
+		gardenId: data.gardenId,
 		locationIds: new Set([location.id]),
-		workspaceIds: new Set([workspaceId])
+		workspaceIds: new Set([data.workspaceId])
 	});
 }
 
@@ -250,23 +181,11 @@ export async function locationHistoryCreate(
  * If a position already exists in this location history
  * at the same day at the given date, that location is updated.
  * If not, a new location is created.
- * @param locationHistoryId The ID of the history to update.
- * @param workspaceId The workspace the new position is in.
- * @param newPosition The new posistion.
- * @param date The date the new position is being set at.
+ * @param data The history update command.
  */
-export async function locationHistoryUpdate(
-	locationHistoryId: string,
-	workspaceId: string,
-	newPosition: Position,
-	date: Date
-) {
+export async function locationHistoryUpdate(data: LocationHistoryUpdateCommand) {
 	const locationHistory = await triplit.fetchOne(
-		triplit
-			.query('locationHistories')
-			.id(locationHistoryId)
-			.include('locations')
-			.build()
+		triplit.query('locationHistories').Id(data.id).Include('locations')
 	);
 	if (!locationHistory) {
 		throw new AppError('Location history does not exist.', {
@@ -275,11 +194,11 @@ export async function locationHistoryUpdate(
 	}
 
 	/** If a location already exists at the given day, update it. */
-	const existingLocation = historySelectDay(locationHistory.locations, date);
+	const existingLocation = historySelectDay(locationHistory.locations, data.date);
 	if (existingLocation) {
 		await triplit.update('locations', existingLocation.id, (location) => {
-			location.x = newPosition.x;
-			location.y = newPosition.y;
+			location.x = data.coordinate.x;
+			location.y = data.coordinate.y;
 		});
 
 		/** If no location exists, create a new one. */
@@ -287,18 +206,18 @@ export async function locationHistoryUpdate(
 		await triplit.transact(async (transaction) => {
 			const location = await transaction.insert('locations', {
 				gardenId: locationHistory.gardenId,
-				workspaceId: workspaceId,
-				x: newPosition.x,
-				y: newPosition.y,
-				date: date
+				workspaceId: data.workspaceId,
+				x: data.coordinate.x,
+				y: data.coordinate.y,
+				date: data.date
 			});
 			await triplit.update(
 				'locationHistories',
 				locationHistory.id,
 				(locationHistory) => {
 					locationHistory.locationIds.add(location.id);
-					if (!locationHistory.workspaceIds.has(workspaceId)) {
-						locationHistory.workspaceIds.add(workspaceId);
+					if (!locationHistory.workspaceIds.has(data.workspaceId)) {
+						locationHistory.workspaceIds.add(data.workspaceId);
 					}
 				}
 			);
@@ -318,13 +237,10 @@ export const workspaceCreate = {
 
 		/** Validate garden-scoped unique workspace slug requirement. */
 		const existingWorkspace = await triplit.fetchOne(
-			triplit
-				.query('workspaces')
-				.where([
-					['gardenId', '=', data.gardenId],
-					['slug', '=', workspaceSlug]
-				])
-				.build()
+			triplit.query('workspaces').Where([
+				['gardenId', '=', data.gardenId],
+				['slug', '=', workspaceSlug]
+			])
 		);
 		if (existingWorkspace) {
 			throw new AppError('Workspace slug already exists.', {
@@ -333,18 +249,12 @@ export const workspaceCreate = {
 		}
 
 		/** Add the workspace */
-		const result = await triplit.insert('workspaces', {
+		return await triplit.insert('workspaces', {
 			gardenId: data.gardenId,
 			name: data.name,
 			slug: workspaceSlug,
-			description: data.description || ''
+			description: data.description
 		});
-		if (result.output == null) {
-			throw new AppError('Failed to create workspace.', {
-				nonFieldErrors: ['Failed to create workspace.']
-			});
-		}
-		return result.output;
 	}
 };
 
@@ -356,7 +266,7 @@ export const plantingAreaCreate = {
 
 		/** Retrieve workspace. */
 		const workspace = await triplit.fetchOne(
-			triplit.query('workspaces').id(data.workspaceId).build()
+			triplit.query('workspaces').Id(data.workspaceId)
 		);
 		if (workspace == null) {
 			throw new AppError(`Failed to retrieve workspace ${data.workspaceId}`, {
@@ -369,12 +279,7 @@ export const plantingAreaCreate = {
 			const geometry = await geometryCreate(data.gardenId, data.geometry, transaction);
 
 			/** Persist locations. */
-			const locationHistory = await locationHistoryCreate(
-				garden.id,
-				workspace.id,
-				data.location,
-				transaction
-			);
+			const locationHistory = await locationHistoryCreate(data.location, transaction);
 
 			/** Persist planting area. */
 			await transaction.insert('plantingAreas', {
@@ -390,6 +295,6 @@ export const plantingAreaCreate = {
 };
 
 export const plantingAreaUpdate = {
-	//schema: PlantingAreaUpdateCommandSchema,
-	mutation: async function (data: Partial<PlantingArea>) {}
+	schema: PlantingAreaUpdateCommandSchema,
+	mutation: async function (data: PlantingAreaUpdateCommand) {}
 };

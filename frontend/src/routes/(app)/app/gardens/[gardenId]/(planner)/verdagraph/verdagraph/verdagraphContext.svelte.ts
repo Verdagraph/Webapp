@@ -45,8 +45,6 @@ function createVerdagraphContext() {
 		contentPaneDirection: defaultContentPaneDirection
 	});
 
-	/** Forms. */
-
 	return {
 		/* Getters. */
 		get treeEnabled(): boolean {

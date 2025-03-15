@@ -1,5 +1,5 @@
 import triplit from '$data/triplit';
-import { activeGardenQuery } from '$data/gardens/queries.js';
+import { gardenQuery } from '$data/gardens/queries.js';
 import { goto } from '$app/navigation';
 import activeGarden from '$state/gardenContext.svelte';
 import { AppError } from '@vdt-webapp/common/src/errors';
@@ -8,11 +8,10 @@ import { getClient } from '$data/users/auth';
 /**
  * Retrieve the garden and set it as active.
  */
+/** TODO: Fix the typing of the params. */
 export async function load({ params }) {
-	const garden = await triplit.fetchOne(
-		activeGardenQuery.vars({ activeGardenId: params.gardenId }).build()
-	);
 	const client = await getClient();
+	const garden = await triplit.fetchOne(gardenQuery.Vars({ id: params.gardenId }));
 
 	if (!garden) {
 		/** TODO: Make toasts work here. */
@@ -24,9 +23,6 @@ export async function load({ params }) {
 	/** Update the active garden upon loading a new garden. */
 	if (activeGarden.id != garden.id) {
 		activeGarden.id = garden.id;
-
-		console.log('client');
-		console.log(client);
 
 		if (client === null) {
 			activeGarden.role = null;

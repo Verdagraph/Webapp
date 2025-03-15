@@ -8,12 +8,10 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { UnitAwareInput, CoordinateInput } from '$components/units';
 	import { Input } from '$lib/components/ui/input';
-	import { plantingAreaCreate } from '$data/workspaces/commands';
 	import iconIds from '$lib/assets/icons';
-	import Checkbox from '$components/ui/checkbox/checkbox.svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import { toast } from 'svelte-sonner';
-	import { AppError } from '@vdt-webapp/common/src/errors';
+	import { AppError, workspaceFields } from '@vdt-webapp/common';
 
 	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;
@@ -36,7 +34,7 @@
 	$effect(() => {
 		if (!workspaceContext.id) {
 			toast.error('Error retrieving workspace context.');
-			throw new AppError('Error retrieving workspace contxet.');
+			throw new AppError('Error retrieving workspace context.');
 		}
 
 		$formData.gardenId = page.params.gardenId;
@@ -44,8 +42,6 @@
 		$formData.geometry.date = workspaceContext.timelineSelection.focusUtc;
 		$formData.location.date = workspaceContext.timelineSelection.focusUtc;
 	});
-
-	let generateGridSpacing: number = $state(0.3048);
 </script>
 
 <form method="POST" autocomplete="off" use:enhance class="mx-4 mb-8 mt-4">
@@ -54,8 +50,8 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={plantingAreaCreate.schema.shape.name.description}
-					optional={plantingAreaCreate.schema.shape.name.isOptional()}>Name</Form.Label
+					description={workspaceFields.plantingAreaNameSchema.description}
+					optional={false}>Name</Form.Label
 				>
 				<Input
 					{...props}
@@ -73,9 +69,8 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={plantingAreaCreate.schema.shape.description.description}
-					optional={plantingAreaCreate.schema.shape.description.isOptional()}
-					>Description</Form.Label
+					description={workspaceFields.plantingAreaDescriptionSchema.description}
+					optional={true}>Description</Form.Label
 				>
 				<Textarea.Root {...props} bind:value={$formData.description} />
 			{/snippet}
@@ -88,9 +83,8 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={plantingAreaCreate.schema.shape.location.description}
-					optional={plantingAreaCreate.schema.shape.location.isOptional()}
-					>Position</Form.Label
+					description={workspaceFields.coordinateSchema.description}
+					optional={false}>Position</Form.Label
 				>
 				<CoordinateInput
 					{...props}
@@ -115,11 +109,8 @@
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label
-						description={plantingAreaCreate.schema.shape.geometry.innerType().shape.type
-							.description}
-						optional={plantingAreaCreate.schema.shape.geometry
-							.innerType()
-							.shape.type.isOptional()}>Type</Form.Label
+						description={workspaceFields.geometryTypeSchema.description}
+						optional={false}>Type</Form.Label
 					>
 					<Select.Root {...props} type="single" bind:value={$formData.geometry.type}>
 						<Select.Trigger class="w-full">
@@ -167,11 +158,8 @@
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label
-						description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-							.rotation.description}
-						optional={plantingAreaCreate.schema.shape.geometry
-							.innerType()
-							.shape.rotation.isOptional()}>Rotation</Form.Label
+						description={workspaceFields.geometryRotationSchema.description}
+						optional={true}>Rotation</Form.Label
 					>
 					<Input {...props} type="number" bind:value={$formData.geometry.rotation} />
 				{/snippet}
@@ -182,186 +170,157 @@
 		<!-- RECTANGLE GEOMETRY. -->
 		{#if $formData.geometry.type === 'RECTANGLE'}
 			<!-- Length. -->
-			<Form.Field {form} name="geometry.rectangleAttributes.length">
+			<Form.Field {form} name="geometry.rectangleLength">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-								.rectangleAttributes.shape.length.description}
-							optional={plantingAreaCreate.schema.shape.geometry
-								.innerType()
-								.shape.rectangleAttributes.shape.length.isOptional()}>Length</Form.Label
+							description={workspaceFields.geometryRectangleLengthSchema.description}
+							optional={false}>Length</Form.Label
 						>
 						<UnitAwareInput
 							{...props}
 							min={0}
 							quantityType="distance"
-							bind:value={$formData.geometry.rectangleAttributes.length}
+							bind:value={$formData.geometry.rectangleLength}
 						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors
-					handlerErrors={handler.fieldErrors?.['geometry.rectangleAttributes.length']}
+					handlerErrors={handler.fieldErrors?.['geometry.rectangleLength']}
 				/>
 			</Form.Field>
 
 			<!-- Width. -->
-			<Form.Field {form} name="geometry.rectangleAttributes.width">
+			<Form.Field {form} name="geometry.rectangleWidth">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-								.rectangleAttributes.shape.width.description}
-							optional={plantingAreaCreate.schema.shape.geometry
-								.innerType()
-								.shape.rectangleAttributes.shape.width.isOptional()}>Width</Form.Label
+							description={workspaceFields.geometryRectangleWidthSchema.description}
+							optional={false}>Width</Form.Label
 						>
 						<UnitAwareInput
 							{...props}
 							min={0}
 							quantityType="distance"
-							bind:value={$formData.geometry.rectangleAttributes.width}
+							bind:value={$formData.geometry.rectangleWidth}
 						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors
-					handlerErrors={handler.fieldErrors?.['geometry.rectangleAttributes.width']}
+					handlerErrors={handler.fieldErrors?.['geometry.rectangleWidth']}
 				/>
 			</Form.Field>
 
 			<!-- POLYGON GEOMETRY. -->
 		{:else if $formData.geometry.type === 'POLYGON'}
 			<!-- Side count. -->
-			<Form.Field {form} name="geometry.polygonAttributes.numSides">
+			<Form.Field {form} name="geometry.polygonNumSides">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-								.polygonAttributes.shape.numSides.description}
-							optional={plantingAreaCreate.schema.shape.geometry
-								.innerType()
-								.shape.polygonAttributes.shape.numSides.isOptional()}
-							>Side Count</Form.Label
+							description={workspaceFields.geometryPolygonNumSidesSchema.description}
+							optional={false}>Side Count</Form.Label
 						>
 						<Input
 							{...props}
 							type="number"
 							min={3}
-							bind:value={$formData.geometry.polygonAttributes.numSides}
+							bind:value={$formData.geometry.polygonNumSides}
 						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors
-					handlerErrors={handler.fieldErrors?.['geometry.polygonAttributes.numSides']}
+					handlerErrors={handler.fieldErrors?.['geometry.polygonNumSides']}
 				/>
 			</Form.Field>
 
 			<!-- Radius. -->
-			<Form.Field {form} name="geometry.polygonAttributes.radius">
+			<Form.Field {form} name="geometry.polygonRadius">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-								.polygonAttributes.shape.radius.description}
-							optional={plantingAreaCreate.schema.shape.geometry
-								.innerType()
-								.shape.polygonAttributes.shape.radius.isOptional()}>Radius</Form.Label
+							description={workspaceFields.geometryPolygonRadiusSchema.description}
+							optional={false}>Radius</Form.Label
 						>
 						<UnitAwareInput
 							{...props}
 							quantityType="distance"
 							min={0}
-							bind:value={$formData.geometry.polygonAttributes.radius}
+							bind:value={$formData.geometry.polygonRadius}
 						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors
-					handlerErrors={handler.fieldErrors?.['geometry.polygonAttributes.radius']}
+					handlerErrors={handler.fieldErrors?.['geometry.polygonRadius']}
 				/>
 			</Form.Field>
 
 			<!-- ELLIPSE GEOMETRY. -->
 		{:else if $formData.geometry.type === 'ELLIPSE'}
 			<!-- Length diameter. -->
-			<Form.Field {form} name="geometry.ellipseAttributes.lengthDiameter">
+			<Form.Field {form} name="geometry.ellipseLength">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-								.ellipseAttributes.shape.lengthDiameter.description}
-							optional={plantingAreaCreate.schema.shape.geometry
-								.innerType()
-								.shape.ellipseAttributes.shape.lengthDiameter.isOptional()}
-							>Length Diameter</Form.Label
+							description={workspaceFields.geometryEllipseLengthDiameterSchema
+								.description}
+							optional={false}>Length Diameter</Form.Label
 						>
 						<UnitAwareInput
 							{...props}
 							min={0}
 							quantityType="distance"
-							bind:value={$formData.geometry.ellipseAttributes.lengthDiameter}
+							bind:value={$formData.geometry.ellipseLength}
 						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors
-					handlerErrors={handler.fieldErrors?.[
-						'geometry.ellipseAttributes.lengthDiameter'
-					]}
+					handlerErrors={handler.fieldErrors?.['geometry.ellipseLength']}
 				/>
 			</Form.Field>
 
 			<!-- Width diameter. -->
-			<Form.Field {form} name="geometry.ellipseAttributes.widthDiameter">
+			<Form.Field {form} name="geometry.ellipseWidth">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-								.ellipseAttributes.shape.widthDiameter.description}
-							optional={plantingAreaCreate.schema.shape.geometry
-								.innerType()
-								.shape.ellipseAttributes.shape.widthDiameter.isOptional()}
-							>Width Diameter</Form.Label
+							description={workspaceFields.geometryEllipseWidthDiameterSchema
+								.description}
+							optional={false}>Width Diameter</Form.Label
 						>
 						<UnitAwareInput
 							{...props}
 							min={0}
 							quantityType="distance"
-							bind:value={$formData.geometry.ellipseAttributes.widthDiameter}
+							bind:value={$formData.geometry.ellipseWidth}
 						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors
-					handlerErrors={handler.fieldErrors?.[
-						'geometry.ellipseAttributes.widthDiameter'
-					]}
+					handlerErrors={handler.fieldErrors?.['geometry.ellipseWidth']}
 				/>
 			</Form.Field>
 
 			<!-- LINES GEOMETRY. -->
 		{:else if $formData.geometry.type === 'LINES'}
 			<!-- Coordinate. -->
-			{#each $formData.geometry.linesAttributes.coordinates as coordinate, index}
-				<Form.Field {form} name={`geometry.linesAttributes.coordinates[${index}]`}>
+			{#each $formData.geometry.linesCoordinates as coordinate, index}
+				<Form.Field {form} name={`geometry.linesCoordinates[${index}]`}>
 					<Form.Control>
 						{#snippet children({ props })}
 							<Form.Label
-								description={plantingAreaCreate.schema.shape.geometry.innerType().shape
-									.linesAttributes.shape.coordinates._def.innerType._def.description}
-								optional={plantingAreaCreate.schema.shape.geometry
-									.innerType()
-									.shape.linesAttributes.shape.coordinates._def.innerType._def.type.isOptional()}
-								>Coordinate {index}</Form.Label
+								description={workspaceFields.coordinateSchema.description}
+								optional={false}>Coordinate {index}</Form.Label
 							>
 							<CoordinateInput
 								{...props}
-								bind:x={$formData.geometry.linesAttributes.coordinates[index].x}
-								bind:y={$formData.geometry.linesAttributes.coordinates[index].y}
+								bind:x={$formData.geometry.linesCoordinates[index].x}
+								bind:y={$formData.geometry.linesCoordinates[index].y}
 							/>
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors
-						handlerErrors={handler.fieldErrors?.[
-							`geometry.linesAttributes.coordinates[${index}]`
-						]}
+						handlerErrors={handler.fieldErrors?.[`geometry.linesCoordinates[${index}]`]}
 					/>
 				</Form.Field>
 			{/each}
@@ -369,8 +328,8 @@
 			<!-- Coordinate add button. -->
 			<Button
 				onclick={() => {
-					$formData.geometry.linesAttributes.coordinates = [
-						...$formData.geometry.linesAttributes.coordinates,
+					$formData.geometry.linesCoordinates = [
+						...$formData.geometry.linesCoordinates,
 						{ x: 0, y: 0 }
 					];
 				}}
@@ -380,91 +339,6 @@
 				<span> Add Point </span>
 				<Icon icon={iconIds.addIcon} width="1.5rem" />
 			</Button>
-		{/if}
-	</fieldset>
-
-	<!-- Grid. -->
-	<fieldset>
-		<div class="my-2 flex items-center">
-			<span class="text-neutral-11 mr-2"> Grid </span>
-			<span class="w-full">
-				<Separator class="w-full" />
-			</span>
-		</div>
-
-		<Form.Field {form} name="includeGrid">
-			<Form.Control>
-				{#snippet children({ props })}
-					<div class="flex items-center justify-between">
-						<Form.Label
-							description={plantingAreaCreate.schema.shape.includeGrid.description}
-							optional={plantingAreaCreate.schema.shape.includeGrid.isOptional()}
-							>Include Grid</Form.Label
-						>
-						<Checkbox {...props} bind:checked={$formData.includeGrid} />
-					</div>
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['includeGrid']} />
-		</Form.Field>
-
-		{#if $formData.includeGrid}
-			<!-- Grid generate button. -->
-			<div class="mb-4 flex flex-col gap-4">
-				<span class="text-sm"> Grid Spacing </span>
-				<UnitAwareInput
-					min={0}
-					quantityType="distance"
-					bind:value={generateGridSpacing}
-				/>
-				<Button onclick={() => {}} variant="outline" class="w-full">
-					Generate Grid
-				</Button>
-			</div>
-
-			<!-- Row count. -->
-			<Form.Field {form} name="grid.numRows">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label
-							description={plantingAreaCreate.schema.shape.grid.shape.numRows
-								.description}
-							optional={plantingAreaCreate.schema.shape.grid.shape.numRows.isOptional()}
-							>Number of Rows</Form.Label
-						>
-						<Input
-							{...props}
-							type="number"
-							step="1"
-							min={2}
-							bind:value={$formData.grid.numRows}
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors handlerErrors={handler.fieldErrors?.['grid.numRows']} />
-			</Form.Field>
-
-			<!-- Column count. -->
-			<Form.Field {form} name="grid.numColumns">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label
-							description={plantingAreaCreate.schema.shape.grid.shape.numColumns
-								.description}
-							optional={plantingAreaCreate.schema.shape.grid.shape.numColumns.isOptional()}
-							>Number of Columns</Form.Label
-						>
-						<Input
-							{...props}
-							type="number"
-							step="1"
-							min={2}
-							bind:value={$formData.grid.numColumns}
-						/>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors handlerErrors={handler.fieldErrors?.['grid.numColumns']} />
-			</Form.Field>
 		{/if}
 	</fieldset>
 
@@ -482,9 +356,8 @@
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label
-						description={plantingAreaCreate.schema.shape.depth.description}
-						optional={plantingAreaCreate.schema.shape.depth.isOptional()}
-						>Depth</Form.Label
+						description={workspaceFields.plantingAreaDepthSchema.description}
+						optional={true}>Depth</Form.Label
 					>
 					<UnitAwareInput
 						{...props}

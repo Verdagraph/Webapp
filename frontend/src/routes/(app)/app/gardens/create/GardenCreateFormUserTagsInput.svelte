@@ -30,7 +30,6 @@
 		/** Sync the bindable input prop and Melt's writable store. */
 		add(tag: string) {
 			tagsInput.push(tag);
-			updateProfilesQuery();
 			return { id: tag, value: tag };
 		},
 		/** The ID of the tag is the previous ID, the value is the newly set value. */
@@ -39,28 +38,28 @@
 				return username !== tag.id;
 			});
 			tagsInput.push(tag.value);
-			updateProfilesQuery();
 			return { id: tag.value, value: tag.value };
 		},
 		remove(tag) {
 			tagsInput = tagsInput.filter((username) => {
 				return username !== tag.id;
 			});
-			updateProfilesQuery();
 			return true;
 		}
 	});
 
 	/** Indicate in the input whether the username exists. */
-	const profiles = useQuery(
+	/** TODO: Fix this update query if there's a better way to do it. */
+	let profiles = useQuery(
 		triplit,
-		userProfilesUsernameQuery.select(['username']).vars({ usernames: [...tagsInput] })
+		userProfilesUsernameQuery.Select(['username']).Vars({ usernames: [...tagsInput] })
 	);
-	function updateProfilesQuery() {
-		profiles.updateQuery(
-			userProfilesUsernameQuery.select(['username']).vars({ usernames: [...tagsInput] })
+	$effect(() => {
+		profiles = useQuery(
+			triplit,
+			userProfilesUsernameQuery.Select(['username']).Vars({ usernames: [...tagsInput] })
 		);
-	}
+	});
 </script>
 
 <div

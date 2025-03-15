@@ -3,7 +3,6 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import Icon from '@iconify/svelte';
 	import { createUnitAwareValues } from './units.svelte';
-	import type { UnitAwareQuantity } from '$state/userSettings.svelte';
 
 	type Props = {
 		/** The output X value. Guarnteed to be in metric. */

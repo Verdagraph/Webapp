@@ -10,7 +10,7 @@
 	import type { Garden } from '@vdt-webapp/common';
 	import triplit from '$data/triplit';
 	import {
-		activeGardenQuery,
+		gardenQuery,
 		adminGardensQuery,
 		editorGardensQuery,
 		viewerGardensQuery,
@@ -22,14 +22,10 @@
 	let { children } = $props();
 
 	/* Queries */
-	let activeGarden = useQuery(
-		triplit,
-		activeGardenQuery.vars({ activeGardenId: gardenContext.id })
-	);
+	let activeGarden = useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }));
+	/** TODO: Fix this update query if there's a better way to do it. */
 	$effect(() => {
-		activeGarden.updateQuery(
-			activeGardenQuery.vars({ activeGardenId: gardenContext.id })
-		);
+		activeGarden = useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }));
 	});
 
 	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);

@@ -32,15 +32,17 @@
 		}
 	];
 
-	const selectedPlantingAreas = useQuery(
+	/** TODO once a better way to updateQuery is found. */
+	let selectedPlantingAreas = useQuery(
 		triplit,
-		plantingAreaSelectionQuery.vars({
+		plantingAreaSelectionQuery.Vars({
 			plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
 		})
 	);
 	$effect(() => {
-		selectedPlantingAreas.updateQuery(
-			plantingAreaSelectionQuery.vars({
+		selectedPlantingAreas = useQuery(
+			triplit,
+			plantingAreaSelectionQuery.Vars({
 				plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
 			})
 		);

@@ -1,7 +1,8 @@
 import { TriplitClient } from '@triplit/client';
 import { browser } from '$app/environment';
-import { schema, roles } from '@vdt-webapp/common';
+import { schema, roles, AppError } from '@vdt-webapp/common';
 import { userRefresh } from './users/auth';
+import { handleErrors } from '$lib/errors';
 
 /**
  * When a value is updated in rapid succession,
@@ -10,7 +11,7 @@ import { userRefresh } from './users/auth';
  * to avoid changes being sent to Triplit too frequently.
  * This is the default interval for that.
  */
-export const TRIPLIT_UPDATE_DEFAULT_INTERVAL = 5;
+export const TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS = 5;
 
 export const TRIPLIT_ANON_TOKEN =
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.JzN7Erur8Y-MlFdCaZtovQwxN_m_fSyOIWNzYQ3uVcc';
@@ -32,19 +33,29 @@ const triplit = new TriplitClient({
 				throw new Error('Failed to refresh access token.');
 			}
 		}
-	}
-	/**
-	 onSessionError: () => {
-		const refreshedToken = auth.refreshAccess();
-		
-		if (refreshedToken) {
-			triplit.updateSessionToken(refreshedToken);
-		} else {
-			triplit.endSession();
+	},
+	onSessionError: (type) => {
+		triplit.endSession();
 		triplit.clear();
-		auth.removeAccess();
+		if (
+			type === 'TOKEN_EXPIRED' ||
+			type === 'UNAUTHORIZED' ||
+			type === 'ROLES_MISMATCH'
+		) {
+			const error = new AppError(`Triplit session error of type ${type}.`, {
+				nonFormErrors: ['Authentication error. Log in again.']
+			});
+			handleErrors(error.details);
+			throw error;
+		} else if (type === 'SCHEMA_MISMATCH') {
+			const error = new AppError(`Triplit session error of type ${type}.`, {
+				nonFormErrors: [
+					'Failed to synchronize data structures with the server. Please refresh the application.'
+				]
+			});
+			handleErrors(error.details);
+			throw error;
+		}
 	}
-}
-*/
 });
 export default triplit;

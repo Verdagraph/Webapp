@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { Textarea } from '$lib/components/ui/textarea';
@@ -8,10 +8,11 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { workspaceCreate } from '$data/workspaces/commands';
 	import createMutationHandler from '$state/mutationHandler.svelte';
+	import { workspaceFields } from '@vdt-webapp/common';
 
 	let formHandler = createMutationHandler(workspaceCreate.mutation, {
 		onSuccess: (workspace) => {
-			const workspaceHref = `/app/gardens/${$page.params.gardenId}/workspaces/${workspace.slug}`;
+			const workspaceHref = `/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
 			goto(workspaceHref);
 		}
 	});
@@ -37,8 +38,8 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={workspaceCreate.schema.shape.name.description}
-					optional={workspaceCreate.schema.shape.name.isOptional()}>Name</Form.Label
+					description={workspaceFields.workspaceNameSchema.description}
+					optional={false}>Name</Form.Label
 				>
 				<Input
 					{...props}
@@ -56,9 +57,8 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={workspaceCreate.schema.shape.description.description}
-					optional={workspaceCreate.schema.shape.description.isOptional()}
-					>Description</Form.Label
+					description={workspaceFields.workspaceDescriptionSchema.description}
+					optional={true}>Description</Form.Label
 				>
 				<Textarea {...props} bind:value={$formData.description} />
 			{/snippet}
