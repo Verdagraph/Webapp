@@ -11,7 +11,7 @@
 		/** The ID of the canvas. */
 		canvasId: string;
 		/* The geometry to add points for. */
-		geometry: Omit<Geometry, 'id' | 'gardenId'>;
+		geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>;
 		/** A konva group already made that stores the geometry's shapes. */
 		geometryGroup: Konva.Group;
 		/** Colors to make the points. */

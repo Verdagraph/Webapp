@@ -1,5 +1,5 @@
 import { type TreeItem } from 'melt/builders';
-import { type Snippet, type Component } from 'svelte';
+import { type Component } from 'svelte';
 
 /** Describes the structure of an item in the tree. */
 export type Item<ValueT = unknown> = TreeItem & {

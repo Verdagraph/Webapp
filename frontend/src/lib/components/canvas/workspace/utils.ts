@@ -29,10 +29,10 @@ import { type Geometry } from '@vdt-webapp/common';
  *     2
  *
  * For a polygon, there is a one point, at the top.
- *      0
- *    /   \
- *    \   /
- *     ---
+ *    0
+ *  /   \
+ *  \   /
+ *   ---
  *
  * For a lines geometry described by a set of points,
  * the resize points are simply the set of points.
@@ -51,7 +51,7 @@ import { type Geometry } from '@vdt-webapp/common';
  * @returns The list of points which can be used as resize points.
  */
 export function getGeometryResizePoints(
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date'>
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>
 ): Array<{ x: number; y: number }> {
 	switch (geometry.type) {
 		case 'RECTANGLE':

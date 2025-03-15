@@ -18,19 +18,11 @@
 	import { createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import {
-		plantingAreaNameSchema,
-		plantingAreaDescriptionSchema,
-		plantingAreaDepthSchema,
 		type PlantingArea,
 		validateField,
 		type Geometry,
 		type GeometryType,
-		geometryTypeSchema,
-		geometryDateSchema,
-		geometryScaleFactorSchema,
-		geometryRotationSchema,
-		geometryRectangleLengthSchema,
-		geometryRectangleWidthSchema
+		workspaceFields
 	} from '@vdt-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
 	import { type DateValue } from '@internationalized/date';
@@ -50,9 +42,9 @@
 	const fieldErrors: Record<string, string[]> = $state({});
 
 	/** Queries. */
-	const query = useQuery(triplit, plantingAreasQuery.vars({ ids: plantingAreaIds }));
+	let query = useQuery(triplit, plantingAreasQuery.Vars({ ids: plantingAreaIds }));
 	$effect(() => {
-		query.updateQuery(plantingAreasQuery.vars({ ids: plantingAreaIds }));
+		query = useQuery(triplit, plantingAreasQuery.Vars({ ids: plantingAreaIds }));
 	});
 
 	/** Handlers. */
@@ -86,7 +78,7 @@
 		const typeItem = {
 			id: typeId,
 			label: 'Type',
-			description: geometryTypeSchema.description,
+			description: workspaceFields.geometryTypeSchema.description,
 			valueComponent: String,
 			value: geometry.type,
 			onChange: (changeOver: boolean, newData: GeometryType) => {}
@@ -94,7 +86,7 @@
 		const dateItem = {
 			id: dateId,
 			label: 'Date',
-			description: geometryDateSchema.description,
+			description: workspaceFields.geometryDateSchema.description,
 			valueComponent: String,
 			value: geometry.date,
 			onChange: (changeOver: boolean, newData: DateValue) => {}
@@ -102,7 +94,7 @@
 		const scaleFactorItem = {
 			id: scaleFactorId,
 			label: 'Scale Factor',
-			description: geometryScaleFactorSchema.description,
+			description: workspaceFields.geometryScaleFactorSchema.description,
 			valueComponent: String,
 			value: geometry.scaleFactor,
 			onChange: (changeOver: boolean, newData: number) => {}
@@ -110,7 +102,7 @@
 		const rotationItem = {
 			id: rotationId,
 			label: 'Rotation',
-			description: geometryRotationSchema.description,
+			description: workspaceFields.geometryRotationSchema.description,
 			valueComponent: String,
 			value: geometry.rotation,
 			onChange: (changeOver: boolean, newData: number) => {}
@@ -125,17 +117,17 @@
 					{
 						id: rectangleLengthId,
 						label: 'Length',
-						description: geometryRectangleLengthSchema.description,
+						description: workspaceFields.geometryRectangleLengthSchema.description,
 						valueComponent: Distance,
-						value: geometry.rectangleAttributes?.length,
+						value: geometry.rectangleLength,
 						onChange: (changeOver: boolean, newData: number) => {}
 					},
 					{
 						id: rectangleWidthId,
 						label: 'Width',
-						description: geometryRectangleWidthSchema.description,
+						description: workspaceFields.geometryRectangleWidthSchema.description,
 						valueComponent: Distance,
-						value: geometry.rectangleAttributes?.width,
+						value: geometry.rectangleWidth,
 						onChange: (changeOver: boolean, newData: number) => {}
 					}
 				];
@@ -166,11 +158,14 @@
 					/** Name. */
 					id: nameId,
 					label: 'Name',
-					description: plantingAreaNameSchema.description,
+					description: workspaceFields.plantingAreaNameSchema.description,
 					valueComponent: String,
 					value: plantingArea.name,
 					onChange: (changeOver: boolean, newData: string) => {
-						const errors = validateField(newData, plantingAreaNameSchema);
+						const errors = validateField(
+							newData,
+							workspaceFields.plantingAreaNameSchema
+						);
 						if (errors) {
 							fieldErrors[nameId] = errors;
 							return;
@@ -190,11 +185,14 @@
 						{
 							id: descriptionId,
 							label: 'Description',
-							description: plantingAreaDescriptionSchema.description,
+							description: workspaceFields.plantingAreaDescriptionSchema.description,
 							valueSnippet: Textarea,
 							value: plantingArea.description,
 							onChange: (changeOver: boolean, newData: string) => {
-								const errors = validateField(newData, plantingAreaDescriptionSchema);
+								const errors = validateField(
+									newData,
+									workspaceFields.plantingAreaDescriptionSchema
+								);
 								if (errors) {
 									fieldErrors[descriptionId] = errors;
 									return;
@@ -209,11 +207,14 @@
 						{
 							id: depthId,
 							label: 'Depth',
-							description: plantingAreaDepthSchema.description,
+							description: workspaceFields.plantingAreaDepthSchema.description,
 							valueSnippet: Distance,
 							value: plantingArea.depth,
 							onChange: (changeOver: boolean, newData: number) => {
-								const errors = validateField(newData, plantingAreaDepthSchema);
+								const errors = validateField(
+									newData,
+									workspaceFields.plantingAreaDepthSchema
+								);
 								if (errors) {
 									fieldErrors[depthId] = errors;
 									return;

@@ -85,7 +85,7 @@ export function historySelectDay<T extends { date: Date }>(
  * @returns The height, in meters, of the vertical extent of the shape.
  */
 export function getGeometryHeight(
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date'>
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>
 ): number {
 	switch (geometry.type) {
 		case 'RECTANGLE':

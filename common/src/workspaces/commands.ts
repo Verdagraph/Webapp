@@ -180,7 +180,6 @@ export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
  * Update a geometry.
  */
 export const GeometryUpdateCommandSchema = z.object({
-	id: z.string(),
 	type: geometryTypeSchema.optional(),
 	date: geometryDateSchema.optional(),
 	scaleFactor: geometryScaleFactorSchema.optional(),

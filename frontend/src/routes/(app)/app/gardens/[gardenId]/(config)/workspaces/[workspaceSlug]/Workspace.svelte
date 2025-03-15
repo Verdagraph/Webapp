@@ -24,7 +24,7 @@
 	/** Retrieve the planting area IDs. */
 	const plantingAreaIds = useQuery(
 		triplit,
-		plantingAreaIdsQuery.vars({ workspaceId: workspaceContext.id })
+		plantingAreaIdsQuery.Vars({ workspaceId: workspaceContext.id })
 	);
 
 	/** TODO: Figure out why and fix the layout canvas not being there after renavigating after a page refresh. */

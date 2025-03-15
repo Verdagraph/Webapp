@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Geometry, Position } from '@vdt-webapp/common';
+	import type { Geometry, GeometryUpdateCommand, Position } from '@vdt-webapp/common';
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
@@ -35,12 +35,12 @@
 				return;
 			}
 
-			translateMutationHandler.execute(
-				plantingArea.locationHistoryId,
-				workspaceContext.id,
-				newData,
-				workspaceContext.timelineSelection.focusUtc
-			);
+			translateMutationHandler.execute({
+				id: plantingArea.locationHistoryId,
+				workspaceId: workspaceContext.id,
+				coordinate: newData,
+				date: workspaceContext.timelineSelection.focusUtc
+			});
 		},
 		TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS,
 		{
@@ -52,7 +52,7 @@
 	/** Transformation. */
 	const transformMutationHandler = createMutationHandler(geometryUpdate);
 	const transformChangeHandler = createChangeHandler(
-		(newData: GeometryPartial) => {
+		(newData: GeometryUpdateCommand) => {
 			if (!plantingArea) {
 				return;
 			}
@@ -114,7 +114,7 @@
 	}
 
 	/** Update the change handler on transformation. */
-	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
+	function onTransform(newGeometry: GeometryUpdateCommand, transformOver: boolean) {
 		transformChangeHandler.change(transformOver, newGeometry);
 	}
 </script>
@@ -132,7 +132,6 @@ area in the workspace editor, ie., editable
 		showName={true}
 		{position}
 		geometry={plantingArea.geometry}
-		grid={plantingArea.grid}
 		{editable}
 		{selected}
 		{onTranslate}

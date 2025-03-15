@@ -69,11 +69,11 @@ export async function geometryCreate(
  * Given a geometry partial object, which is a geometry object
  * where all values (including those of the nested attribute objects)
  * are optional, add these updated to Triplit.
- * @param geometryId The ID of the geometry to update.
+ * @param id The ID of the geometry to update.
  * @param newGeometry The attributes to update.
  */
-export async function geometryUpdate(data: GeometryUpdateCommand) {
-	const geometry = await triplit.fetchOne(triplit.query('geometries').Id(data.id));
+export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
+	const geometry = await triplit.fetchOne(triplit.query('geometries').Id(id));
 	if (!geometry) {
 		throw new AppError('Geometry does not exist.', {
 			nonFormErrors: ['Failed to update object geometry.']
@@ -111,7 +111,7 @@ export async function geometryUpdate(data: GeometryUpdateCommand) {
 			}
 		}
 
-		await transaction.update('geometries', data.id, (geometry) => {
+		await transaction.update('geometries', id, (geometry) => {
 			if (data.type) {
 				geometry.type = data.type;
 			}

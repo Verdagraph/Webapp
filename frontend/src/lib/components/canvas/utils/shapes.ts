@@ -48,7 +48,7 @@ function supportedShapeToGeometryType(shape: SupportedShape): GeometryType {
  */
 function getClosedOrUnclosedShape(
 	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date'>,
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date' | 'linesCoordinateIds'>,
 	forceLinesClosed: boolean = false,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
@@ -59,7 +59,6 @@ function getClosedOrUnclosedShape(
 		...config
 	};
 
-	let attributes;
 	switch (geometry.type) {
 		case 'RECTANGLE':
 			return new Konva.Rect({
@@ -115,7 +114,7 @@ function getClosedOrUnclosedShape(
  */
 export function getShape(
 	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId'>,
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
 ): SupportedShape | null {
@@ -133,7 +132,7 @@ export function getShape(
  */
 export function getClosedShape(
 	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId'>,
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
 ): SupportedShape | null {
