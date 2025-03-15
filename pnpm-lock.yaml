@@ -197,8 +197,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       '@triplit/client':
-        specifier: ^1.0.1
-        version: 1.0.1(typescript@5.8.2)
+        specifier: ^1.0.8
+        version: 1.0.8(typescript@5.8.2)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
