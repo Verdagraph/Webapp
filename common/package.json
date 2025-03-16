@@ -12,10 +12,10 @@
 		"seed": "triplit seed"
 	},
 	"devDependencies": {
-		"@triplit/cli": "^1.0.0"
+		"@triplit/cli": "^1.0.7"
 	},
 	"dependencies": {
-		"@triplit/client": "^1.0.1",
+		"@triplit/client": "^1.0.8",
 		"zod": "3.24.1"
 	}
 }

@@ -1,5 +1,5 @@
 import { HttpClient as TriplitHttpClient, or } from '@triplit/client';
-import { UserAccount, UserProfile } from '@vdt-webapp/common/src/users/schema';
+import { type User, type UserAccount, type UserProfile } from '@vdt-webapp/common'
 import { InternalFailureException } from 'common/errors';
 
 /** Database interface for the user objects. */
@@ -33,7 +33,7 @@ export class UserRepository {
 
 	/**
 	 * Retrieves a user account if one exists with the verified email address.
-	 * @param email The email address.
+	 * @param email The email address.y
 	 * @returns The retrieved account, or null if none exists. The profile is included.
 	 */
 	getAccountByVerifiedEmail = async (email: string): Promise<UserAccount | null> => {
@@ -104,7 +104,7 @@ export class UserRepository {
 		passwordHash: string,
 		email: string,
 		verificationRequired: boolean
-	): Promise<{ account: UserAccount; profile: UserProfile }> => {
+	): Promise<User> => {
 		const profile = await this.triplit.insert('profiles', { username });
 		const partialAccount: Partial<UserAccount> = {
 			profileId: profile.id,
@@ -116,7 +116,7 @@ export class UserRepository {
 			partialAccount.verifiedEmail = email;
 		}
 		const account = await this.triplit.insert('accounts', partialAccount);
-		return { account, profile };
+		return { account, profile } as User;
 	};
 
 	/**
