@@ -1,27 +1,11 @@
 {
-	"/(static)": [
-		"src/routes/+layout.server.js",
-		"src/routes/+layout.server.js"
-	],
-	"/": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app": [
-		"src/routes/+layout.server.js",
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/(other)/account": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/gardens": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/gardens/create": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/gardens/discover": [
-		"src/routes/+layout.server.js"
-	],
+	"/(static)": ["src/routes/+layout.server.js", "src/routes/+layout.server.js"],
+	"/": ["src/routes/+layout.server.js"],
+	"/(app)/app": ["src/routes/+layout.server.js", "src/routes/+layout.server.js"],
+	"/(app)/app/(other)/account": ["src/routes/+layout.server.js"],
+	"/(app)/app/gardens": ["src/routes/+layout.server.js"],
+	"/(app)/app/gardens/create": ["src/routes/+layout.server.js"],
+	"/(app)/app/gardens/discover": ["src/routes/+layout.server.js"],
 	"/(app)/app/gardens/[gardenId]": [
 		"src/routes/(app)/app/gardens/[gardenId]/+layout.ts",
 		"src/routes/+layout.server.js",
@@ -67,43 +51,19 @@
 		"src/routes/(app)/app/gardens/[gardenId]/+layout.ts",
 		"src/routes/+layout.server.js"
 	],
-	"/(app)/app/(other)/notifications": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/(other)/settings": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/traits": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/traits/cultivars": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/traits/environments": [
-		"src/routes/+layout.server.js"
-	],
-	"/(app)/app/traits/workspaces": [
-		"src/routes/+layout.server.js"
-	],
-	"/(static)/guides": [
-		"src/routes/+layout.server.js"
-	],
-	"/(static)/login": [
-		"src/routes/+layout.server.js"
-	],
-	"/(static)/login/request-password-reset": [
-		"src/routes/+layout.server.js"
-	],
+	"/(app)/app/(other)/notifications": ["src/routes/+layout.server.js"],
+	"/(app)/app/(other)/settings": ["src/routes/+layout.server.js"],
+	"/(app)/app/traits": ["src/routes/+layout.server.js"],
+	"/(app)/app/traits/cultivars": ["src/routes/+layout.server.js"],
+	"/(app)/app/traits/environments": ["src/routes/+layout.server.js"],
+	"/(app)/app/traits/workspaces": ["src/routes/+layout.server.js"],
+	"/(static)/guides": ["src/routes/+layout.server.js"],
+	"/(static)/login": ["src/routes/+layout.server.js"],
+	"/(static)/login/request-password-reset": ["src/routes/+layout.server.js"],
 	"/(static)/login/reset-password/[userId]/[confirmationToken]": [
 		"src/routes/+layout.server.js"
 	],
-	"/(static)/register": [
-		"src/routes/+layout.server.js"
-	],
-	"/(static)/register/request-email-verification": [
-		"src/routes/+layout.server.js"
-	],
-	"/(static)/register/verify/[confirmationToken]": [
-		"src/routes/+layout.server.js"
-	]
+	"/(static)/register": ["src/routes/+layout.server.js"],
+	"/(static)/register/request-email-verification": ["src/routes/+layout.server.js"],
+	"/(static)/register/verify/[confirmationToken]": ["src/routes/+layout.server.js"]
 }

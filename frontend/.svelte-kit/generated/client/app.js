@@ -41,45 +41,49 @@ export const nodes = [
 export const server_loads = [0];
 
 export const dictionary = {
-		"/(static)": [27,[5]],
-		"/(app)/app": [6,[2]],
-		"/(app)/app/(other)/account": [7,[2]],
-		"/(app)/app/gardens": [10,[2]],
-		"/(app)/app/gardens/create": [21,[2]],
-		"/(app)/app/gardens/discover": [22,[2]],
-		"/(app)/app/gardens/[gardenId]": [11,[2,3]],
-		"/(app)/app/gardens/[gardenId]/(config)/cultivars": [12,[2,3]],
-		"/(app)/app/gardens/[gardenId]/(garden)/edit": [16,[2,3]],
-		"/(app)/app/gardens/[gardenId]/(garden)/members": [17,[2,3]],
-		"/(app)/app/gardens/[gardenId]/(garden)/metrics": [18,[2,3]],
-		"/(app)/app/gardens/[gardenId]/(planner)/verdagraph": [19,[2,3]],
-		"/(app)/app/gardens/[gardenId]/(planner)/workbook": [20,[2,3]],
-		"/(app)/app/gardens/[gardenId]/(config)/workspaces": [13,[2,3,4]],
-		"/(app)/app/gardens/[gardenId]/(config)/workspaces/create": [15,[2,3,4]],
-		"/(app)/app/gardens/[gardenId]/(config)/workspaces/[workspaceSlug]": [14,[2,3,4]],
-		"/(app)/app/(other)/notifications": [8,[2]],
-		"/(app)/app/(other)/settings": [9,[2]],
-		"/(app)/app/traits": [23,[2]],
-		"/(app)/app/traits/cultivars": [24,[2]],
-		"/(app)/app/traits/environments": [25,[2]],
-		"/(app)/app/traits/workspaces": [26,[2]],
-		"/(static)/guides": [28,[5]],
-		"/(static)/login": [29,[5]],
-		"/(static)/login/request-password-reset": [30,[5]],
-		"/(static)/login/reset-password/[userId]/[confirmationToken]": [31,[5]],
-		"/(static)/register": [32,[5]],
-		"/(static)/register/request-email-verification": [33,[5]],
-		"/(static)/register/verify/[confirmationToken]": [34,[5]]
-	};
+	'/(static)': [27, [5]],
+	'/(app)/app': [6, [2]],
+	'/(app)/app/(other)/account': [7, [2]],
+	'/(app)/app/gardens': [10, [2]],
+	'/(app)/app/gardens/create': [21, [2]],
+	'/(app)/app/gardens/discover': [22, [2]],
+	'/(app)/app/gardens/[gardenId]': [11, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(config)/cultivars': [12, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(garden)/edit': [16, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(garden)/members': [17, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(garden)/metrics': [18, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(planner)/verdagraph': [19, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(planner)/workbook': [20, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(config)/workspaces': [13, [2, 3, 4]],
+	'/(app)/app/gardens/[gardenId]/(config)/workspaces/create': [15, [2, 3, 4]],
+	'/(app)/app/gardens/[gardenId]/(config)/workspaces/[workspaceSlug]': [14, [2, 3, 4]],
+	'/(app)/app/(other)/notifications': [8, [2]],
+	'/(app)/app/(other)/settings': [9, [2]],
+	'/(app)/app/traits': [23, [2]],
+	'/(app)/app/traits/cultivars': [24, [2]],
+	'/(app)/app/traits/environments': [25, [2]],
+	'/(app)/app/traits/workspaces': [26, [2]],
+	'/(static)/guides': [28, [5]],
+	'/(static)/login': [29, [5]],
+	'/(static)/login/request-password-reset': [30, [5]],
+	'/(static)/login/reset-password/[userId]/[confirmationToken]': [31, [5]],
+	'/(static)/register': [32, [5]],
+	'/(static)/register/request-email-verification': [33, [5]],
+	'/(static)/register/verify/[confirmationToken]': [34, [5]]
+};
 
 export const hooks = {
-	handleError: (({ error }) => { console.error(error) }),
-	
-	reroute: (() => {}),
+	handleError: ({ error }) => {
+		console.error(error);
+	},
+
+	reroute: () => {},
 	transport: {}
 };
 
-export const decoders = Object.fromEntries(Object.entries(hooks.transport).map(([k, v]) => [k, v.decode]));
+export const decoders = Object.fromEntries(
+	Object.entries(hooks.transport).map(([k, v]) => [k, v.decode])
+);
 
 export const hash = false;
 

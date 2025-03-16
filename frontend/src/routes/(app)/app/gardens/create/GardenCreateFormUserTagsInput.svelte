@@ -50,16 +50,12 @@
 
 	/** Indicate in the input whether the username exists. */
 	/** TODO: Fix this update query if there's a better way to do it. */
-	let profiles = useQuery(
-		triplit,
-		userProfilesUsernameQuery.Select(['username']).Vars({ usernames: [...tagsInput] })
-	);
-	$effect(() => {
-		profiles = useQuery(
+	let profiles = $derived(
+		useQuery(
 			triplit,
 			userProfilesUsernameQuery.Select(['username']).Vars({ usernames: [...tagsInput] })
-		);
-	});
+		)
+	);
 </script>
 
 <div

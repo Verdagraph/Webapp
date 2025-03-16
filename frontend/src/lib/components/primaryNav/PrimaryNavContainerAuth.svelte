@@ -22,12 +22,9 @@
 	let { children } = $props();
 
 	/* Queries */
-	let activeGarden = useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }));
-	/** TODO: Fix this update query if there's a better way to do it. */
-	$effect(() => {
-		activeGarden = useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }));
-	});
-
+	let activeGarden = $derived(
+		useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }))
+	);
 	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
 	let adminGardens = useQuery(triplit, adminGardensQuery);
 	let editorGardens = useQuery(triplit, editorGardensQuery);

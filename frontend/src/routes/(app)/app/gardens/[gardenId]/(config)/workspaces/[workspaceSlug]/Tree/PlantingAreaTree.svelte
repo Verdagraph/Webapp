@@ -42,10 +42,9 @@
 	const fieldErrors: Record<string, string[]> = $state({});
 
 	/** Queries. */
-	let query = useQuery(triplit, plantingAreasQuery.Vars({ ids: plantingAreaIds }));
-	$effect(() => {
-		query = useQuery(triplit, plantingAreasQuery.Vars({ ids: plantingAreaIds }));
-	});
+	let query = $derived(
+		useQuery(triplit, plantingAreasQuery.Vars({ ids: plantingAreaIds }))
+	);
 
 	/** Handlers. */
 	/** PlantingArea change. */

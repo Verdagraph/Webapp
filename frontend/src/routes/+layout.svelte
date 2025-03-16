@@ -22,12 +22,12 @@
 	 * For development purposes, automatically log the user in.
 	 * TODO: Make this conditional based on environment variables.
 	 */
-	const autoLogIn = true;
+	const autoLogIn = false;
 	let initialized = $state(false);
 	if (autoLogIn) {
 		setTimeout(() => {
 			userLogin
-				.mutation({ email: 'nathanielarking@gmail.com', password: 'password' })
+				.mutation({ email: 'test@verdantech.com', password: 'password' })
 				.then(() => {
 					initialized = true;
 				});

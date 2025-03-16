@@ -1,4 +1,4 @@
-FROM node:23
+FROM node:latest
 
 # Working directory
 WORKDIR /workdir

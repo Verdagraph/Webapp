@@ -10,6 +10,7 @@ import { getClient } from '$data/users/auth';
  */
 /** TODO: Fix the typing of the params. */
 export async function load({ params }) {
+	console.log(params);
 	const client = await getClient();
 	const garden = await triplit.fetchOne(gardenQuery.Vars({ id: params.gardenId }));
 

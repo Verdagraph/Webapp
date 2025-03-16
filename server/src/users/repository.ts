@@ -1,5 +1,5 @@
 import { HttpClient as TriplitHttpClient, or } from '@triplit/client';
-import { type User, type UserAccount, type UserProfile } from '@vdt-webapp/common'
+import { type User, type UserAccount, type UserProfile } from '@vdt-webapp/common';
 import { InternalFailureException } from 'common/errors';
 
 /** Database interface for the user objects. */

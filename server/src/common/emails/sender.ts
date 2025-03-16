@@ -7,11 +7,11 @@ import env from 'env';
 
 const files: Record<string, Record<string, string>> = {
 	emailConfirmation: {
-		path: './emailConfirmation.html',
+		path: 'src/common/emails/emailConfirmation.html',
 		subject: 'VerdanTech - Confirm your Email'
 	},
 	passwordReset: {
-		path: './passwordReset.html',
+		path: 'src/common/emails/passwordReset.html',
 		subject: 'VerdanTech - Reset your Password'
 	}
 };

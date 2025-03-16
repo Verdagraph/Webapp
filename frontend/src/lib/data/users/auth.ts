@@ -7,9 +7,7 @@ import {
 	UserLoginCommandSchema
 } from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
-
-const TRIPLIT_ANON_TOKEN =
-	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.JzN7Erur8Y-MlFdCaZtovQwxN_m_fSyOIWNzYQ3uVcc';
+import { TRIPLIT_ANON_TOKEN } from '$data/triplit';
 
 /**
  * Sends an authentication request to the backend.
@@ -18,9 +16,15 @@ export const userLogin = {
 	schema: UserLoginCommandSchema,
 	mutation: async function (data: UserLoginCommand) {
 		/** Don't allow re-logging in. */
+		console.log(triplit.token);
+		console.log(TRIPLIT_ANON_TOKEN);
 		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
-			return;
+			throw new AppError(
+				'Current token does not match anon token - already logged in.',
+				{ nonFormErrors: ['Already logged in.'] }
+			);
 		}
+		console.log('getting here');
 
 		/** Fetch the token. */
 		const token = await userLoginOp(data);

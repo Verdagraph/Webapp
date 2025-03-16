@@ -18,6 +18,7 @@
 		resetForm: false,
 		validators: zod(userLogin.schema),
 		onUpdate({ form }) {
+			console.log(form.valid);
 			if (form.valid) {
 				formHandler.execute(form.data);
 			}

@@ -5,6 +5,10 @@ export const workspaceSlugQuery = triplit.query('workspaces').Where([
 	['slug', '=', '$query.workspaceSlug']
 ]);
 
+export const workspacesQuery = triplit
+	.query('workspaces')
+	.Where(['gardenId', '=', '$query.gardenId']);
+
 export const plantingAreaIdsQuery = triplit
 	.query('plantingAreas')
 	.Where(['locationHistory.workspaceIds', 'has', '$query.workspaceId'])

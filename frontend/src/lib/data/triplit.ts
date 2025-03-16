@@ -14,7 +14,7 @@ import { handleErrors } from '$lib/errors';
 export const TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS = 5;
 
 export const TRIPLIT_ANON_TOKEN =
-	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.JzN7Erur8Y-MlFdCaZtovQwxN_m_fSyOIWNzYQ3uVcc';
+	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.9xYxsdR7ecDQ251Iv6oF7GrjBXAe1WcXY849g-soXVU';
 const TRIPLIT_SERVER_URL = 'http://localhost:6543';
 
 const triplit = new TriplitClient({

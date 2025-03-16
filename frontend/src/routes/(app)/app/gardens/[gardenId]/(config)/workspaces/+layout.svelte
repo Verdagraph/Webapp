@@ -8,10 +8,12 @@
 	import type { Workspace } from '@vdt-webapp/common';
 	import { setWorkspaceContext } from './activeWorkspace.svelte';
 	import toolbox from './tools';
-	import auth from '$state/auth.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import triplit from '$data/triplit';
-	import { plantingAreaSelectionQuery } from '$data/workspaces/queries';
+	import {
+		plantingAreaSelectionQuery,
+		workspacesQuery
+	} from '$data/workspaces/queries';
 	import gardenContext from '$state/gardenContext.svelte';
 
 	let { children } = $props();
@@ -21,33 +23,18 @@
 
 	const workspaceContext = setWorkspaceContext();
 
-	/** TODO: Replace with query. */
-	let workspaces: Workspace[] = [
-		{
-			gardenId: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
-			id: 'f4b3b1b0-0b3b-4b3b-8b3b-0b3b1b0b3b1b',
-			name: 'Workspace 1',
-			slug: 'workspace-1ss',
-			description: ''
-		}
-	];
-
-	/** TODO once a better way to updateQuery is found. */
-	let selectedPlantingAreas = useQuery(
-		triplit,
-		plantingAreaSelectionQuery.Vars({
-			plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
-		})
+	let workspaces = $derived(
+		useQuery(triplit, workspacesQuery.Vars({ gardenId: page.params.gardenId }))
 	);
-	$effect(() => {
-		selectedPlantingAreas = useQuery(
+
+	let selectedPlantingAreas = $derived(
+		useQuery(
 			triplit,
 			plantingAreaSelectionQuery.Vars({
 				plantingAreaIds: [...workspaceContext.selections.get('plantingArea')]
 			})
-		);
-	});
- 
+		)
+	);
 </script>
 
 <div class="flex h-full w-full flex-col overflow-clip">
@@ -60,22 +47,24 @@
 			<Menubar.Trigger>Workspaces</Menubar.Trigger>
 			<Menubar.Content>
 				<Menubar.Group>
-					{#each workspaces as workspace, index}
-						{#if index <= workspacesDropdownMaxItems}
-							<Menubar.Item>
-								<Button.Root
-									onclick={() => {
-										goto(
-											`/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
-										);
-									}}
-									class="text-light h-full w-full italic"
-								>
-									{workspace.name}
-								</Button.Root>
-							</Menubar.Item>
-						{/if}
-					{/each}
+					{#if workspaces.results && workspaces.results.length > 0}
+						{#each workspaces.results as workspace, index}
+							{#if index <= workspacesDropdownMaxItems}
+								<Menubar.Item>
+									<Button.Root
+										onclick={() => {
+											goto(
+												`/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
+											);
+										}}
+										class="text-light h-full w-full italic"
+									>
+										{workspace.name}
+									</Button.Root>
+								</Menubar.Item>
+							{/if}
+						{/each}
+					{/if}
 					<Menubar.Item>
 						<Button.Root
 							href="/app/gardens/{page.params.gardenId}/workspaces"
