@@ -49,7 +49,6 @@
 	});
 
 	/** Indicate in the input whether the username exists. */
-	/** TODO: Fix this update query if there's a better way to do it. */
 	let profiles = $derived(
 		useQuery(
 			triplit,

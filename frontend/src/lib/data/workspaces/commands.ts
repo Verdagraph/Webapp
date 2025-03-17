@@ -298,9 +298,7 @@ export const plantingAreaUpdate = {
 	schema: PlantingAreaUpdateCommandSchema,
 	mutation: async function (id: string, data: PlantingAreaUpdateCommand) {
 		/** Retrieve planting area. */
-		const plantingArea = await triplit.fetchOne(
-			triplit.query('plantingAreas').Id(id)
-		);
+		const plantingArea = await triplit.fetchOne(triplit.query('plantingAreas').Id(id));
 		if (plantingArea == null) {
 			throw new AppError(`Failed to retrieve planting area ${id}`, {
 				nonFormErrors: ['Failed to retrieve planting area.']
