@@ -27,24 +27,24 @@ importers:
   common:
     dependencies:
       '@triplit/client':
-        specifier: ^1.0.8
-        version: 1.0.8(typescript@5.8.2)
+        specifier: ^1.0.9
+        version: 1.0.9(typescript@5.8.2)
       zod:
         specifier: ^3.24.2
         version: 3.24.2
     devDependencies:
       '@triplit/cli':
-        specifier: ^1.0.7
-        version: 1.0.7
+        specifier: ^1.0.8
+        version: 1.0.8
 
   frontend:
     dependencies:
       '@triplit/client':
-        specifier: ^1.0.8
-        version: 1.0.8(typescript@5.8.2)
+        specifier: ^1.0.9
+        version: 1.0.9(typescript@5.8.2)
       '@triplit/svelte':
-        specifier: ^1.0.8
-        version: 1.0.8(svelte@5.22.6)(typescript@5.8.2)
+        specifier: ^1.0.9
+        version: 1.0.9(svelte@5.22.6)(typescript@5.8.2)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
@@ -197,8 +197,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       '@triplit/client':
-        specifier: ^1.0.8
-        version: 1.0.8(typescript@5.8.2)
+        specifier: ^1.0.9
+        version: 1.0.9(typescript@5.8.2)
       '@vdt-webapp/common':
         specifier: workspace:*
         version: link:../common
@@ -237,8 +237,8 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
       '@triplit/cli':
-        specifier: ^1.0.7
-        version: 1.0.7
+        specifier: ^1.0.8
+        version: 1.0.8
       '@types/jsonwebtoken':
         specifier: ^9.0.9
         version: 9.0.9
@@ -1355,17 +1355,17 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.2.0'
 
-  '@triplit/cli@1.0.7':
-    resolution: {integrity: sha512-cGB3wqrLyzHJ3Ibi8dciUKBVaV2dUbz+WVdZ9qxBE1DU4mU8AMyG/u9nIBAyHAk7B9Sv4hffncgJ2owYSeEjuw==}
+  '@triplit/cli@1.0.8':
+    resolution: {integrity: sha512-gyxwnhkqHEU4OEowdR7lUVWs2L0YA/u5RcqycBagJz8oBN2ry8UrvPKbprxfrwR/mMRvnoVB2POmQfQxB90a1w==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@triplit/client@1.0.8':
-    resolution: {integrity: sha512-J5DqllrtnUcNDvg1McqTqRknbLK84v1JfGgXJAkilVB9j8r50l1jbkpLeSMZf2QlEANPd3q/NWed8Mp4YWRF/g==}
+  '@triplit/client@1.0.9':
+    resolution: {integrity: sha512-XWhstqFddVNjXowF1iga8UfGtHEJy47r02L0ZxkFePEVal/eRBnSLbb2yisINCQ0XawtCYo4iGZ1TeStL294bA==}
     engines: {node: '>=18.0.0'}
 
-  '@triplit/db@1.0.7':
-    resolution: {integrity: sha512-LwDHOdKp3FSweo+fnPHe30kqHplt8iCK9Zx6eiCIKuzlgDr+vun2TD/9zkEdKFDuznv8X3Tzrn8oFwc5b8C2Rw==}
+  '@triplit/db@1.0.8':
+    resolution: {integrity: sha512-UEeXL9WiQCqPPVgD417I/9aCyqPZRaLPgoOHavO3WxQzuhM7NrP6qQFF09r4e+EIeq1VObK8zoqCOytfxclwmw==}
     peerDependencies:
       better-sqlite3: '*'
       expo-sqlite: '*'
@@ -1383,8 +1383,8 @@ packages:
     peerDependencies:
       typescript: ^5.0.0
 
-  '@triplit/svelte@1.0.8':
-    resolution: {integrity: sha512-iDP4rD00gfYlArvIxrnYCuEjz+HeCX/9tCth2AWGxKrSYBf5EAUIXbpfUybdbCbIpsOOkXn5tJeL8qmtrjYNQQ==}
+  '@triplit/svelte@1.0.9':
+    resolution: {integrity: sha512-R6i/640g1GOsOZy0cSsroDJRWY1LIqepL+jLVAQSj78uOROKyoULWPCIeDKD7TMvZan1maveEGjoZeeCwYfaYg==}
     peerDependencies:
       svelte: '*'
 
@@ -2873,6 +2873,11 @@ packages:
 
   nanoid@5.1.3:
     resolution: {integrity: sha512-zAbEOEr7u2CbxwoMRlz/pNSpRP0FdAU4pRaYunCdEezWohXFs+a0Xw7RfkKaezMsmSM1vttcLthJtwRnVtOfHQ==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
+  nanoid@5.1.4:
+    resolution: {integrity: sha512-GTFcMIDgR7tqji/LpSY8rtg464VnJl/j6ypoehYnuGb+Y8qZUdtKB8WVCXon0UEZgFDbuUxpIl//6FHLHgXSNA==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -5017,16 +5022,16 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.17
 
-  '@triplit/cli@1.0.7':
+  '@triplit/cli@1.0.8':
     dependencies:
       esbuild: 0.23.1
       source-map: 0.7.4
     optionalDependencies:
       fsevents: 2.3.3
 
-  '@triplit/client@1.0.8(typescript@5.8.2)':
+  '@triplit/client@1.0.9(typescript@5.8.2)':
     dependencies:
-      '@triplit/db': 1.0.7(typescript@5.8.2)
+      '@triplit/db': 1.0.8(typescript@5.8.2)
       '@triplit/logger': 0.0.1(typescript@5.8.2)
       comlink: 4.4.2
       superjson: 2.2.2
@@ -5036,12 +5041,12 @@ snapshots:
       - lmdb
       - typescript
 
-  '@triplit/db@1.0.7(typescript@5.8.2)':
+  '@triplit/db@1.0.8(typescript@5.8.2)':
     dependencies:
       '@triplit/logger': 0.0.1(typescript@5.8.2)
       core-js: 3.41.0
       elen: 1.0.10
-      nanoid: 5.1.3
+      nanoid: 5.1.4
       sorted-btree: 1.8.1
     transitivePeerDependencies:
       - typescript
@@ -5050,9 +5055,9 @@ snapshots:
     dependencies:
       typescript: 5.8.2
 
-  '@triplit/svelte@1.0.8(svelte@5.22.6)(typescript@5.8.2)':
+  '@triplit/svelte@1.0.9(svelte@5.22.6)(typescript@5.8.2)':
     dependencies:
-      '@triplit/client': 1.0.8(typescript@5.8.2)
+      '@triplit/client': 1.0.9(typescript@5.8.2)
       svelte: 5.22.6
     transitivePeerDependencies:
       - better-sqlite3
@@ -6762,6 +6767,8 @@ snapshots:
   nanoid@3.3.9: {}
 
   nanoid@5.1.3: {}
+
+  nanoid@5.1.4: {}
 
   natural-compare@1.4.0: {}
 

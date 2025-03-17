@@ -554,5 +554,5 @@ export type PlantingArea = QueryResult<
 		collectionName: 'plantingAreas';
 		include: { geometry: true; locationHistory: true };
 	}
->;
+> & { geometry: { linesCoordinates: Array<Coordinate> } | null | undefined };
 export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>;

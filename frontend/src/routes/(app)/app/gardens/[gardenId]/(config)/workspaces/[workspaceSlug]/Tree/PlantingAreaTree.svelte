@@ -15,19 +15,12 @@
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery } from '$data/workspaces/queries';
-	import {
-		plantingAreaUpdate,
-		locationHistoryUpdate,
-		geometryUpdate
-	} from '$data/workspaces/commands';
+	import { plantingAreaUpdate, geometryUpdate } from '$data/workspaces/commands';
 	import createMutationHandler from '$state/mutationHandler.svelte';
-	import { type ChangeHandler, createChangeHandler } from '$state/changeHandler.svelte';
+	import { createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import {
 		type PlantingArea,
-		validateField,
-		type Geometry,
-		type GeometryType,
 		workspaceFields,
 		type PlantingAreaUpdateCommand,
 		type GeometryUpdateCommand,
@@ -63,6 +56,7 @@
 	const plantingAreaChangeHandler = createChangeHandler(
 		(newData: Record<string, PlantingAreaUpdateCommand>) => {
 			for (const plantingAreaId of Object.keys(newData)) {
+				console.log;
 				plantingAreaMutationHandler.execute(plantingAreaId, newData[plantingAreaId]);
 			}
 		}
@@ -97,88 +91,87 @@
 			fieldErrors
 		);
 
+		const nameItem: Item = {
+			id: nameId,
+			label: 'Name',
+			description: workspaceFields.plantingAreaNameSchema.description,
+			valueComponent: TreeString,
+			value: plantingArea.name,
+			onChange: (changeOver: boolean, newData: string) => {
+				if (
+					!fieldValid(
+						nameId,
+						newData,
+						workspaceFields.plantingAreaNameSchema,
+						fieldErrors
+					)
+				) {
+					return;
+				}
+				plantingAreaChangeHandler.change(changeOver, {
+					[plantingArea.id]: { name: newData }
+				});
+			}
+		};
+
+		const descriptionItem: Item = {
+			id: descriptionId,
+			label: 'Description',
+			description: workspaceFields.plantingAreaDescriptionSchema.description,
+			valueComponent: TreeTextarea,
+			value: plantingArea.description,
+			onChange: (changeOver: boolean, newData: string) => {
+				if (
+					!fieldValid(
+						descriptionId,
+						newData,
+						workspaceFields.plantingAreaDescriptionSchema,
+						fieldErrors
+					)
+				) {
+					return;
+				}
+
+				plantingAreaChangeHandler.change(changeOver, {
+					[plantingArea.id]: { description: newData }
+				});
+			}
+		};
+
+		const depthItem: Item = {
+			id: depthId,
+			label: 'Depth',
+			description: workspaceFields.plantingAreaDepthSchema.description,
+			valueComponent: TreeDistance,
+			value: plantingArea.depth,
+			onChange: (changeOver: boolean, newData: number) => {
+				if (
+					!fieldValid(
+						depthId,
+						newData,
+						workspaceFields.plantingAreaDepthSchema,
+						fieldErrors
+					)
+				) {
+					return;
+				}
+				plantingAreaChangeHandler.change(changeOver, {
+					[plantingArea.id]: { depth: newData }
+				});
+			}
+		};
+
 		return {
 			id: baseId,
 			label: plantingArea.name,
 			children: [
-				{
-					/** Name. */
-					id: nameId,
-					label: 'Name',
-					description: workspaceFields.plantingAreaNameSchema.description,
-					valueComponent: TreeString,
-					value: plantingArea.name,
-					onChange: (changeOver: boolean, newData: string) => {
-						if (
-							!fieldValid(
-								nameId,
-								newData,
-								workspaceFields.plantingAreaNameSchema,
-								fieldErrors
-							)
-						) {
-							return;
-						}
-						plantingAreaChangeHandler.change(changeOver, {
-							[plantingArea.id]: { name: newData }
-						});
-					}
-				},
+				nameItem,
 
 				/** Details. */
 				{
 					id: toTreeId(baseId, 'details'),
 					label: 'Details',
-					children: [
-						/** Description. */
-						{
-							id: descriptionId,
-							label: 'Description',
-							description: workspaceFields.plantingAreaDescriptionSchema.description,
-							valueSnippet: TreeTextarea,
-							value: plantingArea.description,
-							onChange: (changeOver: boolean, newData: string) => {
-								if (
-									!fieldValid(
-										descriptionId,
-										newData,
-										workspaceFields.plantingAreaDescriptionSchema,
-										fieldErrors
-									)
-								) {
-									return;
-								}
-
-								plantingAreaChangeHandler.change(changeOver, {
-									plantingAreaId: { description: newData }
-								});
-							}
-						},
-
-						/** Depth. */
-						{
-							id: depthId,
-							label: 'Depth',
-							description: workspaceFields.plantingAreaDepthSchema.description,
-							valueSnippet: TreeDistance,
-							value: plantingArea.depth,
-							onChange: (changeOver: boolean, newData: number) => {
-								if (
-									!fieldValid(
-										depthId,
-										newData,
-										workspaceFields.plantingAreaDepthSchema,
-										fieldErrors
-									)
-								) {
-									return;
-								}
-								plantingAreaChangeHandler.change(changeOver, {
-									plantingAreaId: { depth: newData }
-								});
-							}
-						}
-					]
+					children: [descriptionItem, depthItem]
 				},
 
 				/** Geometry. */
