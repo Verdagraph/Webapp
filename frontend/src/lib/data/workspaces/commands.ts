@@ -79,7 +79,6 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 			nonFormErrors: ['Failed to update object geometry.']
 		});
 	}
-	console.log(data);
 
 	await triplit.transact(async (transaction) => {
 		/**
@@ -111,8 +110,6 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 				coordinateIds.push(coordinate.id);
 			}
 		}
-
-		console.log(coordinateIds);
 
 		await transaction.update('geometries', geometry.id, (geometry) => {
 			if (data.type) {
@@ -299,5 +296,29 @@ export const plantingAreaCreate = {
 
 export const plantingAreaUpdate = {
 	schema: PlantingAreaUpdateCommandSchema,
-	mutation: async function (id: string, data: PlantingAreaUpdateCommand) {}
+	mutation: async function (id: string, data: PlantingAreaUpdateCommand) {
+		/** Retrieve planting area. */
+		/**
+		 const plantingArea = await triplit.fetchOne(
+			triplit.query('plantingAreas').Id(id)
+		);
+		if (plantingArea == null) {
+			throw new AppError(`Failed to retrieve planting area ${id}`, {
+				nonFormErrors: ['Failed to retrieve planting area.']
+			});
+		}
+		*/
+
+		await triplit.update('plantingAreas', id, (plantingArea) => {
+			if (data.name) {
+				plantingArea.name = data.name;
+			}
+			if (data.description) {
+				plantingArea.description = data.description;
+			}
+			if (data.depth) {
+				plantingArea.depth = data.depth;
+			}
+		});
+	}
 };

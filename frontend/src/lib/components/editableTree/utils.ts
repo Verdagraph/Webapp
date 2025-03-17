@@ -39,15 +39,6 @@ export function toTreeId(baseId: string, field: string): string {
 }
 
 /**
- * Every item in the tree needs a unique ID.
- * In order to synchronize the tree's selection
- * state with the app's selection state, we need
- * to be able to tell when an item is associated
- * with a particular entity, ex., when the user
- * selects the Name field on a PlantingArea,
- * we want to be able to add that PlantingArea to the
- * selection.
- *
  * This function extracts an entity type, ID, and field name
  * into a string ID for the tree item so it can be retrieved from the ID.
  * @param id The Tree item id.
