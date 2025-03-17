@@ -186,4 +186,4 @@ export function createChangeHandler<TData extends unknown>(
 		reset
 	};
 }
-export type ChangeHandler = ReturnType<typeof createChangeHandler>;
+export type ChangeHandler<TData> = ReturnType<typeof createChangeHandler<TData>>;

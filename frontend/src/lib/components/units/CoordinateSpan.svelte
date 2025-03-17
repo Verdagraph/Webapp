@@ -1,32 +1,20 @@
 <script lang="ts">
 	import { Button } from 'bits-ui';
-	import { Input } from '$lib/components/ui/input/index.js';
 	import Icon from '@iconify/svelte';
 	import { createUnitAwareValues } from './units.svelte';
-	import { type Position } from '@vdt-webapp/common';
 
 	type Props = {
 		/** The output X value. Guarnteed to be in metric. */
 		x: number;
 		/** The output Y value. Guarnteed to be in metric. */
 		y: number;
-		/** Change handler. */
-		onValueChange?: (value: Position) => void;
 		/** The number of decimal places to prefer for conversions. */
 		decimalPlaces?: number;
-		/** The input properties, in meters. */
-		step?: number;
-		min?: number;
-		max?: number;
 	};
 	let {
 		x = $bindable(),
 		y = $bindable(),
-		onValueChange,
 		decimalPlaces = 2,
-		step = 0.01,
-		min,
-		max,
 		...restProps
 	}: Props = $props();
 
@@ -35,22 +23,6 @@
 	/** Track external value changes. */
 	$effect(() => {
 		unitAwareValues.setDisplayValues([x, y]);
-	});
-
-	/** The input properties, in the unit system. */
-	let unitAwareMin = $derived.by(() => {
-		if (min) {
-			return unitAwareValues.metricToCurrentUnit(min);
-		} else {
-			return '';
-		}
-	});
-	let unitAwareMax = $derived.by(() => {
-		if (max) {
-			return unitAwareValues.metricToCurrentUnit(max);
-		} else {
-			return '';
-		}
 	});
 </script>
 
@@ -64,24 +36,10 @@
 			>
 				X
 			</span>
-			<Input
-				value={unitAwareValues.displayValues[0]}
-				type="number"
-				{step}
-				min={unitAwareMin}
-				max={unitAwareMax}
-				oninput={(event) => {
-					unitAwareValues.handleInput(event, 0);
-					x = unitAwareValues.metricValues[0];
-					if (onValueChange) {
-						onValueChange({
-							x: unitAwareValues.metricValues[0],
-							y: unitAwareValues.metricValues[1]
-						});
-					}
-				}}
+			<span
 				class="@xs:border-b @xs:rounded-tr-none w-full rounded-l-none rounded-r-none rounded-tr-md border-b-0"
-			/>
+				>{x}</span
+			>
 		</div>
 		<div class="flex w-full">
 			<span
@@ -89,24 +47,7 @@
 			>
 				Y
 			</span>
-			<Input
-				value={unitAwareValues.displayValues[1]}
-				type="number"
-				{step}
-				min={unitAwareMin}
-				max={unitAwareMax}
-				oninput={(event) => {
-					unitAwareValues.handleInput(event, 1);
-					y = unitAwareValues.metricValues[1];
-					if (onValueChange) {
-						onValueChange({
-							x: unitAwareValues.metricValues[0],
-							y: unitAwareValues.metricValues[1]
-						});
-					}
-				}}
-				class="@xs:border-b rounded-l-none rounded-r-none border-b-0"
-			/>
+			<span class="@xs:border-b rounded-l-none rounded-r-none border-b-0">y</span>
 		</div>
 		<span
 			class="border-x-neutral-7 @xs:border-x-neutral-5 bg-neutral-2 border-neutral-7 @xs:h-10 @xs:w-8 @xs:border-b @xs:border-l-0 flex h-8 w-full min-w-10 items-center justify-center border-x border-y border-b-0 px-3 {unitAwareValues.unitSystem ===

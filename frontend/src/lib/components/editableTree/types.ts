@@ -2,7 +2,7 @@ import { type TreeItem } from 'melt/builders';
 import { type Component } from 'svelte';
 
 /** Describes the structure of an item in the tree. */
-export type Item<ValueT = unknown> = TreeItem & {
+export type Item<ValueT = any> = TreeItem & {
 	id: string;
 	/** Label for the item. */
 	label: string;

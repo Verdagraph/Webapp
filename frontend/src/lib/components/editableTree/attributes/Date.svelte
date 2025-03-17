@@ -3,16 +3,21 @@
 	import { type EditableAttributeProps } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 	import { getOninput } from './utils';
+	import { type DateValue } from '@internationalized/date';
+	import DatePicker from '$components/ui/datepicker';
 
-	let { value, editing, onChange, errors }: EditableAttributeProps<number> = $props();
+	let { value, editing, onChange, errors }: EditableAttributeProps<DateValue> =
+		$props();
 </script>
 
 {#if editing}
-	<Input
+	<DatePicker
 		{value}
-		type="number"
-		class="select-none"
-		oninput={getOninput<HTMLInputElement>(onChange)}
+		onValueChange={(newVal) => {
+			if (newVal) {
+				onChange(false, newVal);
+			}
+		}}
 	/>
 {:else}
 	<DefaultStaticValue {value} />

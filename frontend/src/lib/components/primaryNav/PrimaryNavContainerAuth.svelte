@@ -54,11 +54,9 @@
 	});
 
 	let gardenTabs = $derived.by(() => {
-		console.log(activeGarden.results);
 		if (activeGarden.results && activeGarden.results[0]) {
 			return getGardenSpecifcTabs(activeGarden.results[0]);
 		} else {
-			console.log(activeGarden.results);
 			return [];
 		}
 	});

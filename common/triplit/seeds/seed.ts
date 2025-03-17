@@ -87,7 +87,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				id: 'workspace2',
 				gardenId: 'garden1',
 				name: 'Workspace 2',
-				slug: 'workspace-1ss'
+				slug: 'workspace-2'
 			}
 		],
 		plantingAreas: [
@@ -111,8 +111,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				geometryId: 'polygonAreaGeometry',
 				locationHistoryId: 'polygonGeometryLocations',
 				description: 'Polygon Description.'
-			}
-			/*
+			},
 			{
 				gardenId: 'garden1',
 				name: 'Lines Area',
@@ -120,7 +119,6 @@ export default function seed(): BulkInsert<typeof schema> {
 				locationHistoryId: 'linesGeometryLocations',
 				description: 'Lines Description.'
 			}
-			*/
 		],
 		geometries: [
 			{

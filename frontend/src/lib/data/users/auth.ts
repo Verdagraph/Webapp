@@ -16,15 +16,12 @@ export const userLogin = {
 	schema: UserLoginCommandSchema,
 	mutation: async function (data: UserLoginCommand) {
 		/** Don't allow re-logging in. */
-		console.log(triplit.token);
-		console.log(TRIPLIT_ANON_TOKEN);
 		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
 			throw new AppError(
 				'Current token does not match anon token - already logged in.',
 				{ nonFormErrors: ['Already logged in.'] }
 			);
 		}
-		console.log('getting here');
 
 		/** Fetch the token. */
 		const token = await userLoginOp(data);

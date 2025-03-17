@@ -1,6 +1,6 @@
-export type EditableAttributeProps = {
-	value: any;
+export type EditableAttributeProps<TData> = {
+	value: TData;
 	editing: boolean;
-	onChange: (changeOver: boolean, newData: any) => void;
+	onChange: (changeOver: boolean, newData: TData) => void;
 	errors: boolean;
 };

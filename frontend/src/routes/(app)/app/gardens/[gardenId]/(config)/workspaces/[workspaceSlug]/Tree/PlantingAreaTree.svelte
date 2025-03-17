@@ -3,26 +3,35 @@
 	import {
 		createEditableTree,
 		EditableTree,
-		String,
-		Textarea,
-		Number,
-		Distance,
+		TreeString,
+		TreeTextarea,
+		TreeNumber,
+		TreeDistance,
 		toTreeBaseId,
 		toTreeId,
+		fieldValid,
+		geometryTreeItem,
 		type Item
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery } from '$data/workspaces/queries';
-	import { plantingAreaUpdate } from '$data/workspaces/commands';
+	import {
+		plantingAreaUpdate,
+		locationHistoryUpdate,
+		geometryUpdate
+	} from '$data/workspaces/commands';
 	import createMutationHandler from '$state/mutationHandler.svelte';
-	import { createChangeHandler } from '$state/changeHandler.svelte';
+	import { type ChangeHandler, createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import {
 		type PlantingArea,
 		validateField,
 		type Geometry,
 		type GeometryType,
-		workspaceFields
+		workspaceFields,
+		type PlantingAreaUpdateCommand,
+		type GeometryUpdateCommand,
+		type FieldErrors
 	} from '@vdt-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
 	import { type DateValue } from '@internationalized/date';
@@ -39,7 +48,7 @@
 	const workspace = getWorkspaceContext();
 
 	/** Stores errors of the tree fields. */
-	const fieldErrors: Record<string, string[]> = $state({});
+	const fieldErrors: FieldErrors = $state({});
 
 	/** Queries. */
 	let query = $derived(
@@ -52,92 +61,24 @@
 		plantingAreaUpdate.mutation
 	);
 	const plantingAreaChangeHandler = createChangeHandler(
-		async (newData: Record<string, Partial<PlantingArea>>) => {
+		(newData: Record<string, PlantingAreaUpdateCommand>) => {
 			for (const plantingAreaId of Object.keys(newData)) {
-				plantingAreaMutationHandler.execute({
-					id: plantingAreaId,
-					name: newData[plantingAreaId].name,
-					description: newData[plantingAreaId].description,
-					depth: newData[plantingAreaId].depth
-				});
+				plantingAreaMutationHandler.execute(plantingAreaId, newData[plantingAreaId]);
 			}
 		}
 	);
 
-	function geometryTreeItem(
-		baseId: string,
-		geometry: Geometry,
-		includeDate: boolean = true
-	): Item {
-		const typeId = toTreeId(baseId, 'geometryType');
-		const dateId = toTreeId(baseId, 'geometryDate');
-		const scaleFactorId = toTreeId(baseId, 'geometryScaleFactor');
-		const rotationId = toTreeId(baseId, 'geometryRotation');
-
-		const typeItem = {
-			id: typeId,
-			label: 'Type',
-			description: workspaceFields.geometryTypeSchema.description,
-			valueComponent: String,
-			value: geometry.type,
-			onChange: (changeOver: boolean, newData: GeometryType) => {}
-		};
-		const dateItem = {
-			id: dateId,
-			label: 'Date',
-			description: workspaceFields.geometryDateSchema.description,
-			valueComponent: String,
-			value: geometry.date,
-			onChange: (changeOver: boolean, newData: DateValue) => {}
-		};
-		const scaleFactorItem = {
-			id: scaleFactorId,
-			label: 'Scale Factor',
-			description: workspaceFields.geometryScaleFactorSchema.description,
-			valueComponent: String,
-			value: geometry.scaleFactor,
-			onChange: (changeOver: boolean, newData: number) => {}
-		};
-		const rotationItem = {
-			id: rotationId,
-			label: 'Rotation',
-			description: workspaceFields.geometryRotationSchema.description,
-			valueComponent: String,
-			value: geometry.rotation,
-			onChange: (changeOver: boolean, newData: number) => {}
-		};
-		let attributesItems = [];
-		switch (geometry.type) {
-			case 'RECTANGLE':
-				const rectangleLengthId = toTreeId(baseId, 'geometryRectangleLength');
-				const rectangleWidthId = toTreeId(baseId, 'geometryRectangleWidth');
-
-				attributesItems = [
-					{
-						id: rectangleLengthId,
-						label: 'Length',
-						description: workspaceFields.geometryRectangleLengthSchema.description,
-						valueComponent: Distance,
-						value: geometry.rectangleLength,
-						onChange: (changeOver: boolean, newData: number) => {}
-					},
-					{
-						id: rectangleWidthId,
-						label: 'Width',
-						description: workspaceFields.geometryRectangleWidthSchema.description,
-						valueComponent: Distance,
-						value: geometry.rectangleWidth,
-						onChange: (changeOver: boolean, newData: number) => {}
-					}
-				];
+	/** Geometry change. */
+	const geometryMutationHandler = createMutationHandler(geometryUpdate);
+	const geometryChangeHandler = createChangeHandler(
+		(newData: Record<string, GeometryUpdateCommand>) => {
+			for (const geometryId of Object.keys(newData)) {
+				geometryMutationHandler.execute(geometryId, newData);
+			}
 		}
+	);
 
-		return {
-			id: toTreeId(baseId, 'geometry'),
-			label: 'Geometry',
-			children: []
-		};
-	}
+	/** Location change. */
 
 	//function locationTreeItem(baseId: string, )
 
@@ -147,7 +88,14 @@
 		const descriptionId = toTreeId(baseId, 'description');
 		const depthId = toTreeId(baseId, 'depth');
 
-		const geometryItem = geometryTreeItem(baseId, plantingArea.geometry);
+		const geometryItem = geometryTreeItem(
+			baseId,
+			plantingArea.geometry,
+			false,
+			false,
+			geometryChangeHandler,
+			fieldErrors
+		);
 
 		return {
 			id: baseId,
@@ -158,15 +106,17 @@
 					id: nameId,
 					label: 'Name',
 					description: workspaceFields.plantingAreaNameSchema.description,
-					valueComponent: String,
+					valueComponent: TreeString,
 					value: plantingArea.name,
 					onChange: (changeOver: boolean, newData: string) => {
-						const errors = validateField(
-							newData,
-							workspaceFields.plantingAreaNameSchema
-						);
-						if (errors) {
-							fieldErrors[nameId] = errors;
+						if (
+							!fieldValid(
+								nameId,
+								newData,
+								workspaceFields.plantingAreaNameSchema,
+								fieldErrors
+							)
+						) {
 							return;
 						}
 						plantingAreaChangeHandler.change(changeOver, {
@@ -185,17 +135,20 @@
 							id: descriptionId,
 							label: 'Description',
 							description: workspaceFields.plantingAreaDescriptionSchema.description,
-							valueSnippet: Textarea,
+							valueSnippet: TreeTextarea,
 							value: plantingArea.description,
 							onChange: (changeOver: boolean, newData: string) => {
-								const errors = validateField(
-									newData,
-									workspaceFields.plantingAreaDescriptionSchema
-								);
-								if (errors) {
-									fieldErrors[descriptionId] = errors;
+								if (
+									!fieldValid(
+										descriptionId,
+										newData,
+										workspaceFields.plantingAreaDescriptionSchema,
+										fieldErrors
+									)
+								) {
 									return;
 								}
+
 								plantingAreaChangeHandler.change(changeOver, {
 									plantingAreaId: { description: newData }
 								});
@@ -207,15 +160,17 @@
 							id: depthId,
 							label: 'Depth',
 							description: workspaceFields.plantingAreaDepthSchema.description,
-							valueSnippet: Distance,
+							valueSnippet: TreeDistance,
 							value: plantingArea.depth,
 							onChange: (changeOver: boolean, newData: number) => {
-								const errors = validateField(
-									newData,
-									workspaceFields.plantingAreaDepthSchema
-								);
-								if (errors) {
-									fieldErrors[depthId] = errors;
+								if (
+									!fieldValid(
+										depthId,
+										newData,
+										workspaceFields.plantingAreaDepthSchema,
+										fieldErrors
+									)
+								) {
 									return;
 								}
 								plantingAreaChangeHandler.change(changeOver, {
@@ -227,13 +182,13 @@
 				},
 
 				/** Geometry. */
-				geometryItem,
+				geometryItem
 
-				{
-					id: 'arsoie',
-					label: 'Locations',
-					children: []
-				}
+				//{
+				//	id: 'arsoie',
+				//	label: 'Locations',
+				//	children: []
+				//}
 			]
 		};
 	}
@@ -252,7 +207,6 @@
 				workspace.selections.select('plantingArea', id);
 			},
 			remove: (id: string) => {
-				console.log(`deselecting: ${id}`);
 				workspace.selections.deselect('plantingArea', id);
 			}
 		}

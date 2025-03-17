@@ -1,4 +1,5 @@
-import { AppError } from '@vdt-webapp/common/src/errors';
+import { AppError, type FieldErrors, validateField } from '@vdt-webapp/common';
+import { type ZodType } from 'zod';
 
 const TREE_ID_DELIMITER = '/~';
 
@@ -62,4 +63,29 @@ export function fromTreeId<EntityTypeT extends string>(
 	return parts[2]
 		? { entityType: parts[0] as EntityTypeT, entityId: parts[1], field: parts[2] }
 		: { entityType: parts[0] as EntityTypeT, entityId: parts[1] };
+}
+
+/**
+ * Validates a tree item's value against a schema.
+ * If the validation fails, the errors are set on the fieldErrors object
+ * and false is returned.
+ * @param treeId The tree ID of the item.
+ * @param value The value to validate.
+ * @param schema The schema to validate against.
+ * @param fieldErrors The tree errors.
+ * @returns False if validation failed.
+ */
+export function fieldValid(
+	treeId: string,
+	value: any,
+	schema: ZodType,
+	fieldErrors: FieldErrors
+): boolean {
+	const errors = validateField(value, schema);
+	if (errors) {
+		fieldErrors[treeId] = errors;
+		return false;
+	} else {
+		return true;
+	}
 }

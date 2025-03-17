@@ -59,6 +59,8 @@ function getClosedOrUnclosedShape(
 		...config
 	};
 
+	console.log(geometry);
+
 	switch (geometry.type) {
 		case 'RECTANGLE':
 			return new Konva.Rect({

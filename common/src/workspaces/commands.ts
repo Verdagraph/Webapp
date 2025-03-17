@@ -86,12 +86,12 @@ const geometryPolygonRadiusSchema = z
 	.min(0.01, 'May not be negative or zero.')
 	.max(1000, 'May be at most 1000m')
 	.describe('The distance from the center to any vertex of the polygon.');
-const geometryEllipseLengthDiameterSchema = z
+const geometryEllipseLengthSchema = z
 	.number()
 	.min(0.01, 'May not be negative or zero.')
 	.max(1000, 'May be at most 1000m.')
 	.describe('The horizontal, or x-axis diameter of the ellipse.');
-const geometryEllipseWidthDiameterSchema = z
+const geometryEllipseWidthSchema = z
 	.number()
 	.min(0.01, 'May not be negative or zero.')
 	.max(1000, 'May be at most 1000m')
@@ -124,8 +124,8 @@ export const workspaceFields = {
 	geometryRectangleWidthSchema,
 	geometryPolygonNumSidesSchema,
 	geometryPolygonRadiusSchema,
-	geometryEllipseLengthDiameterSchema,
-	geometryEllipseWidthDiameterSchema,
+	geometryEllipseLengthSchema,
+	geometryEllipseWidthSchema,
 	geometryLinesCoordinatesSchema,
 	geometryLinesClosedSchema
 };
@@ -165,8 +165,8 @@ export const GeometryCreateCommandSchema = z.object({
 	rectangleWidth: geometryRectangleWidthSchema.default(1),
 	polygonNumSides: geometryPolygonNumSidesSchema.default(3),
 	polygonRadius: geometryPolygonRadiusSchema.default(1),
-	ellipseLength: geometryEllipseLengthDiameterSchema.default(1),
-	ellipseWidth: geometryEllipseWidthDiameterSchema.default(1),
+	ellipseLength: geometryEllipseLengthSchema.default(1),
+	ellipseWidth: geometryEllipseWidthSchema.default(1),
 	linesCoordinates: geometryLinesCoordinatesSchema.default([
 		{ x: -1, y: 0 },
 		{ x: 0, y: 1 },
@@ -188,8 +188,8 @@ export const GeometryUpdateCommandSchema = z.object({
 	rectangleWidth: geometryRectangleWidthSchema.optional(),
 	polygonNumSides: geometryPolygonNumSidesSchema.optional(),
 	polygonRadius: geometryPolygonRadiusSchema.optional(),
-	ellipseLength: geometryEllipseLengthDiameterSchema.optional(),
-	ellipseWidth: geometryEllipseWidthDiameterSchema.optional(),
+	ellipseLength: geometryEllipseLengthSchema.optional(),
+	ellipseWidth: geometryEllipseWidthSchema.optional(),
 	linesCoordinates: geometryLinesCoordinatesSchema.optional(),
 	linesClosed: geometryLinesClosedSchema.optional()
 });
@@ -223,7 +223,6 @@ export type PlantingAreaCreateCommand = z.infer<typeof PlantingAreaCreateCommand
  * Update a planting area.
  */
 export const PlantingAreaUpdateCommandSchema = z.object({
-	id: z.string(),
 	name: plantingAreaNameSchema.optional(),
 	description: plantingAreaDescriptionSchema.optional(),
 	depth: plantingAreaDepthSchema.optional()

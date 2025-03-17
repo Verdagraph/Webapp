@@ -8,9 +8,7 @@ import { getClient } from '$data/users/auth';
 /**
  * Retrieve the garden and set it as active.
  */
-/** TODO: Fix the typing of the params. */
 export async function load({ params }) {
-	console.log(params);
 	const client = await getClient();
 	const garden = await triplit.fetchOne(gardenQuery.Vars({ id: params.gardenId }));
 

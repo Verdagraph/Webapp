@@ -79,6 +79,7 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 			nonFormErrors: ['Failed to update object geometry.']
 		});
 	}
+	console.log(data);
 
 	await triplit.transact(async (transaction) => {
 		/**
@@ -111,7 +112,9 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 			}
 		}
 
-		await transaction.update('geometries', id, (geometry) => {
+		console.log(coordinateIds);
+
+		await transaction.update('geometries', geometry.id, (geometry) => {
 			if (data.type) {
 				geometry.type = data.type;
 			}
@@ -296,5 +299,5 @@ export const plantingAreaCreate = {
 
 export const plantingAreaUpdate = {
 	schema: PlantingAreaUpdateCommandSchema,
-	mutation: async function (data: PlantingAreaUpdateCommand) {}
+	mutation: async function (id: string, data: PlantingAreaUpdateCommand) {}
 };

@@ -34,7 +34,10 @@ export const workspaceSchema = S.Collections({
 			y: S.Number(),
 
 			/** The depth/altitude component of the coordinate in meters. */
-			z: S.Number({ nullable: true, default: 0 })
+			z: S.Number({ nullable: true, default: 0 }),
+
+			/** Used to maintain ordering in sets of coordinates. */
+			createdAt: S.Date({ default: S.Default.now() })
 		}),
 		relationships: {
 			garden: S.RelationById('gardens', '$gardenId')
@@ -145,7 +148,8 @@ export const workspaceSchema = S.Collections({
 		relationships: {
 			garden: S.RelationById('gardens', '$gardenId'),
 			linesCoordinates: S.RelationMany('coordinates', {
-				where: [['id', 'in', '$linesAttributes.coordinateIds']]
+				where: [['id', 'in', '$linesCoordinateIds']],
+				order: [['createdAt', 'ASC']]
 			})
 		},
 		permissions: {
@@ -211,7 +215,8 @@ export const workspaceSchema = S.Collections({
 		relationships: {
 			garden: S.RelationById('gardens', '$gardenId'),
 			geometries: S.RelationMany('geometries', {
-				where: [['id', 'in', '$geometryIds']]
+				where: [['id', 'in', '$geometryIds']],
+				order: [['date', 'ASC']]
 			})
 		},
 		permissions: {
@@ -355,7 +360,10 @@ export const workspaceSchema = S.Collections({
 		}),
 		relationships: {
 			garden: S.RelationById('gardens', '$gardenId'),
-			locations: S.RelationMany('locations', { where: [['id', 'in', '$locationIds']] })
+			locations: S.RelationMany('locations', {
+				where: [['id', 'in', '$locationIds']],
+				order: [['date', 'ASC']]
+			})
 		},
 		permissions: {
 			anon: {

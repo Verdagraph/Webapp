@@ -262,8 +262,7 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={workspaceFields.geometryEllipseLengthDiameterSchema
-								.description}
+							description={workspaceFields.geometryEllipseLengthSchema.description}
 							optional={false}>Length Diameter</Form.Label
 						>
 						<UnitAwareInput
@@ -284,8 +283,7 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label
-							description={workspaceFields.geometryEllipseWidthDiameterSchema
-								.description}
+							description={workspaceFields.geometryEllipseWidthSchema.description}
 							optional={false}>Width Diameter</Form.Label
 						>
 						<UnitAwareInput

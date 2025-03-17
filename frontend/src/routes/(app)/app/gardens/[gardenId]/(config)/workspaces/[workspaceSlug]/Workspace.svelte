@@ -53,12 +53,10 @@
 				{/if}
 				{#if workspaceContext.treeEnabled}
 					<Resizable.Pane defaultSize={30} order={3} minSize={10}>
-						<!--
-							<Tree
-								plantingAreaIds={plantingAreaIds.results?.map((result) => result.id) ||
-									[]}
-							/>
-						-->
+						<Tree
+							plantingAreaIds={plantingAreaIds.results?.map((result) => result.id) ||
+								[]}
+						/>
 					</Resizable.Pane>
 				{/if}
 			</Resizable.PaneGroup>
