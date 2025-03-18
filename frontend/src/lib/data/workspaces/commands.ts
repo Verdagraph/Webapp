@@ -3,9 +3,12 @@ import {
 	type TriplitTransaction,
 	WorkspaceCreateCommandSchema,
 	type WorkspaceCreateCommand,
+	WorkspaceUpdateCommandSchema,
+	type WorkspaceUpdateCommand,
 	PlantingAreaCreateCommandSchema,
 	type PlantingAreaCreateCommand,
-	LocationCreateCommand,
+	type LocationCreateCommand,
+	type LocationUpdateCommand,
 	type Workspace,
 	type Geometry,
 	type LocationHistory,
@@ -225,6 +228,28 @@ export async function locationHistoryUpdate(data: LocationHistoryUpdateCommand) 
 	}
 }
 
+/**
+ * Updates or deletes a single location.
+ * @param id The ID of the location.
+ * @param data The location update command.
+ */
+export async function locationUpdate(id: string, data: LocationUpdateCommand) {
+	if (data.delete) {
+		await triplit.delete('locations', id);
+		return;
+	} else {
+		await triplit.update('locations', id, (location) => {
+			if (data.coordinate) {
+				location.x = data.coordinate.x;
+				location.y = data.coordinate.y;
+			}
+			if (data.date) {
+				location.date = data.date;
+			}
+		});
+	}
+}
+
 /** Creates a new workspace in a garden. */
 export const workspaceCreate = {
 	schema: WorkspaceCreateCommandSchema,
@@ -254,6 +279,48 @@ export const workspaceCreate = {
 			name: data.name,
 			slug: workspaceSlug,
 			description: data.description
+		});
+	}
+};
+
+/** Updates a new workspace in a garden. */
+export const workspaceUpdate = {
+	schema: WorkspaceUpdateCommandSchema,
+	mutation: async function (
+		gardenId: string,
+		id: string,
+		data: WorkspaceUpdateCommand
+	) {
+		/** Retrieve client and authorize. */
+		await requireRole(gardenId, 'WorkspaceUpdate');
+
+		/** Generate workspace slug from name. */
+		let newSlug: string | undefined;
+		if (data.name) {
+			/** Validate garden-scoped unique workspace slug requirement. */
+			newSlug = slugify(data.name);
+			const existingWorkspace = await triplit.fetchOne(
+				triplit.query('workspaces').Where([
+					['gardenId', '=', id],
+					['slug', '=', newSlug]
+				])
+			);
+			if (existingWorkspace) {
+				throw new AppError('Workspace slug already exists.', {
+					fieldErrors: { name: ['This workspace name already exists in this garden.'] }
+				});
+			}
+		}
+
+		/** Update the workspace */
+		await triplit.update('workspaces', id, (workspace) => {
+			if (data.name && newSlug) {
+				workspace.name = data.name;
+				workspace.slug = newSlug;
+			}
+			if (data.description) {
+				workspace.description = data.description;
+			}
 		});
 	}
 };

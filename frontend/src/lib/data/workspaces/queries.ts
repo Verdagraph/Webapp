@@ -1,5 +1,7 @@
 import triplit from '$data/triplit';
 
+export const workspaceQuery = triplit.query('workspaces').Id('$query.id');
+
 export const workspaceSlugQuery = triplit.query('workspaces').Where([
 	['gardenId', '=', '$query.gardenId'],
 	['slug', '=', '$query.workspaceSlug']

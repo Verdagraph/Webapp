@@ -116,6 +116,7 @@ export const workspaceFields = {
 	coordinateXSchema,
 	coordinateYSchema,
 	coordinateSchema,
+	locationDateSchema,
 	geometryTypeSchema,
 	geometryDateSchema,
 	geometryScaleFactorSchema,
@@ -143,6 +144,9 @@ export const LocationCreateCommandSchema = z.object({
 });
 export type LocationCreateCommand = z.infer<typeof LocationCreateCommandSchema>;
 
+/**
+ * Updates a location history.
+ */
 export const LocationHistoryUpdateCommandSchema = z.object({
 	id: z.string(),
 	workspaceId: z.string(),
@@ -152,6 +156,20 @@ export const LocationHistoryUpdateCommandSchema = z.object({
 export type LocationHistoryUpdateCommand = z.infer<
 	typeof LocationHistoryUpdateCommandSchema
 >;
+
+/**
+ * Updates a location.
+ */
+export const LocationUpdateCommandSchema = z.object({
+	coordinate: coordinateSchema.optional(),
+	date: locationDateSchema.optional(),
+	delete: z.boolean().optional()
+});
+export type LocationUpdateCommand = z.infer<typeof LocationUpdateCommandSchema>;
+
+/**
+ * Updates a location
+ */
 
 /**
  * Create a new geometry.
@@ -204,6 +222,15 @@ export const WorkspaceCreateCommandSchema = z.object({
 	description: workspaceDescriptionSchema.optional()
 });
 export type WorkspaceCreateCommand = z.infer<typeof WorkspaceCreateCommandSchema>;
+
+/**
+ * Update a workspace.
+ */
+export const WorkspaceUpdateCommandSchema = z.object({
+	name: workspaceNameSchema.optional(),
+	description: workspaceDescriptionSchema.optional()
+});
+export type WorkspaceUpdateCommand = z.infer<typeof WorkspaceUpdateCommandSchema>;
 
 /**
  * Create a new planting area.

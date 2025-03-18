@@ -11,6 +11,7 @@ const permissions = Object.freeze({
 
 	/** Workspaces. */
 	WorkspaceCreate: 'ADMIN',
+	WorkspaceUpdate: 'ADMIN',
 	WorkspaceEdit: 'EDITOR',
 	PlantingAreaCreate: 'EDITOR'
 } satisfies Record<string, GardenRole>);
