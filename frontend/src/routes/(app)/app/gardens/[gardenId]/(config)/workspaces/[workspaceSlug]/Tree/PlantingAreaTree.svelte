@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {page} from '$app/state'
+	import { page } from '$app/state';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import {
 		createEditableTree,
@@ -16,14 +16,20 @@
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery, workspacesQuery } from '$data/workspaces/queries';
-	import { plantingAreaUpdate, geometryUpdate, locationUpdate, locationHistoryExtend } from '$data/workspaces/commands';
+	import {
+		plantingAreaUpdate,
+		geometryUpdate,
+		locationUpdate,
+		locationHistoryExtend
+	} from '$data/workspaces/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
 	import { createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import {
 		type PlantingArea,
 		workspaceFields,
-		type PlantingAreaUpdateCommand, LocationUpdateCommand,
+		type PlantingAreaUpdateCommand,
+		LocationUpdateCommand,
 		type GeometryUpdateCommand,
 		type FieldErrors
 	} from '@vdt-webapp/common';
@@ -48,9 +54,16 @@
 	let query = $derived(
 		useQuery(triplit, plantingAreasQuery.Vars({ ids: plantingAreaIds }))
 	);
-	let workspacesInGarden = $derived(useQuery(triplit, workspacesQuery.Vars({gardenId: page.params.gardenId})))
+	let workspacesInGarden = $derived(
+		useQuery(triplit, workspacesQuery.Vars({ gardenId: page.params.gardenId }))
+	);
 	/** Options for workspaces available to locations. */
-	let workspacesOptions = $derived(workspacesInGarden.results?.map(result => {id: result.id, name: result.name}))
+	let workspacesOptions = $derived(
+		workspacesInGarden.results?.map((result) => ({
+			id: result.id,
+			name: result.name
+		})) || []
+	);
 
 	/** Handlers. */
 	/** PlantingArea change. */
@@ -61,7 +74,10 @@
 		(newData: Record<string, PlantingAreaUpdateCommand>) => {
 			for (const plantingAreaId of Object.keys(newData)) {
 				console.log;
-				plantingAreaUpdateCommandHandler.execute(plantingAreaId, newData[plantingAreaId]);
+				plantingAreaUpdateCommandHandler.execute(
+					plantingAreaId,
+					newData[plantingAreaId]
+				);
 			}
 		}
 	);
@@ -77,18 +93,23 @@
 	);
 
 	/** Location change. */
-	const locationUpdateCommandHandler = createCommandHandler(locationUpdate)
-	const locationUpdateChangeHandler = createChangeHandler((newData: Record<string, LocationUpdateCommand>) => {
-		for (const locationId of Object.keys(newData)) {
-			locationUpdateCommandHandler.execute(locationId, newData[locationId])
+	const locationUpdateCommandHandler = createCommandHandler(locationUpdate);
+	const locationUpdateChangeHandler = createChangeHandler(
+		(newData: Record<string, LocationUpdateCommand>) => {
+			for (const locationId of Object.keys(newData)) {
+				locationUpdateCommandHandler.execute(locationId, newData[locationId]);
+			}
 		}
-	})
+	);
 
-	const locationHistoryExtendCommandHandler = createCommandHandler(locationHistoryExtend)
+	const locationHistoryExtendCommandHandler =
+		createCommandHandler(locationHistoryExtend);
 	const locationHistoryExtendChangeHandler = createChangeHandler((newData: string) => {
-		locationHistoryExtendCommandHandler.execute(newData, workspace.timelineSelection.focusUtc)
-	})
-
+		locationHistoryExtendCommandHandler.execute(
+			newData,
+			workspace.timelineSelection.focusUtc
+		);
+	});
 
 	function plantingAreaTreeItem(plantingArea: PlantingArea): Item {
 		const baseId = toTreeBaseId('plantingArea', plantingArea.id);
@@ -106,7 +127,14 @@
 			fieldErrors
 		);
 
-		const locationHistoryItem = locationHistoryTreeItem(toTreeId(baseId, 'locations'), plantingArea.locationHistory, locationUpdateChangeHandler, locationHistoryExtendChangeHandler, fieldErrors, workspacesOptions)
+		const locationHistoryItem = locationHistoryTreeItem(
+			toTreeId(baseId, 'locations'),
+			plantingArea.locationHistory,
+			locationUpdateChangeHandler,
+			locationHistoryExtendChangeHandler,
+			fieldErrors,
+			workspacesOptions
+		);
 
 		const nameItem: Item = {
 			id: nameId,
