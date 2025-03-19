@@ -83,6 +83,11 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 		});
 	}
 
+	if (data.delete) {
+		await triplit.delete('geometries', id);
+		return;
+	}
+
 	await triplit.transact(async (transaction) => {
 		/**
 		 * The lines geometry update is a little trickier to handle
@@ -155,6 +160,27 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 	});
 }
 
+export async function geometryHistoryExtend(id: string, date: Date) {
+	const geometryHistory = await triplit.fetchOne(
+		triplit
+			.query('geometryHistories')
+			.Id(id)
+			.Include('geometries', (rel) => rel('geometries').Include('linesCoordinates'))
+	);
+	if (!geometryHistory) {
+		throw new AppError('Geometry history does not exist.', {
+			nonFormErrors: ['Failed to update object geometry.']
+		});
+	}
+
+	const latestGeometry =
+		geometryHistory.geometries[geometryHistory.geometries.length - 1];
+	latestGeometry.date = date;
+	await triplit.transact(async (transaction) => {
+		await geometryCreate(geometryHistory.gardenId, latestGeometry, transaction);
+	});
+}
+
 /**
  * Insert a new location history into the database.
  * @param data The location create command.
@@ -176,6 +202,34 @@ export async function locationHistoryCreate(
 		gardenId: data.gardenId,
 		locationIds: new Set([location.id]),
 		workspaceIds: new Set([data.workspaceId])
+	});
+}
+
+/**
+ * Updates or deletes a single location.
+ * @param id The ID of the location.
+ * @param data The location update command.
+ */
+export async function locationUpdate(id: string, data: LocationUpdateCommand) {
+	const location = await triplit.fetchOne(triplit.query('locations').Id(id));
+	if (!location) {
+		throw new AppError('Location does not exist.', {
+			nonFormErrors: ['Failed to update object location.']
+		});
+	}
+
+	if (data.delete) {
+		await triplit.delete('locations', id);
+		return;
+	}
+	await triplit.update('locations', id, (location) => {
+		if (data.coordinate) {
+			location.x = data.coordinate.x;
+			location.y = data.coordinate.y;
+		}
+		if (data.date) {
+			location.date = data.date;
+		}
 	});
 }
 
@@ -228,26 +282,25 @@ export async function locationHistoryUpdate(data: LocationHistoryUpdateCommand) 
 	}
 }
 
-/**
- * Updates or deletes a single location.
- * @param id The ID of the location.
- * @param data The location update command.
- */
-export async function locationUpdate(id: string, data: LocationUpdateCommand) {
-	if (data.delete) {
-		await triplit.delete('locations', id);
-		return;
-	} else {
-		await triplit.update('locations', id, (location) => {
-			if (data.coordinate) {
-				location.x = data.coordinate.x;
-				location.y = data.coordinate.y;
-			}
-			if (data.date) {
-				location.date = data.date;
-			}
+export async function locationHistoryExtend(id: string, date: Date) {
+	const locationHistory = await triplit.fetchOne(
+		triplit.query('locationHistories').Id(id).Include('locations')
+	);
+	if (!locationHistory) {
+		throw new AppError('Location history does not exist.', {
+			nonFormErrors: ['Failed to update object location.']
 		});
 	}
+
+	const latestLocation =
+		locationHistory.locations[locationHistory.locations.length - 1];
+	await triplit.insert('locations', {
+		gardenId: locationHistory.gardenId,
+		workspaceId: latestLocation.workspaceId,
+		x: latestLocation.x,
+		y: latestLocation.y,
+		date: date
+	});
 }
 
 /** Creates a new workspace in a garden. */

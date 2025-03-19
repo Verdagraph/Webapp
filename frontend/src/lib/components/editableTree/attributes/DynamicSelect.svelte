@@ -1,0 +1,50 @@
+<script lang="ts">
+	import * as Select from '$lib/components/ui/select/index.js';
+	import { type EditableAttributeProps, type DynamicSelectValue } from './types';
+	import DefaultStaticValue from './DefaultStaticValue.svelte';
+	import { type GeometryType } from '@vdt-webapp/common';
+	import iconIds from '$lib/assets/icons';
+	import Icon from '@iconify/svelte';
+
+	let { value, editing, onChange, errors }: EditableAttributeProps<DynamicSelectValue> =
+		$props();
+
+	const selectTrigger = $derived(
+		value.options.find((option) => option.id === value.id) ?? {
+			label: 'Make a selection'
+		}
+	);
+</script>
+
+{#if editing}
+	<Select.Root
+		type="single"
+		value={value.id}
+		onValueChange={(selectValue) => {
+			onChange(true, { id: selectValue, options: value.options });
+		}}
+	>
+		<Select.Trigger class="w-full">
+			<div class="item-center flex">
+				<span>
+					{selectTrigger.label}
+				</span>
+			</div>
+		</Select.Trigger>
+		<Select.Content>
+			<Select.Group>
+				{#each value.options as option}
+					<Select.Item value={option.id} label={option.label}>
+						<div class="item-center flex">
+							<span>
+								{option.label}
+							</span>
+						</div>
+					</Select.Item>
+				{/each}
+			</Select.Group>
+		</Select.Content>
+	</Select.Root>
+{:else}
+	<DefaultStaticValue {value} />
+{/if}

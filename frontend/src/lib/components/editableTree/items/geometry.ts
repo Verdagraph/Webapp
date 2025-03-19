@@ -5,6 +5,7 @@ import {
 	TreeDate,
 	TreeDeletableCoordinate,
 	TreeAddButton,
+	TreeDeleteButton,
 	TreeCheckbox,
 	toTreeId,
 	fieldValid,
@@ -13,6 +14,7 @@ import {
 import { type ChangeHandler } from '$state/changeHandler.svelte';
 import {
 	type Geometry,
+	type GeometryHistory,
 	type GeometryType,
 	workspaceFields,
 	type GeometryUpdateCommand,
@@ -23,8 +25,9 @@ import { getLocalTimeZone, type DateValue } from '@internationalized/date';
 
 /**
  * Constructs an editable tree item for a geometry.
- * @param baseId The base ID of the tree item.
+ * @param parentId The base ID of the parent tree item.
  * @param geometry The geometry to use.
+ * @param includeDelete Whether to include the option to delete the geometry.
  * @param includeDate If false, the geometry date won't
  * be included in the tree. Used for situations where only
  * one geometry is supported as opposed to a geometry history
@@ -32,49 +35,37 @@ import { getLocalTimeZone, type DateValue } from '@internationalized/date';
  * @param includeLinesClosed If false, the linesClosed attribute
  * won't be included. Used for situations where the geometry must
  * be closed or unclosed and this isn't editable by the user.
- * @param changeHandler The change handler for the tree's geomety.
+ * @param geometryUpdateHandler The change handler for the tree's geomety.
  * The key of the record are IDs of geometries, and the values are
  * the updated fields.
  * @param fieldErrors The field errors of the tree, updated upon failed validation.
  * @returns The tree items that represent the geometry.
  */
 export function geometryTreeItem(
-	baseId: string,
+	parentId: string,
 	geometry: Geometry | null,
+	includeDelete: boolean = false,
 	includeDate: boolean = true,
 	includeLinesClosed: boolean = false,
-	changeHandler: ChangeHandler<Record<string, GeometryUpdateCommand>>,
-	fieldErrors: FieldErrors
+	geometryUpdateHandler: ChangeHandler<Record<string, GeometryUpdateCommand>>,
+	fieldErrors: FieldErrors,
+	index: number = 0
 ): Item {
+	const geometryBaseId = parentId + `${index}/`;
+
 	if (!geometry) {
 		return {
-			id: toTreeId(baseId, 'geometry'),
+			id: geometryBaseId,
 			label: 'Failed to resolve geometry.'
 		};
 	}
 
-	const typeId = toTreeId(baseId, 'geometryType');
-	const dateId = toTreeId(baseId, 'geometryDate');
-	const scaleFactorId = toTreeId(baseId, 'geometryScaleFactor');
-	const rotationId = toTreeId(baseId, 'geometryRotation');
+	const typeId = geometryBaseId + 'type';
+	const dateId = geometryBaseId + 'date';
+	const scaleFactorId = geometryBaseId + 'scaleFactor';
+	const rotationId = geometryBaseId + 'rotation';
+	const deleteId = geometryBaseId + 'delete';
 
-	const typeItem: Item = {
-		id: typeId,
-		label: 'Type',
-		description: workspaceFields.geometryTypeSchema.description,
-		valueComponent: TreeGeometryType,
-		value: geometry.type,
-		onChange: (changeOver: boolean, newData: GeometryType) => {
-			if (
-				!fieldValid(typeId, newData, workspaceFields.geometryTypeSchema, fieldErrors)
-			) {
-				return;
-			}
-			changeHandler.change(changeOver, {
-				[geometry.id]: { type: newData }
-			});
-		}
-	};
 	const dateItem: Item = {
 		id: dateId,
 		label: 'Date',
@@ -87,8 +78,25 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			changeHandler.change(changeOver, {
+			geometryUpdateHandler.change(changeOver, {
 				[geometry.id]: { date: newData.toDate(getLocalTimeZone()) }
+			});
+		}
+	};
+	const typeItem: Item = {
+		id: typeId,
+		label: 'Type',
+		description: workspaceFields.geometryTypeSchema.description,
+		valueComponent: TreeGeometryType,
+		value: geometry.type,
+		onChange: (changeOver: boolean, newData: GeometryType) => {
+			if (
+				!fieldValid(typeId, newData, workspaceFields.geometryTypeSchema, fieldErrors)
+			) {
+				return;
+			}
+			geometryUpdateHandler.change(changeOver, {
+				[geometry.id]: { type: newData }
 			});
 		}
 	};
@@ -109,7 +117,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			changeHandler.change(changeOver, {
+			geometryUpdateHandler.change(changeOver, {
 				[geometry.id]: { scaleFactor: newData }
 			});
 		}
@@ -131,8 +139,20 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			changeHandler.change(changeOver, {
+			geometryUpdateHandler.change(changeOver, {
 				[geometry.id]: { rotation: newData }
+			});
+		}
+	};
+	const deleteItem: Item = {
+		id: deleteId,
+		label: 'Delete',
+		description: 'Deletes the geometry from the history.',
+		valueComponent: TreeDeleteButton,
+		value: undefined,
+		onChange: (changeOver: boolean, newData: undefined) => {
+			geometryUpdateHandler.change(true, {
+				[geometry.id]: { delete: true }
 			});
 		}
 	};
@@ -140,8 +160,8 @@ export function geometryTreeItem(
 	let attributesItems: Item[] = [];
 	switch (geometry.type) {
 		case 'RECTANGLE':
-			const rectangleLengthId = toTreeId(baseId, 'geometryRectangleLength');
-			const rectangleWidthId = toTreeId(baseId, 'geometryRectangleWidth');
+			const rectangleLengthId = geometryBaseId + 'rectangleLength';
+			const rectangleWidthId = geometryBaseId + 'rectangleWidth';
 
 			attributesItems = [
 				{
@@ -161,7 +181,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						changeHandler.change(changeOver, {
+						geometryUpdateHandler.change(changeOver, {
 							[geometry.id]: { rectangleLength: newData }
 						});
 					}
@@ -183,7 +203,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						changeHandler.change(changeOver, {
+						geometryUpdateHandler.change(changeOver, {
 							[geometry.id]: { rectangleWidth: newData }
 						});
 					}
@@ -192,8 +212,8 @@ export function geometryTreeItem(
 			break;
 
 		case 'POLYGON':
-			const polygonNumSidesId = toTreeId(baseId, 'geometryPolygonNumSides');
-			const polygonRadiusId = toTreeId(baseId, 'geometryPolygonRadius');
+			const polygonNumSidesId = geometryBaseId + 'polygonNumSides';
+			const polygonRadiusId = geometryBaseId + 'polygonRadius';
 
 			attributesItems = [
 				{
@@ -213,7 +233,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						changeHandler.change(changeOver, {
+						geometryUpdateHandler.change(changeOver, {
 							[geometry.id]: { polygonNumSides: newData }
 						});
 					}
@@ -235,7 +255,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						changeHandler.change(changeOver, {
+						geometryUpdateHandler.change(changeOver, {
 							[geometry.id]: { polygonRadius: newData }
 						});
 					}
@@ -244,8 +264,8 @@ export function geometryTreeItem(
 			break;
 
 		case 'ELLIPSE':
-			const ellipseLengthId = toTreeId(baseId, 'geometryEllipseLength');
-			const ellipseWidthId = toTreeId(baseId, 'geometryEllipseWidth');
+			const ellipseLengthId = geometryBaseId + 'ellipseLength';
+			const ellipseWidthId = geometryBaseId + 'ellipseWidth';
 
 			attributesItems = [
 				{
@@ -265,7 +285,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						changeHandler.change(changeOver, {
+						geometryUpdateHandler.change(changeOver, {
 							[geometry.id]: { ellipseLength: newData }
 						});
 					}
@@ -287,7 +307,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						changeHandler.change(changeOver, {
+						geometryUpdateHandler.change(changeOver, {
 							[geometry.id]: { ellipseWidth: newData }
 						});
 					}
@@ -296,9 +316,9 @@ export function geometryTreeItem(
 			break;
 
 		case 'LINES':
-			const linesCoordinatesId = toTreeId(baseId, 'geometryLinesCoordinates');
-			const linesAddCoordinateId = toTreeId(baseId, 'geometryLinesAddCoordinate');
-			const linesClosedId = toTreeId(baseId, 'geometryLinesClosed');
+			const linesCoordinatesId = geometryBaseId + 'linesCoordinates';
+			const linesAddCoordinateId = geometryBaseId + 'linesAddCoordinate';
+			const linesClosedId = geometryBaseId + 'linesClosed';
 
 			/**
 			 * The approach taken to coordinate items is this:
@@ -308,7 +328,7 @@ export function geometryTreeItem(
 			 */
 			const coordinateItems: Item[] = geometry.linesCoordinates.map(
 				(coordinate, index) => {
-					const coordinateId = toTreeId(baseId, `geometryLinesCoordinate${index}`);
+					const coordinateId = geometryBaseId + `linesCoordinate${index}`;
 
 					return {
 						id: coordinateId,
@@ -337,7 +357,7 @@ export function geometryTreeItem(
 								newCoordinates.push(newData);
 							}
 
-							changeHandler.change(changeOver, {
+							geometryUpdateHandler.change(changeOver, {
 								[geometry.id]: { linesCoordinates: newCoordinates }
 							});
 						}
@@ -357,7 +377,7 @@ export function geometryTreeItem(
 				onChange: (changeOver: boolean, newData: undefined) => {
 					const newCoordinates: Position[] = geometry.linesCoordinates;
 					newCoordinates.push(newCoordinates[newCoordinates.length - 1]);
-					changeHandler.change(changeOver, {
+					geometryUpdateHandler.change(changeOver, {
 						[geometry.id]: { linesCoordinates: newCoordinates }
 					});
 				}
@@ -380,7 +400,7 @@ export function geometryTreeItem(
 					) {
 						return;
 					}
-					changeHandler.change(changeOver, {
+					geometryUpdateHandler.change(changeOver, {
 						[geometry.id]: { linesClosed: newData }
 					});
 				}
@@ -407,17 +427,87 @@ export function geometryTreeItem(
 			break;
 	}
 
+	let children: Item[] = [];
+
 	if (includeDate) {
-		return {
-			id: toTreeId(baseId, 'geometry'),
-			label: 'Geometry',
-			children: [typeItem, dateItem, scaleFactorItem, rotationItem, ...attributesItems]
-		};
+		children = [dateItem, typeItem, scaleFactorItem, rotationItem, ...attributesItems];
 	} else {
+		children = [typeItem, scaleFactorItem, rotationItem, ...attributesItems];
+	}
+
+	if (includeDelete) {
+		children.push(deleteItem);
+	}
+
+	return {
+		id: geometryBaseId,
+		label: `Geometry ${index + 1}`,
+		children: children
+	};
+}
+
+/**
+ * Constructs a tree item for a geometry history.
+ * @param baseId The base ID of the parent tree item.
+ * @param geometryHistory Geometry history to use.
+ * @param includeLinesClosed If false, the linesClosed attribute
+ * won't be included. Used for situations where the geometry must
+ * be closed or unclosed and this isn't editable by the user.
+ * @param geometryUpdateHandler The handler for updating each geometry.
+ * @param geometryHistoryExtendHandler The handler for extending the geometry history.
+ * @param fieldErrors The field errors of the editable tree.
+ * @returns The tree item.
+ */
+export function geometryHistoryTreeItem(
+	baseId: string,
+	geometryHistory: GeometryHistory | null,
+	includeLinesClosed: boolean = false,
+	geometryUpdateHandler: ChangeHandler<Record<string, GeometryUpdateCommand>>,
+	geometryHistoryExtendHandler: ChangeHandler<string>,
+	fieldErrors: FieldErrors
+): Item {
+	const geometryHistoryBaseId = toTreeId(baseId, 'geometries');
+
+	if (!geometryHistory) {
 		return {
-			id: toTreeId(baseId, 'geometry'),
-			label: 'Geometry',
-			children: [typeItem, scaleFactorItem, rotationItem, ...attributesItems]
+			id: geometryHistoryBaseId,
+			label: 'Failed to resolve geometries.'
 		};
 	}
+
+	const addGeometryId = toTreeId(baseId, 'geometryAdd');
+
+	const geometryItems = geometryHistory.geometries.map((geometry, index) => {
+		return geometryTreeItem(
+			geometryHistoryBaseId,
+			geometry,
+			true,
+			true,
+			includeLinesClosed,
+			geometryUpdateHandler,
+			fieldErrors,
+			index
+		);
+	});
+
+	const addGeometryItem: Item = {
+		id: addGeometryId,
+		label: 'Add',
+		description: 'Adds a new geometry to the history.',
+		valueComponent: TreeAddButton,
+		value: undefined,
+		/**
+		 * The callback here is just used to register the add
+		 * button has been pressed, so no need for data.
+		 */
+		onChange: (changeOver: boolean, newData: undefined) => {
+			geometryHistoryExtendHandler.change(true, geometryHistory.id);
+		}
+	};
+
+	return {
+		id: geometryHistoryBaseId,
+		label: 'Geometries',
+		children: [...geometryItems, addGeometryItem]
+	};
 }

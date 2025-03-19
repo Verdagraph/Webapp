@@ -14,7 +14,7 @@
 		"@fastify/awilix": "^6.0.2",
 		"@fastify/cookie": "^11.0.2",
 		"@fastify/cors": "^10.1.0",
-		"@triplit/client": "^1.0.9",
+		"@triplit/client": "^1.0.11",
 		"@vdt-webapp/common": "workspace:*",
 		"argon2": "^0.41.1",
 		"awilix": "^12.0.4",

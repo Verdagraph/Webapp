@@ -1,10 +1,13 @@
 import {
 	TreeDate,
-	TreeDeletableCoordinate,
+	TreeCoordinate,
+	TreeDeleteButton,
+	TreeDynamicSelect,
 	toTreeId,
 	fieldValid,
 	type Item,
-	TreeAddButton
+	TreeAddButton,
+	type DynamicSelectValue
 } from '$components/editableTree';
 import { type ChangeHandler } from '$state/changeHandler.svelte';
 import {
@@ -19,23 +22,27 @@ import { getLocalTimeZone, type DateValue } from '@internationalized/date';
 
 /**
  * Constructs an editable tree item for a geometry.
- * @param baseId The base ID of the location history.
+ * @param parentId The base ID of the parent tree item.
  * @param location The location to use.
- * @param changeHandler The change handler for the tree's locations.
+ * @param includeDelete Whether to include the option to delete the location.
+ * @param locationUpdateHandler The change handler for the tree's locations.
  * The key of the record are IDs of locations, and the values are
  * the updated fields.
  * @param fieldErrors The field errors of the tree, updated upon failed validation.
  * @param index The index of the location in the location history, if applicable.
+ * @param workspaces The workspace options for the location.
  * @returns The tree items that represent the location.
  */
 export function locationTreeItem(
-	locationHistoryBaseId: string,
+	parentId: string,
 	location: Location | null,
-	changeHandler: ChangeHandler<Record<string, LocationUpdateCommand>>,
+	includeDelete: boolean = false,
+	locationUpdateHandler: ChangeHandler<Record<string, LocationUpdateCommand>>,
 	fieldErrors: FieldErrors,
-	index: number = 0
+	index: number = 0,
+	workspaces: { id: string; name: string }[]
 ): Item {
-	const locationBaseId = locationHistoryBaseId + `${index}/`;
+	const locationBaseId = parentId + `${index}/`;
 
 	if (!location) {
 		return {
@@ -44,37 +51,10 @@ export function locationTreeItem(
 		};
 	}
 
-	const coordinateId = locationBaseId + 'coordinate';
 	const dateId = locationBaseId + 'date';
-
-	const coordinateItem: Item = {
-		id: coordinateId,
-		label: 'Posistion',
-		description: workspaceFields.coordinateSchema.description,
-		valueComponent: TreeDeletableCoordinate,
-		value: { x: location.x, y: location.y },
-		onChange: (changeOver: boolean, newData: Position | null) => {
-			if (newData) {
-				if (
-					!fieldValid(
-						coordinateId,
-						newData,
-						workspaceFields.coordinateSchema,
-						fieldErrors
-					)
-				) {
-					return;
-				}
-				changeHandler.change(changeOver, {
-					[location.id]: { coordinate: newData }
-				});
-			} else {
-				changeHandler.change(changeOver, {
-					[location.id]: { delete: true }
-				});
-			}
-		}
-	};
+	const coordinateId = locationBaseId + 'coordinate';
+	const workspaceId = locationBaseId + 'workspace';
+	const deleteId = locationBaseId + 'delete';
 
 	const dateItem: Item = {
 		id: dateId,
@@ -88,24 +68,83 @@ export function locationTreeItem(
 			) {
 				return;
 			}
-			changeHandler.change(changeOver, {
+			locationUpdateHandler.change(changeOver, {
 				[location.id]: { date: newData.toDate(getLocalTimeZone()) }
 			});
 		}
 	};
+	const coordinateItem: Item = {
+		id: coordinateId,
+		label: 'Position',
+		description: workspaceFields.coordinateSchema.description,
+		valueComponent: TreeCoordinate,
+		value: { x: location.x, y: location.y },
+		onChange: (changeOver: boolean, newData: Position) => {
+			if (
+				!fieldValid(
+					coordinateId,
+					newData,
+					workspaceFields.coordinateSchema,
+					fieldErrors
+				)
+			) {
+				return;
+			}
+			locationUpdateHandler.change(changeOver, {
+				[location.id]: { coordinate: newData }
+			});
+		}
+	};
+	const workspaceItem: Item = {
+		id: workspaceId,
+		label: 'Workspace',
+		description: 'The workspace the location is located in.',
+		valueComponent: TreeDynamicSelect,
+		value: undefined,
+		onChange: (changeOver: boolean, newData: DynamicSelectValue) => {}
+	};
+	const deleteItem: Item = {
+		id: deleteId,
+		label: 'Delete',
+		description: 'Deletes the geometry from the history.',
+		valueComponent: TreeDeleteButton,
+		value: undefined,
+		onChange: (changeOver: boolean, newData: undefined) => {
+			locationUpdateHandler.change(changeOver, {
+				[location.id]: { delete: true }
+			});
+		}
+	};
+
+	let children: Item[] = [dateItem, coordinateItem];
+	if (includeDelete) {
+		children.push(deleteItem);
+	}
 
 	return {
 		id: locationBaseId,
-		label: `Location ${index}`,
-		children: [coordinateItem, dateItem]
+		label: `Location ${index + 1}`,
+		children: children
 	};
 }
 
+/**
+ * Constructs a tree item for a location history.
+ * @param baseId The base ID of the parent tree item.
+ * @param locationHistory Location history to use.
+ * @param locationUpdateHandler The handler for updating each location.
+ * @param locationHistoryExtendHandler The handler for extending the location history.
+ * @param fieldErrors The field errors of the editable tree.
+ * @param workspaces The workspace options for the location.
+ * @returns The tree item.
+ */
 export function locationHistoryTreeItem(
 	baseId: string,
 	locationHistory: LocationHistory | null,
-	changeHandler: ChangeHandler<Record<string, LocationUpdateCommand>>,
-	fieldErrors: FieldErrors
+	locationUpdateHandler: ChangeHandler<Record<string, LocationUpdateCommand>>,
+	locationHistoryExtendHandler: ChangeHandler<string>,
+	fieldErrors: FieldErrors,
+	workspaces: { id: string; name: string }[]
 ): Item {
 	const locationHistoryBaseId = toTreeId(baseId, 'locations');
 
@@ -122,15 +161,18 @@ export function locationHistoryTreeItem(
 		return locationTreeItem(
 			locationHistoryBaseId,
 			location,
-			changeHandler,
+			true,
+			locationUpdateHandler,
 			fieldErrors,
-			index
+			index,
+			workspaces
 		);
 	});
 
 	const addLocationItem: Item = {
 		id: addLocationId,
 		label: 'Add',
+		description: 'Adds a new location to the history.',
 		valueComponent: TreeAddButton,
 		value: undefined,
 		/**
@@ -138,7 +180,7 @@ export function locationHistoryTreeItem(
 		 * button has been pressed, so no need for data.
 		 */
 		onChange: (changeOver: boolean, newData: undefined) => {
-			/** TODO: support adding location. */
+			locationHistoryExtendHandler.change(true, locationHistory.id);
 		}
 	};
 

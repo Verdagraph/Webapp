@@ -539,10 +539,9 @@ export type Geometry = QueryResult<
 	{ collectionName: 'geometries'; include: { linesCoordinates: true } }
 >;
 export type GeometryType = (typeof GeometryTypeEnumOptions)[number];
-export type GeometryHistory = QueryResult<
-	typeof workspaceSchema,
-	{ collectionName: 'geometryHistories'; include: { geometries: true } }
->;
+export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'> & {
+	geometries: Geometry[];
+};
 export type Location = Entity<typeof workspaceSchema, 'locations'>;
 export type LocationHistory = QueryResult<
 	typeof workspaceSchema,

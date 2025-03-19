@@ -209,7 +209,8 @@ export const GeometryUpdateCommandSchema = z.object({
 	ellipseLength: geometryEllipseLengthSchema.optional(),
 	ellipseWidth: geometryEllipseWidthSchema.optional(),
 	linesCoordinates: geometryLinesCoordinatesSchema.optional(),
-	linesClosed: geometryLinesClosedSchema.optional()
+	linesClosed: geometryLinesClosedSchema.optional(),
+	delete: z.boolean().optional()
 });
 export type GeometryUpdateCommand = z.infer<typeof GeometryUpdateCommandSchema>;
 
