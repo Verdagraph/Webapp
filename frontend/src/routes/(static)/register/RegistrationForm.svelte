@@ -4,7 +4,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userCreate } from '$data/users/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { userFields } from '@vdt-webapp/common';
 
 	type Props = {
@@ -17,7 +17,7 @@
 	let { succeeded = $bindable(false), registeredEmail = $bindable('') }: Props =
 		$props();
 
-	let formHandler = createMutationHandler(userCreate.mutation, {
+	let formHandler = createCommandHandler(userCreate.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}

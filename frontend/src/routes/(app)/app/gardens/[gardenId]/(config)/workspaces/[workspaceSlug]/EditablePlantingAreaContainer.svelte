@@ -9,7 +9,7 @@
 	import { useQuery } from '@triplit/svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { createChangeHandler } from '$state/changeHandler.svelte';
 
 	type Props = {
@@ -28,7 +28,7 @@
 
 	/** Handlers. */
 	/** Translation. */
-	const translateMutationHandler = createMutationHandler(locationHistoryUpdate);
+	const translateMutationHandler = createCommandHandler(locationHistoryUpdate);
 	const translateChangeHandler = createChangeHandler(
 		(newData: Position) => {
 			if (!plantingArea || !workspaceContext.id) {
@@ -50,7 +50,7 @@
 	);
 
 	/** Transformation. */
-	const transformMutationHandler = createMutationHandler(geometryUpdate);
+	const transformMutationHandler = createCommandHandler(geometryUpdate);
 	const transformChangeHandler = createChangeHandler(
 		(newData: GeometryUpdateCommand) => {
 			if (!plantingArea) {

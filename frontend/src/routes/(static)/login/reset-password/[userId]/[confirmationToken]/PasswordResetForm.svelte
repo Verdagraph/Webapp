@@ -5,7 +5,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userConfirmPasswordReset } from '$data/users/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { userFields } from '@vdt-webapp/common';
 
 	type Props = {
@@ -14,7 +14,7 @@
 	};
 	let { succeeded = $bindable(false) }: Props = $props();
 
-	let formHandler = createMutationHandler(userConfirmPasswordReset.mutation, {
+	let formHandler = createCommandHandler(userConfirmPasswordReset.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}

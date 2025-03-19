@@ -292,13 +292,14 @@ export async function locationHistoryExtend(id: string, date: Date) {
 		});
 	}
 
-	const latestLocation =
+	const nearestLocation =
+		historySelectDay(locationHistory.locations, date) ||
 		locationHistory.locations[locationHistory.locations.length - 1];
 	await triplit.insert('locations', {
 		gardenId: locationHistory.gardenId,
-		workspaceId: latestLocation.workspaceId,
-		x: latestLocation.x,
-		y: latestLocation.y,
+		workspaceId: nearestLocation.workspaceId,
+		x: nearestLocation.x,
+		y: nearestLocation.y,
 		date: date
 	});
 }

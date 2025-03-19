@@ -119,6 +119,7 @@
 						onclick={(e) => e.stopPropagation()}
 						onkeydown={(e) => e.stopPropagation()}
 						role="none"
+						class="w-1/2"
 					>
 						{#if Object.keys(fieldErrors).includes(item.id)}
 							<FormErrorsPopover errors={fieldErrors[item.id]} />

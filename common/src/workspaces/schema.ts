@@ -547,11 +547,8 @@ export type LocationHistory = QueryResult<
 	typeof workspaceSchema,
 	{ collectionName: 'locationHistories'; include: { locations: true } }
 >;
-export type PlantingArea = QueryResult<
-	typeof workspaceSchema,
-	{
-		collectionName: 'plantingAreas';
-		include: { geometry: true; locationHistory: true };
-	}
-> & { geometry: { linesCoordinates: Array<Coordinate> } | null | undefined };
+export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'> & {
+	geometry: Geometry | null | undefined;
+	locationHistory: LocationHistory | null | undefined;
+};
 export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>;

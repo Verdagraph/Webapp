@@ -4,7 +4,7 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestEmailConfirmation } from '$data/users/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { userFields } from '@vdt-webapp/common';
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -16,7 +16,7 @@
 	let { succeeded = $bindable(false), registeredEmail = $bindable('') }: Props =
 		$props();
 
-	let formHandler = createMutationHandler(userRequestEmailConfirmation.mutation, {
+	let formHandler = createCommandHandler(userRequestEmailConfirmation.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}

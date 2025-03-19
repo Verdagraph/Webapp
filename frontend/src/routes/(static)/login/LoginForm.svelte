@@ -5,10 +5,10 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$data/users/auth';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { userFields } from '@vdt-webapp/common';
 
-	let formHandler = createMutationHandler(userLogin.mutation, {
+	let formHandler = createCommandHandler(userLogin.mutation, {
 		onSuccess: () => {
 			goto('/app');
 		}

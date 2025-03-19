@@ -8,7 +8,7 @@
 	let { plantingAreaIds }: Props = $props();
 </script>
 
-<Tabs.Root class="bg-neutral-1 flex h-full flex-col">
+<Tabs.Root value="plantingAreas" class="bg-neutral-1 flex h-full flex-col">
 	<Tabs.List class="h-8 shadow-none">
 		<Tabs.Trigger
 			value="plantingAreas"

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {page} from '$app/state'
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import {
 		createEditableTree,
@@ -14,20 +15,20 @@
 		type Item
 	} from '$components/editableTree';
 	import triplit from '$data/triplit';
-	import { plantingAreasQuery } from '$data/workspaces/queries';
-	import { plantingAreaUpdate, geometryUpdate } from '$data/workspaces/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import { plantingAreasQuery, workspacesQuery } from '$data/workspaces/queries';
+	import { plantingAreaUpdate, geometryUpdate, locationUpdate, locationHistoryExtend } from '$data/workspaces/commands';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import {
 		type PlantingArea,
 		workspaceFields,
-		type PlantingAreaUpdateCommand,
+		type PlantingAreaUpdateCommand, LocationUpdateCommand,
 		type GeometryUpdateCommand,
 		type FieldErrors
 	} from '@vdt-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
-	import { type DateValue } from '@internationalized/date';
+	import { locationHistoryTreeItem } from '$components/editableTree/items/locations';
 
 	type Props = {
 		plantingAreaIds: string[];
@@ -47,34 +48,47 @@
 	let query = $derived(
 		useQuery(triplit, plantingAreasQuery.Vars({ ids: plantingAreaIds }))
 	);
+	let workspacesInGarden = $derived(useQuery(triplit, workspacesQuery.Vars({gardenId: page.params.gardenId})))
+	/** Options for workspaces available to locations. */
+	let workspacesOptions = $derived(workspacesInGarden.results?.map(result => {id: result.id, name: result.name}))
 
 	/** Handlers. */
 	/** PlantingArea change. */
-	const plantingAreaMutationHandler = createMutationHandler(
+	const plantingAreaUpdateCommandHandler = createCommandHandler(
 		plantingAreaUpdate.mutation
 	);
-	const plantingAreaChangeHandler = createChangeHandler(
+	const plantingAreaUpdateChangeHandler = createChangeHandler(
 		(newData: Record<string, PlantingAreaUpdateCommand>) => {
 			for (const plantingAreaId of Object.keys(newData)) {
 				console.log;
-				plantingAreaMutationHandler.execute(plantingAreaId, newData[plantingAreaId]);
+				plantingAreaUpdateCommandHandler.execute(plantingAreaId, newData[plantingAreaId]);
 			}
 		}
 	);
 
 	/** Geometry change. */
-	const geometryMutationHandler = createMutationHandler(geometryUpdate);
-	const geometryChangeHandler = createChangeHandler(
+	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
+	const geometryUpdateChangeHandler = createChangeHandler(
 		(newData: Record<string, GeometryUpdateCommand>) => {
 			for (const geometryId of Object.keys(newData)) {
-				geometryMutationHandler.execute(geometryId, newData);
+				geometryUpdateCommandHandler.execute(geometryId, newData[geometryId]);
 			}
 		}
 	);
 
 	/** Location change. */
+	const locationUpdateCommandHandler = createCommandHandler(locationUpdate)
+	const locationUpdateChangeHandler = createChangeHandler((newData: Record<string, LocationUpdateCommand>) => {
+		for (const locationId of Object.keys(newData)) {
+			locationUpdateCommandHandler.execute(locationId, newData[locationId])
+		}
+	})
 
-	//function locationTreeItem(baseId: string, )
+	const locationHistoryExtendCommandHandler = createCommandHandler(locationHistoryExtend)
+	const locationHistoryExtendChangeHandler = createChangeHandler((newData: string) => {
+		locationHistoryExtendCommandHandler.execute(newData, workspace.timelineSelection.focusUtc)
+	})
+
 
 	function plantingAreaTreeItem(plantingArea: PlantingArea): Item {
 		const baseId = toTreeBaseId('plantingArea', plantingArea.id);
@@ -83,13 +97,16 @@
 		const depthId = toTreeId(baseId, 'depth');
 
 		const geometryItem = geometryTreeItem(
-			baseId,
+			toTreeId(baseId, 'geometry'),
 			plantingArea.geometry,
 			false,
 			false,
-			geometryChangeHandler,
+			false,
+			geometryUpdateChangeHandler,
 			fieldErrors
 		);
+
+		const locationHistoryItem = locationHistoryTreeItem(toTreeId(baseId, 'locations'), plantingArea.locationHistory, locationUpdateChangeHandler, locationHistoryExtendChangeHandler, fieldErrors, workspacesOptions)
 
 		const nameItem: Item = {
 			id: nameId,
@@ -108,7 +125,7 @@
 				) {
 					return;
 				}
-				plantingAreaChangeHandler.change(changeOver, {
+				plantingAreaUpdateChangeHandler.change(changeOver, {
 					[plantingArea.id]: { name: newData }
 				});
 			}
@@ -132,7 +149,7 @@
 					return;
 				}
 
-				plantingAreaChangeHandler.change(changeOver, {
+				plantingAreaUpdateChangeHandler.change(changeOver, {
 					[plantingArea.id]: { description: newData }
 				});
 			}
@@ -155,7 +172,7 @@
 				) {
 					return;
 				}
-				plantingAreaChangeHandler.change(changeOver, {
+				plantingAreaUpdateChangeHandler.change(changeOver, {
 					[plantingArea.id]: { depth: newData }
 				});
 			}
@@ -166,22 +183,14 @@
 			label: plantingArea.name,
 			children: [
 				nameItem,
-
 				/** Details. */
 				{
 					id: toTreeId(baseId, 'details'),
 					label: 'Details',
 					children: [descriptionItem, depthItem]
 				},
-
-				/** Geometry. */
-				geometryItem
-
-				//{
-				//	id: 'arsoie',
-				//	label: 'Locations',
-				//	children: []
-				//}
+				geometryItem,
+				locationHistoryItem
 			]
 		};
 	}

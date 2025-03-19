@@ -140,7 +140,7 @@ export function locationTreeItem(
  */
 export function locationHistoryTreeItem(
 	baseId: string,
-	locationHistory: LocationHistory | null,
+	locationHistory: LocationHistory | null | undefined,
 	locationUpdateHandler: ChangeHandler<Record<string, LocationUpdateCommand>>,
 	locationHistoryExtendHandler: ChangeHandler<string>,
 	fieldErrors: FieldErrors,

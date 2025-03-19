@@ -43,7 +43,7 @@ import { getLocalTimeZone, type DateValue } from '@internationalized/date';
  */
 export function geometryTreeItem(
 	parentId: string,
-	geometry: Geometry | null,
+	geometry: Geometry | null | undefined,
 	includeDelete: boolean = false,
 	includeDate: boolean = true,
 	includeLinesClosed: boolean = false,

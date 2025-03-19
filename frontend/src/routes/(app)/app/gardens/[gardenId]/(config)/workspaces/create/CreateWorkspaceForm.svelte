@@ -7,10 +7,10 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { workspaceCreate } from '$data/workspaces/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { workspaceFields } from '@vdt-webapp/common';
 
-	let formHandler = createMutationHandler(workspaceCreate.mutation, {
+	let formHandler = createCommandHandler(workspaceCreate.mutation, {
 		onSuccess: (workspace) => {
 			const workspaceHref = `/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
 			goto(workspaceHref);
