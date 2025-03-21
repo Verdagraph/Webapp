@@ -18,7 +18,7 @@ import {
 	type Location,
 	type LocationHistory
 } from '@vdt-webapp/common';
-import { getLocalTimeZone, type DateValue } from '@internationalized/date';
+import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/date';
 
 /**
  * Constructs an editable tree item for a geometry.
@@ -61,7 +61,7 @@ export function locationTreeItem(
 		label: 'Date',
 		description: workspaceFields.locationDateSchema.description,
 		valueComponent: TreeDate,
-		value: location.date,
+		value: fromDate(location.date, getLocalTimeZone()),
 		onChange: (changeOver: boolean, newData: DateValue) => {
 			if (
 				!fieldValid(dateId, newData, workspaceFields.locationDateSchema, fieldErrors)
@@ -100,7 +100,7 @@ export function locationTreeItem(
 		label: 'Workspace',
 		description: 'The workspace the location is located in.',
 		valueComponent: TreeDynamicSelect,
-		value: undefined,
+		value: location.workspaceId,
 		onChange: (changeOver: boolean, newData: DynamicSelectValue) => {}
 	};
 	const deleteItem: Item = {

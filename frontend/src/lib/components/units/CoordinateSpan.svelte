@@ -37,7 +37,7 @@
 				X
 			</span>
 			<span
-				class="@xs:border-b @xs:rounded-tr-none w-full rounded-l-none rounded-r-none rounded-tr-md border-b-0"
+				class="@xs:border-b @xs:rounded-tr-none border-neutral-7 bg-neutral-2 flex w-full items-center justify-center rounded-l-none rounded-r-none rounded-tr-md border border-b-0"
 				>{x}</span
 			>
 		</div>
@@ -47,7 +47,10 @@
 			>
 				Y
 			</span>
-			<span class="@xs:border-b rounded-l-none rounded-r-none border-b-0">{y}</span>
+			<span
+				class="@xs:border-b border-neutral-7 bg-neutral-2 flex w-full items-center justify-center rounded-l-none rounded-r-none border border-b-0"
+				>{y}</span
+			>
 		</div>
 		<span
 			class="border-x-neutral-7 @xs:border-x-neutral-5 bg-neutral-2 border-neutral-7 @xs:h-10 @xs:w-8 @xs:border-b @xs:border-l-0 flex h-8 w-full min-w-10 items-center justify-center border-x border-y border-b-0 px-3 {unitAwareValues.unitSystem ===

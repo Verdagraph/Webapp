@@ -20,5 +20,5 @@
 		}}
 	/>
 {:else}
-	<DefaultStaticValue {value} />
+	<DatePicker {value} disabled={true} />
 {/if}

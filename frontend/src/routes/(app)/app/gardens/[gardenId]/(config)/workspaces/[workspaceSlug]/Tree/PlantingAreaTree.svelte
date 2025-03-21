@@ -29,7 +29,7 @@
 		type PlantingArea,
 		workspaceFields,
 		type PlantingAreaUpdateCommand,
-		LocationUpdateCommand,
+		type LocationUpdateCommand,
 		type GeometryUpdateCommand,
 		type FieldErrors
 	} from '@vdt-webapp/common';
@@ -86,6 +86,7 @@
 	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
 	const geometryUpdateChangeHandler = createChangeHandler(
 		(newData: Record<string, GeometryUpdateCommand>) => {
+			console.log(newData);
 			for (const geometryId of Object.keys(newData)) {
 				geometryUpdateCommandHandler.execute(geometryId, newData[geometryId]);
 			}
@@ -101,7 +102,6 @@
 			}
 		}
 	);
-
 	const locationHistoryExtendCommandHandler =
 		createCommandHandler(locationHistoryExtend);
 	const locationHistoryExtendChangeHandler = createChangeHandler((newData: string) => {
@@ -128,7 +128,7 @@
 		);
 
 		const locationHistoryItem = locationHistoryTreeItem(
-			toTreeId(baseId, 'locations'),
+			baseId,
 			plantingArea.locationHistory,
 			locationUpdateChangeHandler,
 			locationHistoryExtendChangeHandler,

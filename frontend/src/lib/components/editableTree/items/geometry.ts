@@ -3,7 +3,7 @@ import {
 	TreeDistance,
 	TreeGeometryType,
 	TreeDate,
-	TreeDeletableCoordinate,
+	TreeCoordinate,
 	TreeAddButton,
 	TreeDeleteButton,
 	TreeCheckbox,
@@ -21,7 +21,7 @@ import {
 	type FieldErrors,
 	type Position
 } from '@vdt-webapp/common';
-import { getLocalTimeZone, type DateValue } from '@internationalized/date';
+import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/date';
 
 /**
  * Constructs an editable tree item for a geometry.
@@ -71,7 +71,7 @@ export function geometryTreeItem(
 		label: 'Date',
 		description: workspaceFields.geometryDateSchema.description,
 		valueComponent: TreeDate,
-		value: geometry.date,
+		value: fromDate(geometry.date, getLocalTimeZone()),
 		onChange: (changeOver: boolean, newData: DateValue) => {
 			if (
 				!fieldValid(dateId, newData, workspaceFields.geometryDateSchema, fieldErrors)
@@ -329,38 +329,61 @@ export function geometryTreeItem(
 			const coordinateItems: Item[] = geometry.linesCoordinates.map(
 				(coordinate, index) => {
 					const coordinateId = geometryBaseId + `linesCoordinate${index}`;
+					const positionId = coordinateId + '/position';
+					const deleteId = coordinateId + `/delete`;
 
-					return {
-						id: coordinateId,
-						label: `Coordinate ${index}`,
+					const positionItem: Item = {
+						id: positionId,
+						label: 'Position',
 						description: workspaceFields.coordinateSchema.description,
-						valueComponent: TreeDeletableCoordinate,
+						valueComponent: TreeCoordinate,
 						value: coordinate,
-						onChange: (changeOver: boolean, newData: Position | null) => {
+						onChange: (changeOver: boolean, newData: Position) => {
 							/** Remove the coordinate. */
 							const newCoordinates: Position[] = geometry.linesCoordinates.filter(
 								(existingCoordinate) => existingCoordinate.id != coordinate.id
 							);
 
-							if (newData) {
-								if (
-									!fieldValid(
-										coordinateId,
-										newData,
-										workspaceFields.coordinateSchema,
-										fieldErrors
-									)
-								) {
-									return;
-								}
-
-								newCoordinates.push(newData);
+							if (
+								!fieldValid(
+									positionId,
+									newData,
+									workspaceFields.coordinateSchema,
+									fieldErrors
+								)
+							) {
+								return;
 							}
+
+							newCoordinates.push(newData);
 
 							geometryUpdateHandler.change(changeOver, {
 								[geometry.id]: { linesCoordinates: newCoordinates }
 							});
 						}
+					};
+
+					const deleteItem: Item = {
+						id: deleteId,
+						label: 'Delete',
+						description: 'Deletes the coordinate.',
+						valueComponent: TreeDeleteButton,
+						value: undefined,
+						onChange: (changeOver: boolean, newData: undefined) => {
+							/** Remove the coordinate. */
+							const newCoordinates: Position[] = geometry.linesCoordinates.filter(
+								(existingCoordinate) => existingCoordinate.id != coordinate.id
+							);
+
+							geometryUpdateHandler.change(changeOver, {
+								[geometry.id]: { linesCoordinates: newCoordinates }
+							});
+						}
+					};
+					return {
+						id: coordinateId,
+						label: `Coordinate ${index}`,
+						children: [positionItem, deleteItem]
 					};
 				}
 			);
@@ -375,9 +398,12 @@ export function geometryTreeItem(
 				 * button has been pressed, so no need for data.
 				 */
 				onChange: (changeOver: boolean, newData: undefined) => {
-					const newCoordinates: Position[] = geometry.linesCoordinates;
-					newCoordinates.push(newCoordinates[newCoordinates.length - 1]);
-					geometryUpdateHandler.change(changeOver, {
+					const newCoordinates: Position[] = [...geometry.linesCoordinates];
+					const newCoordinate = newCoordinates[newCoordinates.length - 1];
+					newCoordinate.x += 0.1;
+					newCoordinate.y += 0.1;
+					newCoordinates.push(newCoordinate);
+					geometryUpdateHandler.change(false, {
 						[geometry.id]: { linesCoordinates: newCoordinates }
 					});
 				}

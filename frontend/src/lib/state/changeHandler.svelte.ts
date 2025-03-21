@@ -173,7 +173,7 @@ export function createChangeHandler<TData extends unknown>(
 			 * meaning this is the last tick in the change.
 			 * End the interval callback.
 			 */
-		} else if (changeOver && intervalId) {
+		} else if (changeOver) {
 			endChange(newData);
 		}
 	}

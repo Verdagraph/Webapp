@@ -2,7 +2,6 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { type EditableAttributeProps } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
-	import { getOninput } from './utils';
 	import iconIds from '$lib/assets/icons';
 	import Icon from '@iconify/svelte';
 
@@ -12,7 +11,7 @@
 
 {#if editing}
 	<Button
-		class="select-none"
+		class="w-full select-none"
 		onclick={() => {
 			onChange(true, undefined);
 		}}
@@ -20,5 +19,7 @@
 		<Icon icon={iconIds.addIcon} width="1.5rem" class="text-neutral-11 ml-4" />
 	</Button>
 {:else}
-	<DefaultStaticValue {value} />
+	<Button class="w-full select-none" disabled={true}>
+		<Icon icon={iconIds.addIcon} width="1.5rem" class="text-neutral-11 ml-4" />
+	</Button>
 {/if}

@@ -12,13 +12,18 @@
 
 {#if editing}
 	<Button
-		class="select-none"
+		class="bg-destructive-6 text-destructive-12 w-full select-none"
 		onclick={() => {
 			onChange(true, undefined);
 		}}
 	>
-		<Icon icon={iconIds.addIcon} width="1.5rem" class="text-neutral-11 ml-4" />
+		<Icon icon={iconIds.deleteIcon} width="1.5rem" class="text-neutral-11 ml-4" />
 	</Button>
 {:else}
-	<DefaultStaticValue {value} />
+	<Button
+		class="bg-destructive-6 text-destructive-12 w-full select-none"
+		disabled={true}
+	>
+		<Icon icon={iconIds.deleteIcon} width="1.5rem" class="text-neutral-11 ml-4" />
+	</Button>
 {/if}

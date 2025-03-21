@@ -2,7 +2,6 @@ import AddButton from './AddButton.svelte';
 import Checkbox from './Checkbox.svelte';
 import Coordinate from './Coordinate.svelte';
 import Date from './Date.svelte';
-import DeletableCoordinate from './DeletableCoordinate.svelte';
 import DeleteButton from './DeleteButton.svelte';
 import Distance from './Distance.svelte';
 import GeometryType from './GeometryType.svelte';
@@ -16,7 +15,6 @@ export {
 	Checkbox as TreeCheckbox,
 	Coordinate as TreeCoordinate,
 	Date as TreeDate,
-	DeletableCoordinate as TreeDeletableCoordinate,
 	DeleteButton as TreeDeleteButton,
 	GeometryType as TreeGeometryType,
 	String as TreeString,
