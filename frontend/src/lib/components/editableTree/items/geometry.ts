@@ -399,9 +399,10 @@ export function geometryTreeItem(
 				 */
 				onChange: (changeOver: boolean, newData: undefined) => {
 					const newCoordinates: Position[] = [...geometry.linesCoordinates];
-					const newCoordinate = newCoordinates[newCoordinates.length - 1];
-					newCoordinate.x += 0.1;
-					newCoordinate.y += 0.1;
+					const newCoordinate = {
+						x: newCoordinates[newCoordinates.length - 1].x + 0.1,
+						y: newCoordinates[newCoordinates.length - 1].y + 0.1
+					};
 					newCoordinates.push(newCoordinate);
 					geometryUpdateHandler.change(false, {
 						[geometry.id]: { linesCoordinates: newCoordinates }

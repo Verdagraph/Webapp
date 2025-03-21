@@ -95,28 +95,47 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 		 * because the points are connected via a relation.
 		 * The new geometry may have the same number of points,
 		 * or it may have more or less.
-		 * The approach taken is to simply delete all associated
-		 * coordinates and add new ones to reflect the new geometry.
-		 * This is only necessary if the new geometry has specified
-		 * a new list of coordinates.
+		 * The approach taken is to calculate the difference in the number
+		 * of coordinates between the new list and the old, delete any
+		 * coordinates that are unused, modify the rest, then add any
+		 * new coordinates that need to be added.
 		 */
-		const coordinateIds: string[] = [];
+		let existingCoordinateIds = [...geometry.linesCoordinateIds];
 		if (data.linesCoordinates) {
-			/** Delete existing coordinates. */
-			if (geometry.linesCoordinateIds) {
-				for (const coordinateId of geometry.linesCoordinateIds) {
-					await transaction.delete('coordinates', coordinateId);
-				}
+			const newCoordinatesCount = data.linesCoordinates.length;
+
+			/** Update existing coordinates. */
+			const minLength = Math.min(existingCoordinateIds.length, newCoordinatesCount);
+			for (let i = 0; i < minLength; i++) {
+				const coordinateId = existingCoordinateIds[i];
+				await transaction.update('coordinates', coordinateId, (coordinate) => {
+					if (data.linesCoordinates) {
+						coordinate.x = data.linesCoordinates[i].x;
+						coordinate.y = data.linesCoordinates[i].y;
+					}
+				});
 			}
 
-			/** Add new coordinates. */
-			for (const point of data.linesCoordinates) {
-				const coordinate = await transaction.insert('coordinates', {
-					gardenId: geometry.gardenId,
-					x: point.x,
-					y: point.y
-				});
-				coordinateIds.push(coordinate.id);
+			/** Delete excess coordinates if new list is shorter. */
+			if (existingCoordinateIds.length > newCoordinatesCount) {
+				const coordinatesToDelete = existingCoordinateIds.slice(newCoordinatesCount);
+				for (const coordinateId of coordinatesToDelete) {
+					await transaction.delete('coordinates', coordinateId);
+				}
+				existingCoordinateIds = existingCoordinateIds.slice(0, newCoordinatesCount);
+			}
+
+			/** Add new coordinates if new list is longer. */
+			if (newCoordinatesCount > existingCoordinateIds.length) {
+				const newPoints = data.linesCoordinates.slice(existingCoordinateIds.length);
+				for (const point of newPoints) {
+					const coordinate = await transaction.insert('coordinates', {
+						gardenId: geometry.gardenId,
+						x: point.x,
+						y: point.y
+					});
+					existingCoordinateIds.push(coordinate.id);
+				}
 			}
 		}
 
@@ -152,7 +171,7 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 				geometry.ellipseWidth = data.ellipseWidth;
 			}
 			if (data.linesCoordinates) {
-				geometry.linesCoordinateIds = new Set(coordinateIds);
+				geometry.linesCoordinateIds = new Set(existingCoordinateIds);
 			}
 			if (data.linesClosed) {
 				geometry.linesClosed = data.linesClosed;
