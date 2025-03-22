@@ -100,8 +100,17 @@ export function locationTreeItem(
 		label: 'Workspace',
 		description: 'The workspace the location is located in.',
 		valueComponent: TreeDynamicSelect,
-		value: location.workspaceId,
-		onChange: (changeOver: boolean, newData: DynamicSelectValue) => {}
+		value: {
+			id: location.workspaceId,
+			options: workspaces.map((workspace) => {
+				return { id: workspace.id, label: workspace.name };
+			})
+		},
+		onChange: (changeOver: boolean, newData: DynamicSelectValue) => {
+			locationUpdateHandler.change(true, {
+				[location.id]: { workspaceId: newData.id }
+			});
+		}
 	};
 	const deleteItem: Item = {
 		id: deleteId,
@@ -116,7 +125,7 @@ export function locationTreeItem(
 		}
 	};
 
-	let children: Item[] = [dateItem, coordinateItem];
+	let children: Item[] = [dateItem, coordinateItem, workspaceItem];
 	if (includeDelete) {
 		children.push(deleteItem);
 	}

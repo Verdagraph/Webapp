@@ -163,6 +163,7 @@ export type LocationHistoryUpdateCommand = z.infer<
 export const LocationUpdateCommandSchema = z.object({
 	coordinate: coordinateSchema.optional(),
 	date: locationDateSchema.optional(),
+	workspaceId: z.string().optional(),
 	delete: z.boolean().optional()
 });
 export type LocationUpdateCommand = z.infer<typeof LocationUpdateCommandSchema>;

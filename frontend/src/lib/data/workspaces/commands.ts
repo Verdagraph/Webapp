@@ -250,6 +250,9 @@ export async function locationUpdate(id: string, data: LocationUpdateCommand) {
 		if (data.date) {
 			location.date = data.date;
 		}
+		if (data.workspaceId) {
+			location.workspaceId = data.workspaceId;
+		}
 	});
 }
 
