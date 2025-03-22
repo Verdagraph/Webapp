@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { type EditableAttributeProps } from './types';
-	import DefaultStaticValue from './DefaultStaticValue.svelte';
-	import { getOninput } from './utils';
 	import iconIds from '$lib/assets/icons';
 	import Icon from '@iconify/svelte';
 

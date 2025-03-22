@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { Input } from '$components/ui/input/index.js';
 	import { type EditableAttributeProps } from './types';
-	import DefaultStaticValue from './DefaultStaticValue.svelte';
-	import { getOninput } from './utils';
 	import { type DateValue } from '@internationalized/date';
 	import DatePicker from '$components/ui/datepicker';
 

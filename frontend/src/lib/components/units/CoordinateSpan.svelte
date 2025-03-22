@@ -37,7 +37,7 @@
 				X
 			</span>
 			<span
-				class="@xs:border-b @xs:rounded-tr-none border-neutral-7 bg-neutral-2 flex w-full items-center justify-center rounded-l-none rounded-r-none rounded-tr-md border border-b-0"
+				class="@xs:border-b @xs:rounded-tr-none border-neutral-7 bg-neutral-1 flex w-full items-center justify-center rounded-l-none rounded-r-none rounded-tr-md border border-b-0"
 				>{x}</span
 			>
 		</div>
@@ -48,7 +48,7 @@
 				Y
 			</span>
 			<span
-				class="@xs:border-b border-neutral-7 bg-neutral-2 flex w-full items-center justify-center rounded-l-none rounded-r-none border border-b-0"
+				class="@xs:border-b border-neutral-7 bg-neutral-1 flex w-full items-center justify-center rounded-l-none rounded-r-none border border-b-0"
 				>{y}</span
 			>
 		</div>

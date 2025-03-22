@@ -2,13 +2,17 @@
 	import { Input } from '$components/ui/input/index.js';
 	import { type EditableAttributeProps } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
-	import { getOninput } from './utils';
+	import { getOninputString } from './utils';
 
 	let { value, editing, onChange, errors }: EditableAttributeProps<string> = $props();
 </script>
 
 {#if editing}
-	<Input {value} class="select-none" oninput={getOninput<HTMLInputElement>(onChange)} />
+	<Input
+		{value}
+		class="select-none"
+		oninput={getOninputString<HTMLInputElement>(onChange)}
+	/>
 {:else}
 	<DefaultStaticValue {value} />
 {/if}

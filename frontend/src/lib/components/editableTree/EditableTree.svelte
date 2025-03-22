@@ -119,11 +119,13 @@
 						onclick={(e) => e.stopPropagation()}
 						onkeydown={(e) => e.stopPropagation()}
 						role="none"
-						class="w-1/2"
+						class="flex w-1/2 items-center"
 					>
-						{#if Object.keys(fieldErrors).includes(item.id)}
-							<FormErrorsPopover errors={fieldErrors[item.id]} />
-						{/if}
+						<div class="mr-1 flex items-center">
+							{#if Object.keys(fieldErrors).includes(item.id)}
+								<FormErrorsPopover errors={fieldErrors[item.id]} />
+							{/if}
+						</div>
 						<item.item.valueComponent
 							value={item.item.value}
 							{editing}

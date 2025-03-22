@@ -2,9 +2,6 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { type EditableAttributeProps, type DynamicSelectValue } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
-	import { type GeometryType } from '@vdt-webapp/common';
-	import iconIds from '$lib/assets/icons';
-	import Icon from '@iconify/svelte';
 
 	let { value, editing, onChange, errors }: EditableAttributeProps<DynamicSelectValue> =
 		$props();
@@ -46,5 +43,5 @@
 		</Select.Content>
 	</Select.Root>
 {:else}
-	<DefaultStaticValue {value} />
+	<DefaultStaticValue value={selectTrigger.label} />
 {/if}

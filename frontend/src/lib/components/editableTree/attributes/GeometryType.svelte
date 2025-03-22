@@ -64,5 +64,5 @@
 		</Select.Content>
 	</Select.Root>
 {:else}
-	<DefaultStaticValue {value} />
+	<DefaultStaticValue value={geometryTypeSelectTrigger.label} />
 {/if}

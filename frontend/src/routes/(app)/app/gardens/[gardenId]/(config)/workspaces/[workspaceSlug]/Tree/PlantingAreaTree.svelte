@@ -73,7 +73,6 @@
 	const plantingAreaUpdateChangeHandler = createChangeHandler(
 		(newData: Record<string, PlantingAreaUpdateCommand>) => {
 			for (const plantingAreaId of Object.keys(newData)) {
-				console.log;
 				plantingAreaUpdateCommandHandler.execute(
 					plantingAreaId,
 					newData[plantingAreaId]
@@ -86,7 +85,6 @@
 	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
 	const geometryUpdateChangeHandler = createChangeHandler(
 		(newData: Record<string, GeometryUpdateCommand>) => {
-			console.log(newData);
 			for (const geometryId of Object.keys(newData)) {
 				geometryUpdateCommandHandler.execute(geometryId, newData[geometryId]);
 			}

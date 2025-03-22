@@ -2,18 +2,16 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { type EditableAttributeProps } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
-	import { getOninput } from './utils';
+	import { getOninputString } from './utils';
 
 	let { value, editing, onChange, errors }: EditableAttributeProps<string> = $props();
-
-	console.log(value);
 </script>
 
 {#if editing}
 	<Textarea
 		{value}
 		class="select-none"
-		oninput={getOninput<HTMLTextAreaElement>(onChange)}
+		oninput={getOninputString<HTMLTextAreaElement>(onChange)}
 	/>
 {:else}
 	<DefaultStaticValue {value} />

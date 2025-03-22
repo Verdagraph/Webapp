@@ -76,7 +76,6 @@ export async function geometryCreate(
  * @param newGeometry The attributes to update.
  */
 export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
-	console.log('?');
 	const geometry = await triplit.fetchOne(triplit.query('geometries').Id(id));
 	if (!geometry) {
 		throw new AppError('Geometry does not exist.', {
