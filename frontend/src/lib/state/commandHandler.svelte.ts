@@ -108,8 +108,7 @@ export function createCommandHandler<TParams extends any[], TResult = unknown>(
 	};
 }
 export default createCommandHandler;
-export type CommandHandler = ReturnType<typeof createCommandHandler>;
-
+export type CommandHandler<T extends (...args: any[]) => Promise<any>> = ReturnType<typeof createCommandHandler<Parameters<T>, Awaited<ReturnType<T>>>>
 /**
  * Converts any type of error which may be raised by the async function
  * into the normalized AppErrors format.

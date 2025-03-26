@@ -23,7 +23,6 @@
 		locationHistoryExtend
 	} from '$data/workspaces/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { createChangeHandler } from '$state/changeHandler.svelte';
 	import { useQuery } from '@triplit/svelte';
 	import {
 		type PlantingArea,
@@ -83,31 +82,10 @@
 
 	/** Geometry change. */
 	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
-	const geometryUpdateChangeHandler = createChangeHandler(
-		(newData: Record<string, GeometryUpdateCommand>) => {
-			for (const geometryId of Object.keys(newData)) {
-				geometryUpdateCommandHandler.execute(geometryId, newData[geometryId]);
-			}
-		}
-	);
 
 	/** Location change. */
 	const locationUpdateCommandHandler = createCommandHandler(locationUpdate);
-	const locationUpdateChangeHandler = createChangeHandler(
-		(newData: Record<string, LocationUpdateCommand>) => {
-			for (const locationId of Object.keys(newData)) {
-				locationUpdateCommandHandler.execute(locationId, newData[locationId]);
-			}
-		}
-	);
-	const locationHistoryExtendCommandHandler =
-		createCommandHandler(locationHistoryExtend);
-	const locationHistoryExtendChangeHandler = createChangeHandler((newData: string) => {
-		locationHistoryExtendCommandHandler.execute(
-			newData,
-			workspace.timelineSelection.focusUtc
-		);
-	});
+	const locationHistoryExtendCommandHandler = createCommandHandler(locationHistoryExtend);
 
 	function plantingAreaTreeItem(plantingArea: PlantingArea): Item {
 		const baseId = toTreeBaseId('plantingArea', plantingArea.id);
@@ -121,15 +99,22 @@
 			false,
 			false,
 			false,
-			geometryUpdateChangeHandler,
+			(data: GeometryUpdateCommand) => {
+				if (!plantingArea.geometry) {
+					return
+				}
+				geometryUpdateCommandHandler.execute(plantingArea.geometry?.id, data)
+			},
 			fieldErrors
 		);
 
 		const locationHistoryItem = locationHistoryTreeItem(
 			baseId,
 			plantingArea.locationHistory,
-			locationUpdateChangeHandler,
-			locationHistoryExtendChangeHandler,
+			locationUpdateCommandHandler,
+			(id: string) => {
+				locationHistoryExtendCommandHandler.execute(id, workspace.timelineSelection.focusUtc)
+			},
 			fieldErrors,
 			workspacesOptions
 		);

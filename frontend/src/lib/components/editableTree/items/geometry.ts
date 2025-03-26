@@ -11,7 +11,6 @@ import {
 	fieldValid,
 	type Item
 } from '$components/editableTree';
-import { type ChangeHandler } from '$state/changeHandler.svelte';
 import {
 	type Geometry,
 	type GeometryHistory,
@@ -35,9 +34,7 @@ import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/d
  * @param includeLinesClosed If false, the linesClosed attribute
  * won't be included. Used for situations where the geometry must
  * be closed or unclosed and this isn't editable by the user.
- * @param geometryUpdateHandler The change handler for the tree's geomety.
- * The key of the record are IDs of geometries, and the values are
- * the updated fields.
+ * @param onChange The change handler for the tree's geomety.
  * @param fieldErrors The field errors of the tree, updated upon failed validation.
  * @returns The tree items that represent the geometry.
  */
@@ -47,7 +44,7 @@ export function geometryTreeItem(
 	includeDelete: boolean = false,
 	includeDate: boolean = true,
 	includeLinesClosed: boolean = false,
-	geometryUpdateHandler: ChangeHandler<Record<string, GeometryUpdateCommand>>,
+	onChange: (data: GeometryUpdateCommand) => void,
 	fieldErrors: FieldErrors,
 	index: number = 0
 ): Item {
@@ -78,9 +75,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			geometryUpdateHandler.change(changeOver, {
-				[geometry.id]: { date: newData.toDate(getLocalTimeZone()) }
-			});
+			onChange({ date: newData.toDate(getLocalTimeZone()) })
 		}
 	};
 	const typeItem: Item = {
@@ -95,9 +90,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			geometryUpdateHandler.change(changeOver, {
-				[geometry.id]: { type: newData }
-			});
+			onChange({type: newData})
 		}
 	};
 	const scaleFactorItem: Item = {
@@ -117,9 +110,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			geometryUpdateHandler.change(changeOver, {
-				[geometry.id]: { scaleFactor: newData }
-			});
+			onChange({scaleFactor: newData})
 		}
 	};
 	const rotationItem: Item = {
@@ -139,9 +130,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			geometryUpdateHandler.change(changeOver, {
-				[geometry.id]: { rotation: newData }
-			});
+			onChange({rotation: newData})
 		}
 	};
 	const deleteItem: Item = {
@@ -151,9 +140,7 @@ export function geometryTreeItem(
 		valueComponent: TreeDeleteButton,
 		value: undefined,
 		onChange: (changeOver: boolean, newData: undefined) => {
-			geometryUpdateHandler.change(true, {
-				[geometry.id]: { delete: true }
-			});
+			onChange({delete: true})
 		}
 	};
 
@@ -181,9 +168,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						geometryUpdateHandler.change(changeOver, {
-							[geometry.id]: { rectangleLength: newData }
-						});
+						onChange({rectangleLength: newData})
 					}
 				},
 				{
@@ -203,9 +188,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						geometryUpdateHandler.change(changeOver, {
-							[geometry.id]: { rectangleWidth: newData }
-						});
+						onChange({ rectangleWidth: newData })
 					}
 				}
 			];
@@ -233,9 +216,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						geometryUpdateHandler.change(changeOver, {
-							[geometry.id]: { polygonNumSides: newData }
-						});
+						onChange({ polygonNumSides: newData })
 					}
 				},
 				{
@@ -255,9 +236,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						geometryUpdateHandler.change(changeOver, {
-							[geometry.id]: { polygonRadius: newData }
-						});
+						onChange({ polygonRadius: newData })
 					}
 				}
 			];
@@ -285,9 +264,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						geometryUpdateHandler.change(changeOver, {
-							[geometry.id]: { ellipseLength: newData }
-						});
+						onChange({ ellipseLength: newData })
 					}
 				},
 				{
@@ -307,9 +284,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						geometryUpdateHandler.change(changeOver, {
-							[geometry.id]: { ellipseWidth: newData }
-						});
+						onChange({ ellipseWidth: newData })
 					}
 				}
 			];
@@ -357,9 +332,7 @@ export function geometryTreeItem(
 
 							newCoordinates.push(newData);
 
-							geometryUpdateHandler.change(changeOver, {
-								[geometry.id]: { linesCoordinates: newCoordinates }
-							});
+							onChange({ linesCoordinates: newCoordinates })
 						}
 					};
 
@@ -375,9 +348,7 @@ export function geometryTreeItem(
 								(existingCoordinate) => existingCoordinate.id != coordinate.id
 							);
 
-							geometryUpdateHandler.change(changeOver, {
-								[geometry.id]: { linesCoordinates: newCoordinates }
-							});
+							onChange({ linesCoordinates: newCoordinates })
 						}
 					};
 					return {
@@ -404,9 +375,7 @@ export function geometryTreeItem(
 						y: newCoordinates[newCoordinates.length - 1].y + 0.1
 					};
 					newCoordinates.push(newCoordinate);
-					geometryUpdateHandler.change(false, {
-						[geometry.id]: { linesCoordinates: newCoordinates }
-					});
+					onChange({ linesCoordinates: newCoordinates })
 				}
 			};
 
@@ -427,9 +396,7 @@ export function geometryTreeItem(
 					) {
 						return;
 					}
-					geometryUpdateHandler.change(changeOver, {
-						[geometry.id]: { linesClosed: newData }
-					});
+					onChange({ linesClosed: newData })
 				}
 			};
 
@@ -480,8 +447,8 @@ export function geometryTreeItem(
  * @param includeLinesClosed If false, the linesClosed attribute
  * won't be included. Used for situations where the geometry must
  * be closed or unclosed and this isn't editable by the user.
- * @param geometryUpdateHandler The handler for updating each geometry.
- * @param geometryHistoryExtendHandler The handler for extending the geometry history.
+ * @param onGeometryUpdate The handler for updating each geometry.
+ * @param onGeometryExtend The handler for extending the geometry history.
  * @param fieldErrors The field errors of the editable tree.
  * @returns The tree item.
  */
@@ -489,8 +456,8 @@ export function geometryHistoryTreeItem(
 	baseId: string,
 	geometryHistory: GeometryHistory | null,
 	includeLinesClosed: boolean = false,
-	geometryUpdateHandler: ChangeHandler<Record<string, GeometryUpdateCommand>>,
-	geometryHistoryExtendHandler: ChangeHandler<string>,
+	onGeometryUpdate: (data: GeometryUpdateCommand) => void,
+	onGeometryHistoryExtend: () => void,
 	fieldErrors: FieldErrors
 ): Item {
 	const geometryHistoryBaseId = toTreeId(baseId, 'geometries');
@@ -511,7 +478,7 @@ export function geometryHistoryTreeItem(
 			true,
 			true,
 			includeLinesClosed,
-			geometryUpdateHandler,
+			onGeometryUpdate,
 			fieldErrors,
 			index
 		);
@@ -528,7 +495,7 @@ export function geometryHistoryTreeItem(
 		 * button has been pressed, so no need for data.
 		 */
 		onChange: (changeOver: boolean, newData: undefined) => {
-			geometryHistoryExtendHandler.change(true, geometryHistory.id);
+			onGeometryHistoryExtend()
 		}
 	};
 

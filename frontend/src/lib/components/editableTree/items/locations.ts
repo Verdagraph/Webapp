@@ -1,3 +1,12 @@
+import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/date';
+import {
+	workspaceFields,
+	type LocationUpdateCommand,
+	type FieldErrors,
+	type Position,
+	type Location,
+	type LocationHistory
+} from '@vdt-webapp/common';
 import {
 	TreeDate,
 	TreeCoordinate,
@@ -9,25 +18,14 @@ import {
 	TreeAddButton,
 	type DynamicSelectValue
 } from '$components/editableTree';
-import { type ChangeHandler } from '$state/changeHandler.svelte';
-import {
-	workspaceFields,
-	type LocationUpdateCommand,
-	type FieldErrors,
-	type Position,
-	type Location,
-	type LocationHistory
-} from '@vdt-webapp/common';
-import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/date';
+import { type LocationUpdateHandler, type LocationHistoryExtendHandler } from '$data/workspaces/commands';
 
 /**
  * Constructs an editable tree item for a geometry.
  * @param parentId The base ID of the parent tree item.
  * @param location The location to use.
  * @param includeDelete Whether to include the option to delete the location.
- * @param locationUpdateHandler The change handler for the tree's locations.
- * The key of the record are IDs of locations, and the values are
- * the updated fields.
+ * @param onChange The change handler for the tree's locations.
  * @param fieldErrors The field errors of the tree, updated upon failed validation.
  * @param index The index of the location in the location history, if applicable.
  * @param workspaces The workspace options for the location.
@@ -37,7 +35,7 @@ export function locationTreeItem(
 	parentId: string,
 	location: Location | null,
 	includeDelete: boolean = false,
-	locationUpdateHandler: ChangeHandler<Record<string, LocationUpdateCommand>>,
+	updateHandler: LocationUpdateHandler,
 	fieldErrors: FieldErrors,
 	index: number = 0,
 	workspaces: { id: string; name: string }[]
@@ -68,9 +66,7 @@ export function locationTreeItem(
 			) {
 				return;
 			}
-			locationUpdateHandler.change(changeOver, {
-				[location.id]: { date: newData.toDate(getLocalTimeZone()) }
-			});
+			updateHandler.execute(location.id, { date: newData.toDate(getLocalTimeZone()) })
 		}
 	};
 	const coordinateItem: Item = {
@@ -90,9 +86,7 @@ export function locationTreeItem(
 			) {
 				return;
 			}
-			locationUpdateHandler.change(changeOver, {
-				[location.id]: { coordinate: newData }
-			});
+			updateHandler.execute(location.id, { coordinate: newData })
 		}
 	};
 	const workspaceItem: Item = {
@@ -107,9 +101,7 @@ export function locationTreeItem(
 			})
 		},
 		onChange: (changeOver: boolean, newData: DynamicSelectValue) => {
-			locationUpdateHandler.change(true, {
-				[location.id]: { workspaceId: newData.id }
-			});
+			updateHandler.execute(location.id, { workspaceId: newData.id })
 		}
 	};
 	const deleteItem: Item = {
@@ -119,9 +111,7 @@ export function locationTreeItem(
 		valueComponent: TreeDeleteButton,
 		value: undefined,
 		onChange: (changeOver: boolean, newData: undefined) => {
-			locationUpdateHandler.change(changeOver, {
-				[location.id]: { delete: true }
-			});
+			updateHandler.execute(location.id, { delete: true })
 		}
 	};
 
@@ -141,8 +131,8 @@ export function locationTreeItem(
  * Constructs a tree item for a location history.
  * @param baseId The base ID of the parent tree item.
  * @param locationHistory Location history to use.
- * @param locationUpdateHandler The handler for updating each location.
- * @param locationHistoryExtendHandler The handler for extending the location history.
+ * @param onLocationUpdate The handler for updating each location.
+ * @param onLocationHistoryExtend The handler for extending the location history.
  * @param fieldErrors The field errors of the editable tree.
  * @param workspaces The workspace options for the location.
  * @returns The tree item.
@@ -150,8 +140,8 @@ export function locationTreeItem(
 export function locationHistoryTreeItem(
 	baseId: string,
 	locationHistory: LocationHistory | null | undefined,
-	locationUpdateHandler: ChangeHandler<Record<string, LocationUpdateCommand>>,
-	locationHistoryExtendHandler: ChangeHandler<string>,
+	locationUpdateHandler: LocationUpdateHandler,
+	onLocationHistoryExtend: (id: string) => void,
 	fieldErrors: FieldErrors,
 	workspaces: { id: string; name: string }[]
 ): Item {
@@ -189,7 +179,7 @@ export function locationHistoryTreeItem(
 		 * button has been pressed, so no need for data.
 		 */
 		onChange: (changeOver: boolean, newData: undefined) => {
-			locationHistoryExtendHandler.change(true, locationHistory.id);
+			onLocationHistoryExtend(locationHistory.id)
 		}
 	};
 
