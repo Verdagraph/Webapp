@@ -1,7 +1,6 @@
 import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/date';
 import {
 	workspaceFields,
-	type LocationUpdateCommand,
 	type FieldErrors,
 	type Position,
 	type Location,
@@ -18,31 +17,35 @@ import {
 	TreeAddButton,
 	type DynamicSelectValue
 } from '$components/editableTree';
-import { type LocationUpdateHandler, type LocationHistoryExtendHandler } from '$data/workspaces/commands';
+import { type LocationUpdateHandler } from '$data/workspaces/commands';
 
 /**
  * Constructs an editable tree item for a geometry.
  * @param parentId The base ID of the parent tree item.
- * @param location The location to use.
- * @param includeDelete Whether to include the option to delete the location.
- * @param onChange The change handler for the tree's locations.
- * @param fieldErrors The field errors of the tree, updated upon failed validation.
- * @param index The index of the location in the location history, if applicable.
- * @param workspaces The workspace options for the location.
+ * @param value Data required to construct the items.
+ * @param options Options for how to construct the tree items.
+ * @param ctx Tree context.
  * @returns The tree items that represent the location.
  */
 export function locationTreeItem(
 	parentId: string,
-	location: Location | null,
-	includeDelete: boolean = false,
-	updateHandler: LocationUpdateHandler,
-	fieldErrors: FieldErrors,
-	index: number = 0,
-	workspaces: { id: string; name: string }[]
+	value: {
+		/** Location to represent. */
+		location: Location;
+		/**
+		 * The workspaces the location may be located in.
+		 * Required for changing the workspace of a location.
+		 */
+		workspaces: { id: string; name: string }[];
+		/** Index of the location within the results. */
+		index: number;
+	},
+	options: { includeDelete: boolean },
+	ctx: { updateHandler: LocationUpdateHandler; fieldErrors: FieldErrors }
 ): Item {
-	const locationBaseId = parentId + `${index}/`;
+	const locationBaseId = parentId + `${value.index}/`;
 
-	if (!location) {
+	if (!value.location) {
 		return {
 			id: locationBaseId,
 			label: 'Failed to resolve location.'
@@ -59,14 +62,21 @@ export function locationTreeItem(
 		label: 'Date',
 		description: workspaceFields.locationDateSchema.description,
 		valueComponent: TreeDate,
-		value: fromDate(location.date, getLocalTimeZone()),
-		onChange: (changeOver: boolean, newData: DateValue) => {
+		value: fromDate(value.location.date, getLocalTimeZone()),
+		onChange: (newData: DateValue) => {
 			if (
-				!fieldValid(dateId, newData, workspaceFields.locationDateSchema, fieldErrors)
+				!fieldValid(
+					dateId,
+					newData,
+					workspaceFields.locationDateSchema,
+					ctx.fieldErrors
+				)
 			) {
 				return;
 			}
-			updateHandler.execute(location.id, { date: newData.toDate(getLocalTimeZone()) })
+			ctx.updateHandler.execute(value.location.id, {
+				date: newData.toDate(getLocalTimeZone())
+			});
 		}
 	};
 	const coordinateItem: Item = {
@@ -74,19 +84,19 @@ export function locationTreeItem(
 		label: 'Position',
 		description: workspaceFields.coordinateSchema.description,
 		valueComponent: TreeCoordinate,
-		value: { x: location.x, y: location.y },
-		onChange: (changeOver: boolean, newData: Position) => {
+		value: { x: value.location.x, y: value.location.y },
+		onChange: (newData: Position) => {
 			if (
 				!fieldValid(
 					coordinateId,
 					newData,
 					workspaceFields.coordinateSchema,
-					fieldErrors
+					ctx.fieldErrors
 				)
 			) {
 				return;
 			}
-			updateHandler.execute(location.id, { coordinate: newData })
+			ctx.updateHandler.execute(value.location.id, { coordinate: newData });
 		}
 	};
 	const workspaceItem: Item = {
@@ -95,13 +105,13 @@ export function locationTreeItem(
 		description: 'The workspace the location is located in.',
 		valueComponent: TreeDynamicSelect,
 		value: {
-			id: location.workspaceId,
-			options: workspaces.map((workspace) => {
+			id: value.location.workspaceId,
+			options: value.workspaces.map((workspace) => {
 				return { id: workspace.id, label: workspace.name };
 			})
 		},
-		onChange: (changeOver: boolean, newData: DynamicSelectValue) => {
-			updateHandler.execute(location.id, { workspaceId: newData.id })
+		onChange: (newData: DynamicSelectValue) => {
+			ctx.updateHandler.execute(value.location.id, { workspaceId: newData.id });
 		}
 	};
 	const deleteItem: Item = {
@@ -110,19 +120,19 @@ export function locationTreeItem(
 		description: 'Deletes the geometry from the history.',
 		valueComponent: TreeDeleteButton,
 		value: undefined,
-		onChange: (changeOver: boolean, newData: undefined) => {
-			updateHandler.execute(location.id, { delete: true })
+		onChange: (newData: undefined) => {
+			ctx.updateHandler.execute(value.location.id, { delete: true });
 		}
 	};
 
 	let children: Item[] = [dateItem, coordinateItem, workspaceItem];
-	if (includeDelete) {
+	if (options.includeDelete) {
 		children.push(deleteItem);
 	}
 
 	return {
 		id: locationBaseId,
-		label: `Location ${index + 1}`,
+		label: `Location ${value.index + 1}`,
 		children: children
 	};
 }
@@ -130,24 +140,25 @@ export function locationTreeItem(
 /**
  * Constructs a tree item for a location history.
  * @param baseId The base ID of the parent tree item.
- * @param locationHistory Location history to use.
- * @param onLocationUpdate The handler for updating each location.
- * @param onLocationHistoryExtend The handler for extending the location history.
- * @param fieldErrors The field errors of the editable tree.
- * @param workspaces The workspace options for the location.
+ * @param value Data required to construct the items.
+ * @param ctx Tree context.
  * @returns The tree item.
  */
 export function locationHistoryTreeItem(
 	baseId: string,
-	locationHistory: LocationHistory | null | undefined,
-	locationUpdateHandler: LocationUpdateHandler,
-	onLocationHistoryExtend: (id: string) => void,
-	fieldErrors: FieldErrors,
-	workspaces: { id: string; name: string }[]
+	value: {
+		locationHistory: LocationHistory | null | undefined;
+		workspaces: { id: string; name: string }[];
+	},
+	ctx: {
+		locationUpdateHandler: LocationUpdateHandler;
+		onLocationHistoryExtend: (id: string) => void;
+		fieldErrors: FieldErrors;
+	}
 ): Item {
 	const locationHistoryBaseId = toTreeId(baseId, 'locations');
 
-	if (!locationHistory) {
+	if (!value.locationHistory) {
 		return {
 			id: locationHistoryBaseId,
 			label: 'Failed to resolve locations.'
@@ -156,15 +167,12 @@ export function locationHistoryTreeItem(
 
 	const addLocationId = toTreeId(baseId, 'locationAdd');
 
-	const locationItems = locationHistory.locations.map((location, index) => {
+	const locationItems = value.locationHistory.locations.map((location, index) => {
 		return locationTreeItem(
 			locationHistoryBaseId,
-			location,
-			true,
-			locationUpdateHandler,
-			fieldErrors,
-			index,
-			workspaces
+			{ location, workspaces: value.workspaces, index },
+			{ includeDelete: true },
+			{ updateHandler: ctx.locationUpdateHandler, fieldErrors: ctx.fieldErrors }
 		);
 	});
 
@@ -178,8 +186,12 @@ export function locationHistoryTreeItem(
 		 * The callback here is just used to register the add
 		 * button has been pressed, so no need for data.
 		 */
-		onChange: (changeOver: boolean, newData: undefined) => {
-			onLocationHistoryExtend(locationHistory.id)
+		onChange: (newData: undefined) => {
+			if (!value.locationHistory) {
+				return;
+			}
+
+			ctx.onLocationHistoryExtend(value.locationHistory.id);
 		}
 	};
 

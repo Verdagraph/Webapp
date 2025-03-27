@@ -12,7 +12,7 @@
 	<Button
 		class="bg-destructive-6 text-destructive-12 w-full select-none"
 		onclick={() => {
-			onChange(true, undefined);
+			onChange(undefined);
 		}}
 	>
 		<Icon icon={iconIds.deleteIcon} width="1.5rem" class="text-neutral-11 ml-4" />

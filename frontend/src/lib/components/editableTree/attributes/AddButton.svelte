@@ -13,7 +13,7 @@
 	<Button
 		class="w-full select-none"
 		onclick={() => {
-			onChange(true, undefined);
+			onChange(undefined);
 		}}
 	>
 		<Icon icon={iconIds.addIcon} width="1.5rem" class="text-neutral-11 ml-4" />

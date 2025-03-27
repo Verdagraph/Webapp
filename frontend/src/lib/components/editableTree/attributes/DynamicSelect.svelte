@@ -18,7 +18,7 @@
 		type="single"
 		value={value.id}
 		onValueChange={(selectValue) => {
-			onChange(true, { id: selectValue, options: value.options });
+			onChange({ id: selectValue, options: value.options });
 		}}
 	>
 		<Select.Trigger class="w-full">

@@ -16,7 +16,7 @@ export type Item<ValueT = any> = TreeItem & {
 	 */
 	value?: any;
 	/** The change callback to use for changing the item. */
-	onChange?: (changeOver: boolean, newData: any) => void;
+	onChange?: (newData: any) => void;
 	/**
 	 * Must be defined to render an editable value for the item value.
 	 * The snippet can render any type of value, becomes editable if
@@ -26,7 +26,7 @@ export type Item<ValueT = any> = TreeItem & {
 	valueComponent?: Component<{
 		value: ValueT;
 		editing: boolean;
-		onChange: (changeOver: boolean, newData: ValueT) => void;
+		onChange: (newData: ValueT) => void;
 		errors: boolean;
 	}>;
 	/**

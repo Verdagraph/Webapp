@@ -69,23 +69,14 @@
 	const plantingAreaUpdateCommandHandler = createCommandHandler(
 		plantingAreaUpdate.mutation
 	);
-	const plantingAreaUpdateChangeHandler = createChangeHandler(
-		(newData: Record<string, PlantingAreaUpdateCommand>) => {
-			for (const plantingAreaId of Object.keys(newData)) {
-				plantingAreaUpdateCommandHandler.execute(
-					plantingAreaId,
-					newData[plantingAreaId]
-				);
-			}
-		}
-	);
 
 	/** Geometry change. */
 	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
 
 	/** Location change. */
 	const locationUpdateCommandHandler = createCommandHandler(locationUpdate);
-	const locationHistoryExtendCommandHandler = createCommandHandler(locationHistoryExtend);
+	const locationHistoryExtendCommandHandler =
+		createCommandHandler(locationHistoryExtend);
 
 	function plantingAreaTreeItem(plantingArea: PlantingArea): Item {
 		const baseId = toTreeBaseId('plantingArea', plantingArea.id);
@@ -95,28 +86,32 @@
 
 		const geometryItem = geometryTreeItem(
 			toTreeId(baseId, 'geometry'),
-			plantingArea.geometry,
-			false,
-			false,
-			false,
-			(data: GeometryUpdateCommand) => {
-				if (!plantingArea.geometry) {
-					return
-				}
-				geometryUpdateCommandHandler.execute(plantingArea.geometry?.id, data)
+			{ geometry: plantingArea.geometry, index: 0 },
+			{
+				includeIndex: false,
+				includeDate: false,
+				includeDelete: false,
+				includeLinesClosed: false
 			},
-			fieldErrors
+			{ updateHandler: geometryUpdateCommandHandler, fieldErrors }
 		);
 
 		const locationHistoryItem = locationHistoryTreeItem(
 			baseId,
-			plantingArea.locationHistory,
-			locationUpdateCommandHandler,
-			(id: string) => {
-				locationHistoryExtendCommandHandler.execute(id, workspace.timelineSelection.focusUtc)
+			{
+				locationHistory: plantingArea.locationHistory,
+				workspaces: workspacesOptions
 			},
-			fieldErrors,
-			workspacesOptions
+			{
+				locationUpdateHandler: locationUpdateCommandHandler,
+				onLocationHistoryExtend: (id: string) => {
+					locationHistoryExtendCommandHandler.execute(
+						id,
+						workspace.timelineSelection.focusUtc
+					);
+				},
+				fieldErrors
+			}
 		);
 
 		const nameItem: Item = {
@@ -125,7 +120,7 @@
 			description: workspaceFields.plantingAreaNameSchema.description,
 			valueComponent: TreeString,
 			value: plantingArea.name,
-			onChange: (changeOver: boolean, newData: string) => {
+			onChange: (newData: string) => {
 				if (
 					!fieldValid(
 						nameId,
@@ -136,9 +131,7 @@
 				) {
 					return;
 				}
-				plantingAreaUpdateChangeHandler.change(changeOver, {
-					[plantingArea.id]: { name: newData }
-				});
+				plantingAreaUpdateCommandHandler.execute(plantingArea.id, { name: newData });
 			}
 		};
 
@@ -148,7 +141,7 @@
 			description: workspaceFields.plantingAreaDescriptionSchema.description,
 			valueComponent: TreeTextarea,
 			value: plantingArea.description,
-			onChange: (changeOver: boolean, newData: string) => {
+			onChange: (newData: string) => {
 				if (
 					!fieldValid(
 						descriptionId,
@@ -159,9 +152,8 @@
 				) {
 					return;
 				}
-
-				plantingAreaUpdateChangeHandler.change(changeOver, {
-					[plantingArea.id]: { description: newData }
+				plantingAreaUpdateCommandHandler.execute(plantingArea.id, {
+					description: newData
 				});
 			}
 		};
@@ -172,7 +164,7 @@
 			description: workspaceFields.plantingAreaDepthSchema.description,
 			valueComponent: TreeDistance,
 			value: plantingArea.depth,
-			onChange: (changeOver: boolean, newData: number) => {
+			onChange: (newData: number) => {
 				if (
 					!fieldValid(
 						depthId,
@@ -183,9 +175,7 @@
 				) {
 					return;
 				}
-				plantingAreaUpdateChangeHandler.change(changeOver, {
-					[plantingArea.id]: { depth: newData }
-				});
+				plantingAreaUpdateCommandHandler.execute(plantingArea.id, { depth: newData });
 			}
 		};
 

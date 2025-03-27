@@ -10,7 +10,6 @@
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { createChangeHandler } from '$state/changeHandler.svelte';
 
 	type Props = {
 		plantingAreaLayerId: string;
@@ -27,44 +26,8 @@
 	const query = useQuery(triplit, plantingAreaQuery.Vars({ plantingAreaId }));
 
 	/** Handlers. */
-	/** Translation. */
-	const translateMutationHandler = createCommandHandler(locationHistoryUpdate);
-	const translateChangeHandler = createChangeHandler(
-		(newData: Position) => {
-			if (!plantingArea || !workspaceContext.id) {
-				return;
-			}
-
-			translateMutationHandler.execute({
-				id: plantingArea.locationHistoryId,
-				workspaceId: workspaceContext.id,
-				coordinate: newData,
-				date: workspaceContext.timelineSelection.focusUtc
-			});
-		},
-		TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS,
-		{
-			onStart: workspaceContext.timelineSelection.disable,
-			onEnd: workspaceContext.timelineSelection.enable
-		}
-	);
-
-	/** Transformation. */
-	const transformMutationHandler = createCommandHandler(geometryUpdate);
-	const transformChangeHandler = createChangeHandler(
-		(newData: GeometryUpdateCommand) => {
-			if (!plantingArea) {
-				return;
-			}
-
-			transformMutationHandler.execute(plantingArea.geometryId, newData);
-		},
-		TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS,
-		{
-			onStart: workspaceContext.timelineSelection.disable,
-			onEnd: workspaceContext.timelineSelection.enable
-		}
-	);
+	const translateCommandHandler = createCommandHandler(locationHistoryUpdate);
+	const transformMutationHandler = createCommandHandler(geometryUpdate); 
 
 	/** If defined, the query is successful. */
 	let plantingArea = $derived.by(() => {
@@ -105,17 +68,30 @@
 		workspaceContext.selections.has('plantingArea', plantingAreaId)
 	);
 
-	/** Update the change handler on translation. */
+	/** Update the location history on translation. */
 	function onTranslate(newPos: Vector2d, movementOver: boolean) {
-		translateChangeHandler.change(movementOver, {
-			x: canvasContext.transform.modelXPos(newPos.x),
-			y: canvasContext.transform.modelYPos(newPos.y)
+		if (!plantingArea || !workspaceContext.id) {
+			return;
+		}
+
+		translateCommandHandler.execute({
+			id: plantingArea.locationHistoryId,
+			workspaceId: workspaceContext.id,
+			coordinate: {
+				x: canvasContext.transform.modelXPos(newPos.x),
+				y: canvasContext.transform.modelYPos(newPos.y)
+			},
+			date: workspaceContext.timelineSelection.focusUtc
 		});
 	}
 
-	/** Update the change handler on transformation. */
+	/** Update the geometry on transformation. */
 	function onTransform(newGeometry: GeometryUpdateCommand, transformOver: boolean) {
-		transformChangeHandler.change(transformOver, newGeometry);
+		if (!plantingArea) {
+			return;
+		}
+
+		transformMutationHandler.execute(plantingArea.geometryId, newGeometry);
 	}
 </script>
 

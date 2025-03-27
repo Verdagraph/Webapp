@@ -7,7 +7,7 @@ export type EditableAttributeProps<TData> = {
 	/** If true, the attribute may be edited. */
 	editing: boolean;
 	/** The updater callback for when the attribute is updated. */
-	onChange: (changeOver: boolean, newData: TData) => void;
+	onChange: (newData: TData) => void;
 	/** If true, the current value of the field is in error. */
 	errors: boolean;
 };

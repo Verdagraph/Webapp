@@ -29,7 +29,7 @@
 		{value}
 		items={geometryTypeOptions}
 		onValueChange={(value) => {
-			onChange(true, value as GeometryType);
+			onChange(value as GeometryType);
 		}}
 	>
 		<Select.Trigger class="w-full">

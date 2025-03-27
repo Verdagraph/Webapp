@@ -22,7 +22,7 @@ import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
 import { AppError } from '@vdt-webapp/common/src/errors';
 import { requireRole } from '$data/gardens/commands';
-import {type CommandHandler} from '$state/commandHandler.svelte'
+import { type CommandHandler } from '$state/commandHandler.svelte';
 
 /** Helpers. */
 
@@ -179,6 +179,7 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 		});
 	});
 }
+export type GeometryUpdateHandler = CommandHandler<typeof geometryUpdate>;
 
 export async function geometryHistoryExtend(id: string, date: Date) {
 	const geometryHistory = await triplit.fetchOne(
@@ -255,7 +256,7 @@ export async function locationUpdate(id: string, data: LocationUpdateCommand) {
 		}
 	});
 }
-export type LocationUpdateHandler = CommandHandler<typeof locationUpdate>
+export type LocationUpdateHandler = CommandHandler<typeof locationUpdate>;
 
 /**
  * Updates a location history with a new position.
@@ -327,7 +328,7 @@ export async function locationHistoryExtend(id: string, date: Date) {
 		date: date
 	});
 }
-export type LocationHistoryExtendHandler = CommandHandler<typeof locationHistoryExtend>
+export type LocationHistoryExtendHandler = CommandHandler<typeof locationHistoryExtend>;
 
 /** Creates a new workspace in a garden. */
 export const workspaceCreate = {

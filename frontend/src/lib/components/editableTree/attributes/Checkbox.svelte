@@ -10,7 +10,7 @@
 		checked={value}
 		class="select-none"
 		onCheckedChange={(value) => {
-			onChange(false, value);
+			onChange(value);
 		}}
 	/>
 {:else}

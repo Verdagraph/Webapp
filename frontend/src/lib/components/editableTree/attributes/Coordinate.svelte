@@ -11,7 +11,7 @@
 		x={value.x}
 		y={value.y}
 		onValueChange={(value) => {
-			onChange(false, value);
+			onChange(value);
 		}}
 	/>
 {:else}

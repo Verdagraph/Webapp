@@ -4,7 +4,7 @@
  */
 export function getOninputString<
 	ElementT extends HTMLInputElement | HTMLTextAreaElement
->(onChange: (changeOver: boolean, newData: any) => void) {
+>(onChange: (newData: any) => void) {
 	return (
 		event: Event & {
 			currentTarget: EventTarget & ElementT;
@@ -14,7 +14,7 @@ export function getOninputString<
 		if (!target?.value) {
 			return;
 		}
-		onChange(false, target.value);
+		onChange(target.value);
 	};
 }
 
@@ -24,7 +24,7 @@ export function getOninputString<
  */
 export function getOninputNumber<
 	ElementT extends HTMLInputElement | HTMLTextAreaElement
->(onChange: (changeOver: boolean, newData: any) => void) {
+>(onChange: (newData: any) => void) {
 	return (
 		event: Event & {
 			currentTarget: EventTarget & ElementT;
@@ -34,6 +34,6 @@ export function getOninputNumber<
 		if (!target?.value) {
 			return;
 		}
-		onChange(false, Number(target.value));
+		onChange(Number(target.value));
 	};
 }

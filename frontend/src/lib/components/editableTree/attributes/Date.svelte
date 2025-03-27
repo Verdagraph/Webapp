@@ -12,7 +12,7 @@
 		{value}
 		onValueChange={(newVal) => {
 			if (newVal) {
-				onChange(false, newVal);
+				onChange(newVal);
 			}
 		}}
 	/>
