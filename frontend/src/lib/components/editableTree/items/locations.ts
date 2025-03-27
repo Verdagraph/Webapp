@@ -168,10 +168,13 @@ export function locationHistoryTreeItem(
 	const addLocationId = toTreeId(baseId, 'locationAdd');
 
 	const locationItems = value.locationHistory.locations.map((location, index) => {
+		const numLocations = value.locationHistory?.locations.length;
+		const includeDelete = numLocations && numLocations > 1 ? true : false;
+
 		return locationTreeItem(
 			locationHistoryBaseId,
 			{ location, workspaces: value.workspaces, index },
-			{ includeDelete: true },
+			{ includeDelete: includeDelete },
 			{ updateHandler: ctx.locationUpdateHandler, fieldErrors: ctx.fieldErrors }
 		);
 	});

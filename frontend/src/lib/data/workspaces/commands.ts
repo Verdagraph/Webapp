@@ -317,15 +317,19 @@ export async function locationHistoryExtend(id: string, date: Date) {
 		});
 	}
 
-	const nearestLocation =
-		historySelectDay(locationHistory.locations, date) ||
-		locationHistory.locations[locationHistory.locations.length - 1];
-	await triplit.insert('locations', {
-		gardenId: locationHistory.gardenId,
-		workspaceId: nearestLocation.workspaceId,
-		x: nearestLocation.x,
-		y: nearestLocation.y,
-		date: date
+	const nearestLocation = historySelectDay(locationHistory.locations, date) ||
+		locationHistory.locations[locationHistory.locations.length - 1] || { x: 0, y: 0 };
+	await triplit.transact(async (transaction) => {
+		const location = await transaction.insert('locations', {
+			gardenId: locationHistory.gardenId,
+			workspaceId: nearestLocation.workspaceId,
+			x: nearestLocation.x,
+			y: nearestLocation.y,
+			date: date
+		});
+		await transaction.update('locationHistories', id, (locationHistory) => {
+			locationHistory.locationIds.add(location.id);
+		});
 	});
 }
 export type LocationHistoryExtendHandler = CommandHandler<typeof locationHistoryExtend>;

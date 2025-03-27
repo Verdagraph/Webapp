@@ -4,7 +4,7 @@
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
 	import { historySelect } from '@vdt-webapp/common';
-	import triplit, { TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS } from '$data/triplit';
+	import triplit from '$data/triplit';
 	import { locationHistoryUpdate, geometryUpdate } from '$data/workspaces/commands';
 	import { useQuery } from '@triplit/svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
@@ -27,7 +27,7 @@
 
 	/** Handlers. */
 	const translateCommandHandler = createCommandHandler(locationHistoryUpdate);
-	const transformMutationHandler = createCommandHandler(geometryUpdate); 
+	const transformMutationHandler = createCommandHandler(geometryUpdate);
 
 	/** If defined, the query is successful. */
 	let plantingArea = $derived.by(() => {

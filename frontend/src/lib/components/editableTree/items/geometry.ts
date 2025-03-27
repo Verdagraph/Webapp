@@ -346,10 +346,8 @@ export function geometryTreeItem(
 							}
 
 							/** Modify the coordinate. */
-							const newCoordinates: Position[] = value.geometry.linesCoordinates.filter(
-								(existingCoordinate) => existingCoordinate.id != coordinate.id
-							);
-							newCoordinates.push(newData);
+							const newCoordinates: Position[] = value.geometry.linesCoordinates;
+							newCoordinates[index] = newData;
 
 							ctx.updateHandler.execute(value.geometry.id, {
 								linesCoordinates: newCoordinates

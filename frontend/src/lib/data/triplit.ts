@@ -4,15 +4,6 @@ import { schema, roles, AppError } from '@vdt-webapp/common';
 import { userRefresh } from './users/auth';
 import { handleErrors } from '$lib/errors';
 
-/**
- * When a value is updated in rapid succession,
- * a ChangeHandler (see lib/state/changeHandler.svelte.ts)
- * is used to break the updates into regular intervals
- * to avoid changes being sent to Triplit too frequently.
- * This is the default interval for that.
- */
-export const TRIPLIT_UPDATE_DEFAULT_INTERVAL_MS = 1;
-
 export const TRIPLIT_ANON_TOKEN =
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.9xYxsdR7ecDQ251Iv6oF7GrjBXAe1WcXY849g-soXVU';
 const TRIPLIT_SERVER_URL = 'http://localhost:6543';
