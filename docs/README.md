@@ -1,4 +1,4 @@
-# VerdanTech Conceptual Outline
+# Verdagraph Conceptual Outline
 
 The purpose of this folder is to define high-level, abstract designs of application features. Ideally, it should serve as a prototyping space common to developers and users.
 

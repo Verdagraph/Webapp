@@ -6,7 +6,7 @@
 		type GeometryUpdateCommand,
 		getGeometryHeight,
 		type Geometry
-	} from '@vdt-webapp/common';
+	} from '@vdg-webapp/common';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
 	import { getColor } from '$lib/utils';

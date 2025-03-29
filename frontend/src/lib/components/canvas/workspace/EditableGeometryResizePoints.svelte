@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Geometry, GeometryUpdateCommand } from '@vdt-webapp/common';
+	import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/common';
 	import { getContext, onDestroy } from 'svelte';
 	import Konva from 'konva';
 	import { getGeometryResizePoints } from './utils';
 	import type { CanvasContext } from '../state';
-	import { AppError } from '@vdt-webapp/common/src/errors';
+	import { AppError } from '@vdg-webapp/common/src/errors';
 	import { roundToDecimalPlaces } from '$lib/utils';
 
 	type Props = {

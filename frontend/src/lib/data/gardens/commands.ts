@@ -14,8 +14,8 @@ import {
 	GardenMembershipRoleChangeCommandSchema,
 	isUserAuthorized,
 	isProfileMember
-} from '@vdt-webapp/common';
-import type { Garden, User } from '@vdt-webapp/common';
+} from '@vdg-webapp/common';
+import type { Garden, User } from '@vdg-webapp/common';
 import triplit from '../triplit';
 import { getClientOrError } from '$data/users/auth';
 import { ActionType, requiredRole } from '$lib/permissions';

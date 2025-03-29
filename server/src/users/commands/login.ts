@@ -1,5 +1,5 @@
 import { diContainer } from '@fastify/awilix';
-import { type UserLoginCommand } from '@vdt-webapp/common';
+import { type UserLoginCommand } from '@vdg-webapp/common';
 import { NotFoundError, AuthenticationError } from 'common/errors';
 import { verifyPassword } from '../auth/passwords';
 import { encodeAccessToken, encodeRefreshToken } from '../auth/tokens';

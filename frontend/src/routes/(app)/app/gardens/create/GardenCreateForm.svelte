@@ -10,7 +10,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { gardenCreate } from '$data/gardens/commands';
 	import iconIds from '$lib/assets/icons';
-	import { GardenVisibility, gardenFields } from '@vdt-webapp/common';
+	import { GardenVisibility, gardenFields } from '@vdg-webapp/common';
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
 	import { generateGardenId } from '$data/gardens/utils';
 	import createCommandHandler from '$state/commandHandler.svelte';

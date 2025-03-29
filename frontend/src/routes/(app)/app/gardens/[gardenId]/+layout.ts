@@ -2,7 +2,7 @@ import triplit from '$data/triplit';
 import { gardenQuery } from '$data/gardens/queries.js';
 import { goto } from '$app/navigation';
 import activeGarden from '$state/gardenContext.svelte';
-import { AppError } from '@vdt-webapp/common/src/errors';
+import { AppError } from '@vdg-webapp/common/src/errors';
 import { getClient } from '$data/users/auth';
 
 /**

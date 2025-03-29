@@ -6,7 +6,7 @@
 	import FormInfoPopover from './form-info-popover.svelte';
 
 	/**
-	 * VerdanTech - Adds a description and optional marker.
+	 * Verdagraph - Adds a description and optional marker.
 	 */
 	let {
 		ref = $bindable(null),

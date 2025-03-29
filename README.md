@@ -13,11 +13,11 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/VerdanTech">
-    <img src="https://github.com/VerdanTech/.github/blob/main/profile/graphics/logo.png" alt="Logo" width="200" height="200">
+  <a href="https://github.com/Verdagraph">
+    <img src="https://github.com/Verdagraph/.github/blob/main/profile/graphics/logo.png" alt="Logo" width="200" height="200">
   </a>
 
-<h3 align="center">VerdanTech - Web Application</h3>
+<h3 align="center">Verdagraph - Web Application</h3>
 
   <p align="center">
     A garden productivity tool, agro-ecology model, and IoT platform
@@ -39,9 +39,9 @@
   </p>
 </div>
 
-See the [main project readme](https://github.com/VerdanTech) for background on this repository.
+See the [main project readme](https://github.com/Verdagraph) for background on this repository.
 
-This repository contains the frontend web application, backend server, and common database schemas of the VerdanTech web application.
+This repository contains the frontend web application, backend server, and common database schemas of the Verdagraph web application.
 
 The database in use is the [Triplit](https://www.triplit.dev/) project, which provides a full-stack database with built-in multi-client sync and real-time queries. The frontend is a statically built SvelteKit application. The backend is a Fastisy server.
 
@@ -67,9 +67,9 @@ See the [contributing](./contributing.md) for instructions on contributing and s
 
 [version-shield]: https://img.shields.io/badge/version-0.0.1-blue?style=for-the-badge
 [version-url]: https://github.com/nathanielarking/Autonomous-Agriculture/releases
-[issues-shield]: https://img.shields.io/github/issues/nathanielarking/VerdanTech.svg?style=for-the-badge
-[issues-url]: https://github.com/nathanielarking/VerdanTech/issues
-[prs-shield]: https://img.shields.io/github/issues-pr/nathanielarking/VerdanTech.svg?style=for-the-badge
-[prs-url]: https://github.com/nathanielarking/VerdanTech/pulls
-[license-shield]: https://img.shields.io/github/license/nathanielarking/VerdanTech.svg?style=for-the-badge
-[license-url]: https://github.com/nathanielarking/VerdanTech/LICENSE.txt
+[issues-shield]: https://img.shields.io/github/issues/nathanielarking/Verdagraph.svg?style=for-the-badge
+[issues-url]: https://github.com/nathanielarking/Verdagraph/issues
+[prs-shield]: https://img.shields.io/github/issues-pr/nathanielarking/Verdagraph.svg?style=for-the-badge
+[prs-url]: https://github.com/nathanielarking/Verdagraph/pulls
+[license-shield]: https://img.shields.io/github/license/nathanielarking/Verdagraph.svg?style=for-the-badge
+[license-url]: https://github.com/nathanielarking/Verdagraph/LICENSE.txt

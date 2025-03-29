@@ -1,5 +1,5 @@
 {
-	"name": "@vdt-webapp/frontend",
+	"name": "@webapp/frontend",
 	"version": "0.0.1",
 	"type": "module",
 	"private": true,
@@ -60,7 +60,7 @@
 	"dependencies": {
 		"@triplit/client": "^1.0.11",
 		"@triplit/svelte": "^1.0.11",
-		"@vdt-webapp/common": "workspace:*",
+		"@vdg-webapp/common": "workspace:*",
 		"axios": "^1.8.2",
 		"konva": "^9.3.18",
 		"melt": "^0.14.1"

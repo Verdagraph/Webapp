@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { getAccessTokenHeader, decodeAccessToken } from 'users/auth/tokens';
 import { AuthenticationError } from 'common/errors';
 import { asValue } from 'awilix';
-import { UserAccount } from '@vdt-webapp/common/src/users/schema';
+import { UserAccount } from '@vdg-webapp/common/src/users/schema';
 
 /**
  * Given a request, parse the request api key stored in the header

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Garden } from '@vdt-webapp/common';
+	import type { Garden } from '@vdg-webapp/common';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import GardenThumbnail from './GardenThumbnail.svelte';
 

@@ -17,10 +17,10 @@ import {
 	type LocationHistoryUpdateCommand,
 	PlantingAreaUpdateCommandSchema,
 	type PlantingAreaUpdateCommand
-} from '@vdt-webapp/common';
+} from '@vdg-webapp/common';
 import { slugify } from '$lib/utils';
 import triplit from '$data/triplit';
-import { AppError } from '@vdt-webapp/common/src/errors';
+import { AppError } from '@vdg-webapp/common/src/errors';
 import { requireRole } from '$data/gardens/commands';
 import { type CommandHandler } from '$state/commandHandler.svelte';
 

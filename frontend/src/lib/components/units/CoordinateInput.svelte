@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import Icon from '@iconify/svelte';
 	import { createUnitAwareValues } from './units.svelte';
-	import { type Position } from '@vdt-webapp/common';
+	import { type Position } from '@vdg-webapp/common';
 
 	type Props = {
 		/** The output X value. Guarnteed to be in metric. */

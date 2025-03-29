@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Create Garden - VerdanTech</title>
+	<title>Create Garden - Verdagraph</title>
 </svelte:head>
 
 <Card.Root

@@ -29,7 +29,7 @@ Large screens sidebar.
 >
 	<!-- Links displayed at the top. -->
 	<ul>
-		<!-- VerdanTech logo. -->
+		<!-- Verdagraph logo. -->
 		<li class="hover:bg-neutral-3 p-2">
 			<Button.Root class="flex items-center justify-center" href="/">
 				<Logo size="2rem" />

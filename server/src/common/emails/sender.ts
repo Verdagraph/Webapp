@@ -8,11 +8,11 @@ import env from 'env';
 const files: Record<string, Record<string, string>> = {
 	emailConfirmation: {
 		path: 'src/common/emails/emailConfirmation.html',
-		subject: 'VerdanTech - Confirm your Email'
+		subject: 'Verdagraph - Confirm your Email'
 	},
 	passwordReset: {
 		path: 'src/common/emails/passwordReset.html',
-		subject: 'VerdanTech - Reset your Password'
+		subject: 'Verdagraph - Reset your Password'
 	}
 };
 

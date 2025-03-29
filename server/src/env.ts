@@ -104,7 +104,7 @@ const EnvSchema = z.object({
 			description: "The email address of the server's user on the SMTP server."
 		})
 		.email()
-		.default('verdantech@email.com')
+		.default('Verdagraph@email.com')
 });
 
 const env = EnvSchema.parse(process.env);

@@ -2,11 +2,11 @@
 </script>
 
 <svelte:head>
-	<title>VerdanTech - Landing Page</title>
+	<title>Verdagraph - Landing Page</title>
 </svelte:head>
 
 <div>
-	<h1>Plan, track, optimize, and automate your garden with VerdanTech.</h1>
+	<h1>Plan, track, optimize, and automate your garden with Verdagraph.</h1>
 
 	<h1>
 		Modern industrial agriculture is unsustainable. It also is difficult to compete

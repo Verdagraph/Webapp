@@ -6,7 +6,7 @@
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
+	import { UserConfirmEmailConfirmationCommand } from '@vdg-webapp/common';
 
 	/* Initialize the mutation on page load with url parameter. */
 	const confirmationToken = page.params.confirmationToken;
@@ -22,7 +22,7 @@
 </script>
 
 <svelte:head>
-	<title>Email Confirmed - VerdanTech</title>
+	<title>Email Confirmed - Verdagraph</title>
 </svelte:head>
 
 <Card.Root class="m-auto mt-12 w-3/4 md:w-1/2 lg:w-1/3">

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$components/ui/button';
-	import type { Garden } from '@vdt-webapp/common';
+	import type { Garden } from '@vdg-webapp/common';
 
 	type Props = {
 		garden: Garden;

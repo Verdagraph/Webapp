@@ -1,7 +1,7 @@
 import { defineConfig } from 'orval';
 
 export default defineConfig({
-	vdt_frontend: {
+	webapp: {
 		input: {
 			// Path to the openapi specification.
 			target: './server.json',

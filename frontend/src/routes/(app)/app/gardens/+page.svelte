@@ -17,7 +17,7 @@
 		acceptancePendingMembershipsQuery
 	} from '$data/gardens/queries';
 	import triplit from '$data/triplit';
-	import type { Garden } from '@vdt-webapp/common';
+	import type { Garden } from '@vdg-webapp/common';
 
 	/**
 	 * If a non-authenticated user accesses this page,
@@ -39,7 +39,7 @@
 </script>
 
 <svelte:head>
-	<title>Gardens - VerdanTech</title>
+	<title>Gardens - Verdagraph</title>
 </svelte:head>
 
 <!-- Top bar -->

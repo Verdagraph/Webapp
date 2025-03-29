@@ -2,7 +2,7 @@
 
 First, join the [discord server](https://discord.gg/XH4kQcpz9p). If you have an idea for a contribution to make, talk to other contributors first to establish what the contribution should look like.
 
-A [Github Project](https://github.com/orgs/VerdanTech/projects/1) is used to organize tickets for the web app. Tickets are automatically assigned issues when connected to a repository. Generally, tickets should be made such that we can maintain one branch per ticket and they can be done independently.
+A [Github Project](https://github.com/orgs/Verdagraph/projects/1) is used to organize tickets for the web app. Tickets are automatically assigned issues when connected to a repository. Generally, tickets should be made such that we can maintain one branch per ticket and they can be done independently.
 
 Code review is required by other contributors before a feature can be merged.
 
@@ -23,7 +23,7 @@ The development environment consists of a docker-compose setup with one containe
 1. Install the [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install). This may require changing Windows or Bios settings for virtualization.
 2. Install Docker Engine through [Docker Desktop](https://www.docker.com/products/docker-desktop/). Start Docker Engine.
 3. Install [VSCode](https://code.visualstudio.com/) and [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
-4. Run the VSCode command `Clone repository into container volume.` and enter the name of the repository: `VerdanTech/Vdt-Webapp`. Cloning the repository into the container brings optimal performance, but if that doesn't work, clone the repository into a Windows folder and run the command in VSCode `Run folder in container.`
+4. Run the VSCode command `Clone repository into container volume.` and enter the name of the repository: `Verdagraph/Webapp`. Cloning the repository into the container brings optimal performance, but if that doesn't work, clone the repository into a Windows folder and run the command in VSCode `Run folder in container.`
 
 The container should display a terminal with no errors.
 

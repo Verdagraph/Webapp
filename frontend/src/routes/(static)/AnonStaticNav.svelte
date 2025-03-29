@@ -36,7 +36,7 @@ isn't within the context of a Garden.
 >
 	<nav class="bg-neutral-2 flex items-center justify-around py-4">
 		<!-- 
-            Logo and VerdanTech text.
+            Logo and Verdagraph text.
             Logo displayed always. Text displayed on larger screens.
         -->
 		<div>
@@ -48,7 +48,7 @@ isn't within the context of a Garden.
 				</li>
 				<li>
 					<a href="/" class="hidden lg:block">
-						<span class="font-semibold">VerdanTech</span>
+						<span class="font-semibold">Verdagraph</span>
 					</a>
 				</li>
 			</ul>

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { GeometryUpdateCommand } from '@vdt-webapp/common';
+	import type { GeometryUpdateCommand } from '@vdg-webapp/common';
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
-	import { historySelect } from '@vdt-webapp/common';
+	import { historySelect } from '@vdg-webapp/common';
 	import triplit from '$data/triplit';
 	import { locationHistoryUpdate, geometryUpdate } from '$data/workspaces/commands';
 	import { useQuery } from '@triplit/svelte';

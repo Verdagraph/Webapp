@@ -7,8 +7,8 @@ export const registerOpenapi = (app: FastifyInstance) => {
 	app.register(fastifySwagger, {
 		openapi: {
 			info: {
-				title: 'VerdanTech Webapp Server',
-				description: 'Server of the VerdanTech web application.',
+				title: 'Verdagraph Webapp Server',
+				description: 'Server of the Verdagraph web application.',
 				version: '0.0.1'
 			},
 			tags: [{ name: 'user', description: 'User endpoints.' }]

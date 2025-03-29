@@ -4,13 +4,13 @@
 </script>
 
 <svelte:head>
-	<title>Traits - VerdanTech</title>
+	<title>Traits - Verdagraph</title>
 </svelte:head>
 
 <div class="m-auto mt-12 flex w-3/4 flex-col items-center">
 	<h1 class="text-4xl">Traits</h1>
 	<p>
-		VerdanTech's flexible system for specifying model behavior and sharing data amongst
+		Verdagraph's flexible system for specifying model behavior and sharing data amongst
 		gardens and users.
 	</p>
 </div>

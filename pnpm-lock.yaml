@@ -45,7 +45,7 @@ importers:
       '@triplit/svelte':
         specifier: ^1.0.11
         version: 1.0.11(svelte@5.22.6)(typescript@5.8.2)
-      '@vdt-webapp/common':
+      '@vdg-webapp/common':
         specifier: workspace:*
         version: link:../common
       axios:
@@ -199,7 +199,7 @@ importers:
       '@triplit/client':
         specifier: ^1.0.11
         version: 1.0.11(typescript@5.8.2)
-      '@vdt-webapp/common':
+      '@vdg-webapp/common':
         specifier: workspace:*
         version: link:../common
       argon2:

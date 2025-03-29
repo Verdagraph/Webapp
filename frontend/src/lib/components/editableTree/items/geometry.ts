@@ -18,7 +18,7 @@ import {
 	workspaceFields,
 	type FieldErrors,
 	type Position
-} from '@vdt-webapp/common';
+} from '@vdg-webapp/common';
 import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/date';
 import { type GeometryUpdateHandler } from '$data/workspaces/commands';
 

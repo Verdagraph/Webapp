@@ -1,6 +1,6 @@
 import iconIds from '$lib/assets/icons';
 import { externalLinks } from '$lib/assets/links';
-import { Garden } from '@vdt-webapp/common';
+import { Garden } from '@vdg-webapp/common';
 
 /**
  * Utility to get the base URL for the active garden.

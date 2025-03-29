@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Workbook - VerdanTech</title>
+	<title>Workbook - Verdagraph</title>
 </svelte:head>
 
 <UnderConstructionPage />

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CoordinateInput, CoordinateSpan } from '$lib/components/units';
 	import { type EditableAttributeProps } from './types';
-	import { type Position } from '@vdt-webapp/common';
+	import { type Position } from '@vdg-webapp/common';
 
 	let { value, editing, onChange }: EditableAttributeProps<Position> = $props();
 </script>

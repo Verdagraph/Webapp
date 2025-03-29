@@ -27,7 +27,7 @@
 		type PlantingArea,
 		workspaceFields,
 		type FieldErrors
-	} from '@vdt-webapp/common';
+	} from '@vdg-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
 	import { locationHistoryTreeItem } from '$components/editableTree/items/locations';
 

@@ -1,4 +1,4 @@
-import { type AppErrors, AppError } from '@vdt-webapp/common/src/errors';
+import { type AppErrors, AppError } from '@vdg-webapp/common/src/errors';
 
 /**
  * Base class for all application exceptions raised by the server code.

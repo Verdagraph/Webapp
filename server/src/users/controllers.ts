@@ -9,7 +9,7 @@ import {
 	UserConfirmEmailConfirmationCommandSchema,
 	UserRequestPasswordResetCommandSchema,
 	UserConfirmPasswordResetCommandSchema
-} from '@vdt-webapp/common';
+} from '@vdg-webapp/common';
 import { setTag } from 'plugins/openapi';
 import {
 	login,

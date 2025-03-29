@@ -2,7 +2,7 @@
 	import { cn } from '$lib/utils';
 
 	/**
-	 * VerdanTech - Modified to allow passing custom errors.
+	 * Verdagraph - Modified to allow passing custom errors.
 	 */
 
 	let {
