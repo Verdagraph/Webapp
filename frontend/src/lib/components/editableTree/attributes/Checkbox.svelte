@@ -2,7 +2,7 @@
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { type EditableAttributeProps } from './types';
 
-	let { value, editing, onChange, errors }: EditableAttributeProps<boolean> = $props();
+	let { value, editing, onChange }: EditableAttributeProps<boolean> = $props();
 </script>
 
 {#if editing}

@@ -148,7 +148,7 @@ export function geometryTreeItem(
 		description: 'Deletes the geometry from the history.',
 		valueComponent: TreeDeleteButton,
 		value: undefined,
-		onChange: (newData: undefined) => {
+		onChange: () => {
 			if (!value.geometry) {
 				return;
 			}
@@ -159,7 +159,7 @@ export function geometryTreeItem(
 
 	let attributesItems: Item[] = [];
 	switch (value.geometry.type) {
-		case 'RECTANGLE':
+		case 'RECTANGLE': {
 			const rectangleLengthId = geometryBaseId + 'rectangleLength';
 			const rectangleWidthId = geometryBaseId + 'rectangleWidth';
 
@@ -208,8 +208,9 @@ export function geometryTreeItem(
 				}
 			];
 			break;
+		}
 
-		case 'POLYGON':
+		case 'POLYGON': {
 			const polygonNumSidesId = geometryBaseId + 'polygonNumSides';
 			const polygonRadiusId = geometryBaseId + 'polygonRadius';
 
@@ -258,8 +259,9 @@ export function geometryTreeItem(
 				}
 			];
 			break;
+		}
 
-		case 'ELLIPSE':
+		case 'ELLIPSE': {
 			const ellipseLengthId = geometryBaseId + 'ellipseLength';
 			const ellipseWidthId = geometryBaseId + 'ellipseWidth';
 
@@ -308,8 +310,9 @@ export function geometryTreeItem(
 				}
 			];
 			break;
+		}
 
-		case 'LINES':
+		case 'LINES': {
 			const linesCoordinatesId = geometryBaseId + 'linesCoordinates';
 			const linesAddCoordinateId = geometryBaseId + 'linesAddCoordinate';
 			const linesClosedId = geometryBaseId + 'linesClosed';
@@ -361,7 +364,7 @@ export function geometryTreeItem(
 						description: 'Deletes the coordinate.',
 						valueComponent: TreeDeleteButton,
 						value: undefined,
-						onChange: (newData: undefined) => {
+						onChange: () => {
 							if (!value.geometry) {
 								return;
 							}
@@ -393,7 +396,7 @@ export function geometryTreeItem(
 				 * The callback here is just used to register the add
 				 * button has been pressed, so no need for data.
 				 */
-				onChange: (newData: undefined) => {
+				onChange: () => {
 					if (!value.geometry) {
 						return;
 					}
@@ -451,6 +454,7 @@ export function geometryTreeItem(
 				];
 			}
 			break;
+		}
 	}
 
 	let children: Item[] = [];
@@ -532,7 +536,7 @@ export function geometryHistoryTreeItem(
 		 * The callback here is just used to register the add
 		 * button has been pressed, so no need for data.
 		 */
-		onChange: (newData: undefined) => {
+		onChange: () => {
 			ctx.onGeometryHistoryExtend();
 		}
 	};

@@ -3,7 +3,7 @@
 	import { type EditableAttributeProps } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 
-	let { value, editing, onChange, errors }: EditableAttributeProps<number> = $props();
+	let { value, editing, onChange }: EditableAttributeProps<number> = $props();
 </script>
 
 {#if editing}

@@ -11,7 +11,7 @@ type SelectionTool = 'pointer' | 'group';
  * @returns Selection.
  */
 function createSelection() {
-	let selection = $state(new SvelteSet<string>());
+	const selection = $state(new SvelteSet<string>());
 
 	/** Allows executing side effects on selection change. */
 	const onSelectionChangeHandlers: Array<
@@ -149,7 +149,7 @@ export function createSelectionManager<const EntityTypes extends readonly string
 	 * Resets all selections.
 	 */
 	function resetAll() {
-		Object.entries(selections).forEach(([key, selection]) => {
+		Object.entries(selections).forEach(([, selection]) => {
 			(selection as Selection).reset();
 		});
 	}

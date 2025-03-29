@@ -3,8 +3,7 @@
 	import { type DateValue } from '@internationalized/date';
 	import DatePicker from '$components/ui/datepicker';
 
-	let { value, editing, onChange, errors }: EditableAttributeProps<DateValue> =
-		$props();
+	let { value, editing, onChange }: EditableAttributeProps<DateValue> = $props();
 </script>
 
 {#if editing}

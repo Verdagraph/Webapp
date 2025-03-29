@@ -68,7 +68,7 @@ export function fromTreeId<EntityTypeT extends string>(
  */
 export function fieldValid(
 	treeId: string,
-	value: any,
+	value: unknown,
 	schema: ZodType,
 	fieldErrors: FieldErrors
 ): boolean {

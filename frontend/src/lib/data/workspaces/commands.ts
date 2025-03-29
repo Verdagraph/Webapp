@@ -50,7 +50,7 @@ export async function geometryCreate(
 		}
 	}
 
-	let geometry: Omit<Geometry, 'id' | 'linesCoordinates'> = {
+	const geometry: Omit<Geometry, 'id' | 'linesCoordinates'> = {
 		gardenId: gardenId,
 		type: data.type,
 		date: data.date,

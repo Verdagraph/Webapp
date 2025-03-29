@@ -54,7 +54,7 @@ export function getGeometryResizePoints(
 	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>
 ): Array<{ x: number; y: number }> {
 	switch (geometry.type) {
-		case 'RECTANGLE':
+		case 'RECTANGLE': {
 			const halfLength = geometry.rectangleLength / 2;
 			const halfWidth = geometry.rectangleWidth / 2;
 
@@ -68,11 +68,13 @@ export function getGeometryResizePoints(
 				{ x: -halfLength, y: -halfWidth },
 				{ x: -halfLength, y: 0 }
 			];
+		}
 
-		case 'POLYGON':
+		case 'POLYGON': {
 			return [{ x: 0, y: geometry.polygonRadius }];
+		}
 
-		case 'ELLIPSE':
+		case 'ELLIPSE': {
 			const radiusLength = geometry.ellipseLength / 2;
 			const radiusWidth = geometry.ellipseWidth / 2;
 
@@ -82,10 +84,12 @@ export function getGeometryResizePoints(
 				{ x: 0, y: -radiusWidth },
 				{ x: -radiusLength, y: 0 }
 			];
+		}
 
-		case 'LINES':
+		case 'LINES': {
 			return geometry.linesCoordinates.map((coordinate) => {
 				return { x: coordinate.x, y: coordinate.y };
 			});
+		}
 	}
 }

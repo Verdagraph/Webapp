@@ -3,10 +3,10 @@
 	import Icon from '@iconify/svelte';
 	import * as Form from '$lib/components/ui/form';
 	import * as Textarea from '$lib/components/ui/textarea';
-	import * as Select from '$lib/components/ui/select/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator';
 	import { UnitAwareInput, CoordinateInput } from '$components/units';
+	import GeometrySelect from '$components/workspaces/GeometrySelect.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import iconIds from '$lib/assets/icons';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
@@ -17,19 +17,6 @@
 	const form = workspaceContext.plantingAreaCreateForm.form;
 	const handler = workspaceContext.plantingAreaCreateForm.handler;
 	const { form: formData, enhance } = form;
-
-	const geometryTypeOptions = [
-		{ value: 'RECTANGLE', label: 'Rectangle', icon: iconIds.rectangleIcon },
-		{ value: 'POLYGON', label: 'Polygon', icon: iconIds.polygonIcon },
-		{ value: 'ELLIPSE', label: 'Ellipse', icon: iconIds.ellipseIcon },
-		{ value: 'LINES', label: 'Lines', icon: iconIds.linesIcon }
-	];
-	const geometryTypeSelectTrigger = $derived(
-		geometryTypeOptions.find((option) => option.value === $formData.geometry.type) ?? {
-			label: 'Select a type',
-			icon: null
-		}
-	);
 
 	$effect(() => {
 		if (!workspaceContext.id) {
@@ -112,42 +99,7 @@
 						description={workspaceFields.geometryTypeSchema.description}
 						optional={false}>Type</Form.Label
 					>
-					<Select.Root {...props} type="single" bind:value={$formData.geometry.type}>
-						<Select.Trigger class="w-full">
-							<div class="item-center flex">
-								<span>
-									{geometryTypeSelectTrigger.label}
-								</span>
-								{#if geometryTypeSelectTrigger.icon}
-									<Icon
-										icon={geometryTypeSelectTrigger.icon}
-										width="1.5rem"
-										class="text-neutral-11 ml-4"
-									/>
-								{/if}
-							</div>
-						</Select.Trigger>
-						<Select.Content>
-							<Select.Group>
-								{#each geometryTypeOptions as option}
-									<Select.Item value={option.value} label={option.label}>
-										<div class="item-center flex">
-											<span>
-												{option.label}
-											</span>
-											{#if option.icon}
-												<Icon
-													icon={option.icon}
-													width="1rem"
-													class="text-neutral-11 ml-4"
-												/>
-											{/if}
-										</div>
-									</Select.Item>
-								{/each}
-							</Select.Group>
-						</Select.Content>
-					</Select.Root>
+					<GeometrySelect {...props} bind:value={$formData.geometry.type} />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.type']} />
@@ -302,7 +254,8 @@
 			<!-- LINES GEOMETRY. -->
 		{:else if $formData.geometry.type === 'LINES'}
 			<!-- Coordinate. -->
-			{#each $formData.geometry.linesCoordinates as coordinate, index}
+			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+			{#each $formData.geometry.linesCoordinates as _, index}
 				<Form.Field {form} name={`geometry.linesCoordinates[${index}]`}>
 					<Form.Control>
 						{#snippet children({ props })}

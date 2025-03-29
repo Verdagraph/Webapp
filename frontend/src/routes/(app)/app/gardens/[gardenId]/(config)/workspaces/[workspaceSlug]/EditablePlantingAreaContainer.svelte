@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Geometry, GeometryUpdateCommand, Position } from '@vdt-webapp/common';
+	import type { GeometryUpdateCommand } from '@vdt-webapp/common';
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
@@ -69,7 +69,7 @@
 	);
 
 	/** Update the location history on translation. */
-	function onTranslate(newPos: Vector2d, movementOver: boolean) {
+	function onTranslate(newPos: Vector2d) {
 		if (!plantingArea || !workspaceContext.id) {
 			return;
 		}
@@ -86,7 +86,7 @@
 	}
 
 	/** Update the geometry on transformation. */
-	function onTransform(newGeometry: GeometryUpdateCommand, transformOver: boolean) {
+	function onTransform(newGeometry: GeometryUpdateCommand) {
 		if (!plantingArea) {
 			return;
 		}

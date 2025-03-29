@@ -57,7 +57,7 @@
 		geometry,
 		editable,
 		selected,
-		grid,
+		// grid,
 		onTranslate,
 		onTransform: onTransformContainer,
 		onClick

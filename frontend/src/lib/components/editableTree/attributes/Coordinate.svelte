@@ -3,7 +3,7 @@
 	import { type EditableAttributeProps } from './types';
 	import { type Position } from '@vdt-webapp/common';
 
-	let { value, editing, onChange, errors }: EditableAttributeProps<Position> = $props();
+	let { value, editing, onChange }: EditableAttributeProps<Position> = $props();
 </script>
 
 {#if editing}

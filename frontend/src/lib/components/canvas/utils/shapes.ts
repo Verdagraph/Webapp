@@ -2,12 +2,7 @@ import Konva from 'konva';
 import type { ShapeConfig } from 'konva/lib/Shape';
 import type { CanvasContext } from '../state';
 import { AppError } from '@vdt-webapp/common/src/errors';
-import type {
-	Coordinate,
-	Geometry,
-	GeometryType,
-	GeometryUpdateCommand
-} from '@vdt-webapp/common';
+import type { Coordinate, Geometry, GeometryUpdateCommand } from '@vdt-webapp/common';
 
 /**
  * Union of supported shape types in Konva for geometry objects.
@@ -17,25 +12,6 @@ export type SupportedShape =
 	| Konva.Ellipse
 	| Konva.RegularPolygon
 	| Konva.Line;
-
-/**
- * Maps Konva class name to native geometry type.
- */
-const konvaShapeClassNames: Record<string, GeometryType> = {
-	Rect: 'RECTANGLE',
-	RegularPolygon: 'POLYGON',
-	Ellipse: 'ELLIPSE',
-	Line: 'LINES'
-};
-
-/**
- * Given a supported Konva shape, retuns the associated value of GeometryType.
- * @param shape The Konva shape.
- * @returns A value of GeometryType.
- */
-function supportedShapeToGeometryType(shape: SupportedShape): GeometryType {
-	return konvaShapeClassNames[shape.getClassName()];
-}
 
 /**
  * Constructs a Konva shape from geometry and position objects.

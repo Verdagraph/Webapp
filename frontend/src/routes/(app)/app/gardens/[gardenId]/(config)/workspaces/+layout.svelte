@@ -5,7 +5,6 @@
 	import iconIds from '$lib/assets/icons';
 	import * as Menubar from '$components/ui/menubar';
 	import { Button } from 'bits-ui';
-	import type { Workspace } from '@vdt-webapp/common';
 	import { setWorkspaceContext } from './activeWorkspace.svelte';
 	import toolbox from './tools';
 	import { useQuery } from '@triplit/svelte';

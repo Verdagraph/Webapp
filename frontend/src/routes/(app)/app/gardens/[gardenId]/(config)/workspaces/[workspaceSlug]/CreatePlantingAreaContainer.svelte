@@ -20,7 +20,7 @@
 		};
 	}
 
-	function onTransform(newGeometry: GeometryUpdateCommand, transformOver: boolean) {
+	function onTransform(newGeometry: GeometryUpdateCommand) {
 		if (newGeometry.rectangleLength) {
 			$formData.geometry.rectangleLength = newGeometry.rectangleLength;
 		}

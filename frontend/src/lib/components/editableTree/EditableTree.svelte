@@ -79,10 +79,10 @@
 								item.focus();
 							}}
 							aria-label="select"
-							class="border-accent-8 mr-1 flex h-5 w-5 items-center justify-center rounded-sm border-2"
+							class="border-accent-8 mr-1 flex h-5 w-5 items-center justify-center rounded-[4px] border-2"
 						>
 							{#if item.selected}
-								<span class="bg-accent-8 h-3 w-3 rounded-sm"> </span>
+								<span class="bg-accent-7 h-3 w-3 rounded-[4px]"> </span>
 							{/if}
 						</button>
 					{/if}

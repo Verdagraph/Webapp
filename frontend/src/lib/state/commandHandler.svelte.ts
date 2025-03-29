@@ -22,7 +22,7 @@ export type HandlerOptions<ResultType = Record<string, unknown>> = {
  * @param options Handler options.
  * @returns An async handler rune.
  */
-export function createCommandHandler<TParams extends any[], TResult = unknown>(
+export function createCommandHandler<TParams extends unknown[], TResult = unknown>(
 	asyncFn: (...args: TParams) => Promise<TResult>,
 	options?: HandlerOptions<TResult>
 ) {
@@ -47,9 +47,9 @@ export function createCommandHandler<TParams extends any[], TResult = unknown>(
 		isLoading = true;
 
 		asyncFn(...params)
-			.then((result: TResult) => {
+			.then((executionResult: TResult) => {
 				isSuccess = true;
-				result = result;
+				result = executionResult;
 				if (options?.onSuccess) {
 					options.onSuccess(result);
 				}
@@ -71,11 +71,11 @@ export function createCommandHandler<TParams extends any[], TResult = unknown>(
 	 * Resets the handler's state.
 	 */
 	function reset() {
-		(isLoading = false),
-			(isError = false),
-			(isSuccess = false),
-			(result = null),
-			(errors = null);
+		isLoading = false;
+		isError = false;
+		isSuccess = false;
+		result = null;
+		errors = null;
 	}
 
 	return {
@@ -108,9 +108,8 @@ export function createCommandHandler<TParams extends any[], TResult = unknown>(
 	};
 }
 export default createCommandHandler;
-export type CommandHandler<T extends (...args: any[]) => Promise<any>> = ReturnType<
-	typeof createCommandHandler<Parameters<T>, Awaited<ReturnType<T>>>
->;
+export type CommandHandler<T extends (...args: unknown[]) => Promise<unknown>> =
+	ReturnType<typeof createCommandHandler<Parameters<T>, Awaited<ReturnType<T>>>>;
 /**
  * Converts any type of error which may be raised by the async function
  * into the normalized AppErrors format.

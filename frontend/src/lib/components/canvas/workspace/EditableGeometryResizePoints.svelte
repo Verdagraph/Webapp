@@ -60,7 +60,7 @@
 		const newGeometry: GeometryUpdateCommand = {};
 
 		switch (geometry.type) {
-			case 'RECTANGLE':
+			case 'RECTANGLE': {
 				/**
 				 * If the index is even,
 				 * calculate the new width and height.
@@ -104,8 +104,9 @@
 					}
 				}
 				break;
+			}
 
-			case 'POLYGON':
+			case 'POLYGON': {
 				/**
 				 * Calculate the new radius,
 				 * and constrain the movement to
@@ -118,8 +119,9 @@
 					ATTRIBUTE_DECIMALS
 				);
 				break;
+			}
 
-			case 'ELLIPSE':
+			case 'ELLIPSE': {
 				/**
 				 * If the index is even (top/bottom point),
 				 * calculate the new width and
@@ -148,8 +150,9 @@
 				}
 
 				break;
+			}
 
-			case 'LINES':
+			case 'LINES': {
 				/**
 				 * Each point updates the whole coordinate array to the current state.
 				 */
@@ -166,6 +169,7 @@
 					};
 				});
 				break;
+			}
 		}
 		return newGeometry;
 	}

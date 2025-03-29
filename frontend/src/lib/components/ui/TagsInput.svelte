@@ -7,7 +7,8 @@
 		tagsInput: string[] | undefined;
 		maxTags: number;
 		placeholder: string;
-		onChange: Function | undefined;
+		onChange?: () => void;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		formAttrs: any;
 	};
 

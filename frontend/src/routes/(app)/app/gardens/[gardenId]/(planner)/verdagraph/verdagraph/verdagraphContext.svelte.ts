@@ -18,7 +18,7 @@ export type VerdagraphViewSettings = {
 };
 
 const verdagraphContextId = 'verdagraphEditorContext';
-const verdagraphLayoutCanvasContextId = 'verdagraphLayoutCanvas';
+// const verdagraphLayoutCanvasContextId = 'verdagraphLayoutCanvas';
 
 /**
  * TODO: Disable the tree by default on small devices.

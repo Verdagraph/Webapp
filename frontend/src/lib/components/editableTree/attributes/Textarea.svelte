@@ -4,7 +4,7 @@
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 	import { getOninputString } from './utils';
 
-	let { value, editing, onChange, errors }: EditableAttributeProps<string> = $props();
+	let { value, editing, onChange }: EditableAttributeProps<string> = $props();
 </script>
 
 {#if editing}

@@ -3,7 +3,7 @@
 	import { type EditableAttributeProps, type DynamicSelectValue } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 
-	let { value, editing, onChange, errors }: EditableAttributeProps<DynamicSelectValue> =
+	let { value, editing, onChange }: EditableAttributeProps<DynamicSelectValue> =
 		$props();
 
 	const selectTrigger = $derived(

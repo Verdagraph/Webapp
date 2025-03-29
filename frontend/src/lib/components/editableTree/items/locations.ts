@@ -120,12 +120,12 @@ export function locationTreeItem(
 		description: 'Deletes the geometry from the history.',
 		valueComponent: TreeDeleteButton,
 		value: undefined,
-		onChange: (newData: undefined) => {
+		onChange: () => {
 			ctx.updateHandler.execute(value.location.id, { delete: true });
 		}
 	};
 
-	let children: Item[] = [dateItem, coordinateItem, workspaceItem];
+	const children: Item[] = [dateItem, coordinateItem, workspaceItem];
 	if (options.includeDelete) {
 		children.push(deleteItem);
 	}
@@ -189,7 +189,7 @@ export function locationHistoryTreeItem(
 		 * The callback here is just used to register the add
 		 * button has been pressed, so no need for data.
 		 */
-		onChange: (newData: undefined) => {
+		onChange: () => {
 			if (!value.locationHistory) {
 				return;
 			}

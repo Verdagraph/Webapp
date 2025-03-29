@@ -2,6 +2,7 @@ import { type TreeItem } from 'melt/builders';
 import { type Component } from 'svelte';
 
 /** Describes the structure of an item in the tree. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Item<ValueT = any> = TreeItem & {
 	id: string;
 	/** Label for the item. */
@@ -14,9 +15,9 @@ export type Item<ValueT = any> = TreeItem & {
 	 * The value of the item.
 	 * Mutually exclusive with the item having children.
 	 */
-	value?: any;
+	value?: ValueT;
 	/** The change callback to use for changing the item. */
-	onChange?: (newData: any) => void;
+	onChange?: (newData: ValueT) => void;
 	/**
 	 * Must be defined to render an editable value for the item value.
 	 * The snippet can render any type of value, becomes editable if

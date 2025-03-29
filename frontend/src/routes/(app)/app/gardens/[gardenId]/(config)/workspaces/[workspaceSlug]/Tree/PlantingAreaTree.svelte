@@ -6,7 +6,6 @@
 		EditableTree,
 		TreeString,
 		TreeTextarea,
-		TreeNumber,
 		TreeDistance,
 		toTreeBaseId,
 		toTreeId,
@@ -27,9 +26,6 @@
 	import {
 		type PlantingArea,
 		workspaceFields,
-		type PlantingAreaUpdateCommand,
-		type LocationUpdateCommand,
-		type GeometryUpdateCommand,
 		type FieldErrors
 	} from '@vdt-webapp/common';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
