@@ -15,7 +15,7 @@ export default function seed(): BulkInsert<typeof schema> {
 				profileId: 'user1',
 				/** Password is 'password'. */
 				passwordHash: '$argon2i$v=19$m=16,t=2,p=1$MTIzNDU2Nzg5$e7G/IEd63Q/ZrZIiW6FUow',
-				verifiedEmail: 'test@verdantech.com',
+				verifiedEmail: 'test@Verdagraph.com',
 				unverifiedEmail: {
 					address: null,
 					token: null

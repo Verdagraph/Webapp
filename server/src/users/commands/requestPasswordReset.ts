@@ -1,5 +1,5 @@
 import { diContainer } from '@fastify/awilix';
-import { type UserRequestPasswordResetCommand } from '@vdt-webapp/common/src';
+import { type UserRequestPasswordResetCommand } from '@vdg-webapp/common/src';
 import { NotFoundError } from 'common/errors';
 
 import { encodePasswordResetToken } from 'users/auth/tokens';

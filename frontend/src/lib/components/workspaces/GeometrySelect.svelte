@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { type GeometryType } from '@vdt-webapp/common';
+	import { type GeometryType } from '@vdg-webapp/common';
 	import iconIds from '$lib/assets/icons';
 	import Icon from '@iconify/svelte';
 

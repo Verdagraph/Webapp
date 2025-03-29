@@ -4,7 +4,7 @@ import { HttpClient as TriplitHttpClient } from '@triplit/client';
 import { asClass, asValue, Lifetime } from 'awilix';
 import env from 'env';
 import { UserRepository } from 'users/repository';
-import { UserAccount } from '@vdt-webapp/common/src/users/schema';
+import { UserAccount } from '@vdg-webapp/common/src/users/schema';
 import EmailSender from 'common/emails/sender';
 
 import { fastifyAwilixPlugin } from '@fastify/awilix';

@@ -2,7 +2,7 @@
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import type { Vector2d } from 'konva/lib/types';
-	import type { Geometry, GeometryUpdateCommand } from '@vdt-webapp/common';
+	import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/common';
 
 	type Props = {
 		plantingAreaLayerId: string;

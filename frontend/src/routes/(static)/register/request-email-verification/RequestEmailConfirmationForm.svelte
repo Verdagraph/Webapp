@@ -5,7 +5,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestEmailConfirmation } from '$data/users/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { userFields } from '@vdt-webapp/common';
+	import { userFields } from '@vdg-webapp/common';
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
 		succeeded: boolean;

@@ -6,7 +6,7 @@
 		"moduleResolution": "Bundler",
 		"paths": {
 			"@common/*": ["./common/src/*"],
-			"@vdt-webapp/common": ["./common/src"]
+			"@vdg-webapp/common": ["./common/src"]
 		},
 		//"baseUrl": ".",
 		"strict": true,

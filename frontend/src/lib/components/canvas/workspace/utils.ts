@@ -1,4 +1,4 @@
-import { type Geometry } from '@vdt-webapp/common';
+import { type Geometry } from '@vdg-webapp/common';
 
 /**
  * Given a geometry, returns an array of coordinates

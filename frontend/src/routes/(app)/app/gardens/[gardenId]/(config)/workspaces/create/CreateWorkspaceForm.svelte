@@ -8,7 +8,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { workspaceCreate } from '$data/workspaces/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { workspaceFields } from '@vdt-webapp/common';
+	import { workspaceFields } from '@vdg-webapp/common';
 
 	let formHandler = createCommandHandler(workspaceCreate.mutation, {
 		onSuccess: (workspace) => {

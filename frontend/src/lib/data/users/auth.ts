@@ -5,7 +5,7 @@ import {
 	AppError,
 	type UserLoginCommand,
 	UserLoginCommandSchema
-} from '@vdt-webapp/common';
+} from '@vdg-webapp/common';
 import auth from '$state/auth.svelte';
 import { TRIPLIT_ANON_TOKEN } from '$data/triplit';
 

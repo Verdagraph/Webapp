@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings - VerdanTech</title>
+	<title>Settings - Verdagraph</title>
 </svelte:head>
 
 <UnderConstructionPage />

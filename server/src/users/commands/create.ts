@@ -1,6 +1,6 @@
 import env from 'env';
 import { diContainer } from '@fastify/awilix';
-import { type UserCreateCommand } from '@vdt-webapp/common';
+import { type UserCreateCommand } from '@vdg-webapp/common';
 import { ValidationError } from 'common/errors';
 import { hashPassword } from '../auth/passwords';
 import { encodeEmailConfirmationToken } from '../auth/tokens';

@@ -1,4 +1,4 @@
-import { AppError } from '@vdt-webapp/common/src/errors';
+import { AppError } from '@vdg-webapp/common/src/errors';
 import Konva from 'konva';
 
 /**

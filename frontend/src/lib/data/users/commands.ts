@@ -4,7 +4,7 @@ import {
 	UserRequestEmailConfirmationCommandSchema,
 	UserRequestPasswordResetCommandSchema,
 	UserConfirmPasswordResetCommandSchema
-} from '@vdt-webapp/common';
+} from '@vdg-webapp/common';
 import {
 	userCreateOp,
 	userConfirmEmailOp,

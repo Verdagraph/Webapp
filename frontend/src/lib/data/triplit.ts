@@ -1,6 +1,6 @@
 import { TriplitClient } from '@triplit/client';
 import { browser } from '$app/environment';
-import { schema, roles, AppError } from '@vdt-webapp/common';
+import { schema, roles, AppError } from '@vdg-webapp/common';
 import { userRefresh } from './users/auth';
 import { handleErrors } from '$lib/errors';
 

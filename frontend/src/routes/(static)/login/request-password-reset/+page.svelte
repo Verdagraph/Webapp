@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>Request Password Reset - VerdanTech</title>
+	<title>Request Password Reset - Verdagraph</title>
 </svelte:head>
 
 <Card.Root class="m-auto mt-12 w-3/4 md:w-1/2 lg:w-1/3">

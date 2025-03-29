@@ -6,7 +6,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$data/users/auth';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { userFields } from '@vdt-webapp/common';
+	import { userFields } from '@vdg-webapp/common';
 
 	let formHandler = createCommandHandler(userLogin.mutation, {
 		onSuccess: () => {

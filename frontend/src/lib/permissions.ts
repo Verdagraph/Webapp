@@ -1,4 +1,4 @@
-import { type GardenRole } from '@vdt-webapp/common';
+import { type GardenRole } from '@vdg-webapp/common';
 
 /**
  * This file is a centralized location for mapping application actions to a required Garden role.

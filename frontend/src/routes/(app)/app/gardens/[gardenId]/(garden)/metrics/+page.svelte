@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Metrics - VerdanTech</title>
+	<title>Metrics - Verdagraph</title>
 </svelte:head>
 
 <UnderConstructionPage />

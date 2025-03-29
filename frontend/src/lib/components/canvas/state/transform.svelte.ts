@@ -2,7 +2,7 @@ import { CanvasContainer } from './container.svelte';
 import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
-import { AppError } from '@vdt-webapp/common/src/errors';
+import { AppError } from '@vdg-webapp/common/src/errors';
 
 /**
  * Indicates a corner of the canvas.

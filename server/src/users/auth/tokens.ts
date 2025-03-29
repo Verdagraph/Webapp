@@ -2,7 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { InternalFailureException } from 'common/errors';
 import env from 'env';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { ACCESS_TOKEN_EXPIRY_S } from '@vdt-webapp/common/src/settings';
+import { ACCESS_TOKEN_EXPIRY_S } from '@vdg-webapp/common/src/settings';
 
 const ACCESS_HEADER_KEY = 'Authorization';
 const REFRESH_COOKIE_KEY = 'refresh';

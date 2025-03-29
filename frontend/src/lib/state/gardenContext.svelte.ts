@@ -1,4 +1,4 @@
-import { GardenRole } from '@vdt-webapp/common';
+import { GardenRole } from '@vdg-webapp/common';
 import { ActionType, requiredRole as getRequiredRole } from '$lib/permissions';
 
 let id: string | null = $state(null);

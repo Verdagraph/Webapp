@@ -7,7 +7,7 @@
 		getResourcesTab,
 		getAuthProfileTab
 	} from './tabs.svelte';
-	import type { Garden } from '@vdt-webapp/common';
+	import type { Garden } from '@vdg-webapp/common';
 	import triplit from '$data/triplit';
 	import {
 		gardenQuery,

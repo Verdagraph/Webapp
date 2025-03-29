@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Cultivars - VerdanTech</title>
+	<title>Cultivars - Verdagraph</title>
 </svelte:head>
 
 <UnderConstructionPage />

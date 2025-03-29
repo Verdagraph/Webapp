@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getWorkspaceContext } from './activeWorkspace.svelte';
-	import type { Workspace } from '@vdt-webapp/common';
+	import type { Workspace } from '@vdg-webapp/common';
 	import { Button } from '$components/ui/button';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import WorkspaceThumbnail from '$components/workspaces/WorkspaceThumbnail.svelte';
@@ -29,7 +29,7 @@
 </script>
 
 <svelte:head>
-	<title>Workspaces - VerdanTech</title>
+	<title>Workspaces - Verdagraph</title>
 </svelte:head>
 
 <div

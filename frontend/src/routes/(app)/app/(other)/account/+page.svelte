@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Account - VerdanTech</title>
+	<title>Account - Verdagraph</title>
 </svelte:head>
 
 <UnderConstructionPage />

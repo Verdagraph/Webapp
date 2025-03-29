@@ -5,7 +5,7 @@ import {
 	ServerErrorResponse,
 	FieldErrors,
 	AppErrors
-} from '@vdt-webapp/common/src/errors';
+} from '@vdg-webapp/common/src/errors';
 
 export const registerErrorHandler = (app: FastifyInstance) => {
 	app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply) => {

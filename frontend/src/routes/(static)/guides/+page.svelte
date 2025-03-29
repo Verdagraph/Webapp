@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Guides - VerdanTech</title>
+	<title>Guides - Verdagraph</title>
 </svelte:head>
 
 <UnderConstructionPage />

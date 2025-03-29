@@ -11,7 +11,7 @@
 	import iconIds from '$lib/assets/icons';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import { toast } from 'svelte-sonner';
-	import { AppError, workspaceFields } from '@vdt-webapp/common';
+	import { AppError, workspaceFields } from '@vdg-webapp/common';
 
 	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;

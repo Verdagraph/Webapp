@@ -1,4 +1,4 @@
-import type { AppErrors, FieldErrors } from '@vdt-webapp/common/src/errors';
+import type { AppErrors, FieldErrors } from '@vdg-webapp/common/src/errors';
 import { z } from 'zod';
 import createCommandHandler, { type HandlerOptions } from './mutationHandler.svelte';
 

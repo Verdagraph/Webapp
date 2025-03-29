@@ -1,4 +1,4 @@
-import { AppError, ServerErrorResponse, AppErrors } from '@vdt-webapp/common';
+import { AppError, ServerErrorResponse, AppErrors } from '@vdg-webapp/common';
 import { isAxiosError } from 'axios';
 import type { AxiosError } from 'axios';
 import { handleErrors } from '$lib/errors';

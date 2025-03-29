@@ -1,4 +1,4 @@
-import { AppErrors } from '@vdt-webapp/common';
+import { AppErrors } from '@vdg-webapp/common';
 import { toast } from 'svelte-sonner';
 
 /**

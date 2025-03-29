@@ -1,5 +1,5 @@
 import { diContainer } from '@fastify/awilix';
-import { type UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
+import { type UserConfirmEmailConfirmationCommand } from '@vdg-webapp/common';
 import { decodeEmailConfirmationToken } from 'users/auth/tokens';
 import { ValidationError } from 'common/errors';
 

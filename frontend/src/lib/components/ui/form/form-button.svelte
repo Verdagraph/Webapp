@@ -4,7 +4,7 @@
 	import * as Button from '$lib/components/ui/button/index.js';
 
 	/**
-	 * VerdanTech - Modified to allow loading spinner.
+	 * Verdagraph - Modified to allow loading spinner.
 	 */
 
 	let {

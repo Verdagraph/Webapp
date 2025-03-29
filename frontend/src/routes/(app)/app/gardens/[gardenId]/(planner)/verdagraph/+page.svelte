@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Verdagraph - VerdanTech</title>
+	<title>Verdagraph - Verdagraph</title>
 </svelte:head>
 
 <Verdagraph />
