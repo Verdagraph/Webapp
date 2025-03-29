@@ -33,7 +33,6 @@ type LayoutRouteId =
 	| '/(app)/app/gardens'
 	| '/(app)/app/gardens/[gardenId]'
 	| '/(app)/app/gardens/[gardenId]/(config)/cultivars'
-	| '/(app)/app/gardens/[gardenId]/(config)/environments'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces/[workspaceSlug]'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces/create'
@@ -73,4 +72,5 @@ export type LayoutServerLoad<
 export type LayoutServerLoadEvent = Parameters<LayoutServerLoad>[0];
 export type LayoutServerData = null;
 export type LayoutData = Expand<LayoutParentData>;
+export type LayoutProps = { data: LayoutData; children: import('svelte').Snippet };
 export type RequestEvent = Kit.RequestEvent<RouteParams, RouteId>;

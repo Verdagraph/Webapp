@@ -1,25 +1,24 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import * as Card from '$lib/components/ui/card';
 	import { userConfirmEmailConfirmation } from '$data/users/commands';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 	import { UserConfirmEmailConfirmationCommand } from '@vdt-webapp/common';
-	import z from 'zod';
 
 	/* Initialize the mutation on page load with url parameter. */
-	const confirmationToken = $page.params.confirmationToken;
+	const confirmationToken = page.params.confirmationToken;
 
-	let formHandler = createMutationHandler(userConfirmEmailConfirmation.mutation, {
+	let formHandler = createCommandHandler(userConfirmEmailConfirmation.mutation, {
 		onSuccess: () => {
 			goto('/login');
 		}
 	});
-	formHandler.execute({ token: confirmationToken } satisfies z.infer<
-		typeof UserConfirmEmailConfirmationCommand
-	>);
+	formHandler.execute({
+		token: confirmationToken
+	} satisfies UserConfirmEmailConfirmationCommand);
 </script>
 
 <svelte:head>

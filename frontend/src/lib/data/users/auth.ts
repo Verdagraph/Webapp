@@ -1,23 +1,26 @@
-import { userLoginOp, userRefreshOp } from '$codegen';
 import triplit from '$data/triplit';
-import { UserAccount, UserProfile } from '@vdt-webapp/common';
-import { AppError } from '@vdt-webapp/common/src/errors';
-import { UserLoginCommand } from '@vdt-webapp/common';
+import { userLoginOp, userRefreshOp } from '$codegen';
+import {
+	type User,
+	AppError,
+	type UserLoginCommand,
+	UserLoginCommandSchema
+} from '@vdt-webapp/common';
 import auth from '$state/auth.svelte';
-import { z } from 'zod';
-
-const TRIPLIT_ANON_TOKEN =
-	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.JzN7Erur8Y-MlFdCaZtovQwxN_m_fSyOIWNzYQ3uVcc';
+import { TRIPLIT_ANON_TOKEN } from '$data/triplit';
 
 /**
  * Sends an authentication request to the backend.
  */
 export const userLogin = {
-	schema: UserLoginCommand,
-	mutation: async function (data: z.infer<typeof UserLoginCommand>) {
+	schema: UserLoginCommandSchema,
+	mutation: async function (data: UserLoginCommand) {
 		/** Don't allow re-logging in. */
 		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
-			return;
+			throw new AppError(
+				'Current token does not match anon token - already logged in.',
+				{ nonFormErrors: ['Already logged in.'] }
+			);
 		}
 
 		/** Fetch the token. */
@@ -65,16 +68,13 @@ export const userLogout = {
  * If anonymous, null is returned.
  * @returns The client if it was found, else null.
  */
-export const getClient = async (): Promise<{
-	account: UserAccount;
-	profile: UserProfile;
-} | null> => {
+export const getClient = async (): Promise<User | null> => {
 	if (!auth.isAuthenticated) {
 		return null;
 	}
 
 	const account = await triplit.fetchOne(
-		triplit.query('accounts').id('$session.accountId').include('profile').build()
+		triplit.query('accounts').Id('$session.accountId').Include('profile')
 	);
 	if (!account || !account.profile) {
 		return null;
@@ -89,10 +89,7 @@ export const getClient = async (): Promise<{
  * If this fails, an AppError is raised.
  * @returns The client.
  */
-export const getClientOrError = async (): Promise<{
-	account: UserAccount;
-	profile: UserProfile;
-}> => {
+export const getClientOrError = async (): Promise<User> => {
 	/** Return the client if authenticated. */
 	const client = await getClient();
 	if (client) {

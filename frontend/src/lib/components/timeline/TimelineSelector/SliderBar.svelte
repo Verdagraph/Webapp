@@ -3,7 +3,7 @@
 	import { type TimelineSelection } from '../timelineSelection.svelte';
 	import { getDayOfWeek } from '@internationalized/date';
 	import { cn } from '$lib/utils';
-	import { getMonthString } from '../utils';
+	import { getMonthString, type MonthNumber } from '../utils';
 
 	type Props = {
 		selection: TimelineSelection;
@@ -33,10 +33,12 @@
 </script>
 
 <Slider.Root
-	bind:value={() => selection.sliderValue,
-	(newVal) => {
-		selection.updateSlider(newVal);
-	}}
+	bind:value={
+		() => selection.sliderValue,
+		(newVal) => {
+			selection.updateSlider(newVal);
+		}
+	}
 	min={selection.minSliderValue}
 	max={selection.maxSliderValue}
 	disabled={selection.disabled}
@@ -85,7 +87,7 @@
 						{#snippet child({ props })}
 							<div {...props} class={cn(baseTickClass, '')}>
 								<span class="text-neutral-11 absolute -translate-y-[14px] text-xs">
-									{getMonthString(dateValue.month)}
+									{getMonthString(dateValue.month as MonthNumber)}
 								</span>
 								<span
 									class={cn(baseTickDayLabelClass, '')}

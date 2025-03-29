@@ -27,7 +27,7 @@
 		<RegistrationForm bind:succeeded bind:registeredEmail />
 	</Card.Content>
 
-	<Dialog.Root open={succeeded} closeOnEscape={false} closeOnOutsideClick={false}>
+	<Dialog.Root open={succeeded}>
 		<Dialog.Content>
 			<Dialog.Header>
 				<Dialog.Title

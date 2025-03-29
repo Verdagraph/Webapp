@@ -25,8 +25,6 @@
 
 	<Dialog.Root
 		open={succeeded}
-		closeOnEscape={true}
-		closeOnOutsideClick={true}
 		onOpenChange={(open) => {
 			if (!open) {
 				succeeded = false;

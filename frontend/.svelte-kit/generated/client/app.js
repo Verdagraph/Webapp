@@ -35,43 +35,41 @@ export const nodes = [
 	() => import('./nodes/31'),
 	() => import('./nodes/32'),
 	() => import('./nodes/33'),
-	() => import('./nodes/34'),
-	() => import('./nodes/35')
+	() => import('./nodes/34')
 ];
 
 export const server_loads = [0];
 
 export const dictionary = {
-	'/(static)': [28, [5]],
+	'/(static)': [27, [5]],
 	'/(app)/app': [6, [2]],
 	'/(app)/app/(other)/account': [7, [2]],
 	'/(app)/app/gardens': [10, [2]],
-	'/(app)/app/gardens/create': [22, [2]],
-	'/(app)/app/gardens/discover': [23, [2]],
+	'/(app)/app/gardens/create': [21, [2]],
+	'/(app)/app/gardens/discover': [22, [2]],
 	'/(app)/app/gardens/[gardenId]': [11, [2, 3]],
 	'/(app)/app/gardens/[gardenId]/(config)/cultivars': [12, [2, 3]],
-	'/(app)/app/gardens/[gardenId]/(garden)/edit': [17, [2, 3]],
-	'/(app)/app/gardens/[gardenId]/(config)/environments': [13, [2, 3]],
-	'/(app)/app/gardens/[gardenId]/(garden)/members': [18, [2, 3]],
-	'/(app)/app/gardens/[gardenId]/(garden)/metrics': [19, [2, 3]],
-	'/(app)/app/gardens/[gardenId]/(planner)/verdagraph': [20, [2, 3]],
-	'/(app)/app/gardens/[gardenId]/(planner)/workbook': [21, [2, 3]],
-	'/(app)/app/gardens/[gardenId]/(config)/workspaces': [14, [2, 3, 4]],
-	'/(app)/app/gardens/[gardenId]/(config)/workspaces/create': [16, [2, 3, 4]],
-	'/(app)/app/gardens/[gardenId]/(config)/workspaces/[workspaceSlug]': [15, [2, 3, 4]],
+	'/(app)/app/gardens/[gardenId]/(garden)/edit': [16, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(garden)/members': [17, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(garden)/metrics': [18, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(planner)/verdagraph': [19, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(planner)/workbook': [20, [2, 3]],
+	'/(app)/app/gardens/[gardenId]/(config)/workspaces': [13, [2, 3, 4]],
+	'/(app)/app/gardens/[gardenId]/(config)/workspaces/create': [15, [2, 3, 4]],
+	'/(app)/app/gardens/[gardenId]/(config)/workspaces/[workspaceSlug]': [14, [2, 3, 4]],
 	'/(app)/app/(other)/notifications': [8, [2]],
 	'/(app)/app/(other)/settings': [9, [2]],
-	'/(app)/app/traits': [24, [2]],
-	'/(app)/app/traits/cultivars': [25, [2]],
-	'/(app)/app/traits/environments': [26, [2]],
-	'/(app)/app/traits/workspaces': [27, [2]],
-	'/(static)/guides': [29, [5]],
-	'/(static)/login': [30, [5]],
-	'/(static)/login/request-password-reset': [31, [5]],
-	'/(static)/login/reset-password/[userId]/[confirmationToken]': [32, [5]],
-	'/(static)/register': [33, [5]],
-	'/(static)/register/request-email-verification': [34, [5]],
-	'/(static)/register/verify/[confirmationToken]': [35, [5]]
+	'/(app)/app/traits': [23, [2]],
+	'/(app)/app/traits/cultivars': [24, [2]],
+	'/(app)/app/traits/environments': [25, [2]],
+	'/(app)/app/traits/workspaces': [26, [2]],
+	'/(static)/guides': [28, [5]],
+	'/(static)/login': [29, [5]],
+	'/(static)/login/request-password-reset': [30, [5]],
+	'/(static)/login/reset-password/[userId]/[confirmationToken]': [31, [5]],
+	'/(static)/register': [32, [5]],
+	'/(static)/register/request-email-verification': [33, [5]],
+	'/(static)/register/verify/[confirmationToken]': [34, [5]]
 };
 
 export const hooks = {

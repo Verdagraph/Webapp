@@ -56,5 +56,7 @@ type LayoutParentData = Omit<
 export type EntryGenerator = () => Promise<Array<RouteParams>> | Array<RouteParams>;
 export type PageServerData = null;
 export type PageData = Expand<PageParentData>;
+export type PageProps = { data: PageData };
 export type LayoutServerData = null;
 export type LayoutData = Expand<LayoutParentData>;
+export type LayoutProps = { data: LayoutData; children: import('svelte').Snippet };

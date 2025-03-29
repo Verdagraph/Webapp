@@ -8,9 +8,10 @@ import { AppError } from '@vdt-webapp/common/src/errors.js';
  */
 export async function load({ params }) {
 	const workspace = await triplit.fetchOne(
-		workspaceSlugQuery
-			.vars({ gardenId: params.gardenId, workspaceSlug: params.workspaceSlug })
-			.build()
+		workspaceSlugQuery.Vars({
+			gardenId: params.gardenId,
+			workspaceSlug: params.workspaceSlug
+		})
 	);
 
 	if (!workspace) {

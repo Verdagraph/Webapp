@@ -37,7 +37,6 @@ type LayoutRouteId =
 	| RouteId
 	| '/(app)/app/gardens/[gardenId]'
 	| '/(app)/app/gardens/[gardenId]/(config)/cultivars'
-	| '/(app)/app/gardens/[gardenId]/(config)/environments'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces/[workspaceSlug]'
 	| '/(app)/app/gardens/[gardenId]/(config)/workspaces/create'
@@ -56,6 +55,7 @@ type LayoutParentData = Omit<
 export type EntryGenerator = () => Promise<Array<RouteParams>> | Array<RouteParams>;
 export type PageServerData = null;
 export type PageData = Expand<PageParentData>;
+export type PageProps = { data: PageData };
 export type LayoutServerData = null;
 export type LayoutLoad<
 	OutputData extends
@@ -91,3 +91,4 @@ export type LayoutData = Expand<
 			>
 		>
 >;
+export type LayoutProps = { data: LayoutData; children: import('svelte').Snippet };

@@ -1,4 +1,4 @@
-import { Schema as S, ClientSchema, Entity, Roles } from '@triplit/client';
+import { Schema as S, Entity, Roles } from '@triplit/client';
 
 export const roles: Roles = {
 	anon: {
@@ -16,7 +16,7 @@ export const roles: Roles = {
 	}
 };
 
-export const userSchema = {
+export const userSchema = S.Collections({
 	/** User profiles. */
 	profiles: {
 		schema: S.Schema({
@@ -51,9 +51,6 @@ export const userSchema = {
 
 			/** The ID of the associated profile. */
 			profileId: S.String(),
-			profile: S.RelationOne('profiles', {
-				where: [['id', '=', '$profileId']]
-			}),
 
 			/** Hashed password */
 			passwordHash: S.String(),
@@ -78,6 +75,9 @@ export const userSchema = {
 			/** Set to false for inactive users. */
 			isActive: S.Boolean({ default: true })
 		}),
+		relationships: {
+			profile: S.RelationById('profiles', '$profileId')
+		},
 		/** Accounts objects can only be modified by the server and viewed by the user. */
 		permissions: {
 			user: {
@@ -85,6 +85,7 @@ export const userSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
+});
 export type UserProfile = Entity<typeof userSchema, 'profiles'>;
 export type UserAccount = Entity<typeof userSchema, 'accounts'>;
+export type User = { account: UserAccount; profile: UserProfile };

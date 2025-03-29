@@ -20,10 +20,6 @@
 		"src/routes/(app)/app/gardens/[gardenId]/+layout.ts",
 		"src/routes/+layout.server.js"
 	],
-	"/(app)/app/gardens/[gardenId]/(config)/environments": [
-		"src/routes/(app)/app/gardens/[gardenId]/+layout.ts",
-		"src/routes/+layout.server.js"
-	],
 	"/(app)/app/gardens/[gardenId]/(garden)/members": [
 		"src/routes/(app)/app/gardens/[gardenId]/+layout.ts",
 		"src/routes/+layout.server.js"

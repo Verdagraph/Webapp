@@ -5,14 +5,26 @@ import * as AnnualLifeCycle from './annualLifeCycle';
 import * as FrostDatePlantingWindows from './frostDatePlantingWindows';
 import * as Origin from './origin';
 
+export const attributesSchemas = {
+	...AnnualLifeCycle.fields,
+	...FrostDatePlantingWindows.fields,
+	...Origin.fields
+};
+
 export const CultivarAttributes = S.Record({
-	annualLifeCycle: S.Optional(AnnualLifeCycle.profile),
-	frostDatePlantingWindows: S.Optional(FrostDatePlantingWindows.profile),
-	origin: S.Optional(Origin.profile)
+	annualLifeCycle: S.Optional(AnnualLifeCycle.AnnualLifeCycleProfile),
+	frostDatePlantingWindows: S.Optional(
+		FrostDatePlantingWindows.FrostDatePlantingWindowsProfile
+	),
+	origin: S.Optional(Origin.OriginProfile)
 });
 
-export const CultivarAttributesUpdateCommand = z.object({
-	annualLifeCycle: AnnualLifeCycle.command.optional(),
-	frostDatePlantingWindows: FrostDatePlantingWindows.command.optional(),
-	origin: Origin.command.optional()
+export const CultivarAttributesUpdateCommandSchema = z.object({
+	annualLifeCycle: AnnualLifeCycle.AnnualLifecycleUpdateCommandSchema.optional(),
+	frostDatePlantingWindows:
+		FrostDatePlantingWindows.FrostDatePlantingWindowsUpdateCommandSchema.optional(),
+	osrigin: Origin.OriginUpdateCommandSchema.optional()
 });
+export type CultivarAttributesUpdateCommand = z.infer<
+	typeof CultivarAttributesUpdateCommandSchema
+>;

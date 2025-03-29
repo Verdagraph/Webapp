@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
-	import { UnitAwareInput } from '$components/units/';
+	// import { UnitAwareInput } from '$components/units/';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 
 	const workspaceContext = getWorkspaceContext();
@@ -18,8 +18,6 @@
 			(option) => option.value === layoutCanvas.transform.config.buttonsPosition
 		)?.label ?? 'Select a corner'
 	);
-
-	let value = $state(1);
 </script>
 
 <div class="mx-4 mt-6 flex flex-col gap-4">

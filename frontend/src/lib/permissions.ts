@@ -3,7 +3,6 @@ import { type GardenRole } from '@vdt-webapp/common';
 /**
  * This file is a centralized location for mapping application actions to a required Garden role.
  */
-
 const permissions = Object.freeze({
 	/** Gardens. */
 	MembershipCreate: 'ADMIN',
@@ -12,6 +11,7 @@ const permissions = Object.freeze({
 
 	/** Workspaces. */
 	WorkspaceCreate: 'ADMIN',
+	WorkspaceUpdate: 'ADMIN',
 	WorkspaceEdit: 'EDITOR',
 	PlantingAreaCreate: 'EDITOR'
 } satisfies Record<string, GardenRole>);

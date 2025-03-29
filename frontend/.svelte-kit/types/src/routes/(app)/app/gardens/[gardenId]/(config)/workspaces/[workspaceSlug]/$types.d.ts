@@ -67,3 +67,4 @@ export type PageData = Expand<
 			>
 		>
 >;
+export type PageProps = { data: PageData };

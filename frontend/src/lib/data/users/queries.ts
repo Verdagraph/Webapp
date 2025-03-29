@@ -5,11 +5,11 @@ import triplit from '$data/triplit';
  */
 export const userProfilesQuery = triplit
 	.query('profiles')
-	.where('id', 'in', '$query.profileIds');
+	.Where('id', 'in', '$query.profileIds');
 
 /**
  * Retrieves the requested user profiles by username.
  */
 export const userProfilesUsernameQuery = triplit
 	.query('profiles')
-	.where('username', 'in', '$query.usernames');
+	.Where('username', 'in', '$query.usernames');

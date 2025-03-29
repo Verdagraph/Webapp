@@ -5,9 +5,10 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$data/users/auth';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 
-	let formHandler = createMutationHandler(userLogin.mutation, {
+	let formHandler = createCommandHandler(userLogin.mutation, {
 		onSuccess: () => {
 			goto('/app');
 		}
@@ -33,10 +34,7 @@
 	<Form.Field {form} name="email">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userLogin.schema.shape.email.description}
-					optional={userLogin.schema.shape.email.isOptional()}>Email</Form.Label
-				>
+				<Form.Label description={userFields.emailSchema.description}>Email</Form.Label>
 				<Input
 					{...props}
 					type="email"
@@ -52,9 +50,8 @@
 	<Form.Field {form} name="password">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userLogin.schema.shape.password.description}
-					optional={userLogin.schema.shape.password.isOptional()}>Password</Form.Label
+				<Form.Label description={userFields.passwordSchema.description}
+					>Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password} />
 			{/snippet}

@@ -32,3 +32,4 @@ type PageParentData = Omit<
 
 export type PageServerData = null;
 export type PageData = Expand<PageParentData>;
+export type PageProps = { data: PageData };

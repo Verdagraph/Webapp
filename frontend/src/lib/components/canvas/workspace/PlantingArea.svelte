@@ -3,11 +3,9 @@
 	import type { Vector2d } from 'konva/lib/types';
 	import { getContext, onDestroy } from 'svelte';
 	import {
+		type GeometryUpdateCommand,
 		getGeometryHeight,
-		type GeometryType,
-		type Geometry,
-		type GridAttributes,
-		type GeometryPartial
+		type Geometry
 	} from '@vdt-webapp/common';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
@@ -26,13 +24,13 @@
 		/** The current position of the planting area in the workspace, in model quantity (meters). */
 		position: Vector2d | null;
 		/** The geometry of the planting area. */
-		geometry: Omit<Geometry, 'id' | 'gardenId'>;
+		geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>;
 		/** If true, the planting area may be moved and resized. */
 		editable: boolean;
 		/** If true, the planting area is selected. */
 		selected: boolean;
 		/** The grid attributes of the planting area. */
-		grid?: GridAttributes;
+		grid?: { numRows: number; numCols: number };
 		/** Called when the position is moved in the canvas. */
 		onTranslate?: (
 			/** The new position, in canvas quantity (pixels). */
@@ -43,7 +41,7 @@
 		/** Called when the geometry is transformed in the canvas. */
 		onTransform?: (
 			/** The updated geometry attributes after transformation. */
-			newGeometry: GeometryPartial,
+			newGeometry: GeometryUpdateCommand,
 			/** If true, the transform has ended.*/
 			transformOver: boolean
 		) => void;
@@ -59,7 +57,7 @@
 		geometry,
 		editable,
 		selected,
-		grid,
+		// grid,
 		onTranslate,
 		onTransform: onTransformContainer,
 		onClick
@@ -195,7 +193,7 @@
 	 * Wrap the container's onTransform to optimistically update
 	 * the shape before the geometry is updated in Triplit.
 	 */
-	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
+	function onTransform(newGeometry: GeometryUpdateCommand, transformOver: boolean) {
 		if (plantingAreaShape) {
 			updateShape(canvas, newGeometry, plantingAreaShape);
 		}

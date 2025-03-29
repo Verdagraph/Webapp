@@ -1,16 +1,15 @@
 <script lang="ts">
-	import type { GeometryPartial, Geometry, Position } from '@vdt-webapp/common';
+	import type { GeometryUpdateCommand } from '@vdt-webapp/common';
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
 	import { historySelect } from '@vdt-webapp/common';
-	import triplit, { TRIPLIT_UPDATE_DEFAULT_INTERVAL } from '$data/triplit';
+	import triplit from '$data/triplit';
 	import { locationHistoryUpdate, geometryUpdate } from '$data/workspaces/commands';
 	import { useQuery } from '@triplit/svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
-	import createMutationHandler from '$state/mutationHandler.svelte';
-	import { createChangeHandler } from '$state/changeHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 
 	type Props = {
 		plantingAreaLayerId: string;
@@ -24,47 +23,11 @@
 	const canvasId = canvasContext.canvasId;
 
 	/** Queries. */
-	const query = useQuery(triplit, plantingAreaQuery.vars({ plantingAreaId }));
+	const query = useQuery(triplit, plantingAreaQuery.Vars({ plantingAreaId }));
 
 	/** Handlers. */
-	/** Translation. */
-	const translateMutationHandler = createMutationHandler(locationHistoryUpdate);
-	const translateChangeHandler = createChangeHandler(
-		(newData: Position) => {
-			if (!plantingArea || !workspaceContext.id) {
-				return;
-			}
-
-			translateMutationHandler.execute(
-				plantingArea.locationHistoryId,
-				workspaceContext.id,
-				newData,
-				workspaceContext.timelineSelection.focusUtc
-			);
-		},
-		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
-		{
-			onStart: workspaceContext.timelineSelection.disable,
-			onEnd: workspaceContext.timelineSelection.enable
-		}
-	);
-
-	/** Transformation. */
-	const transformMutationHandler = createMutationHandler(geometryUpdate);
-	const transformChangeHandler = createChangeHandler(
-		(newData: GeometryPartial) => {
-			if (!plantingArea) {
-				return;
-			}
-
-			transformMutationHandler.execute(plantingArea.geometryId, newData);
-		},
-		TRIPLIT_UPDATE_DEFAULT_INTERVAL,
-		{
-			onStart: workspaceContext.timelineSelection.disable,
-			onEnd: workspaceContext.timelineSelection.enable
-		}
-	);
+	const translateCommandHandler = createCommandHandler(locationHistoryUpdate);
+	const transformMutationHandler = createCommandHandler(geometryUpdate);
 
 	/** If defined, the query is successful. */
 	let plantingArea = $derived.by(() => {
@@ -105,17 +68,30 @@
 		workspaceContext.selections.has('plantingArea', plantingAreaId)
 	);
 
-	/** Update the change handler on translation. */
-	function onTranslate(newPos: Vector2d, movementOver: boolean) {
-		translateChangeHandler.change(movementOver, {
-			x: canvasContext.transform.modelXPos(newPos.x),
-			y: canvasContext.transform.modelYPos(newPos.y)
+	/** Update the location history on translation. */
+	function onTranslate(newPos: Vector2d) {
+		if (!plantingArea || !workspaceContext.id) {
+			return;
+		}
+
+		translateCommandHandler.execute({
+			id: plantingArea.locationHistoryId,
+			workspaceId: workspaceContext.id,
+			coordinate: {
+				x: canvasContext.transform.modelXPos(newPos.x),
+				y: canvasContext.transform.modelYPos(newPos.y)
+			},
+			date: workspaceContext.timelineSelection.focusUtc
 		});
 	}
 
-	/** Update the change handler on transformation. */
-	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
-		transformChangeHandler.change(transformOver, newGeometry);
+	/** Update the geometry on transformation. */
+	function onTransform(newGeometry: GeometryUpdateCommand) {
+		if (!plantingArea) {
+			return;
+		}
+
+		transformMutationHandler.execute(plantingArea.geometryId, newGeometry);
 	}
 </script>
 
@@ -132,7 +108,6 @@ area in the workspace editor, ie., editable
 		showName={true}
 		{position}
 		geometry={plantingArea.geometry}
-		grid={plantingArea.grid}
 		{editable}
 		{selected}
 		{onTranslate}

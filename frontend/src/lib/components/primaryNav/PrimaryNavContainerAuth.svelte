@@ -10,7 +10,7 @@
 	import type { Garden } from '@vdt-webapp/common';
 	import triplit from '$data/triplit';
 	import {
-		activeGardenQuery,
+		gardenQuery,
 		adminGardensQuery,
 		editorGardensQuery,
 		viewerGardensQuery,
@@ -22,16 +22,9 @@
 	let { children } = $props();
 
 	/* Queries */
-	let activeGarden = useQuery(
-		triplit,
-		activeGardenQuery.vars({ activeGardenId: gardenContext.id })
+	let activeGarden = $derived(
+		useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }))
 	);
-	$effect(() => {
-		activeGarden.updateQuery(
-			activeGardenQuery.vars({ activeGardenId: gardenContext.id })
-		);
-	});
-
 	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
 	let adminGardens = useQuery(triplit, adminGardensQuery);
 	let editorGardens = useQuery(triplit, editorGardensQuery);
@@ -61,11 +54,9 @@
 	});
 
 	let gardenTabs = $derived.by(() => {
-		console.log(activeGarden.results);
 		if (activeGarden.results && activeGarden.results[0]) {
 			return getGardenSpecifcTabs(activeGarden.results[0]);
 		} else {
-			console.log(activeGarden.results);
 			return [];
 		}
 	});

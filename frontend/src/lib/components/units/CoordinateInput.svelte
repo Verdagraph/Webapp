@@ -3,13 +3,15 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import Icon from '@iconify/svelte';
 	import { createUnitAwareValues } from './units.svelte';
-	import type { UnitAwareQuantity } from '$state/userSettings.svelte';
+	import { type Position } from '@vdt-webapp/common';
 
 	type Props = {
 		/** The output X value. Guarnteed to be in metric. */
 		x: number;
 		/** The output Y value. Guarnteed to be in metric. */
 		y: number;
+		/** Change handler. */
+		onValueChange?: (value: Position) => void;
 		/** The number of decimal places to prefer for conversions. */
 		decimalPlaces?: number;
 		/** The input properties, in meters. */
@@ -20,6 +22,7 @@
 	let {
 		x = $bindable(),
 		y = $bindable(),
+		onValueChange,
 		decimalPlaces = 2,
 		step = 0.01,
 		min,
@@ -70,6 +73,12 @@
 				oninput={(event) => {
 					unitAwareValues.handleInput(event, 0);
 					x = unitAwareValues.metricValues[0];
+					if (onValueChange) {
+						onValueChange({
+							x: unitAwareValues.metricValues[0],
+							y: unitAwareValues.metricValues[1]
+						});
+					}
 				}}
 				class="@xs:border-b @xs:rounded-tr-none w-full rounded-l-none rounded-r-none rounded-tr-md border-b-0"
 			/>
@@ -89,6 +98,12 @@
 				oninput={(event) => {
 					unitAwareValues.handleInput(event, 1);
 					y = unitAwareValues.metricValues[1];
+					if (onValueChange) {
+						onValueChange({
+							x: unitAwareValues.metricValues[0],
+							y: unitAwareValues.metricValues[1]
+						});
+					}
 				}}
 				class="@xs:border-b rounded-l-none rounded-r-none border-b-0"
 			/>

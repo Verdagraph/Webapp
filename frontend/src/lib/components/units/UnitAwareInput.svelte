@@ -10,6 +10,8 @@
 		value: number;
 		/** The type of quantity represented. */
 		quantityType: UnitAwareQuantity;
+		/** Callback in case we can't bind to the input. */
+		oninput?: (newData: number) => void;
 		/** The number of decimal places to prefer for conversions. */
 		decimalPlaces?: number;
 		/** The input properties, in meters. */
@@ -20,6 +22,7 @@
 	let {
 		value: metricValue = $bindable(),
 		quantityType,
+		oninput,
 		decimalPlaces = 2,
 		step = 0.01,
 		min,
@@ -66,6 +69,9 @@
 		oninput={(event) => {
 			unitAwareValues.handleInput(event, 0);
 			metricValue = unitAwareValues.metricValues[0];
+			if (oninput) {
+				oninput(metricValue);
+			}
 		}}
 		class="rounded-r-none border-r-0 "
 	/>

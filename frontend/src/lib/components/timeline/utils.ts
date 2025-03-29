@@ -17,6 +17,7 @@ const monthStrings = {
 	11: 'Nov',
 	12: 'Dec'
 };
+export type MonthNumber = keyof typeof monthStrings;
 
 export function calendarDateToUtc(date: DateValue) {
 	return date.toDate('UTC');
@@ -30,7 +31,6 @@ export function calculateDeltaDays(current: DateValue, prev: DateValue): number 
 	);
 }
 
-export function getMonthString(monthNumber: number) {
-	/** @ts-expect-error */
+export function getMonthString(monthNumber: MonthNumber) {
 	return monthStrings[monthNumber];
 }

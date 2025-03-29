@@ -1,7 +1,5 @@
-import env from 'env';
 import { diContainer } from '@fastify/awilix';
 import { AuthenticationError } from 'common/errors';
-
 import {
 	decodeRefreshToken,
 	encodeAccessToken,

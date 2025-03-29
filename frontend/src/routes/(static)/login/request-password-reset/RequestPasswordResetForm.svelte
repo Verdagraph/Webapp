@@ -4,7 +4,8 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestPasswordReset } from '$data/users/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -13,7 +14,7 @@
 
 	let { succeeded = $bindable(false) }: Props = $props();
 
-	let formHandler = createMutationHandler(userRequestPasswordReset.mutation, {
+	let formHandler = createCommandHandler(userRequestPasswordReset.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}
@@ -38,9 +39,8 @@
 	<Form.Field {form} name="email">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userRequestPasswordReset.schema.shape['email']?._def.description}
-					optional={false}>Email</Form.Label
+				<Form.Label description={userFields.emailSchema.description} optional={false}
+					>Email</Form.Label
 				>
 				<Input
 					{...props}

@@ -1,4 +1,5 @@
-import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
+import { Schema as S, Entity, or } from '@triplit/client';
+import { userSchema } from '../users/schema';
 
 /**
  * Controls the visibility of the garden.
@@ -7,7 +8,7 @@ import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
  *     on any public page - a link is required.
  * PUBLIC: the garden is visible to anyone and may be searchable.
  */
-export const GardenVisibilityEnum = ['HIDDEN', 'UNLISTED', 'PUBLIC'] as const;
+export const GardenVisibilityEnumOptions = ['HIDDEN', 'UNLISTED', 'PUBLIC'] as const;
 
 /**
  * Controls the level of access of a garden membership.
@@ -16,7 +17,7 @@ export const GardenVisibilityEnum = ['HIDDEN', 'UNLISTED', 'PUBLIC'] as const;
  *     while configuration changes such as garden attributes are not.
  * VIEWER: Read-only access.
  */
-export const GardenMembershipRoleEnum = ['ADMIN', 'EDITOR', 'VIEWER'] as const;
+export const GardenMembershipRoleEnumOptions = ['ADMIN', 'EDITOR', 'VIEWER'] as const;
 
 /**
  * Indicates the acceptance status of a garden membership.
@@ -24,9 +25,14 @@ export const GardenMembershipRoleEnum = ['ADMIN', 'EDITOR', 'VIEWER'] as const;
  * PENDING: a notification has been sent and is pending acceptance.
  * ACCEPTED: the membership has been accepted.
  */
-export const GardenMembershipStatusEnum = ['CREATED', 'PENDING', 'ACCEPTED'] as const;
+export const GardenMembershipStatusEnumOptions = [
+	'CREATED',
+	'PENDING',
+	'ACCEPTED'
+] as const;
 
-export const gardenSchema = {
+export const gardenSchema = S.Collections({
+	...userSchema,
 	/** Garden schema. */
 	gardens: {
 		schema: S.Schema({
@@ -37,7 +43,7 @@ export const gardenSchema = {
 			name: S.String(),
 
 			/** Controls which non-users may view the garden. */
-			visibility: S.String({ enum: GardenVisibilityEnum }),
+			visibility: S.String({ enum: [...GardenVisibilityEnumOptions] }),
 
 			/** Optional description. */
 			description: S.String({ nullable: true, default: null }),
@@ -51,31 +57,31 @@ export const gardenSchema = {
 			 * If undefined, the original creator has left the garden.
 			 */
 			creatorId: S.String({ nullable: true }),
-			creator: S.RelationOne('profiles', {
-				where: [['id', '=', '$creatorId']]
-			}),
 
 			/** Set of users which have admin access. */
 			adminIds: S.Set(S.String()),
-			adminMemberships: S.RelationMany('gardenMemberships', {
-				where: [['userId', 'in', '$adminIds']]
-			}),
 
 			/** Set of users which have editing access. */
-			editorIds: S.Set(S.String()),
-			editorMemberships: S.RelationMany('gardenMemberships', {
-				where: [['userId', 'in', '$adminIds']]
-			}),
+			editorIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
 			/** Set of users which have viewing access. */
-			viewerIds: S.Set(S.String()),
-			viewerMemberships: S.RelationMany('gardenMemberships', {
-				where: [['userId', 'in', '$adminIds']]
-			}),
+			viewerIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
 			/** Date of garden creation. */
 			createdAt: S.Date({ default: S.Default.now() })
 		}),
+		relationships: {
+			creator: S.RelationById('profiles', '$creatorId'),
+			adminMemberships: S.RelationMany('gardenMemberships', {
+				where: [['userId', 'in', '$adminIds']]
+			}),
+			editorMemberships: S.RelationMany('gardenMemberships', {
+				where: [['userId', 'in', '$adminIds']]
+			}),
+			viewerMemberships: S.RelationMany('gardenMemberships', {
+				where: [['userId', 'in', '$adminIds']]
+			})
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -114,26 +120,28 @@ export const gardenSchema = {
 
 			/** Garden the membership is in. */
 			gardenId: S.String(),
-			garden: S.RelationById('gardens', '$gardenId'),
 
 			/** User who is the subject of the membership. */
 			userId: S.String(),
-			user: S.RelationOne('profiles', { where: [['id', '=', '$userId']] }),
 
 			/** Role of the membership. */
-			role: S.String({ enum: GardenMembershipRoleEnum }),
+			role: S.String({ enum: [...GardenMembershipRoleEnumOptions] }),
 
 			/** User who created the membership. */
 			inviterId: S.String({ nullable: true }),
-			inviter: S.RelationOne('profiles', { where: [['id', '=', '$inviterId']] }),
 
 			/** The acceptance status and acceptance date of the membership. */
-			status: S.String({ enum: GardenMembershipStatusEnum }),
+			status: S.String({ enum: [...GardenMembershipStatusEnumOptions] }),
 			acceptedAt: S.Date({ nullable: true, default: null }),
 
 			/** Allows marking gardens as favorites in the menu. */
 			favorite: S.Boolean({ default: false })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			user: S.RelationById('profiles', '$userId'),
+			inviter: S.RelationById('profiles', '$inviterId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -178,7 +186,9 @@ export const gardenSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
+});
 export type Garden = Entity<typeof gardenSchema, 'gardens'>;
 export type GardenMembership = Entity<typeof gardenSchema, 'gardenMemberships'>;
-export type GardenRole = (typeof GardenMembershipRoleEnum)[number];
+export type GardenVisibility = (typeof GardenVisibilityEnumOptions)[number];
+export type GardenRole = (typeof GardenMembershipRoleEnumOptions)[number];
+export type GardenMembershipStatus = (typeof GardenMembershipStatusEnumOptions)[number];

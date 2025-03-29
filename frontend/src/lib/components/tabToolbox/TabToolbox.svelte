@@ -7,6 +7,7 @@
 	import createToolbox from './tools.svelte';
 
 	type Props = {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		toolbox: ReturnType<typeof createToolbox<any>>;
 	};
 	let { toolbox }: Props = $props();

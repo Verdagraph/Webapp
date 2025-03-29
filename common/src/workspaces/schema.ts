@@ -1,10 +1,5 @@
-import {
-	Schema as S,
-	ClientSchema,
-	Entity,
-	or,
-	EntityWithSelection
-} from '@triplit/client';
+import { Schema as S, type Entity, type QueryResult, or } from '@triplit/client';
+import { gardenSchema } from '../gardens';
 
 /**
  * Specifies a type of geometry.
@@ -15,9 +10,15 @@ import {
  * ELLIPSE: a closed shape specified by a major and minor radius.
  * LINES: a closed or open shape specified by a set of joined line segments.`
  */
-export const GeometryTypeEnum = ['RECTANGLE', 'POLYGON', 'ELLIPSE', 'LINES'] as const;
+export const GeometryTypeEnumOptions = [
+	'RECTANGLE',
+	'POLYGON',
+	'ELLIPSE',
+	'LINES'
+] as const;
 
-export const workspaceSchema = {
+export const workspaceSchema = S.Collections({
+	...gardenSchema,
 	/** Coordinate schema. */
 	coordinates: {
 		schema: S.Schema({
@@ -25,7 +26,6 @@ export const workspaceSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** The horizontal X component of the coordinate in meters. */
 			x: S.Number(),
@@ -34,8 +34,14 @@ export const workspaceSchema = {
 			y: S.Number(),
 
 			/** The depth/altitude component of the coordinate in meters. */
-			z: S.Number({ nullable: true, default: 0 })
+			z: S.Number({ nullable: true, default: 0 }),
+
+			/** Used to maintain ordering in sets of coordinates. */
+			createdAt: S.Date({ default: S.Default.now() })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -92,7 +98,6 @@ export const workspaceSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/**
 			 * Describes the type of the geometry.
@@ -101,7 +106,7 @@ export const workspaceSchema = {
 			 * For example, if the type is 'ELLIPSE', only the ellipseAttribute
 			 * object is used and other attributes are ignored.
 			 */
-			type: S.String({ enum: GeometryTypeEnum }),
+			type: S.String({ enum: [...GeometryTypeEnumOptions] }),
 
 			/** The date at which this geometry applies. */
 			date: S.Date(),
@@ -112,60 +117,41 @@ export const workspaceSchema = {
 			/** Rotation of the geometry about its center or location, in degrees. */
 			rotation: S.Number({ default: 0 }),
 
-			/** Attributes. */
-
 			/** Rectangular geometry attributes. */
-			rectangleAttributes: S.Optional(
-				S.Record({
-					/** Horizontal length of the rectangle in meters. */
-					length: S.Number(),
+			/** Horizontal length of the rectangle in meters. */
+			rectangleLength: S.Number({ default: 1 }),
 
-					/** Vertical width of the rectangle in meters. */
-					width: S.Number()
-				})
-			),
+			/** Vertical width of the rectangle in meters. */
+			rectangleWidth: S.Number({ default: 1 }),
 
 			/** Polygon geometry attributes. */
-			polygonAttributes: S.Optional(
-				S.Record({
-					/** Number of sides to the polygon. */
-					numSides: S.Number(),
+			/** Number of sides to the polygon. */
+			polygonNumSides: S.Number({ default: 3 }),
 
-					/** Polygon radius. */
-					radius: S.Number()
-				})
-			),
+			/** Polygon radius. */
+			polygonRadius: S.Number({ default: 1 }),
 
 			/** Ellipe geometry attributes. */
-			ellipseAttributes: S.Optional(
-				S.Record({
-					/** The length of the horizontal diameter in meters. */
-					lengthDiameter: S.Number(),
+			/** The length of the horizontal diameter in meters. */
+			ellipseLength: S.Number({ default: 1 }),
 
-					/** The width of the vertical diameter in meters. */
-					widthDiameter: S.Number()
-				})
-			),
+			/** The width of the vertical diameter in meters. */
+			ellipseWidth: S.Number({ default: 1 }),
 
 			/** Lines geometry attributes. */
-			linesAttributes: S.Optional(
-				S.Record({
-					/** A set of coordinates which describe an open or closed shape of line segments. */
-					coordinateIds: S.Set(S.String()),
-					coordinates: S.RelationMany('coordinates', {
-						where: [['id', 'in', '$linesAttributes.coordinateIds']]
-					}),
+			/** A set of coordinates which describe an open or closed shape of line segments. */
+			linesCoordinateIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
-					/** If true the lines form a closed shape. */
-					closed: S.Boolean({ default: true })
-				})
-			),
-
-			/** Temp relation for including lines coordinates. TODO: Remove this if/when Triplit supports inculding relations inside records. */
-			linesCoordinates: S.RelationMany('coordinates', {
-				where: [['id', 'in', '$linesAttributes.coordinateIds']]
-			})
+			/** If true the lines form a closed shape. */
+			linesClosed: S.Boolean({ default: true })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			linesCoordinates: S.RelationMany('coordinates', {
+				where: [['id', 'in', '$linesCoordinateIds']],
+				order: [['createdAt', 'ASC']]
+			})
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -222,14 +208,17 @@ export const workspaceSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** A set of geometries which describe a history of geometric change. */
-			geometryIds: S.Set(S.String()),
-			geometries: S.RelationMany('geometries', {
-				where: [['id', 'in', '$geometryIds']]
-			})
+			geometryIds: S.Set(S.String())
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			geometries: S.RelationMany('geometries', {
+				where: [['id', 'in', '$geometryIds']],
+				order: [['date', 'ASC']]
+			})
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -286,11 +275,9 @@ export const workspaceSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** The workspace the cordinate is located in. */
 			workspaceId: S.String(),
-			workspace: S.RelationOne('workspaces', { where: [['id', '=', '$workspaceId']] }),
 
 			/** The horizontal X component of the location in meters. */
 			x: S.Number(),
@@ -304,6 +291,10 @@ export const workspaceSchema = {
 			/** The date at which the location applies. */
 			date: S.Date()
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			workspace: S.RelationById('workspaces', '$workspaceId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -360,15 +351,20 @@ export const workspaceSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** A set of locations which describe a history of locational change. */
 			locationIds: S.Set(S.String()),
-			locations: S.RelationMany('locations', { where: [['id', 'in', '$locationIds']] }),
 
 			/** Denormalized set of workspace IDs that are represented by the locations. */
 			workspaceIds: S.Set(S.String())
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			locations: S.RelationMany('locations', {
+				where: [['id', 'in', '$locationIds']],
+				order: [['date', 'ASC']]
+			})
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -425,33 +421,15 @@ export const workspaceSchema = {
 
 			/** Garden the entity is located within - required for access control. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** Name. */
 			name: S.String(),
 
 			/** The geometry of the planting area. */
 			geometryId: S.String(),
-			geometry: S.RelationOne('geometries', {
-				where: [['id', '=', '$geometryId']]
-			}),
-
-			/**
-			 * Describes a grid overlaid onto the geometry.
-			 * Used for placing plants.
-			 */
-			grid: S.Optional(
-				S.Record({
-					numRows: S.Number(),
-					numColumns: S.Number()
-				})
-			),
 
 			/** The location history of the planting area. */
 			locationHistoryId: S.String(),
-			locationHistory: S.RelationOne('locationHistories', {
-				where: [['id', '=', '$locationHistoryId']]
-			}),
 
 			/** The depth of the planting area in meters. Used to calculate volume. */
 			depth: S.Number({ default: 0 }),
@@ -459,6 +437,11 @@ export const workspaceSchema = {
 			/** Optional description. */
 			description: S.String({ default: '' })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			geometry: S.RelationById('geometries', '$geometryId'),
+			locationHistory: S.RelationById('locationHistories', '$locationHistoryId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -500,7 +483,6 @@ export const workspaceSchema = {
 
 			/** Garden the entity is located within. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', { where: [['id', '=', '$gardenId']] }),
 
 			/** Name of the workspace. */
 			name: S.String(),
@@ -511,6 +493,9 @@ export const workspaceSchema = {
 			/** Optional description. */
 			description: S.String({ default: '' })
 		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -545,53 +530,25 @@ export const workspaceSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
+});
 
 export type Coordinate = Entity<typeof workspaceSchema, 'coordinates'>;
 export type Position = Pick<Coordinate, 'x' | 'y'>;
-
-export type Geometry = Entity<typeof workspaceSchema, 'geometries'>;
-export type GeometryType = (typeof GeometryTypeEnum)[number];
-
-/**
- * Applies a partial to the geometry type and also all the attribute sub-objects.
- * Used to specify just fields which need to be updated when geometries are changed.
- */
-export type GeometryPartial = Partial<
-	Omit<
-		Geometry,
-		| 'rectangleAttributes'
-		| 'polygonAttributes'
-		| 'ellipseAttributes'
-		| 'linesAttributes'
-	>
-> & {
-	rectangleAttributes?: Partial<RectangleAttributes>;
-	polygonAttributes?: Partial<PolygonAttributes>;
-	ellipseAttributes?: Partial<EllipseAttributes>;
-	linesAttributes?: Partial<LinesAttributes>;
+export type Geometry = QueryResult<
+	typeof workspaceSchema,
+	{ collectionName: 'geometries'; include: { linesCoordinates: true } }
+>;
+export type GeometryType = (typeof GeometryTypeEnumOptions)[number];
+export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'> & {
+	geometries: Geometry[];
 };
-
-export type RectangleAttributes = NonNullable<Geometry['rectangleAttributes']>;
-export type PolygonAttributes = NonNullable<Geometry['polygonAttributes']>;
-export type EllipseAttributes = NonNullable<Geometry['ellipseAttributes']>;
-export type LinesAttributes = NonNullable<Geometry['linesAttributes']>;
-export type GeometryAttributesMap = {
-	RECTANGLE: RectangleAttributes;
-	POLYGON: PolygonAttributes;
-	ELLIPSE: EllipseAttributes;
-	LINES: LinesAttributes;
-};
-
-/** TODO: Fix these types. */
-export type RectangleGeometry = Extract<Geometry, { type: 'RECTANGLE' }>;
-export type PolygonGeometry = Extract<Geometry, { type: 'POLYGON' }>;
-export type EllipseGeometry = Extract<Geometry, { type: 'ELLIPSE' }>;
-export type LinesGeometry = Extract<Geometry, { type: 'LINES' }>;
-
-export type GeometryHistory = Entity<typeof workspaceSchema, 'geometryHistories'>;
 export type Location = Entity<typeof workspaceSchema, 'locations'>;
-export type LocationHistory = Entity<typeof workspaceSchema, 'locationHistories'>;
-export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'>;
-export type GridAttributes = NonNullable<PlantingArea['grid']>;
+export type LocationHistory = QueryResult<
+	typeof workspaceSchema,
+	{ collectionName: 'locationHistories'; include: { locations: true } }
+>;
+export type PlantingArea = Entity<typeof workspaceSchema, 'plantingAreas'> & {
+	geometry: Geometry | null | undefined;
+	locationHistory: LocationHistory | null | undefined;
+};
 export type Workspace = Entity<typeof workspaceSchema, 'workspaces'>;

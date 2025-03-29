@@ -11,7 +11,7 @@
 	} from '$data/gardens/commands';
 	import { useQuery } from '@triplit/svelte';
 	import triplit from '$data/triplit';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 
 	type Props = {
 		invite: AcceptancePendingMembershipsQueryResult;
@@ -20,14 +20,14 @@
 
 	let inviterProfile = useQuery(
 		triplit,
-		userProfilesQuery.vars({ profileIds: [invite.inviterId] })
+		userProfilesQuery.Vars({ profileIds: [invite.inviterId] })
 	);
 
 	/** Mutations. */
-	const gardenMembershipAcceptHandler = createMutationHandler(
+	const gardenMembershipAcceptHandler = createCommandHandler(
 		gardenMembershipAccept.mutation
 	);
-	const gardenMembershipDeleteHandler = createMutationHandler(
+	const gardenMembershipDeleteHandler = createCommandHandler(
 		gardenMembershipDelete.mutation
 	);
 </script>

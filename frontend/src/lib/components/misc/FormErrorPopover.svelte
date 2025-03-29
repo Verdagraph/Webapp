@@ -3,7 +3,7 @@
 	import iconIds from '$lib/assets/icons';
 	import * as Popover from '$components/ui/popover';
 
-	type Props = { description: string; errorAttrs: unknown };
+	type Props = { description: string; errorAttrs?: unknown };
 
 	let { description, errorAttrs = {} }: Props = $props();
 </script>

@@ -1,9 +1,9 @@
 import {
-	UserCreateCommand,
-	UserConfirmEmailConfirmationCommand,
-	UserRequestEmailConfirmationCommand,
-	UserRequestPasswordResetCommand,
-	UserConfirmPasswordResetCommand
+	UserCreateCommandSchema,
+	UserConfirmEmailConfirmationCommandSchema,
+	UserRequestEmailConfirmationCommandSchema,
+	UserRequestPasswordResetCommandSchema,
+	UserConfirmPasswordResetCommandSchema
 } from '@vdt-webapp/common';
 import {
 	userCreateOp,
@@ -17,7 +17,7 @@ import {
  * Sends an user creation request to the backend.
  */
 export const userCreate = {
-	schema: UserCreateCommand,
+	schema: UserCreateCommandSchema,
 	mutation: userCreateOp
 };
 
@@ -25,7 +25,7 @@ export const userCreate = {
  * Sends an email verification request to the backend.
  */
 export const userRequestEmailConfirmation = {
-	schema: UserRequestEmailConfirmationCommand,
+	schema: UserRequestEmailConfirmationCommandSchema,
 	mutation: userRequestEmailConfirmationOp
 };
 
@@ -33,7 +33,7 @@ export const userRequestEmailConfirmation = {
  * Sends an email verification confirmation to the backend.
  */
 export const userConfirmEmailConfirmation = {
-	schema: UserConfirmEmailConfirmationCommand,
+	schema: UserConfirmEmailConfirmationCommandSchema,
 	mutation: userConfirmEmailOp
 };
 
@@ -41,7 +41,7 @@ export const userConfirmEmailConfirmation = {
  * Sends a password reset request to the backend.
  */
 export const userRequestPasswordReset = {
-	schema: UserRequestPasswordResetCommand,
+	schema: UserRequestPasswordResetCommandSchema,
 	mutation: userRequestPasswordResetOp
 };
 
@@ -49,6 +49,6 @@ export const userRequestPasswordReset = {
  * Sends a password reset confirmation to the backend.
  */
 export const userConfirmPasswordReset = {
-	schema: UserConfirmPasswordResetCommand,
+	schema: UserConfirmPasswordResetCommandSchema,
 	mutation: userConfirmPasswordResetOp
 };

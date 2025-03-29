@@ -22,7 +22,7 @@ export function createToolbox<ToolId extends string>(
 	lastActivatedId: ToolId | undefined;
 	activeTools: ToolAttributeType<ToolId>[];
 	isActive: boolean;
-	activate: (id: ToolId, options?: Record<string, any>) => void;
+	activate: (id: ToolId, options?: Record<string, unknown>) => void;
 	deactivate: (id: ToolId) => void;
 	isToolActive: (id: ToolId) => boolean;
 } {
@@ -42,7 +42,10 @@ export function createToolbox<ToolId extends string>(
 	 * @param id ID of the tool to activate.
 	 * @param options Used to configure initial data for tool. Not currently functional.
 	 */
-	function activate(id: ToolId, options?: Record<string, any>) {
+	function activate(
+		id: ToolId
+		// options?: Record<string, unknown>
+	) {
 		if (!activeToolIds.includes(id)) {
 			activeToolIds.push(id);
 		}

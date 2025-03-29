@@ -4,7 +4,8 @@
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userCreate } from '$data/users/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -16,7 +17,7 @@
 	let { succeeded = $bindable(false), registeredEmail = $bindable('') }: Props =
 		$props();
 
-	let formHandler = createMutationHandler(userCreate.mutation, {
+	let formHandler = createCommandHandler(userCreate.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}
@@ -42,9 +43,7 @@
 	<Form.Field {form} name="username">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userCreate.schema.innerType().shape.username.description}
-					optional={userCreate.schema.innerType().shape.username.isOptional()}
+				<Form.Label description={userFields.usernameSchema.description}
 					>Username</Form.Label
 				>
 				<Input
@@ -62,11 +61,7 @@
 	<Form.Field {form} name="email">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userCreate.schema.innerType().shape.email.description}
-					optional={userCreate.schema.innerType().shape.email.isOptional()}
-					>Email</Form.Label
-				>
+				<Form.Label description={userFields.emailSchema.description}>Email</Form.Label>
 				<Input
 					{...props}
 					type="email"
@@ -82,9 +77,7 @@
 	<Form.Field {form} name="password1">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userCreate.schema.innerType().shape.password1.description}
-					optional={userCreate.schema.innerType().shape.password1.isOptional()}
+				<Form.Label description={userFields.passwordSchema.description}
 					>Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password1} />
@@ -97,9 +90,7 @@
 	<Form.Field {form} name="password2">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userCreate.schema.innerType().shape.password2.description}
-					optional={userCreate.schema.innerType().shape.password2.isOptional()}
+				<Form.Label description={userFields.passwordSchema.description}
 					>Confirm Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password2} />

@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userConfirmPasswordReset } from '$data/users/commands';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
+	import { userFields } from '@vdt-webapp/common';
 
 	type Props = {
 		/** Set to true once the form has been submitted and received a 200 response. */
@@ -13,14 +14,14 @@
 	};
 	let { succeeded = $bindable(false) }: Props = $props();
 
-	let formHandler = createMutationHandler(userConfirmPasswordReset.mutation, {
+	let formHandler = createCommandHandler(userConfirmPasswordReset.mutation, {
 		onSuccess: () => {
 			succeeded = true;
 		}
 	});
 	const initialData = {
-		userId: $page.params.userId,
-		token: $page.params.confirmationToken,
+		userId: page.params.userId,
+		token: page.params.confirmationToken,
 		password1: '',
 		password2: ''
 	};
@@ -44,12 +45,8 @@
 	<Form.Field {form} name="password1">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userConfirmPasswordReset.schema.innerType().shape.password1
-						.description}
-					optional={userConfirmPasswordReset.schema
-						.innerType()
-						.shape.password1.isOptional()}>New Password</Form.Label
+				<Form.Label description={userFields.passwordSchema.description}
+					>New Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password1} />
 			{/snippet}
@@ -57,16 +54,12 @@
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
 	</Form.Field>
 
-	<!-- Password2 -->
+	<!-- New Password2 -->
 	<Form.Field {form} name="password2">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label
-					description={userConfirmPasswordReset.schema.innerType().shape.password2
-						.description}
-					optional={userConfirmPasswordReset.schema
-						.innerType()
-						.shape.password2.isOptional()}>Confirm Password</Form.Label
+				<Form.Label description={userFields.passwordSchema.description}
+					>Confirm Password</Form.Label
 				>
 				<Input {...props} type="password" bind:value={$formData.password2} />
 			{/snippet}

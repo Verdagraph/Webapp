@@ -43,9 +43,9 @@ export function createTimelineSelection() {
 	let endSelection: DateValue = $state(focus.add(defaultUpperSelectionOffset));
 
 	/** Derived selection. */
-	let focusUtc: Date = $derived(calendarDateToUtc(focus));
-	let beginSelectionUtc: Date = $derived(calendarDateToUtc(beginSelection));
-	let endSelectionUtc: Date = $derived(calendarDateToUtc(endSelection));
+	const focusUtc: Date = $derived(calendarDateToUtc(focus));
+	const beginSelectionUtc: Date = $derived(calendarDateToUtc(beginSelection));
+	const endSelectionUtc: Date = $derived(calendarDateToUtc(endSelection));
 
 	/**
 	 * Slider properties.
@@ -61,7 +61,7 @@ export function createTimelineSelection() {
 	/** The last value in the slider. Defines the end of the visible range. */
 	const maxSliderValue = $derived(calculateDeltaDays(endSlider, beginSlider));
 	/** The values of the slider thumbs. */
-	let sliderValue: Array<number> = $derived.by(() => {
+	const sliderValue: Array<number> = $derived.by(() => {
 		return [
 			calculateDeltaDays(beginSelection, beginSlider),
 			calculateDeltaDays(focus, beginSlider),
@@ -69,10 +69,10 @@ export function createTimelineSelection() {
 		];
 	});
 	/** Store whether the slider is close enough to the edge to move the range. */
-	let translateSliderForward: boolean = $derived(
+	const translateSliderForward: boolean = $derived(
 		maxSliderValue - sliderValue[2] < translateRangeThreshold
 	);
-	let translateSliderBackward: boolean = $derived(
+	const translateSliderBackward: boolean = $derived(
 		sliderValue[0] - minSliderValue < translateRangeThreshold
 	);
 	let sliderExpandIntervalId: NodeJS.Timeout | null = null;

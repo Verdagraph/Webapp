@@ -5,7 +5,10 @@
 		size: string;
 		className?: string;
 	};
-	let { size, className }: Props = $props();
+	let {
+		size
+		// className
+	}: Props = $props();
 </script>
 
 <Avatar.Root class="h-[{size}] w-[{size}]">

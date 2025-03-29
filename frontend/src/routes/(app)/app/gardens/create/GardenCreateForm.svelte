@@ -10,14 +10,14 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { gardenCreate } from '$data/gardens/commands';
 	import iconIds from '$lib/assets/icons';
-	import { GardenVisibilityEnum } from '@vdt-webapp/common';
+	import { GardenVisibility, gardenFields } from '@vdt-webapp/common';
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
 	import { generateGardenId } from '$data/gardens/utils';
-	import createMutationHandler from '$state/mutationHandler.svelte';
+	import createCommandHandler from '$state/commandHandler.svelte';
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions: {
-		value: (typeof GardenVisibilityEnum)[number];
+		value: GardenVisibility;
 		label: string;
 	}[] = [
 		{
@@ -41,7 +41,7 @@
 	);
 
 	/** Garden creation form. */
-	let gardenCreateHandler = createMutationHandler(gardenCreate.mutation, {
+	let gardenCreateHandler = createCommandHandler(gardenCreate.mutation, {
 		onSuccess: (data) => {
 			goto('/app/gardens/' + data.id);
 		}
@@ -61,7 +61,7 @@
 	const { form: formData, enhance } = form;
 
 	/** Garden ID generation handler. */
-	let gardenIdGenerationHandler = createMutationHandler(generateGardenId, {
+	let gardenIdGenerationHandler = createCommandHandler(generateGardenId, {
 		onSuccess: (generatedId) => {
 			$formData.id = generatedId;
 		}
@@ -69,32 +69,13 @@
 </script>
 
 <form method="POST" use:enhance>
-	<!-- Garden name -->
-	<Form.Field {form} name="name">
-		<Form.Control>
-			{#snippet children({ props })}
-				<Form.Label
-					description={gardenCreate.schema.shape.name.description}
-					optional={gardenCreate.schema.shape.name.isOptional()}>Name</Form.Label
-				>
-				<Input
-					{...props}
-					type="text"
-					placeholder="Gardens of Adonis"
-					bind:value={$formData.name}
-				/>
-			{/snippet}
-		</Form.Control>
-		<Form.FieldErrors handlerErrors={gardenCreateHandler.errors?.fieldErrors?.name} />
-	</Form.Field>
-
 	<!-- Garden ID -->
 	<Form.Field {form} name="id">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={gardenCreate.schema.shape.id.description}
-					optional={gardenCreate.schema.shape.id.isOptional()}>ID</Form.Label
+					description={gardenFields.gardenDescriptionSchema.description}
+					optional={false}>ID</Form.Label
 				>
 				<span class="flex">
 					<Input
@@ -127,14 +108,32 @@
 		<Form.FieldErrors handlerErrors={gardenCreateHandler.errors?.fieldErrors?.id} />
 	</Form.Field>
 
+	<!-- Garden name -->
+	<Form.Field {form} name="name">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label
+					description={gardenFields.gardenNameSchema.description}
+					optional={false}>Name</Form.Label
+				>
+				<Input
+					{...props}
+					type="text"
+					placeholder="Gardens of Adonis"
+					bind:value={$formData.name}
+				/>
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors handlerErrors={gardenCreateHandler.errors?.fieldErrors?.name} />
+	</Form.Field>
+
 	<!-- Garden visibility -->
 	<Form.Field {form} name="visibility">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={gardenCreate.schema.shape.visibility.description}
-					optional={gardenCreate.schema.shape.visibility.isOptional()}
-					>Visibility</Form.Label
+					description={gardenFields.gardenVisibilitySchema.description}
+					optional={false}>Visibility</Form.Label
 				>
 				<Select.Root
 					{...props}
@@ -177,9 +176,8 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={gardenCreate.schema.shape.description.description}
-					optional={gardenCreate.schema.shape.description.isOptional()}
-					>Description</Form.Label
+					description={gardenFields.gardenDescriptionSchema.description}
+					optional={true}>Description</Form.Label
 				>
 				<Textarea {...props} bind:value={$formData.description} />
 			{/snippet}
@@ -195,8 +193,7 @@
 			{#snippet children({ props })}
 				<Form.Label
 					description={gardenCreate.schema.shape.adminInvites.description}
-					optional={gardenCreate.schema.shape.adminInvites.isOptional()}
-					>Admin Invites</Form.Label
+					optional={true}>Admin Invites</Form.Label
 				>
 				<GardenCreateFormUserTagsInput
 					{...props}
@@ -218,8 +215,7 @@
 			{#snippet children({ props })}
 				<Form.Label
 					description={gardenCreate.schema.shape.editorInvites.description}
-					optional={gardenCreate.schema.shape.editorInvites.isOptional()}
-					>Editor Invites</Form.Label
+					optional={true}>Editor Invites</Form.Label
 				>
 				<GardenCreateFormUserTagsInput
 					{...props}
@@ -243,8 +239,7 @@
 			{#snippet children({ props })}
 				<Form.Label
 					description={gardenCreate.schema.shape.viewerInvites.description}
-					optional={gardenCreate.schema.shape.viewerInvites.isOptional()}
-					>Viewer Invites</Form.Label
+					optional={true}>Viewer Invites</Form.Label
 				>
 				<GardenCreateFormUserTagsInput
 					{...props}

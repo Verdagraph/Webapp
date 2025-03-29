@@ -27,7 +27,7 @@
 	if (autoLogIn) {
 		setTimeout(() => {
 			userLogin
-				.mutation({ email: 'nathanielarking@gmail.com', password: 'password' })
+				.mutation({ email: 'test@verdantech.com', password: 'password' })
 				.then(() => {
 					initialized = true;
 				});

@@ -6,10 +6,9 @@ import {
 	set_private_env,
 	set_public_env,
 	set_safe_public_env
-} from '../../../../node_modules/.pnpm/@sveltejs+kit@2.15.2_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.18.0_vite@5.4.11_@types+node_wkh2akprx3jotystccszguqlse/node_modules/@sveltejs/kit/src/runtime/shared-server.js';
+} from '../../../../node_modules/.pnpm/@sveltejs+kit@2.19.0_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.22.6_vite@5.4.14_@types+node_ccqzqcz5qvmbrnbnqkjnzgnboe/node_modules/@sveltejs/kit/src/runtime/shared-server.js';
 
 export const options = {
-	app_dir: '_app',
 	app_template_contains_nonce: false,
 	csp: {
 		mode: 'auto',
@@ -46,11 +45,7 @@ export const options = {
 			message +
 			'</h1>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>\n'
 	},
-<<<<<<< HEAD
-	version_hash: '17zqvdm'
-=======
-	version_hash: "1s97h5g"
->>>>>>> main
+	version_hash: '1cban05'
 };
 
 export async function get_hooks() {

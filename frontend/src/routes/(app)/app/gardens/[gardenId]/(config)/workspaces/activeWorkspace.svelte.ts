@@ -1,9 +1,8 @@
-import { SvelteSet } from 'svelte/reactivity';
 import * as Resizable from '$components/ui/resizable';
 import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
 import { plantingAreaCreate } from '$data/workspaces/commands';
-import createMutationHandler from '$state/mutationHandler.svelte';
+import createCommandHandler from '$state/commandHandler.svelte';
 import { superForm, defaults } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { type CanvasContext, createCanvasContext } from '$components/canvas';
@@ -44,11 +43,7 @@ function createWorkspaceContext() {
 	/** If true, the workspace is being edited by the user. */
 	let editing: boolean = $state(false);
 	/** Selected entities. */
-<<<<<<< HEAD
 	const selections = createSelectionManager(['plantingArea', 'environment']);
-=======
-	const selections = createSelectionManager(['plantingArea', 'environment'])
->>>>>>> main
 
 	/** Persisted config. */
 	const config = localStore<WorkspaceViewConfig>('workspaceConfig', {
@@ -61,7 +56,7 @@ function createWorkspaceContext() {
 	const timelineSelection = createTimelineSelection();
 
 	/** Forms. */
-	const plantingAreaCreateHandler = createMutationHandler(plantingAreaCreate.mutation, {
+	const plantingAreaCreateHandler = createCommandHandler(plantingAreaCreate.mutation, {
 		onSuccess: () => {
 			toolbox.deactivate('plantingAreaCreate');
 		}
@@ -161,11 +156,7 @@ function createWorkspaceContext() {
 			form: plantingAreaCreateSuperform
 		},
 		reset,
-<<<<<<< HEAD
 		setWorkspace
-=======
-		setWorkspace,
->>>>>>> main
 	};
 }
 export type WorkspaceContext = ReturnType<typeof createWorkspaceContext>;

@@ -2,7 +2,7 @@
 	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import type { Vector2d } from 'konva/lib/types';
-	import type { Geometry, GeometryPartial } from '@vdt-webapp/common';
+	import type { Geometry, GeometryUpdateCommand } from '@vdt-webapp/common';
 
 	type Props = {
 		plantingAreaLayerId: string;
@@ -20,42 +20,29 @@
 		};
 	}
 
-	function onTransform(newGeometry: GeometryPartial, transformOver: boolean) {
-		if (newGeometry.rectangleAttributes) {
-			if (newGeometry.rectangleAttributes.length) {
-				$formData.geometry.rectangleAttributes.length =
-					newGeometry.rectangleAttributes.length;
-			}
-			if (newGeometry.rectangleAttributes.width) {
-				$formData.geometry.rectangleAttributes.width =
-					newGeometry.rectangleAttributes.width;
-			}
+	function onTransform(newGeometry: GeometryUpdateCommand) {
+		if (newGeometry.rectangleLength) {
+			$formData.geometry.rectangleLength = newGeometry.rectangleLength;
 		}
-		if (newGeometry.polygonAttributes) {
-			if (newGeometry.polygonAttributes.numSides) {
-				$formData.geometry.polygonAttributes.numSides =
-					newGeometry.polygonAttributes.numSides;
-			}
-			if (newGeometry.polygonAttributes.radius) {
-				$formData.geometry.polygonAttributes.radius =
-					newGeometry.polygonAttributes.radius;
-			}
+		if (newGeometry.rectangleWidth) {
+			$formData.geometry.rectangleWidth = newGeometry.rectangleWidth;
 		}
-		if (newGeometry.ellipseAttributes) {
-			if (newGeometry.ellipseAttributes.lengthDiameter) {
-				$formData.geometry.ellipseAttributes.lengthDiameter =
-					newGeometry.ellipseAttributes.lengthDiameter;
-			}
-			if (newGeometry.ellipseAttributes.widthDiameter) {
-				$formData.geometry.ellipseAttributes.widthDiameter =
-					newGeometry.ellipseAttributes.widthDiameter;
-			}
+		if (newGeometry.polygonNumSides) {
+			$formData.geometry.polygonNumSides = newGeometry.polygonNumSides;
 		}
-		if (newGeometry.linesAttributes) {
-			if (newGeometry.linesAttributes.coordinates) {
-				// @ts-expect-error - the types on the newGeometry object is too broad
-				$formData.geometry.linesAttributes.coordinates =
-					newGeometry.linesAttributes.coordinates;
+		if (newGeometry.polygonRadius) {
+			$formData.geometry.polygonRadius = newGeometry.polygonRadius;
+		}
+		if (newGeometry.ellipseLength) {
+			$formData.geometry.ellipseLength = newGeometry.ellipseLength;
+		}
+		if (newGeometry.ellipseWidth) {
+			$formData.geometry.ellipseWidth = newGeometry.ellipseWidth;
+		}
+
+		if (newGeometry.linesCoordinates) {
+			if (newGeometry.linesCoordinates) {
+				$formData.geometry.linesCoordinates = newGeometry.linesCoordinates;
 			}
 		}
 	}
@@ -80,7 +67,6 @@ of an easy way to ignore them.
 	showName={true}
 	position={$formData.location.coordinate}
 	geometry={$formData.geometry as unknown as Geometry}
-	grid={$formData.grid}
 	editable={true}
 	selected={true}
 	{onTranslate}

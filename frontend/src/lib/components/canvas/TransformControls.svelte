@@ -53,6 +53,7 @@
 					case 'tr':
 						return 'flex-row-reverse';
 				}
+				break;
 			case 'vertical':
 				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
@@ -64,6 +65,7 @@
 					case 'tr':
 						return 'flex-col';
 				}
+				break;
 		}
 	});
 
@@ -81,6 +83,7 @@
 					case 'tr':
 						return 'items-start';
 				}
+				break;
 			case 'vertical':
 				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
@@ -92,6 +95,7 @@
 					case 'tr':
 						return 'items-end';
 				}
+				break;
 		}
 	});
 
@@ -109,6 +113,7 @@
 					case 'tr':
 						return canvas.transform.config.buttonsExpanded ? 'rotate-0' : 'rotate-180';
 				}
+				break;
 			case 'vertical':
 				switch (canvas.transform.config.buttonsPosition) {
 					case 'bl':
@@ -120,6 +125,7 @@
 					case 'tr':
 						return canvas.transform.config.buttonsExpanded ? 'rotate-90' : '-rotate-90';
 				}
+				break;
 		}
 	});
 </script>

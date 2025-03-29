@@ -4,12 +4,17 @@ import { z } from 'zod';
 import * as FrostDates from './frostDates';
 import * as AnnualTemperature from './annualTemperature';
 
+export const attributesSchemas = { ...FrostDates.fields, ...AnnualTemperature.fields };
+
 export const EnvironmentAttributes = S.Record({
-	frostDates: S.Optional(FrostDates.profile),
-	annualTemperature: S.Optional(AnnualTemperature.profile)
+	frostDates: S.Optional(FrostDates.FrostDateProfile),
+	annualTemperature: S.Optional(AnnualTemperature.AnnualTemperatureProfile)
 });
 
-export const EnvironmentAttributesUpdateCommand = z.object({
-	frostDates: FrostDates.command.optional(),
-	annualTemperature: AnnualTemperature.command.optional()
+export const EnvironmentAttributesUpdateCommandSchema = z.object({
+	frostDates: FrostDates.FrostDatesUpdateCommandSchema.optional(),
+	annualTemperature: AnnualTemperature.AnnualTemperatureUpdateCommandSchema.optional()
 });
+export type EnvironmentAttributesUpdateCommand = z.infer<
+	typeof EnvironmentAttributesUpdateCommandSchema
+>;

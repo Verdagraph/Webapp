@@ -1,5 +1,6 @@
-import { Schema as S, ClientSchema, Entity, or } from '@triplit/client';
+import { Schema as S, type Entity, or } from '@triplit/client';
 import { CultivarAttributes } from './attributes';
+import { environmentSchema } from '../environments/schema';
 
 /**
  * Controls the visibility of the collection.
@@ -9,13 +10,14 @@ import { CultivarAttributes } from './attributes';
  *     on any public page - a link is required.
  * PUBLIC: the collection is visible to anyone and may be searchable.
  */
-export const CultivarCollectionVisibilityEnum = [
+export const CultivarCollectionVisibilityEnumOptions = [
 	'HIDDEN',
 	'UNLISTED',
 	'PUBLIC'
 ] as const;
 
-export const cultivarSchema = {
+export const cultivarSchema = S.Collections({
+	...environmentSchema,
 	/** Collection schema. */
 	cultivarCollections: {
 		schema: S.Schema({
@@ -29,29 +31,25 @@ export const cultivarSchema = {
 			slug: S.String(),
 
 			/** Visibility of the collection.  */
-			visibility: S.String({ enum: CultivarCollectionVisibilityEnum }),
+			visibility: S.String({ enum: [...CultivarCollectionVisibilityEnumOptions] }),
 
 			/** If defined, the collection is owned by a user. */
 			userId: S.String(),
-			user: S.RelationOne('profiles', {
-				where: [['id', '=', '$userId']]
-			}),
 
 			/** If defined, the colletcion is owned by a garden. Overrides user ownership. */
 			gardenId: S.String(),
-			garden: S.RelationOne('gardens', {
-				where: [['id', '=', '$gardenId']]
-			}),
 
 			/** Optional description. */
-			description: S.String({ nullable: true, default: null }),
+			description: S.String({ default: '' }),
 
 			/** Optional parent collection to derive attributes from. */
-			parentId: S.String(),
-			parent: S.RelationOne('cultivarCollections', {
-				where: [['id', '=', '$parentId']]
-			})
+			parentId: S.String({ nullable: true, default: null })
 		}),
+		relationships: {
+			user: S.RelationById('profiles', 'userId'),
+			garden: S.RelationById('gardens', '$gardenId'),
+			parent: S.RelationById('cultivarCollections', '$parentId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -124,7 +122,6 @@ export const cultivarSchema = {
 
 			/** Collection the cultivar is in. */
 			collectionId: S.String(),
-			collection: S.RelationById('cultivarCollections', '$collectionId'),
 
 			/** A list of common names. Used to match plants to cultivars. */
 			names: S.Set(S.String()),
@@ -136,17 +133,18 @@ export const cultivarSchema = {
 			scientificName: S.Optional(S.String()),
 
 			/** Optional description. */
-			description: S.Optional(S.String()),
+			description: S.String({ default: '' }),
 
 			/** Optional parent cultivar to derive attributes from. */
-			parentId: S.String(),
-			parent: S.RelationOne('cultivars', {
-				where: [['id', '=', '$parentId']]
-			}),
+			parentId: S.String({ nullable: true, default: null }),
 
 			/** Attributes which define this cultivar. */
 			attributes: CultivarAttributes
 		}),
+		relationships: {
+			collection: S.RelationById('cultivarCollections', '$collectionId'),
+			parent: S.RelationById('cultivars', '$parentId')
+		},
 		permissions: {
 			anon: {
 				read: {
@@ -211,6 +209,6 @@ export const cultivarSchema = {
 			}
 		}
 	}
-} satisfies ClientSchema;
+});
 export type Cultivar = Entity<typeof cultivarSchema, 'cultivars'>;
 export type CultivarCollection = Entity<typeof cultivarSchema, 'cultivarCollections'>;

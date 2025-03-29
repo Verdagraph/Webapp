@@ -2,35 +2,43 @@ import triplit from '$data/triplit';
 import type { QueryResult } from '@triplit/client';
 import { schema } from '@vdt-webapp/common';
 
-export const activeGardenQuery = triplit.query('gardens').id('$query.activeGardenId');
+export const gardenQuery = triplit.query('gardens').Id('$query.id');
 
 export const adminGardensQuery = triplit
 	.query('gardens')
-	.where('adminIds', 'has', '$session.profileId');
+	.Where('adminIds', 'has', '$session.profileId');
 
 export const editorGardensQuery = triplit
 	.query('gardens')
-	.where('editorIds', 'has', '$session.profileId');
+	.Where('editorIds', 'has', '$session.profileId');
 
 export const viewerGardensQuery = triplit
 	.query('gardens')
-	.where(['viewerIds', 'has', '$session.profileId']);
+	.Where(['viewerIds', 'has', '$session.profileId']);
+
+export const membershipQuery = triplit
+	.query('gardenMemberships')
+	.Where('gardenId', '=', '$query.gardenId')
+	.Where('userId', '=', '$query.userId');
 
 export const favoriteMembershipsQuery = triplit
 	.query('gardenMemberships')
-	.where('favorite', '=', true)
-	.where(['userId', '=', '$session.profileId'])
-	.include('garden');
+	.Where('favorite', '=', true)
+	.Where(['userId', '=', '$session.profileId'])
+	.Include('garden');
+
+export type FavoriteMembershipsQueryResult = QueryResult<
+	typeof schema,
+	typeof favoriteMembershipsQuery
+>;
 
 export const acceptancePendingMembershipsQuery = triplit
 	.query('gardenMemberships')
-	.where('status', '!=', 'ACCEPTED')
-	.where(['userId', '=', '$session.profileId'])
-	.include('garden');
+	.Where('status', '!=', 'ACCEPTED')
+	.Where(['userId', '=', '$session.profileId'])
+	.Include('garden');
 
-const acceptancePendingMembershipsQueryBuilt =
-	acceptancePendingMembershipsQuery.build();
 export type AcceptancePendingMembershipsQueryResult = QueryResult<
 	typeof schema,
-	typeof acceptancePendingMembershipsQueryBuilt
+	typeof acceptancePendingMembershipsQuery
 >;
