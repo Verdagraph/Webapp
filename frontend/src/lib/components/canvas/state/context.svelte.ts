@@ -1,5 +1,6 @@
 import createCanvasContainer from './container.svelte';
 import createCanvasTransform from './transform.svelte';
+import createSelectionGroup from './selectionGroup.svelte';
 import createCanvasGridManager from './grid.svelte';
 
 export * from './transform.svelte';
@@ -22,6 +23,7 @@ export function createCanvasContext(
 	/** Sub-contexts. */
 	const container = createCanvasContainer(canvasId);
 	const transform = createCanvasTransform(container);
+	const selectionGroup = createSelectionGroup(container)
 	const gridManager = createCanvasGridManager(container, transform);
 
 	/**
@@ -52,6 +54,7 @@ export function createCanvasContext(
 		},
 		transform,
 		container,
+		selectionGroup,
 		gridManager,
 		initialize,
 		destroy
