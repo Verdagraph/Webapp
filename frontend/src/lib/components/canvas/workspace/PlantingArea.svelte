@@ -165,7 +165,7 @@
 				document.body.style.cursor = 'move';
 			});
 			plantingAreaShape?.on('mouseout', () => {
-				document.body.style.cursor = 'default';
+				canvas.selectionGroup.setDocumentCursor()
 			});
 			group.on('dragmove', () => {
 				if (onTranslate) {
