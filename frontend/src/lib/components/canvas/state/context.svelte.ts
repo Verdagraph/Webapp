@@ -23,7 +23,7 @@ export function createCanvasContext(
 	/** Sub-contexts. */
 	const container = createCanvasContainer(canvasId);
 	const transform = createCanvasTransform(container);
-	const selectionGroup = createSelectionGroup(container)
+	const selectionGroup = createSelectionGroup(container);
 	const gridManager = createCanvasGridManager(container, transform);
 
 	/**

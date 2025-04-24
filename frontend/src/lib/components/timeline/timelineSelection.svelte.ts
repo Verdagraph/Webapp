@@ -60,6 +60,9 @@ export function createTimelineSelection() {
 	const minSliderValue = 0;
 	/** The last value in the slider. Defines the end of the visible range. */
 	const maxSliderValue = $derived(calculateDeltaDays(endSlider, beginSlider));
+	/** The slider index value corresponding to the beginning of the timeline selection */
+	//const beginSelectionValue = $derived(calculateDeltaDays(beginSelection, beginSlider))
+	//const endSelectionValue = $derived(maxSliderValue - calculateDeltaDays(endSlider, endSelection))
 	/** The values of the slider thumbs. */
 	const sliderValue: Array<number> = $derived.by(() => {
 		return [

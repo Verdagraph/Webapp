@@ -3,6 +3,7 @@ import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
 import * as Resizable from '$components/ui/resizable';
 import { createTimelineSelection } from '$components/timeline';
+import { createCalendarContext } from './calendar/context.svelte';
 
 /** Verdagraph view config persisted to local storage. */
 export type VerdagraphViewSettings = {
@@ -35,7 +36,7 @@ const defaultContentPaneDirection = isMobile() ? 'vertical' : 'horizontal';
  */
 function createVerdagraphContext() {
 	/** Timeline. */
-	const timelineSelection = createTimelineSelection();
+	const timeline = createTimelineSelection();
 
 	/** Persisted config. */
 	const config = localStore<VerdagraphViewSettings>('verdagraphConfig', {
@@ -44,6 +45,9 @@ function createVerdagraphContext() {
 		layoutEnabled: true,
 		contentPaneDirection: defaultContentPaneDirection
 	});
+
+	/** Sub-contexts. */
+	const calendar = createCalendarContext();
 
 	return {
 		/* Getters. */
@@ -100,7 +104,8 @@ function createVerdagraphContext() {
 		set contentPaneDirection(newVal: Resizable.Direction) {
 			config.value.contentPaneDirection = newVal;
 		},
-		timelineSelection
+		timeline,
+		calendar
 	};
 }
 export type VerdagraphContext = ReturnType<typeof createVerdagraphContext>;
