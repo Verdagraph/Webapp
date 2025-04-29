@@ -2,14 +2,6 @@
 
 First, join the [discord server](https://discord.gg/XH4kQcpz9p). If you have an idea for a contribution to make, talk to other contributors first to establish what the contribution should look like.
 
-A [Github Project](https://github.com/orgs/Verdagraph/projects/1) is used to organize tickets for the web app. Tickets are automatically assigned issues when connected to a repository. Generally, tickets should be made such that we can maintain one branch per ticket and they can be done independently.
-
-Code review is required by other contributors before a feature can be merged.
-
-CI including commit hooks and Github Actions has not been done yet, but there is a ticket for it.
-
-A specific versioning system has not yet been put in place, but will sometime before production.
-
 # Environment Setup
 
 The development environment consists of a docker-compose setup with one container for the frontend, server, and database to run in, and other containers for related services. The current workflow for setting up development environments is standardized to use [Development Containers](https://containers.dev/). This makes reproduction of the environment very easy. The cost is that while the devcontainer tool is an open standard, IDE support on IDEs other than VSCode or Neovim is minimal. If you wish to use different IDE, manual installation instructions will need to be created.
