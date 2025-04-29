@@ -41,6 +41,10 @@
 
 See the [main project readme](https://github.com/Verdagraph) for background on this repository.
 
+Here's a screenshot from the application - this page serves to add and modify geometries which represent planting areas / garden beds. The timeline selector on the bottom is used to scrub through time, as the data model allows modelling a history of locations as opposed to a single location.
+
+![Demo Screenshot](https://github.com/Verdagraph/.github/blob/main/profile/graphics/demo.png)
+
 This repository contains the frontend web application, backend server, and common database schemas of the Verdagraph web application.
 
 The database in use is the [Triplit](https://www.triplit.dev/) project, which provides a full-stack database with built-in multi-client sync and real-time queries. The frontend is a statically built SvelteKit application. The backend is a Fastisy server.
@@ -66,10 +70,10 @@ See the [contributing](./contributing.md) for instructions on contributing and s
 <!-- IN-REPO -->
 
 [version-shield]: https://img.shields.io/badge/version-0.0.1-blue?style=for-the-badge
-[version-url]: https://github.com/nathanielarking/Autonomous-Agriculture/releases
-[issues-shield]: https://img.shields.io/github/issues/nathanielarking/Verdagraph.svg?style=for-the-badge
-[issues-url]: https://github.com/nathanielarking/Verdagraph/issues
-[prs-shield]: https://img.shields.io/github/issues-pr/nathanielarking/Verdagraph.svg?style=for-the-badge
-[prs-url]: https://github.com/nathanielarking/Verdagraph/pulls
-[license-shield]: https://img.shields.io/github/license/nathanielarking/Verdagraph.svg?style=for-the-badge
-[license-url]: https://github.com/nathanielarking/Verdagraph/LICENSE.txt
+[version-url]: https://github.com/Verdagraph/Webapp/releases
+[issues-shield]: https://img.shields.io/github/issues/Verdagraph/Webapp.svg?style=for-the-badge
+[issues-url]: https://github.com/Verdagraph/Webapp/issues
+[prs-shield]: https://img.shields.io/github/issues-pr/Verdagraph/Webapp.svg?style=for-the-badge
+[prs-url]: https://github.com/Verdagraph/Webapp/pulls
+[license-shield]: https://img.shields.io/github/license/Verdagraph/Webapp.svg?style=for-the-badge
+[license-url]: https://github.com/Verdagraph/Webapp/LICENSE.txt
