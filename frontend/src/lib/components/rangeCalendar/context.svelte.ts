@@ -1,3 +1,4 @@
+import { Tree } from 'melt/builders';
 import { localStore, LocalStore } from '$state/localStore.svelte';
 import { CalendarItem } from './types';
 import { type TimelineSelection } from '$components/timeline';
@@ -12,12 +13,20 @@ export type CalendarConfig = {
 
 const DEFAULT_SECTION_HEIGHT = 30;
 
+type CalendarPaneSpec = {
+	entityType: string;
+	items: () => CalendarItem[];
+};
+
 /**
  * Holds context for the calendar.
+ *
+ * @param timeline Reference to the timeline selection.
+ * @param entityTypes Creates a calendar pane for each type of entity.
  */
 export function createCalendarContext<const EntityTypes extends readonly string[]>(
 	timeline: TimelineSelection,
-	entityTypes: EntityTypes
+	paneSpecs: CalendarPaneSpec[]
 ) {
 	type EntityType = EntityTypes[number];
 
@@ -27,15 +36,17 @@ export function createCalendarContext<const EntityTypes extends readonly string[
 		sectionHeight: 100
 	});
 
-	$inspect(config.value);
-
+	/** Sub context. */
 	const container = createCalendarContainerContext(timeline, config);
 
 	/**
 	 * Stores each of the panes in its own key.
 	 */
 	const panes: Record<EntityType, CalendarPaneContext> = Object.fromEntries(
-		entityTypes.map((entity) => [entity, createCalendarPaneContext(entity, container)])
+		paneSpecs.map((pane) => [
+			pane.entityType,
+			createCalendarPaneContext(pane, container)
+		])
 	) as Record<EntityType, CalendarPaneContext>;
 
 	/**
@@ -71,6 +82,9 @@ export type CalendarContext<EntityTypes extends readonly string[]> = ReturnType<
 
 /**
  * Holds context for the calendar container characteristics.
+ *
+ * @param timeline Reference to the timeline selection.
+ * @param config Reference to the configuration store.
  */
 export function createCalendarContainerContext(
 	timeline: TimelineSelection,
@@ -78,11 +92,13 @@ export function createCalendarContainerContext(
 ) {
 	/** Calendar width in pixels. */
 	let width: number = $state(0);
+	/** The number of days in the selected range. */
 	let numSections = $derived(timeline.sliderValue[2] - timeline.sliderValue[0]);
-	let sectionWidth = $derived(width / numSections);
+	/** The height of the sections in the calendar. */
 	let sectionHeight = $derived(
 		DEFAULT_SECTION_HEIGHT * (config.value.sectionHeight / 100)
 	);
+	/** Array representing the sections as they need to be rendered as ticks on the calendar. */
 	let sections = $derived(Array.from({ length: numSections + 1 }, (_, index) => index));
 
 	return {
@@ -93,9 +109,6 @@ export function createCalendarContainerContext(
 		get numSections() {
 			return numSections;
 		},
-		get sectionWidth() {
-			return sectionWidth;
-		},
 		get sectionHeight() {
 			return sectionHeight;
 		},
@@ -103,6 +116,7 @@ export function createCalendarContainerContext(
 			return sections;
 		},
 
+		/** Setters. */
 		set width(newVal) {
 			width = newVal;
 		}
@@ -113,29 +127,32 @@ export type CalendarContainerContext = ReturnType<
 >;
 
 /**
- * Holds context for the verdagraph.
+ * Holds context for each calendar pane.
+ *
+ * @param paneId The ID of the pane in the context.
  */
 export function createCalendarPaneContext(
-	paneId: string,
+	spec: CalendarPaneSpec,
 	container: CalendarContainerContext
 ) {
 	let height = $state(0);
 
-	/** Items. */
-	let items: CalendarItem[] = $state([]);
-	let expanded: string[] = $state([]);
+	/** The Melt-UI builder. */
+	const tree = new Tree({
+		items: spec.items,
+		expandOnClick: true,
+		multiple: true
+		//onSelectedChange: onSelectedChangeHandler
+	});
 
 	return {
-		/* Getters. */
-		get items() {
-			return items;
-		},
+		/** Getters. */
 		get height() {
 			return height;
 		},
-		set items(newVal) {
-			items = newVal;
-		},
+		tree,
+
+		/** Setters. */
 		set height(newVal) {
 			height = newVal;
 		}

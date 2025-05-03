@@ -1,3 +1,4 @@
+import { type TreeItem } from 'melt/builders';
 import { DateValue } from '@internationalized/date';
 import { type Component } from 'svelte';
 
@@ -10,7 +11,7 @@ export type CalendarItemInfoPoint = {
 };
 
 /** Describes a row on the calendar. */
-export type CalendarItem = {
+export type CalendarItem = TreeItem & {
 	id: string;
 	/** Label, always visible at the top. */
 	label: string;
@@ -21,8 +22,8 @@ export type CalendarItem = {
 	/** End date the item is rendered at. Inclusive. */
 	endDate: DateValue;
 	/** Colors of the item. */
-	fillColor?: string;
-	borderColor?: string;
+	fillColor: string;
+	borderColor: string;
 	/** Info points located on the item. */
 	infoPoints?: CalendarItemInfoPoint[];
 	/** Optional children displayed under this one as a collapsible. */
