@@ -11,7 +11,7 @@ export type CalendarConfig = {
 	sectionHeight: number;
 };
 
-const DEFAULT_SECTION_HEIGHT = 30;
+const DEFAULT_SECTION_HEIGHT = 48;
 
 type CalendarPaneSpec = {
 	entityType: string;

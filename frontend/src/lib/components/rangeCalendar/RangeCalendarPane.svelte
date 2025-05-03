@@ -5,6 +5,8 @@
 	import { calculateDeltaDays } from '$components/timeline/utils';
 	import { type DateValue } from '@internationalized/date';
 	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
+	import iconIds from '$lib/assets/icons';
 
 	type Props = {
 		context: CalendarContext<any>;
@@ -69,12 +71,29 @@
 			style:background-color={item.item.fillColor}
 			style:border-color={item.item.borderColor}
 			class={cn(
-				'rounded-sm border-2',
+				'relative flex flex-col rounded-sm border-2',
 				roundedStart ? 'rounded-l-none' : '',
-				itemDepthToTopMargin(depth),
-				'relative'
+				itemDepthToTopMargin(depth)
 			)}
-		></div>
+		>
+			<div class="flex h-1/3 w-full items-center">
+				<span class="text-neutral-12 sticky left-0 flex items-center text-xs">
+					<span class="text-neutral-12 ml-2">
+						{item.item.label}
+					</span>
+					{#if item.children}
+						<Icon icon={iconIds.caretUpDownIcon} class="mx-1"></Icon>
+					{:else}
+						<span class="bg-neutral-10 mx-2 h-[3px] w-[3px] rounded-lg"></span>
+					{/if}
+					<span class="text-neutral-11 mr-2 truncate">
+						{item.item.description || ''}
+					</span>
+				</span>
+			</div>
+			<div style:background-color={item.item.borderColor} class="h-[1px] w-full"></div>
+			<div class="w-full"></div>
+		</div>
 
 		{#if item.children}
 			{@render calendarItems(item.children, depth + 1)}
@@ -90,10 +109,11 @@
 	>
 		{#each context.container.sections as section}
 			{@const tickLeft = calculateSectionLeft(section)}
+			{@const sectionEven = section % 2 == 0}
 			<div
 				style:left="{tickLeft}%"
 				style="translate: -50%"
-				class="bg-neutral-3 absolute h-full w-[2px]"
+				class="{sectionEven ? 'bg-neutral-3' : 'bg-neutral-2'} absolute h-full w-[2px]"
 			></div>
 		{/each}
 
