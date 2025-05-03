@@ -4,7 +4,13 @@
 	import { getDayOfWeek } from '@internationalized/date';
 	import { cn } from '$lib/utils';
 	import { getMonthString, type MonthNumber } from '../utils';
-	import {tickLineWidth, tickLabelThreshold, baseTickClass, baseTickDayLabelClass, baseTickLineClass} from './common'
+	import {
+		tickLineWidth,
+		tickLabelThreshold,
+		baseTickClass,
+		baseTickDayLabelClass,
+		baseTickLineClass
+	} from './common';
 
 	type Props = {
 		selection: TimelineSelection;

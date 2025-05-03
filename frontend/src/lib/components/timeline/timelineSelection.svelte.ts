@@ -26,7 +26,7 @@ const translateRangeThreshold = 2;
 /** The number of miliseconds between range translations. */
 const translateRangeInterval = 50;
 /** The delta of each range translation. */
-const forwardTranslateRange = { days: 1 };
+const forwardTranslateRange = { days: 3 };
 const backwardTranslateRange = { days: -1 };
 
 export function createTimelineSelection() {

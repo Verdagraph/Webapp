@@ -1,12 +1,13 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import { Toolbar } from 'bits-ui';
-	import iconIds from '$lib/assets/icons';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { getVerdagraphContext } from '../verdagraphContext.svelte';
+	import { type CalendarContext } from './context.svelte';
 	import { type ViewPanesOptions } from './context.svelte';
 
-	const verdagraphContext = getVerdagraphContext();
+	type Props = {
+		context: CalendarContext<any>;
+	};
+	let { context }: Props = $props();
 
 	const viewSelectOptions: { value: ViewPanesOptions; label: string }[] = [
 		{ value: 'plants', label: 'Plants' },
@@ -22,7 +23,7 @@
 	<Select.Root
 		type="multiple"
 		name="calendarView"
-		bind:value={verdagraphContext.calendar.config.value.viewPanesSelect}
+		bind:value={context.config.value.viewPanesSelect}
 	>
 		<Select.Trigger class="w-1/4 rounded-none border-none">Panes</Select.Trigger>
 		<Select.Content>

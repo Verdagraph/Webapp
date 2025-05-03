@@ -3,7 +3,6 @@ import { isMobile } from '$state/isMobile.svelte';
 import { localStore } from '$state/localStore.svelte';
 import * as Resizable from '$components/ui/resizable';
 import { createTimelineSelection } from '$components/timeline';
-import { createCalendarContext } from './calendar/context.svelte';
 
 /** Verdagraph view config persisted to local storage. */
 export type VerdagraphViewSettings = {
@@ -45,9 +44,6 @@ function createVerdagraphContext() {
 		layoutEnabled: true,
 		contentPaneDirection: defaultContentPaneDirection
 	});
-
-	/** Sub-contexts. */
-	const calendar = createCalendarContext();
 
 	return {
 		/* Getters. */
@@ -104,8 +100,7 @@ function createVerdagraphContext() {
 		set contentPaneDirection(newVal: Resizable.Direction) {
 			config.value.contentPaneDirection = newVal;
 		},
-		timeline,
-		calendar
+		timeline
 	};
 }
 export type VerdagraphContext = ReturnType<typeof createVerdagraphContext>;
