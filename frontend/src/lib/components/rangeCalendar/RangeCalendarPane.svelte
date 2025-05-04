@@ -13,12 +13,6 @@
 		pane: CalendarPaneContext;
 	};
 	let { context, pane }: Props = $props();
-
-	function paneIndexToVisibleIndex(paneIndex: number): number {
-		return paneIndex;
-	}
-	$inspect(context.container.sectionHeight);
-
 	/**
 	 * Calculates the leftpoint of a section, in %.
 	 * @param sectionIndex The index of the section from
@@ -45,15 +39,13 @@
 
 	function itemDepthToTopMargin(depth: number) {
 		if (depth == 0) {
-			return 'mt-3';
+			return 'mt-6';
 		} else if (depth == 1) {
 			return 'mt-2';
 		} else {
 			return 'mt-1';
 		}
 	}
-
-	$inspect(pane.tree.children);
 </script>
 
 <!-- Snippet for rendering a calendar item. Allows arbitrary nesting. -->
@@ -63,50 +55,61 @@
 		{@const itemWidth = calculateItemWidth(item.item.endDate, item.item.startDate)}
 		{@const roundedStart = item.item.startDate < context.timeline.beginSelection}
 
-		<div
-			{...item.attrs}
-			style:left="{itemLeft}%"
-			style:height="{context.container.sectionHeight}px"
-			style:width="{itemWidth}%"
-			style:background-color={item.item.fillColor}
-			style:border-color={item.item.borderColor}
-			class={cn(
-				'relative flex flex-col rounded-sm border-2',
-				roundedStart ? 'rounded-l-none' : '',
-				itemDepthToTopMargin(depth)
-			)}
-		>
-			<div class="flex h-1/3 w-full items-center">
-				<span class="text-neutral-12 sticky left-0 flex items-center text-xs">
-					<span class="text-neutral-12 ml-2">
-						{item.item.label}
-					</span>
-					{#if item.children}
-						<Icon icon={iconIds.caretUpDownIcon} class="mx-1"></Icon>
-					{:else}
+		<!-- Item element. -->
+		<li {...item.attrs}>
+			<!-- Item row. -->
+			<div
+				style:left="{itemLeft}%"
+				style:height="{context.container.sectionHeight}px"
+				style:width="{itemWidth}%"
+				style:background-color={item.item.fillColor}
+				style:border-color={item.item.borderColor}
+				class={cn(
+					'relative flex flex-col rounded-sm border-2',
+					roundedStart ? 'rounded-l-none' : '',
+					itemDepthToTopMargin(depth)
+				)}
+			>
+				{#if item.children?.length}
+					<div class="text-neutral-8 absolute -translate-x-8">
+						<Icon
+							icon={iconIds.chevronRight}
+							width="2rem"
+							class={item.expanded ? 'rotate-90' : ''}
+						/>
+					</div>
+				{/if}
+				<div class="flex h-[40%] w-full items-center">
+					<span class="text-neutral-12 sticky left-0 flex items-center text-xs">
+						<span class="text-neutral-12 ml-2">
+							{item.item.label}
+						</span>
 						<span class="bg-neutral-10 mx-2 h-[3px] w-[3px] rounded-lg"></span>
-					{/if}
-					<span class="text-neutral-11 mr-2 truncate">
-						{item.item.description || ''}
+						<span class="text-neutral-11 mr-2 truncate">
+							{item.item.description || ''}
+						</span>
 					</span>
-				</span>
+				</div>
+				<div
+					style:background-color={item.item.borderColor}
+					class="h-[1px] w-full"
+				></div>
+				<div class="w-full"></div>
 			</div>
-			<div style:background-color={item.item.borderColor} class="h-[1px] w-full"></div>
-			<div class="w-full"></div>
-		</div>
-
-		{#if item.children}
-			{@render calendarItems(item.children, depth + 1)}
-		{/if}
+			{#if item.children?.length}
+				<ul
+					{...pane.tree.group}
+					class={item.expanded ? 'opacity-100' : 'pointer-events-none h-0 opacity-0'}
+				>
+					{@render calendarItems(item.children, depth + 1)}
+				</ul>
+			{/if}
+		</li>
 	{/each}
 {/snippet}
 
 <ScrollArea class="h-full w-full">
-	<div
-		bind:clientHeight={pane.height}
-		{...pane.tree.root}
-		class="relative h-full w-full overflow-hidden"
-	>
+	<div bind:clientHeight={pane.height} class="relative h-full w-full overflow-hidden">
 		{#each context.container.sections as section}
 			{@const tickLeft = calculateSectionLeft(section)}
 			{@const sectionEven = section % 2 == 0}
@@ -117,6 +120,8 @@
 			></div>
 		{/each}
 
-		{@render calendarItems(pane.tree.children)}
+		<ul {...pane.tree.root}>
+			{@render calendarItems(pane.tree.children)}
+		</ul>
 	</div>
 </ScrollArea>
