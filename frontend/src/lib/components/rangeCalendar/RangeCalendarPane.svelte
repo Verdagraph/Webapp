@@ -46,6 +46,23 @@
 			return 'mt-1';
 		}
 	}
+
+	function calculateInfoPointLeft(
+		itemStartDate: DateValue,
+		itemEndDate: DateValue,
+		infoPointDate: DateValue
+	) {
+		return (
+			(calculateDeltaDays(infoPointDate, itemStartDate) /
+				(calculateDeltaDays(itemEndDate, itemStartDate) + 1)) *
+			100
+		);
+	}
+
+	let sectionWidthPx = $derived(
+		context.container.width /
+			(context.timeline.sliderValue[2] - context.timeline.sliderValue[0] + 1)
+	);
 </script>
 
 <!-- Snippet for rendering a calendar item. Allows arbitrary nesting. -->
@@ -70,31 +87,83 @@
 					itemDepthToTopMargin(depth)
 				)}
 			>
-				{#if item.children?.length}
-					<div class="text-neutral-8 absolute -translate-x-8">
-						<Icon
-							icon={iconIds.chevronRight}
-							width="2rem"
-							class={item.expanded ? 'rotate-90' : ''}
-						/>
-					</div>
-				{/if}
+				<!-- Top row - label-->
 				<div class="flex h-[40%] w-full items-center">
 					<span class="text-neutral-12 sticky left-0 flex items-center text-xs">
+						<!-- Label. -->
 						<span class="text-neutral-12 ml-2">
 							{item.item.label}
 						</span>
-						<span class="bg-neutral-10 mx-2 h-[3px] w-[3px] rounded-lg"></span>
+
+						<!-- Tree item expansion indicatator-->
+						{#if item.children?.length}
+							<Icon
+								icon={iconIds.chevronRight}
+								width="1.25rem"
+								class={cn('text-neutral-9 mx-1', item.expanded ? 'rotate-90' : '')}
+							/>
+						{:else}
+							<span class="bg-neutral-10 mx-2 h-[3px] w-[3px] rounded-lg"></span>
+						{/if}
+
+						<!-- Description. -->
 						<span class="text-neutral-11 mr-2 truncate">
 							{item.item.description || ''}
 						</span>
 					</span>
 				</div>
+
+				<!-- Seperator. -->
 				<div
 					style:background-color={item.item.borderColor}
 					class="h-[1px] w-full"
 				></div>
-				<div class="w-full"></div>
+
+				<!-- Info popups. -->
+				<div class="flex h-full w-full">
+					{#each item.item.infoPoints || [] as infoPoint}
+						{@const infoPointLeft = calculateInfoPointLeft(
+							item.item.startDate,
+							item.item.endDate,
+							infoPoint.date
+						)}
+
+						<div
+							style:left="{infoPointLeft}%"
+							style:width="{sectionWidthPx}px"
+							class="relative flex h-full items-center"
+						>
+							{#snippet infoPointIcon(icon?: string)}
+								{#if icon}
+									<Icon
+										color={item.item.borderColor}
+										width="1.25rem"
+										{icon}
+										class="mx-auto"
+									/>
+								{:else}
+									<span
+										style:background-color={item.item.itemColor}
+										style:border-color={item.item.borderColor}
+										class="mx-auto h-4 w-4 rounded-lg border"
+									></span>
+								{/if}
+							{/snippet}
+
+							{#if infoPoint.popup}
+								<div></div>
+							{:else}
+								{@render infoPointIcon(infoPoint.icon)}
+							{/if}
+
+							<span
+								style:text-decoration-color={item.item.borderColor}
+								class="text-neutral-12 hover: absolute ml-[30px] w-64 truncate text-xs underline underline-offset-[5px]"
+								>{infoPoint.label}</span
+							>
+						</div>
+					{/each}
+				</div>
 			</div>
 			{#if item.children?.length}
 				<ul

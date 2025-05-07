@@ -4,6 +4,7 @@
 	import { CalendarDate } from '@internationalized/date';
 	import { getColor } from '$lib/utils';
 	import mode from '$state/theme.svelte';
+	import iconIds from '$lib/assets/icons';
 
 	const verdagraphContext = getVerdagraphContext();
 	const calendarContext = createCalendarContext(verdagraphContext.timeline, [
@@ -19,7 +20,17 @@
 						startDate: new CalendarDate(2025, 2, 10),
 						endDate: new CalendarDate(2025, 7, 30),
 						fillColor: getColor('tomato', 4, mode.value),
-						borderColor: getColor('tomato', 7, mode.value)
+						borderColor: getColor('tomato', 7, mode.value),
+						itemColor: getColor('tomato', 5, mode.value),
+						infoPoints: [
+							{
+								label: 'this is really a mf label yes haha',
+								date: new CalendarDate(2025, 2, 11),
+								icon: iconIds.cultivarsIcon
+							},
+							{ label: 'also a label', date: new CalendarDate(2025, 2, 18) },
+							{ label: 'also a label', date: new CalendarDate(2025, 2, 18) }
+						]
 					},
 					{
 						id: '2',
@@ -29,6 +40,7 @@
 						endDate: new CalendarDate(2025, 8, 30),
 						fillColor: getColor('grass', 4, mode.value),
 						borderColor: getColor('grass', 7, mode.value),
+						itemColor: getColor('grass', 5, mode.value),
 						children: [
 							{
 								id: '2a',
@@ -37,7 +49,8 @@
 								startDate: new CalendarDate(2025, 2, 20),
 								endDate: new CalendarDate(2025, 4, 28),
 								fillColor: getColor('green', 4, mode.value),
-								borderColor: getColor('green', 7, mode.value)
+								borderColor: getColor('green', 7, mode.value),
+								itemColor: getColor('green', 5, mode.value)
 							},
 							{
 								id: '2b',
@@ -46,7 +59,8 @@
 								startDate: new CalendarDate(2025, 2, 22),
 								endDate: new CalendarDate(2025, 8, 30),
 								fillColor: getColor('lime', 4, mode.value),
-								borderColor: getColor('lime', 7, mode.value)
+								borderColor: getColor('lime', 7, mode.value),
+								itemColor: getColor('lime', 5, mode.value)
 							}
 						]
 					},
@@ -57,7 +71,8 @@
 						startDate: new CalendarDate(2025, 2, 5),
 						endDate: new CalendarDate(2025, 2, 23),
 						fillColor: getColor('purple', 4, mode.value),
-						borderColor: getColor('purple', 7, mode.value)
+						borderColor: getColor('purple', 7, mode.value),
+						itemColor: getColor('purple', 5, mode.value)
 					}
 				];
 			}

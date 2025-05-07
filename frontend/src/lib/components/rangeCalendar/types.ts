@@ -5,9 +5,9 @@ import { type Component } from 'svelte';
 /** Describes an indicator with custom popup located on a calendar item. */
 export type CalendarItemInfoPoint = {
 	label: string;
-	icon: string;
 	date: DateValue;
-	popup: Component;
+	icon?: string;
+	popup?: Component;
 };
 
 /** Describes a row on the calendar. */
@@ -24,6 +24,7 @@ export type CalendarItem = TreeItem & {
 	/** Colors of the item. */
 	fillColor: string;
 	borderColor: string;
+	itemColor: string;
 	/** Info points located on the item. */
 	infoPoints?: CalendarItemInfoPoint[];
 	/** Optional children displayed under this one as a collapsible. */
