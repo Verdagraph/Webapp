@@ -1,0 +1,25 @@
+{
+	"name": "docs",
+	"version": "0.0.1",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vite --host",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "eslint . --fix",
+		"format": "prettier --write .",
+		"codegen": "rm -r ./src/lib/codegen/; orval --config ./orval.config.ts"
+	},
+	"devDependencies": {
+	},
+	"dependencies": {
+		"@vdg-webapp/ui": "workspace:*",
+		"@vdg-webapp/models": "workspace:*",
+		"axios": "^1.8.2",
+		"konva": "^9.3.18",
+		"melt": "^0.14.1"
+	}
+}

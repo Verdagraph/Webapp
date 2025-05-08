@@ -1,0 +1,20 @@
+{
+	"name": "@vdg-webapp/models",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "",
+	"main": "src/index.ts",
+	"scripts": {
+		"dev": "TRIPLIT_JWT_SECRET=secret npx triplit dev --seed",
+		"seed": "triplit seed"
+	},
+	"devDependencies": {
+		"@vdg-webapp/eslint-config": "workspace:*",
+		"@vdg-webapp/typescript-config": "workspace:*",
+		"@triplit/cli": "^1.0.11"
+	},
+	"dependencies": {
+		"@triplit/client": "^1.0.11",
+		"zod": "^3.24.2"
+	}
+}

@@ -5,8 +5,8 @@
 		"module": "ES2015",
 		"moduleResolution": "Bundler",
 		"paths": {
-			"@common/*": ["./common/src/*"],
-			"@vdg-webapp/common": ["./common/src"]
+			"@models/*": ["./models/src/*"],
+			"@vdg-webapp/models": ["./models/src"]
 		},
 		//"baseUrl": ".",
 		"strict": true,
