@@ -55,6 +55,6 @@
 	</div>
 
 	<div class="bottom-0 h-24">
-		<TimelineSelector selection={verdagraphContext.timelineSelection} />
+		<TimelineSelector selection={verdagraphContext.timeline} />
 	</div>
 </div>

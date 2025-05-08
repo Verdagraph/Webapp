@@ -18,13 +18,47 @@ const config: Config = {
 		},
 		extend: {
 			colors: {
+				/** Semantic colors. */
 				neutral: getColorScale('neutral'),
 				primary: getColorScale('primary'),
 				secondary: getColorScale('secondary'),
 				accent: getColorScale('accent'),
 				destructive: getColorScale('destructive'),
 				warning: getColorScale('warning'),
-				success: getColorScale('success')
+				success: getColorScale('success'),
+
+				/** Literal colors. */
+				gray: getColorScale('gray'),
+				mauve: getColorScale('mauve'),
+				slate: getColorScale('slate'),
+				sage: getColorScale('sage'),
+				olive: getColorScale('olive'),
+				sand: getColorScale('sand'),
+				tomato: getColorScale('tomato'),
+				red: getColorScale('red'),
+				ruby: getColorScale('ruby'),
+				crimson: getColorScale('crimson'),
+				pink: getColorScale('pink'),
+				plum: getColorScale('plum'),
+				purple: getColorScale('purple'),
+				violet: getColorScale('violet'),
+				iris: getColorScale('iris'),
+				indigo: getColorScale('indigo'),
+				blue: getColorScale('blue'),
+				cyan: getColorScale('cyan'),
+				teal: getColorScale('teal'),
+				jade: getColorScale('jade'),
+				green: getColorScale('green'),
+				grass: getColorScale('grass'),
+				bronze: getColorScale('bronze'),
+				gold: getColorScale('gold'),
+				brown: getColorScale('brown'),
+				orange: getColorScale('orange'),
+				amber: getColorScale('amber'),
+				yellow: getColorScale('yellow'),
+				lime: getColorScale('lime'),
+				mint: getColorScale('mint'),
+				sky: getColorScale('sky')
 			},
 			borderRadius: {
 				xl: 'calc(var(--radius) + 4px)',

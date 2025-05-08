@@ -35,7 +35,7 @@ const defaultContentPaneDirection = isMobile() ? 'vertical' : 'horizontal';
  */
 function createVerdagraphContext() {
 	/** Timeline. */
-	const timelineSelection = createTimelineSelection();
+	const timeline = createTimelineSelection();
 
 	/** Persisted config. */
 	const config = localStore<VerdagraphViewSettings>('verdagraphConfig', {
@@ -100,7 +100,7 @@ function createVerdagraphContext() {
 		set contentPaneDirection(newVal: Resizable.Direction) {
 			config.value.contentPaneDirection = newVal;
 		},
-		timelineSelection
+		timeline
 	};
 }
 export type VerdagraphContext = ReturnType<typeof createVerdagraphContext>;

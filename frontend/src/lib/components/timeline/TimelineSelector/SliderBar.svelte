@@ -4,6 +4,13 @@
 	import { getDayOfWeek } from '@internationalized/date';
 	import { cn } from '$lib/utils';
 	import { getMonthString, type MonthNumber } from '../utils';
+	import {
+		tickLineWidth,
+		tickLabelThreshold,
+		baseTickClass,
+		baseTickDayLabelClass,
+		baseTickLineClass
+	} from './common';
 
 	type Props = {
 		selection: TimelineSelection;
@@ -19,17 +26,8 @@
 	 * Calculate the width of a tick, divide in half, add the tick width,
 	 * and add approximately half the day label's width.
 	 */
-	const tickLineWidth = 2;
 	let tickWidth = $derived(width / selection.maxSliderValue);
 	let tickLabelTranslate = $derived(tickWidth / 2 + tickLineWidth - 7);
-
-	/** The minimum amount of pixels that will allow the tick day labels to show. */
-	const tickLabelThreshold = 16;
-
-	const baseTickClass = 'self-end flex items-end h-[14px]';
-	const baseTickDayLabelClass =
-		'absolute text-[9px] text-neutral-9 w-[14px] text-center';
-	const baseTickLineClass = `bg-neutral-7 h-[12px] w-[2px] rounded-t-lg`;
 </script>
 
 <Slider.Root

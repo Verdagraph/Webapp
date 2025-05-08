@@ -26,7 +26,7 @@ const translateRangeThreshold = 2;
 /** The number of miliseconds between range translations. */
 const translateRangeInterval = 50;
 /** The delta of each range translation. */
-const forwardTranslateRange = { days: 1 };
+const forwardTranslateRange = { days: 3 };
 const backwardTranslateRange = { days: -1 };
 
 export function createTimelineSelection() {
@@ -60,6 +60,9 @@ export function createTimelineSelection() {
 	const minSliderValue = 0;
 	/** The last value in the slider. Defines the end of the visible range. */
 	const maxSliderValue = $derived(calculateDeltaDays(endSlider, beginSlider));
+	/** The slider index value corresponding to the beginning of the timeline selection */
+	//const beginSelectionValue = $derived(calculateDeltaDays(beginSelection, beginSlider))
+	//const endSelectionValue = $derived(maxSliderValue - calculateDeltaDays(endSlider, endSelection))
 	/** The values of the slider thumbs. */
 	const sliderValue: Array<number> = $derived.by(() => {
 		return [
