@@ -14,9 +14,8 @@
 
 	// Commands to be run after the container is created.
 	"postCreateCommand": {
-		"git": "git config --global --add safe.directory /workspaces/Webapp",
-		"pnpm": "npm install -g pnpm",
-		"turborepo": "pnpm install turbo"
+		//"git": "git config --global --add safe.directory /workspaces/Webapp",
+		"turborepo": "pnpm install turbo --global"
 		//"node": "pnpm i -w --save-dev @types/node"
 	},
 
@@ -24,6 +23,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"Vercel.turbo-vsc",
 				"ms-vscode.vscode-typescript-next",
 				"svelte.svelte-vscode",
 				"fivethree.vscode-svelte-snippets",

@@ -4,11 +4,10 @@
 		"target": "ES2023",
 		"module": "ES2015",
 		"moduleResolution": "Bundler",
-		"paths": {
-			"@models/*": ["./models/src/*"],
-			"@vdg-webapp/models": ["./models/src"]
-		},
-		//"baseUrl": ".",
+		//"paths": {
+			//"@models/*": ["./models/src/*"],
+			//"@vdg-webapp/models": ["./models/src"]
+		//},
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": false,

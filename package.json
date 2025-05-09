@@ -1,8 +1,6 @@
 {
 	"name": "vdg-webapp",
 	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
 	"packageManager": "pnpm@10.10.0",
 	"scripts": {
 		"build": "turbo run build",
