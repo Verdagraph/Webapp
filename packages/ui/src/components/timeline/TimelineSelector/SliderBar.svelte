@@ -2,7 +2,7 @@
 	import { Slider } from 'bits-ui';
 	import { type TimelineSelection } from '../timelineSelection.svelte';
 	import { getDayOfWeek } from '@internationalized/date';
-	import { cn } from '$lib/utils';
+	import { cn } from '$utils';
 	import { getMonthString, type MonthNumber } from '../utils';
 	import {
 		tickLineWidth,

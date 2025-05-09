@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import iconIds from '../../../../assets/icons';
-	import * as Button from '$lib/components/ui/button/index.js';
+	import iconIds from '$assets/icons';
+	import * as Button from '$components/ui/button/index.js';
 
 	/**
 	 * Verdagraph - Modified to allow loading spinner.

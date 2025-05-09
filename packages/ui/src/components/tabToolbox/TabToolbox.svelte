@@ -2,8 +2,8 @@
 	import Icon from '@iconify/svelte';
 	import * as Tabs from '$components/ui/tabs';
 	import { ScrollArea } from 'bits-ui';
-	import { Button } from '$lib/components/ui/button';
-	import iconIds from '../../../assets/icons';
+	import { Button } from '$components/ui/button';
+	import iconIds from '$assets/icons';
 	import createToolbox from './tools.svelte';
 
 	type Props = {

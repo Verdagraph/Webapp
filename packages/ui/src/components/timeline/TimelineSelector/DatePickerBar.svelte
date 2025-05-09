@@ -2,11 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import type { DateValue } from '@internationalized/date';
 	import DatePicker from '$components/ui/datepicker';
-	import { Button } from '$lib/components/ui/button';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import iconIds from '../../../../assets/icons';
+	import { Button } from '$components/ui/button';
+	import * as Tooltip from '$components/ui/tooltip';
+	import iconIds from '$assets/icons';
 	import { type TimelineSelection } from '../timelineSelection.svelte';
-	import type { ButtonVariant } from '$lib/components/ui/button';
+	import type { ButtonVariant } from '$components/ui/button';
 	import { IsMobile } from '$state/isMobile.svelte';
 	import * as Popover from '$components/ui/popover';
 

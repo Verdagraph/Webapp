@@ -13,17 +13,17 @@
 			"$components/*": [
 				"../src/components/*"
 			],
+			"$state": [
+				"../src/state"
+			],
+			"$state/*": [
+				"../src/state/*"
+			],
 			"$utils": [
 				"../src/utils"
 			],
 			"$utils/*": [
 				"../src/utils/*"
-			],
-			"$lib": [
-				"../src/lib"
-			],
-			"$lib/*": [
-				"../src/lib/*"
 			]
 		},
 		"rootDirs": [

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$utils';
 
 	/**
 	 * Verdagraph - Modified to allow passing custom errors.

@@ -3,8 +3,8 @@
 	import Icon from '@iconify/svelte';
 	import type { Snippet } from 'svelte';
 	import * as Dialog from './index.js';
-	import { cn } from '$lib/utils';
-	import icons from '../../../../assets/icons.js';
+	import { cn } from '$utils';
+	import icons from '$assets/icons';
 
 	let {
 		ref = $bindable(null),

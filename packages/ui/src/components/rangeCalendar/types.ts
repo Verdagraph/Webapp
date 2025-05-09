@@ -1,5 +1,5 @@
 import { type TreeItem } from 'melt/builders';
-import { DateValue } from '@internationalized/date';
+import { type DateValue } from '@internationalized/date';
 import { type Component } from 'svelte';
 
 /** Describes an indicator with custom popup located on a calendar item. */

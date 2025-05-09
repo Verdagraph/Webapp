@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
-	import type { CalendarItem } from './types';
+	import { ScrollArea } from '$components/ui/scroll-area/index.js';
 	import { type CalendarPaneContext, type CalendarContext } from './context.svelte';
 	import { calculateDeltaDays } from '$components/timeline/utils';
 	import { type DateValue } from '@internationalized/date';
-	import { cn } from '$lib/utils';
+	import { cn } from '$utils';
 	import Icon from '@iconify/svelte';
-	import iconIds from '../../../assets/icons';
+	import iconIds from '$assets/icons';
 
 	type Props = {
 		context: CalendarContext<any>;

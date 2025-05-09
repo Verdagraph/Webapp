@@ -1,6 +1,7 @@
-import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
-import userSettings from '$state/userSettings.svelte';
 import { roundToDecimalPlaces } from '$utils';
+
+export type UnitSystem = 'metric' | 'imperial';
+export type UnitAwareQuantity = 'distance' | 'temperature' | 'mass' | 'volume';
 
 /**
  * Describes the symbols of the unit systems
@@ -135,14 +136,15 @@ function convertQuantityToMetric(
 export function createUnitAwareValues(
 	quantityType: UnitAwareQuantity,
 	initialValuesMetric: Array<number>,
+	initialUnitSystem: UnitSystem = 'metric',
 	decimalPlaces: number = 2
 ) {
 	/** The current unit system for this value. Defaults to user preferences. */
-	let unitSystem: UnitSystem = $state(userSettings.value.units[quantityType]);
+	let unitSystem: UnitSystem = $state(initialUnitSystem);
 
 	/** The values displayed in the component. */
 	let displayValues: Array<number> = $state(
-		userSettings.value.units[quantityType] === 'metric'
+		initialUnitSystem === 'metric'
 			? initialValuesMetric
 			: initialValuesMetric.map((value) =>
 					convertQuantity(value, 'metric', quantityType)

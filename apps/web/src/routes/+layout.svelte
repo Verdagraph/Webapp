@@ -49,7 +49,7 @@
 		<Tooltip.Provider delayDuration={500}>
 			<PrimaryNav>
 				{@render children()}
-			</PrimaryNav>			
+			</PrimaryNav>
 		</Tooltip.Provider>
 	</div>
 {/if}

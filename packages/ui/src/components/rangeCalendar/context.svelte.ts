@@ -1,6 +1,6 @@
 import { Tree } from 'melt/builders';
 import { localStore, LocalStore } from '$state/localStore.svelte';
-import { CalendarItem } from './types';
+import { type CalendarItem } from './types';
 import { type TimelineSelection } from '../timeline';
 
 /** Calendar config persisted to local storage. */
@@ -43,10 +43,7 @@ export function createCalendarContext<const EntityTypes extends readonly string[
 	 * Stores each of the panes in its own key.
 	 */
 	const panes: Record<EntityType, CalendarPaneContext> = Object.fromEntries(
-		paneSpecs.map((pane) => [
-			pane.entityType,
-			createCalendarPaneContext(pane, container)
-		])
+		paneSpecs.map((pane) => [pane.entityType, createCalendarPaneContext(pane)])
 	) as Record<EntityType, CalendarPaneContext>;
 
 	/**
@@ -93,13 +90,15 @@ export function createCalendarContainerContext(
 	/** Calendar width in pixels. */
 	let width: number = $state(0);
 	/** The number of days in the selected range. */
-	let numSections = $derived(timeline.sliderValue[2] - timeline.sliderValue[0]);
+	const numSections = $derived(timeline.sliderValue[2] - timeline.sliderValue[0]);
 	/** The height of the sections in the calendar. */
-	let sectionHeight = $derived(
+	const sectionHeight = $derived(
 		DEFAULT_SECTION_HEIGHT * (config.value.sectionHeight / 100)
 	);
 	/** Array representing the sections as they need to be rendered as ticks on the calendar. */
-	let sections = $derived(Array.from({ length: numSections + 1 }, (_, index) => index));
+	const sections = $derived(
+		Array.from({ length: numSections + 1 }, (_, index) => index)
+	);
 
 	return {
 		/* Getters. */
@@ -131,10 +130,7 @@ export type CalendarContainerContext = ReturnType<
  *
  * @param paneId The ID of the pane in the context.
  */
-export function createCalendarPaneContext(
-	spec: CalendarPaneSpec,
-	container: CalendarContainerContext
-) {
+export function createCalendarPaneContext(spec: CalendarPaneSpec) {
 	let height = $state(0);
 
 	/** The Melt-UI builder. */

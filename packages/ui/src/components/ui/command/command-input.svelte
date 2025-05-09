@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Command as CommandPrimitive } from 'bits-ui';
 	import Icon from '@iconify/svelte';
-	import { cn } from '$lib/utils';
-	import icons from '../../../../assets/icons';
+	import { cn } from '$utils';
+	import icons from '$assets/icons';
 
 	let {
 		ref = $bindable(null),

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import iconIds from '../../../assets/icons';
+	import iconIds from '$assets/icons';
 	import * as Popover from '$components/ui/popover';
 
 	type Props = { description: string; errorAttrs?: unknown };

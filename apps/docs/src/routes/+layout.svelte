@@ -17,7 +17,6 @@
 	modeWatcher.subscribe((value) => {
 		mode.value = value;
 	});
-
 </script>
 
 <!-- Theme switcher. -->
@@ -29,10 +28,8 @@
 {#if initialized}
 	<div class="h-screen w-screen overflow-hidden">
 		<Tooltip.Provider delayDuration={500}>
-			
 			<AnonStaticNav />
 			{@render children()}
-
 		</Tooltip.Provider>
 	</div>
 {/if}

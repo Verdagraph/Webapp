@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Button } from 'bits-ui';
-	import { Input } from '$lib/components/ui/input/index.js';
+	import { Input } from '$components/ui/input/index.js';
 	import Icon from '@iconify/svelte';
-	import { createUnitAwareValues } from './units.svelte';
+	import { createUnitAwareValues, type UnitSystem } from './units.svelte';
 	import { type Position } from '@vdg-webapp/models';
 
 	type Props = {
@@ -10,6 +10,8 @@
 		x: number;
 		/** The output Y value. Guarnteed to be in metric. */
 		y: number;
+		/** The initial unit system of the component. */
+		initialUnitSystem: UnitSystem;
 		/** Change handler. */
 		onValueChange?: (value: Position) => void;
 		/** The number of decimal places to prefer for conversions. */
@@ -22,6 +24,7 @@
 	let {
 		x = $bindable(),
 		y = $bindable(),
+		initialUnitSystem,
 		onValueChange,
 		decimalPlaces = 2,
 		step = 0.01,
@@ -30,7 +33,12 @@
 		...restProps
 	}: Props = $props();
 
-	const unitAwareValues = createUnitAwareValues('distance', [x, y], decimalPlaces);
+	const unitAwareValues = createUnitAwareValues(
+		'distance',
+		[x, y],
+		initialUnitSystem,
+		decimalPlaces
+	);
 
 	/** Track external value changes. */
 	$effect(() => {

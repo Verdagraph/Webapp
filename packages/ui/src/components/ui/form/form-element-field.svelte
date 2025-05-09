@@ -11,7 +11,7 @@
 	import * as FormPrimitive from 'formsnap';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef, WithoutChildren } from 'bits-ui';
-	import { cn } from '$lib/utils';
+	import { cn } from '$utils';
 
 	let {
 		ref = $bindable(null),

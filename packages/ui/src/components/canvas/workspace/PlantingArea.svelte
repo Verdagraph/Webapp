@@ -9,8 +9,8 @@
 	} from '@vdg-webapp/models';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
-	import { getColor } from '$lib/utils';
-	import mode from '$state/theme.svelte';
+	import { getColor } from '$utils';
+	import { mode } from 'mode-watcher';
 	import EditableGeometryResizePoints from './EditableGeometryResizePoints.svelte';
 
 	type Props = {
@@ -94,14 +94,16 @@
 	 * Shape config settings.
 	 */
 	let strokeColor = $derived(
-		selected ? getColor('accent', 8, mode.value) : getColor('brown', 10, mode.value)
+		selected ? getColor('accent', 8, mode.current) : getColor('brown', 10, mode.current)
 	);
 	let fillColor = $derived(
-		selected ? getColor('accent', 5, mode.value) : getColor('brown', 3, mode.value)
+		selected ? getColor('accent', 5, mode.current) : getColor('brown', 3, mode.current)
 	);
 	let strokeWidth = $derived(selected ? 3 : 2);
 	let nameTextFillColor = $derived(
-		selected ? getColor('accent', 11, mode.value) : getColor('brown', 11, mode.value)
+		selected
+			? getColor('accent', 11, mode.current)
+			: getColor('brown', 11, mode.current)
 	);
 
 	/** Update shapes upon geometry change. */

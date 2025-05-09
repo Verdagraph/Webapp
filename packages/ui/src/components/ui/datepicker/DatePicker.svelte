@@ -5,10 +5,10 @@
 		type DateValue,
 		getLocalTimeZone
 	} from '@internationalized/date';
-	import { cn } from '$lib/utils';
-	import { buttonVariants } from '$lib/components/ui/button/index.js';
-	import { Calendar } from '$lib/components/ui/calendar/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
+	import { cn } from '$utils';
+	import { buttonVariants } from '$components/ui/button/index.js';
+	import { Calendar } from '$components/ui/calendar/index.js';
+	import * as Popover from '$components/ui/popover/index.js';
 
 	type Props = {
 		value: DateValue | undefined;

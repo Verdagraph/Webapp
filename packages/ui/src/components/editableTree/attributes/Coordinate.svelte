@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CoordinateInput, CoordinateSpan } from '$lib/components/units';
+	import { CoordinateInput, CoordinateSpan } from '$components/units';
 	import { type EditableAttributeProps } from './types';
 	import { type Position } from '@vdg-webapp/models';
 

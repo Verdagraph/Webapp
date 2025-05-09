@@ -39,7 +39,7 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$utils';
 
 	let {
 		class: className,

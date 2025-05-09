@@ -1,11 +1,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod';
 import { ServerError } from '../common/errors.js';
-import {
-	ServerErrorResponse,
-	FieldErrors,
-	AppErrors
-} from '@vdg-webapp/models';
+import { ServerErrorResponse, FieldErrors, AppErrors } from '@vdg-webapp/models';
 
 export const registerErrorHandler = (app: FastifyInstance) => {
 	app.setErrorHandler((error: Error, request: FastifyRequest, reply: FastifyReply) => {

@@ -1,1 +1,0 @@
-{"version":3,"file":"ClientAvatarIcon.svelte.d.ts","sourceRoot":"","sources":["../../../../src/lib/components/misc/ClientAvatarIcon.svelte.ts"],"names":[],"mappings":"AAMC,KAAK,KAAK,GAAG;IACZ,IAAI,EAAE,MAAM,CAAC;IACb,SAAS,CAAC,EAAE,MAAM,CAAC;CACnB,CAAC;AAiBH,QAAA,MAAM,gBAAgB,2CAAwC,CAAC;AAC/D,KAAK,gBAAgB,GAAG,UAAU,CAAC,OAAO,gBAAgB,CAAC,CAAC;AAC5D,eAAe,gBAAgB,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"TransformControls.svelte.d.ts","sourceRoot":"","sources":["../../../src/components/canvas/TransformControls.svelte.ts"],"names":[],"mappings":"AAaC,aAAa;AACb,KAAK,KAAK,GAAG;IACZ,QAAQ,EAAE,MAAM,CAAC;CACjB,CAAC;AA4SH;;;;;GAKG;AACH,QAAA,MAAM,iBAAiB,2CAAwC,CAAC;AAChE,KAAK,iBAAiB,GAAG,UAAU,CAAC,OAAO,iBAAiB,CAAC,CAAC;AAC9D,eAAe,iBAAiB,CAAC"}

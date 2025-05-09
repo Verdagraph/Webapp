@@ -5,7 +5,7 @@
 	} from 'bits-ui';
 	import Check from 'lucide-svelte/icons/check';
 	import Minus from 'lucide-svelte/icons/minus';
-	import { cn } from '$lib/utils';
+	import { cn } from '$utils';
 	import type { Snippet } from 'svelte';
 
 	let {

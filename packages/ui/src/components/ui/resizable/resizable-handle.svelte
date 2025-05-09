@@ -2,7 +2,7 @@
 	import GripVertical from 'lucide-svelte/icons/grip-vertical';
 	import * as ResizablePrimitive from 'paneforge';
 	import type { WithoutChildrenOrChild } from 'bits-ui';
-	import { cn } from '$lib/utils';
+	import { cn } from '$utils';
 
 	let {
 		ref = $bindable(null),

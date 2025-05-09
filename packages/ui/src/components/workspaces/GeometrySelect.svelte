@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Select from '$components/ui/select/index.js';
 	import { type GeometryType } from '@vdg-webapp/models';
-	import iconIds from '../../../assets/icons';
+	import iconIds from '$assets/icons';
 	import Icon from '@iconify/svelte';
 
 	type Props = {

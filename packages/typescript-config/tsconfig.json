@@ -1,17 +1,17 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "target": "ESNext",
-    "module": "NodeNext",
-    "allowJs": true,
-    "checkJs": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "verbatimModuleSyntax": false,
-    "isolatedModules": true,
-    "lib": ["esnext", "DOM", "DOM.Iterable"]
-  }
+	"compilerOptions": {
+		"strict": true,
+		"target": "ESNext",
+		"module": "NodeNext",
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"verbatimModuleSyntax": false,
+		"isolatedModules": true,
+		"lib": ["esnext", "DOM", "DOM.Iterable"]
+	}
 }

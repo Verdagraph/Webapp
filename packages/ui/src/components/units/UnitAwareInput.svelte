@@ -1,15 +1,20 @@
 <script lang="ts">
 	import { Button } from 'bits-ui';
-	import { Input } from '$lib/components/ui/input/index.js';
+	import { Input } from '$components/ui/input/index.js';
 	import Icon from '@iconify/svelte';
-	import { createUnitAwareValues } from './units.svelte';
-	import type { UnitAwareQuantity } from '$state/userSettings.svelte';
+	import {
+		createUnitAwareValues,
+		type UnitAwareQuantity,
+		type UnitSystem
+	} from './units.svelte';
 
 	type Props = {
 		/** The output value. Guarnteed to be in metric. */
 		value: number;
 		/** The type of quantity represented. */
 		quantityType: UnitAwareQuantity;
+		/** The initial unit system of the component. */
+		initialUnitSystem: UnitSystem;
 		/** Callback in case we can't bind to the input. */
 		oninput?: (newData: number) => void;
 		/** The number of decimal places to prefer for conversions. */
@@ -22,6 +27,7 @@
 	let {
 		value: metricValue = $bindable(),
 		quantityType,
+		initialUnitSystem,
 		oninput,
 		decimalPlaces = 2,
 		step = 0.01,
@@ -33,6 +39,7 @@
 	const unitAwareValues = createUnitAwareValues(
 		quantityType,
 		[metricValue],
+		initialUnitSystem,
 		decimalPlaces
 	);
 

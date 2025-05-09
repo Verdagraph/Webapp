@@ -1,6 +1,5 @@
-import { AppError } from '@vdg-webapp/models/src/errors';
 import Konva from 'konva';
-import { CanvasContainer } from './container.svelte';
+import { type CanvasContainer } from './container.svelte';
 
 type SelectTool = 'pointer' | 'group' | 'union' | 'intersect';
 
@@ -8,10 +7,11 @@ export function createSelectionGroup(container: CanvasContainer) {
 	/** Consts. */
 
 	/** Konva. */
-	let group: Konva.Group = new Konva.Group();
+	// eslint-disable-next-line
+	const group: Konva.Group = new Konva.Group();
 
 	/** Runes. */
-	let selectTool: SelectTool = $state('pointer');
+	const selectTool: SelectTool = $state('pointer');
 
 	container.stage?.on('mouseover', () => {
 		setDocumentCursor();

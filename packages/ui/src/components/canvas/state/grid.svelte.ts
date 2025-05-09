@@ -4,6 +4,7 @@ import { type CanvasTransform } from './transform.svelte';
 import { getColor } from '$utils';
 import { localStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
+import { mode } from 'mode-watcher';
 
 type GridManagerPersistedState = {
 	snapToGrid: boolean;
@@ -139,10 +140,10 @@ export function createCanvasGridManager(
 		/** Render horizontal gridlines. */
 		for (let i = 0; i <= numSegments.x; i++) {
 			const yPosition = startPosition.y + gap.x * i;
-			let color = getColor('neutral', 3, mode.value);
+			let color = getColor('neutral', 3, mode.current);
 			let strokeWidth = 1;
 			if (yPosition == 0) {
-				color = getColor('neutral', 4, mode.value);
+				color = getColor('neutral', 4, mode.current);
 				strokeWidth = 2;
 			}
 			backgroundGridlinesGroup.add(
@@ -158,10 +159,10 @@ export function createCanvasGridManager(
 		/** Render vertical gridlines. */
 		for (let i = 0; i <= numSegments.y; i++) {
 			const xPosition = startPosition.x + gap.y * i;
-			let color = getColor('neutral', 2, mode.value);
+			let color = getColor('neutral', 2, mode.current);
 			let strokeWidth = 1;
 			if (xPosition == 0) {
-				color = getColor('neutral', 3, mode.value);
+				color = getColor('neutral', 3, mode.current);
 				strokeWidth = 2;
 			}
 			backgroundGridlinesGroup.add(
