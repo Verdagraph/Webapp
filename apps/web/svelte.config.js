@@ -19,7 +19,8 @@ const config = {
 			$data: path.resolve('./src/lib/data'),
 			$codegen: path.resolve('./src/lib/codegen'),
 			$state: path.resolve('./src/lib/state'),
-			$components: path.resolve('./src/lib/components')
+			$components: path.resolve('./src/lib/components'),
+			$utils: path.resolve('./src/lib/utils')
 		}
 	}
 };

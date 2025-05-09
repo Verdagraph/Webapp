@@ -1,8 +1,8 @@
 import { diContainer } from '@fastify/awilix';
 import { type UserLoginCommand } from '@vdg-webapp/models';
-import { NotFoundError, AuthenticationError } from 'common/errors';
-import { verifyPassword } from '../auth/passwords';
-import { encodeAccessToken, encodeRefreshToken } from '../auth/tokens';
+import { NotFoundError, AuthenticationError } from 'common/errors.js';
+import { verifyPassword } from '../auth/passwords.js';
+import { encodeAccessToken, encodeRefreshToken } from '../auth/tokens.js';
 
 export type UserLoginResult = {
 	/** The encoded access token. */

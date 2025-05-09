@@ -1,7 +1,7 @@
 import z from 'zod';
-import { userFields } from '../users/commands';
-import { GardenVisibilityEnumOptions, GardenMembershipRoleEnumOptions } from './schema';
-import { commonFields } from '../commands';
+import { userFields } from '../users/commands.js';
+import { GardenVisibilityEnumOptions, GardenMembershipRoleEnumOptions } from './schema.js';
+import { commonFields } from '../commands.js';
 
 /** Field specifications. */
 const gardenIdSchema = z

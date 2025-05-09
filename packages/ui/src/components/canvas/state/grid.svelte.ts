@@ -1,8 +1,7 @@
 import Konva from 'konva';
-import { CanvasContainer } from './container.svelte';
-import { CanvasTransform } from './transform.svelte';
-import { getColor } from '$lib/utils';
-import mode from '$state/theme.svelte';
+import { type CanvasContainer } from './container.svelte';
+import { type CanvasTransform } from './transform.svelte';
+import { getColor } from '$utils';
 import { localStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
 

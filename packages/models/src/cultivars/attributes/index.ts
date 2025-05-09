@@ -1,9 +1,9 @@
 import { Schema as S } from '@triplit/client';
 import { z } from 'zod';
 
-import * as AnnualLifeCycle from './annualLifeCycle';
-import * as FrostDatePlantingWindows from './frostDatePlantingWindows';
-import * as Origin from './origin';
+import * as AnnualLifeCycle from './annualLifeCycle/index.js';
+import * as FrostDatePlantingWindows from './frostDatePlantingWindows/index.js';
+import * as Origin from './origin/index.js';
 
 export const attributesSchemas = {
 	...AnnualLifeCycle.fields,

@@ -1,4 +1,4 @@
-import { LocalStore } from './localStore.svelte';
+import { LocalStore } from '../../../../../packages/ui/src/state/localStore.svelte';
 
 export type UnitSystem = 'metric' | 'imperial';
 export type UnitAwareQuantity = 'distance' | 'temperature' | 'mass' | 'volume';

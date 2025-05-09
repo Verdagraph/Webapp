@@ -10,7 +10,7 @@ import {
 	toTreeId,
 	fieldValid,
 	type Item
-} from '$components/editableTree';
+} from '..';
 import {
 	type Geometry,
 	type GeometryHistory,

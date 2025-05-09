@@ -10,7 +10,7 @@ import {
 	UserRequestPasswordResetCommandSchema,
 	UserConfirmPasswordResetCommandSchema
 } from '@vdg-webapp/models';
-import { setTag } from 'plugins/openapi';
+import { setTag } from 'plugins/openapi.js';
 import {
 	login,
 	refresh,
@@ -20,13 +20,13 @@ import {
 	confirmEmailConfirmation,
 	requestPasswordReset,
 	confirmPasswordReset
-} from './commands';
+} from './commands/index.js';
 import {
 	setRefreshTokenCookie,
 	getRefreshTokenCookie,
 	setAccessTokenHeader
-} from './auth/tokens';
-import { requireAuth } from 'plugins/auth';
+} from './auth/tokens.js';
+import { requireAuth } from 'plugins/auth.js';
 
 export const userRouter = async (app: FastifyInstance) => {
 	setTag(app, 'user');

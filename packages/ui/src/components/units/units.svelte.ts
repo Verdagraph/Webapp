@@ -1,6 +1,6 @@
 import type { UnitAwareQuantity, UnitSystem } from '$state/userSettings.svelte';
 import userSettings from '$state/userSettings.svelte';
-import { roundToDecimalPlaces } from '$lib/utils';
+import { roundToDecimalPlaces } from '$utils';
 
 /**
  * Describes the symbols of the unit systems

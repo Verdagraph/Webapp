@@ -1,4 +1,4 @@
-import type { Geometry } from './schema';
+import type { Geometry } from './schema.js';
 
 /**
  * Checks whether two dates are on the same day or not.

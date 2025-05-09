@@ -1,4 +1,4 @@
-import colors, { type Color } from '$lib/colors.config';
+import colors, { type Color } from '@vdg-webapp/tailwind-config/colors';
 
 /**
  * Retrieves the correct hex code for a color given the current theme.

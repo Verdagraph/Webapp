@@ -1,6 +1,6 @@
 import z from 'zod';
-import { GeometryTypeEnumOptions } from './schema';
-import { commonFields } from '../commands';
+import { GeometryTypeEnumOptions } from './schema.js';
+import { commonFields } from '../commands.js';
 
 /** Field specifications. */
 

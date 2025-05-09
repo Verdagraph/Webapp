@@ -1,0 +1,1 @@
+{"version":3,"file":"DefaultStaticValue.svelte.d.ts","sourceRoot":"","sources":["../../../../../src/lib/components/editableTree/attributes/DefaultStaticValue.svelte.ts"],"names":[],"mappings":"AAGC,KAAK,KAAK,GAAG;IACZ,KAAK,EAAE,OAAO,CAAC;CACf,CAAC;AAeH,QAAA,MAAM,kBAAkB,2CAAwC,CAAC;AACjE,KAAK,kBAAkB,GAAG,UAAU,CAAC,OAAO,kBAAkB,CAAC,CAAC;AAChE,eAAe,kBAAkB,CAAC"}

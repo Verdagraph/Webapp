@@ -1,16 +1,16 @@
 import type { DBTransaction } from '@triplit/client';
-import { roles } from './users/schema';
-import { plantSchema } from './plants';
+import { roles } from './users/schema.js';
+import { plantSchema } from './plants/index.js';
 
 /** Export common modules. */
-export * from './users/index';
-export * from './gardens/index';
-export * from './workspaces/index';
-export * from './cultivars/index';
-export * from './environments/index';
-export * from './plants/index';
-export * from './utils';
-export * from './errors';
+export * from './users/index.js';
+export * from './gardens/index.js';
+export * from './workspaces/index.js';
+export * from './cultivars/index.js';
+export * from './environments/index.js';
+export * from './plants/index.js';
+export * from './utils.js';
+export * from './errors.js';
 
 /**
  * Export Triplit schemas.

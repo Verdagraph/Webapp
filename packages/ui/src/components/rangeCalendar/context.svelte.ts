@@ -1,7 +1,7 @@
 import { Tree } from 'melt/builders';
 import { localStore, LocalStore } from '$state/localStore.svelte';
 import { CalendarItem } from './types';
-import { type TimelineSelection } from '$components/timeline';
+import { type TimelineSelection } from '../timeline';
 
 /** Calendar config persisted to local storage. */
 export type ViewPanesOptions = 'plants' | 'plantingWindows' | 'actions';

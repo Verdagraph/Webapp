@@ -1,4 +1,4 @@
-import { type AppErrors, AppError } from '@vdg-webapp/models/src/errors';
+import { type AppErrors, AppError } from '@vdg-webapp/models';
 
 /**
  * Base class for all application exceptions raised by the server code.

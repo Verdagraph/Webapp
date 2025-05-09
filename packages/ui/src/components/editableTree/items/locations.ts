@@ -16,7 +16,7 @@ import {
 	type Item,
 	TreeAddButton,
 	type DynamicSelectValue
-} from '$components/editableTree';
+} from '..';
 import { type LocationUpdateHandler } from '$data/workspaces/commands';
 
 /**

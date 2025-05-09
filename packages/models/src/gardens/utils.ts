@@ -1,4 +1,4 @@
-import type { Garden, GardenRole } from './schema';
+import type { Garden, GardenRole } from './schema.js';
 
 /**
  * Returns a set of all profile IDs which are members of a garden.

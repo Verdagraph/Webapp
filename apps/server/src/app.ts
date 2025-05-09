@@ -8,8 +8,8 @@ import {
 	registerOpenapi,
 	registerCors,
 	registerCookies
-} from './plugins';
-import env from 'env';
+} from './plugins/index.js';
+import env from 'env.js';
 
 export const buildApp = () => {
 	const app = Fastify({ logger: true });

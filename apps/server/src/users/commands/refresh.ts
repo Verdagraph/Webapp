@@ -1,11 +1,11 @@
 import { diContainer } from '@fastify/awilix';
-import { AuthenticationError } from 'common/errors';
+import { AuthenticationError } from 'common/errors.js';
 import {
 	decodeRefreshToken,
 	encodeAccessToken,
 	encodeRefreshToken
-} from '../auth/tokens';
-import type { UserLoginResult } from './login';
+} from '../auth/tokens.js';
+import type { UserLoginResult } from './login.js';
 
 const refresh = async (
 	oldRefreshToken: string | null,

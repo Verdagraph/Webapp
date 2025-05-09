@@ -1,6 +1,6 @@
 import * as Resizable from '$components/ui/resizable';
 import { isMobile } from '$state/isMobile.svelte';
-import { localStore } from '$state/localStore.svelte';
+import { localStore } from '../../../../../../../../packages/ui/src/state/localStore.svelte';
 import { plantingAreaCreate } from '$data/workspaces/commands';
 import createCommandHandler from '$state/commandHandler.svelte';
 import { superForm, defaults } from 'sveltekit-superforms';

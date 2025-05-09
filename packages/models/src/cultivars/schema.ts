@@ -1,6 +1,6 @@
 import { Schema as S, type Entity, or } from '@triplit/client';
-import { CultivarAttributes } from './attributes';
-import { environmentSchema } from '../environments/schema';
+import { CultivarAttributes } from './attributes/index.js';
+import { environmentSchema } from '../environments/schema.js';
 
 /**
  * Controls the visibility of the collection.

@@ -1,8 +1,8 @@
 import { diContainer } from '@fastify/awilix';
 import { type UserConfirmPasswordResetCommand } from '@vdg-webapp/models';
-import { decodePasswordResetToken } from 'users/auth/tokens';
-import { ValidationError } from 'common/errors';
-import { hashPassword } from 'users/auth/passwords';
+import { decodePasswordResetToken } from 'users/auth/tokens.js';
+import { ValidationError } from 'common/errors.js';
+import { hashPassword } from 'users/auth/passwords.js';
 
 /**
  * Closes a password reset request.

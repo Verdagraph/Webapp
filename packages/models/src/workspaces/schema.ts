@@ -1,5 +1,5 @@
 import { Schema as S, type Entity, type QueryResult, or } from '@triplit/client';
-import { gardenSchema } from '../gardens';
+import { gardenSchema } from '../gardens/index.js';
 
 /**
  * Specifies a type of geometry.

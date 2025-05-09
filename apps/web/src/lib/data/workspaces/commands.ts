@@ -12,8 +12,8 @@ import {
 	type Workspace,
 	type Geometry,
 	type LocationHistory,
-	GeometryCreateCommand,
-	GeometryUpdateCommand,
+	type GeometryCreateCommand,
+	type GeometryUpdateCommand,
 	type LocationHistoryUpdateCommand,
 	PlantingAreaUpdateCommandSchema,
 	type PlantingAreaUpdateCommand

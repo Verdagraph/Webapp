@@ -1,11 +1,11 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { InternalFailureException } from 'common/errors';
-import env from 'env';
+import { InternalFailureException } from 'common/errors.js';
+import env from 'env.js';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { ACCESS_TOKEN_EXPIRY_S } from '@vdg-webapp/models/src/settings';
 
 const ACCESS_HEADER_KEY = 'Authorization';
 const REFRESH_COOKIE_KEY = 'refresh';
+const ACCESS_TOKEN_EXPIRY_S = 15 * 60;
 
 /** The payload information carried by access tokens. */
 type AccessTokenPayload = {

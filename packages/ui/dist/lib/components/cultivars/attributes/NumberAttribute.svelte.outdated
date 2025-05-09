@@ -1,0 +1,30 @@
+<script lang="ts">
+	import { Input } from '$lib/components/ui/input';
+
+	type Props = {};
+
+	let {
+		formAttrs = undefined,
+		attributeKey,
+		value = $bindable(),
+		editing,
+		onChange
+	} = $props();
+</script>
+
+{#if editing && formAttrs}
+	<Input
+		{...formAttrs}
+		type="number"
+		bind:value
+		oninput={onChange}
+		placeholder="None"
+		class="w-auto"
+	/>
+{:else if value}
+	<span class="border-neutral-4 bg-neutral-2 rounded-lg border px-4 py-2">
+		{value}
+	</span>
+{:else}
+	<span class="text-neutral-11 px-4 py-2 font-light italic"> None </span>
+{/if}

@@ -2,10 +2,10 @@ import { FastifyInstance } from 'fastify';
 import { diContainer } from '@fastify/awilix';
 import { HttpClient as TriplitHttpClient } from '@triplit/client';
 import { asClass, asValue, Lifetime } from 'awilix';
-import env from 'env';
-import { UserRepository } from 'users/repository';
-import { UserAccount } from '@vdg-webapp/models/src/users/schema';
-import EmailSender from 'common/emails/sender';
+import env from 'env.js';
+import { UserRepository } from 'users/repository.js';
+import { UserAccount } from '@vdg-webapp/models';
+import EmailSender from 'common/emails/sender.js';
 
 import { fastifyAwilixPlugin } from '@fastify/awilix';
 

@@ -1,6 +1,6 @@
 import { HttpClient as TriplitHttpClient, or } from '@triplit/client';
 import { type User, type UserAccount, type UserProfile } from '@vdg-webapp/models';
-import { InternalFailureException } from 'common/errors';
+import { InternalFailureException } from 'common/errors.js';
 
 /** Database interface for the user objects. */
 export class UserRepository {

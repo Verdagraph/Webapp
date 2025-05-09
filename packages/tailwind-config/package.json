@@ -1,17 +1,18 @@
 {
   "name": "@vdg-webapp/tailwind-config",
   "version": "0.0.0",
-  "private": true,
   "type": "module",
   "publishConfig": {
     "access": "public"
   },
   "exports": {
-    ".": "./shared-styles.css",
-    "./postcss": "./postcss.config.js"
+    "./colors": "./colors.config.ts",
+    "./postcss": "./postcss.config.js",
+    "./tailwind": "./tailwind.config.ts"
   },
   "devDependencies": {
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.5"
+    "tailwindcss": "^4.1.5",
+    "@radix-ui/colors": "^3.0.0"
   }
 }

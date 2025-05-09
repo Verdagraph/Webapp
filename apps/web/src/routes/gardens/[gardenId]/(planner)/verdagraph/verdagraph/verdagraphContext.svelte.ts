@@ -1,6 +1,6 @@
 import { setContext, getContext } from 'svelte';
 import { isMobile } from '$state/isMobile.svelte';
-import { localStore } from '$state/localStore.svelte';
+import { localStore } from '../../../../../../../../../packages/ui/src/state/localStore.svelte';
 import * as Resizable from '$components/ui/resizable';
 import { createTimelineSelection } from '$components/timeline';
 

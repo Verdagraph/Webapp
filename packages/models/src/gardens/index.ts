@@ -1,3 +1,3 @@
-export * from './schema';
-export * from './commands';
-export * from './utils';
+export * from './schema.js';
+export * from './commands.js';
+export * from './utils.js';

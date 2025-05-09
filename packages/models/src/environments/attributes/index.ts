@@ -1,8 +1,8 @@
 import { Schema as S } from '@triplit/client';
 import { z } from 'zod';
 
-import * as FrostDates from './frostDates';
-import * as AnnualTemperature from './annualTemperature';
+import * as FrostDates from './frostDates/index.js';
+import * as AnnualTemperature from './annualTemperature/index.js';
 
 export const attributesSchemas = { ...FrostDates.fields, ...AnnualTemperature.fields };
 

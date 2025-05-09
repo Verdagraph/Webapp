@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { CultivarCollectionVisibilityEnumOptions } from './schema';
-import { commonFields } from '../commands';
-import { attributesSchemas } from './attributes';
+import { CultivarCollectionVisibilityEnumOptions } from './schema.js';
+import { commonFields } from '../commands.js';
+import { attributesSchemas } from './attributes/index.js';
 
 /** Field specifications. */
 const cultivarNameSchema = z

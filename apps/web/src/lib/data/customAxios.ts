@@ -1,6 +1,6 @@
 import type { AxiosRequestConfig, AxiosError } from 'axios';
 import axios from 'axios';
-import { AppError, ServerErrorResponse } from '@vdg-webapp/models/src/errors';
+import { AppError, type ServerErrorResponse } from '@vdg-webapp/models';
 import triplit from './triplit';
 
 /** Static client configuration. */

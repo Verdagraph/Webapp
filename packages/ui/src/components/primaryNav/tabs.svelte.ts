@@ -1,5 +1,5 @@
-import iconIds from '$lib/assets/icons';
-import { externalLinks } from '$lib/assets/links';
+import iconIds from '$assets/icons';
+import { externalLinks } from '$assets/links';
 import { Garden } from '@vdg-webapp/models';
 
 /**

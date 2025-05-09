@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { getAccessTokenHeader, decodeAccessToken } from 'users/auth/tokens';
-import { AuthenticationError } from 'common/errors';
+import { getAccessTokenHeader, decodeAccessToken } from 'users/auth/tokens.js';
+import { AuthenticationError } from 'common/errors.js';
 import { asValue } from 'awilix';
-import { UserAccount } from '@vdg-webapp/models/src/users/schema';
+import { UserAccount } from '@vdg-webapp/models';
 
 /**
  * Given a request, parse the request api key stored in the header
@@ -30,7 +30,7 @@ export const registerAuth = (app: FastifyInstance) => {
 
 		/** Retrieve the user the token represents. */
 		const users = app.diContainer.resolve('userRepo');
-		const user = await users.getAccountById(token.uid);
+		const user = await users.getAccountById(token.accountId);
 
 		/** Add the user to the request dependencies. */
 		request.diScope.register({ client: asValue(user) });

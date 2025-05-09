@@ -1,8 +1,8 @@
 import { diContainer } from '@fastify/awilix';
 import { type UserRequestEmailConfirmationCommand } from '@vdg-webapp/models';
-import { InternalFailureException, NotFoundError } from 'common/errors';
-import { encodeEmailConfirmationToken } from 'users/auth/tokens';
-import env from 'env';
+import { InternalFailureException, NotFoundError } from 'common/errors.js';
+import { encodeEmailConfirmationToken } from 'users/auth/tokens.js';
+import env from 'env.js';
 
 /**
  * Requests a new email confirmation.

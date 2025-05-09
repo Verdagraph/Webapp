@@ -1,5 +1,5 @@
 import * as argon2 from 'argon2';
-import { InternalFailureException } from 'common/errors';
+import { InternalFailureException } from 'common/errors.js';
 
 /**
  * Hashes a password.

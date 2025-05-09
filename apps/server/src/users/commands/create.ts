@@ -1,9 +1,9 @@
-import env from 'env';
+import env from 'env.js';
 import { diContainer } from '@fastify/awilix';
 import { type UserCreateCommand } from '@vdg-webapp/models';
-import { ValidationError } from 'common/errors';
-import { hashPassword } from '../auth/passwords';
-import { encodeEmailConfirmationToken } from '../auth/tokens';
+import { ValidationError } from 'common/errors.js';
+import { hashPassword } from '../auth/passwords.js';
+import { encodeEmailConfirmationToken } from '../auth/tokens.js';
 
 /**
  * Creates a new user in the database.

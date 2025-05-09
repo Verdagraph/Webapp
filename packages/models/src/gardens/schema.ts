@@ -1,5 +1,5 @@
 import { Schema as S, Entity, or } from '@triplit/client';
-import { userSchema } from '../users/schema';
+import { userSchema } from '../users/schema.js';
 
 /**
  * Controls the visibility of the garden.

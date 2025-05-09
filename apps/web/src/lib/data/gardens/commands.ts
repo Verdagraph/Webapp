@@ -18,7 +18,7 @@ import {
 import type { Garden, User } from '@vdg-webapp/models';
 import triplit from '../triplit';
 import { getClientOrError } from '$data/users/auth';
-import { ActionType, requiredRole } from '$lib/permissions';
+import { type ActionType, requiredRole } from '$lib/permissions';
 import { gardenQuery, membershipQuery } from './queries';
 import { userProfilesUsernameQuery } from '../users/queries';
 
