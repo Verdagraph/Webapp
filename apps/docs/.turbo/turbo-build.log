@@ -1,0 +1,21 @@
+
+
+> docs@0.0.1 build /workspaces/Webapp/apps/docs
+> vite build
+
+[36mvite v5.4.19 [32mbuilding SSR bundle for production...[36m[39m
+[2K[1Gtransforming (1) [2m.svelte-kit/generated/server/internal.js[22m[2K[1G[32m✓[39m 12 modules transformed.
+[2K[1G[31mx[39m Build failed in 113ms
+[31merror during build:
+[31m[commonjs--resolver] Failed to resolve entry for package "@vdg-webapp/ui". The package may have incorrect main/module/exports specified in its package.json.[31m
+    at packageEntryFailure (file:///workspaces/Webapp/node_modules/.pnpm/vite@5.4.19_@types+node@20.17.46/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46638:15)
+    at resolvePackageEntry (file:///workspaces/Webapp/node_modules/.pnpm/vite@5.4.19_@types+node@20.17.46/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46635:3)
+    at tryNodeResolve (file:///workspaces/Webapp/node_modules/.pnpm/vite@5.4.19_@types+node@20.17.46/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46451:16)
+    at Object.resolveId (file:///workspaces/Webapp/node_modules/.pnpm/vite@5.4.19_@types+node@20.17.46/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:46201:19)
+    at Object.handler (file:///workspaces/Webapp/node_modules/.pnpm/vite@5.4.19_@types+node@20.17.46/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:65903:15)
+    at file:///workspaces/Webapp/node_modules/.pnpm/rollup@4.40.2/node_modules/rollup/dist/es/shared/node-entry.js:22210:40
+    at async PluginDriver.hookFirstAndGetPlugin (file:///workspaces/Webapp/node_modules/.pnpm/rollup@4.40.2/node_modules/rollup/dist/es/shared/node-entry.js:22092:28)
+    at async resolveId (file:///workspaces/Webapp/node_modules/.pnpm/rollup@4.40.2/node_modules/rollup/dist/es/shared/node-entry.js:20574:26)
+    at async ModuleLoader.resolveId (file:///workspaces/Webapp/node_modules/.pnpm/rollup@4.40.2/node_modules/rollup/dist/es/shared/node-entry.js:21010:15)
+    at async Object.resolveId (file:///workspaces/Webapp/node_modules/.pnpm/vite@5.4.19_@types+node@20.17.46/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:12834:10)[39m
+[41m[30m ELIFECYCLE [39m[49m [31mCommand failed with exit code 1.[39m

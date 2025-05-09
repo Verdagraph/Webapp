@@ -57,6 +57,9 @@ importers:
       '@melt-ui/svelte':
         specifier: ^0.83.0
         version: 0.83.0(svelte@5.28.2)
+      '@radix-ui/colors':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@sveltejs/adapter-auto':
         specifier: ^3.3.1
         version: 3.3.1(@sveltejs/kit@2.20.8(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.28.2)(vite@5.4.19(@types/node@20.17.46)))(svelte@5.28.2)(vite@5.4.19(@types/node@20.17.46)))
@@ -284,6 +287,9 @@ importers:
       '@melt-ui/svelte':
         specifier: ^0.83.0
         version: 0.83.0(svelte@5.28.2)
+      '@radix-ui/colors':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@sveltejs/adapter-auto':
         specifier: ^3.3.1
         version: 3.3.1(@sveltejs/kit@2.20.8(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.28.2)(vite@5.4.19(@types/node@20.17.46)))(svelte@5.28.2)(vite@5.4.19(@types/node@20.17.46)))
@@ -519,6 +525,9 @@ importers:
       '@melt-ui/svelte':
         specifier: ^0.83.0
         version: 0.83.0(svelte@5.28.2)
+      '@radix-ui/colors':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@sveltejs/adapter-auto':
         specifier: ^3.3.1
         version: 3.3.1(@sveltejs/kit@2.20.8(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.28.2)(vite@5.4.19(@types/node@20.17.46)))(svelte@5.28.2)(vite@5.4.19(@types/node@20.17.46)))

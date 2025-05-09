@@ -6,6 +6,7 @@
 </svelte:head>
 
 <div>
+	<h1>Open source eco-modelling tools for collaboratively organized agriculture.</h1>
 	<h1>Plan, track, optimize, and automate your garden with Verdagraph.</h1>
 
 	<h1>

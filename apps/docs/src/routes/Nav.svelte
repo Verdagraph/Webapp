@@ -1,12 +1,13 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import * as Popover from '$lib/components/ui/popover/index';
-	import { Separator } from '$lib/components/ui/separator/index';
-	import { Button } from '$lib/components/ui/button';
-	import Logo from '../../lib/assets/logo.svelte';
-	import { externalLinks } from '../../lib/assets/links';
-	import iconIds from '../../lib/assets/icons';
-
+	import {
+		Popover,
+		Separator,
+		Button,
+		VdgLogo,
+		externalLinks,
+		iconIds
+	} from '@vdg-webapp/ui';
 	let navLinks = [
 		{
 			url: '/app/gardens',
@@ -43,7 +44,7 @@ isn't within the context of a Garden.
 			<ul class="flex items-center gap-6 p-2 text-lg">
 				<li>
 					<a href="/">
-						<Logo size="4rem"></Logo>
+						<VdgLogo size="4rem" />
 					</a>
 				</li>
 				<li>
@@ -61,7 +62,7 @@ isn't within the context of a Garden.
 		<ul class="hidden gap-4 md:flex md:gap-8 lg:gap-12">
 			{#each navLinks as link}
 				<li class="">
-					<Button href={link.url} variant="ghost">{link.label}</Button>
+					<Button.Root href={link.url} variant="ghost">{link.label}</Button.Root>
 				</li>
 			{/each}
 		</ul>
@@ -81,9 +82,9 @@ isn't within the context of a Garden.
 							Navigation menu link snippet.
 						-->
 						{#snippet menuLink(url: string, label: string)}
-							<Button href={url} variant="link">
+							<Button.Root href={url} variant="link">
 								{label}
-							</Button>
+							</Button.Root>
 						{/snippet}
 
 						{#each navLinks as link}
@@ -91,7 +92,7 @@ isn't within the context of a Garden.
 								{@render menuLink(link.url, link.label)}
 							</li>
 						{/each}
-						<Separator class="bg-neutral-6 w-full opacity-50" />
+						<Separator.Root class="bg-neutral-6 w-full opacity-50" />
 						<li>
 							{@render menuLink('/login', 'Login')}
 						</li>
@@ -109,10 +110,10 @@ isn't within the context of a Garden.
     	-->
 		<ul class="hidden gap-8 text-lg md:flex">
 			<li class="hidden lg:block">
-				<Button href="/login" variant="default">Login</Button>
+				<Button.Root href="/login" variant="default">Login</Button.Root>
 			</li>
 			<li>
-				<Button href="/register" variant="outline">Get Started</Button>
+				<Button.Root href="/register" variant="outline">Get Started</Button.Root>
 			</li>
 		</ul>
 	</nav>

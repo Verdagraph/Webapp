@@ -1,10 +1,11 @@
 import {
 	type FieldErrors,
 	type Location,
-	type LocationHistory
+	type LocationHistory,
+	type LocationUpdateCommand
 } from '@vdg-webapp/models';
 import { type Item } from '..';
-import { type LocationUpdateHandler } from '$data/workspaces/commands';
+type LocationUpdateHandler = (id: string, data: LocationUpdateCommand) => void;
 /**
  * Constructs an editable tree item for a geometry.
  * @param parentId The base ID of the parent tree item.
@@ -59,4 +60,5 @@ export declare function locationHistoryTreeItem(
 		fieldErrors: FieldErrors;
 	}
 ): Item;
+export {};
 //# sourceMappingURL=locations.d.ts.map

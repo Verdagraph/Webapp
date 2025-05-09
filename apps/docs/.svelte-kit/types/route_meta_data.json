@@ -3,6 +3,9 @@
 		"src/routes/+layout.server.js",
 		"src/routes/+layout.server.js"
 	],
+	"/about": [
+		"src/routes/+layout.server.js"
+	],
 	"/docs": [
 		"src/routes/+layout.server.js"
 	]

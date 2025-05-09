@@ -4,7 +4,8 @@ import {
 	type FieldErrors,
 	type Position,
 	type Location,
-	type LocationHistory
+	type LocationHistory,
+	type LocationUpdateCommand
 } from '@vdg-webapp/models';
 import {
 	TreeDate,
@@ -17,7 +18,8 @@ import {
 	TreeAddButton,
 	type DynamicSelectValue
 } from '..';
-import { type LocationUpdateHandler } from '$data/workspaces/commands';
+
+type LocationUpdateHandler = (id: string, data: LocationUpdateCommand) => void;
 
 /**
  * Constructs an editable tree item for a geometry.
@@ -74,7 +76,7 @@ export function locationTreeItem(
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.location.id, {
+			ctx.updateHandler(value.location.id, {
 				date: newData.toDate(getLocalTimeZone())
 			});
 		}
@@ -96,7 +98,7 @@ export function locationTreeItem(
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.location.id, { coordinate: newData });
+			ctx.updateHandler(value.location.id, { coordinate: newData });
 		}
 	};
 	const workspaceItem: Item = {
@@ -111,7 +113,7 @@ export function locationTreeItem(
 			})
 		},
 		onChange: (newData: DynamicSelectValue) => {
-			ctx.updateHandler.execute(value.location.id, { workspaceId: newData.id });
+			ctx.updateHandler(value.location.id, { workspaceId: newData.id });
 		}
 	};
 	const deleteItem: Item = {
@@ -121,7 +123,7 @@ export function locationTreeItem(
 		valueComponent: TreeDeleteButton,
 		value: undefined,
 		onChange: () => {
-			ctx.updateHandler.execute(value.location.id, { delete: true });
+			ctx.updateHandler(value.location.id, { delete: true });
 		}
 	};
 

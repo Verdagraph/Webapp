@@ -17,10 +17,12 @@ import {
 	type GeometryType,
 	workspaceFields,
 	type FieldErrors,
-	type Position
+	type Position,
+	type GeometryUpdateCommand
 } from '@vdg-webapp/models';
 import { getLocalTimeZone, fromDate, type DateValue } from '@internationalized/date';
-import { type GeometryUpdateHandler } from '$data/workspaces/commands';
+
+type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
 
 /**
  * Constructs an editable tree item for a geometry.
@@ -74,7 +76,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.geometry.id, {
+			ctx.updateHandler(value.geometry.id, {
 				date: newData.toDate(getLocalTimeZone())
 			});
 		}
@@ -97,7 +99,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.geometry.id, { type: newData });
+			ctx.updateHandler(value.geometry.id, { type: newData });
 		}
 	};
 	const scaleFactorItem: Item = {
@@ -118,7 +120,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.geometry.id, { scaleFactor: newData });
+			ctx.updateHandler(value.geometry.id, { scaleFactor: newData });
 		}
 	};
 	const rotationItem: Item = {
@@ -139,7 +141,7 @@ export function geometryTreeItem(
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.geometry.id, { rotation: newData });
+			ctx.updateHandler(value.geometry.id, { rotation: newData });
 		}
 	};
 	const deleteItem: Item = {
@@ -153,7 +155,7 @@ export function geometryTreeItem(
 				return;
 			}
 
-			ctx.updateHandler.execute(value.geometry.id, { delete: true });
+			ctx.updateHandler(value.geometry.id, { delete: true });
 		}
 	};
 
@@ -182,7 +184,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						ctx.updateHandler.execute(value.geometry.id, { rectangleLength: newData });
+						ctx.updateHandler(value.geometry.id, { rectangleLength: newData });
 					}
 				},
 				{
@@ -203,7 +205,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						ctx.updateHandler.execute(value.geometry.id, { rectangleWidth: newData });
+						ctx.updateHandler(value.geometry.id, { rectangleWidth: newData });
 					}
 				}
 			];
@@ -233,7 +235,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						ctx.updateHandler.execute(value.geometry.id, { polygonNumSides: newData });
+						ctx.updateHandler(value.geometry.id, { polygonNumSides: newData });
 					}
 				},
 				{
@@ -254,7 +256,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						ctx.updateHandler.execute(value.geometry.id, { polygonRadius: newData });
+						ctx.updateHandler(value.geometry.id, { polygonRadius: newData });
 					}
 				}
 			];
@@ -284,7 +286,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						ctx.updateHandler.execute(value.geometry.id, { ellipseLength: newData });
+						ctx.updateHandler(value.geometry.id, { ellipseLength: newData });
 					}
 				},
 				{
@@ -305,7 +307,7 @@ export function geometryTreeItem(
 						) {
 							return;
 						}
-						ctx.updateHandler.execute(value.geometry.id, { ellipseWidth: newData });
+						ctx.updateHandler(value.geometry.id, { ellipseWidth: newData });
 					}
 				}
 			];
@@ -352,7 +354,7 @@ export function geometryTreeItem(
 							const newCoordinates: Position[] = value.geometry.linesCoordinates;
 							newCoordinates[index] = newData;
 
-							ctx.updateHandler.execute(value.geometry.id, {
+							ctx.updateHandler(value.geometry.id, {
 								linesCoordinates: newCoordinates
 							});
 						}
@@ -374,7 +376,7 @@ export function geometryTreeItem(
 								(existingCoordinate) => existingCoordinate.id != coordinate.id
 							);
 
-							ctx.updateHandler.execute(value.geometry.id, {
+							ctx.updateHandler(value.geometry.id, {
 								linesCoordinates: newCoordinates
 							});
 						}
@@ -407,7 +409,7 @@ export function geometryTreeItem(
 						y: newCoordinates[newCoordinates.length - 1].y + 0.1
 					};
 					newCoordinates.push(newCoordinate);
-					ctx.updateHandler.execute(value.geometry.id, {
+					ctx.updateHandler(value.geometry.id, {
 						linesCoordinates: newCoordinates
 					});
 				}
@@ -431,7 +433,7 @@ export function geometryTreeItem(
 					) {
 						return;
 					}
-					ctx.updateHandler.execute(value.geometry.id, { linesClosed: newData });
+					ctx.updateHandler(value.geometry.id, { linesClosed: newData });
 				}
 			};
 

@@ -9,7 +9,6 @@ import {
 	fieldValid,
 	TreeAddButton
 } from '..';
-import {} from '$data/workspaces/commands';
 /**
  * Constructs an editable tree item for a geometry.
  * @param parentId The base ID of the parent tree item.
@@ -47,7 +46,7 @@ export function locationTreeItem(parentId, value, options, ctx) {
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.location.id, {
+			ctx.updateHandler(value.location.id, {
 				date: newData.toDate(getLocalTimeZone())
 			});
 		}
@@ -69,7 +68,7 @@ export function locationTreeItem(parentId, value, options, ctx) {
 			) {
 				return;
 			}
-			ctx.updateHandler.execute(value.location.id, { coordinate: newData });
+			ctx.updateHandler(value.location.id, { coordinate: newData });
 		}
 	};
 	const workspaceItem = {
@@ -84,7 +83,7 @@ export function locationTreeItem(parentId, value, options, ctx) {
 			})
 		},
 		onChange: (newData) => {
-			ctx.updateHandler.execute(value.location.id, { workspaceId: newData.id });
+			ctx.updateHandler(value.location.id, { workspaceId: newData.id });
 		}
 	};
 	const deleteItem = {
@@ -94,7 +93,7 @@ export function locationTreeItem(parentId, value, options, ctx) {
 		valueComponent: TreeDeleteButton,
 		value: undefined,
 		onChange: () => {
-			ctx.updateHandler.execute(value.location.id, { delete: true });
+			ctx.updateHandler(value.location.id, { delete: true });
 		}
 	};
 	const children = [dateItem, coordinateItem, workspaceItem];

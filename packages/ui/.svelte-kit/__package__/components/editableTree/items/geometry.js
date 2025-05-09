@@ -1,7 +1,6 @@
 import { TreeNumber, TreeDistance, TreeGeometryType, TreeDate, TreeCoordinate, TreeAddButton, TreeDeleteButton, TreeCheckbox, toTreeId, fieldValid } from '..';
 import { workspaceFields } from '@vdg-webapp/models';
 import { getLocalTimeZone, fromDate } from '@internationalized/date';
-import {} from '$data/workspaces/commands';
 /**
  * Constructs an editable tree item for a geometry.
  * @param parentId The base ID of the parent tree item.
@@ -34,7 +33,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                 !value.geometry) {
                 return;
             }
-            ctx.updateHandler.execute(value.geometry.id, {
+            ctx.updateHandler(value.geometry.id, {
                 date: newData.toDate(getLocalTimeZone())
             });
         }
@@ -50,7 +49,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                 !value.geometry) {
                 return;
             }
-            ctx.updateHandler.execute(value.geometry.id, { type: newData });
+            ctx.updateHandler(value.geometry.id, { type: newData });
         }
     };
     const scaleFactorItem = {
@@ -64,7 +63,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                 !value.geometry) {
                 return;
             }
-            ctx.updateHandler.execute(value.geometry.id, { scaleFactor: newData });
+            ctx.updateHandler(value.geometry.id, { scaleFactor: newData });
         }
     };
     const rotationItem = {
@@ -78,7 +77,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                 !value.geometry) {
                 return;
             }
-            ctx.updateHandler.execute(value.geometry.id, { rotation: newData });
+            ctx.updateHandler(value.geometry.id, { rotation: newData });
         }
     };
     const deleteItem = {
@@ -91,7 +90,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
             if (!value.geometry) {
                 return;
             }
-            ctx.updateHandler.execute(value.geometry.id, { delete: true });
+            ctx.updateHandler(value.geometry.id, { delete: true });
         }
     };
     let attributesItems = [];
@@ -111,7 +110,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                             !value.geometry) {
                             return;
                         }
-                        ctx.updateHandler.execute(value.geometry.id, { rectangleLength: newData });
+                        ctx.updateHandler(value.geometry.id, { rectangleLength: newData });
                     }
                 },
                 {
@@ -125,7 +124,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                             !value.geometry) {
                             return;
                         }
-                        ctx.updateHandler.execute(value.geometry.id, { rectangleWidth: newData });
+                        ctx.updateHandler(value.geometry.id, { rectangleWidth: newData });
                     }
                 }
             ];
@@ -146,7 +145,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                             !value.geometry) {
                             return;
                         }
-                        ctx.updateHandler.execute(value.geometry.id, { polygonNumSides: newData });
+                        ctx.updateHandler(value.geometry.id, { polygonNumSides: newData });
                     }
                 },
                 {
@@ -160,7 +159,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                             !value.geometry) {
                             return;
                         }
-                        ctx.updateHandler.execute(value.geometry.id, { polygonRadius: newData });
+                        ctx.updateHandler(value.geometry.id, { polygonRadius: newData });
                     }
                 }
             ];
@@ -181,7 +180,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                             !value.geometry) {
                             return;
                         }
-                        ctx.updateHandler.execute(value.geometry.id, { ellipseLength: newData });
+                        ctx.updateHandler(value.geometry.id, { ellipseLength: newData });
                     }
                 },
                 {
@@ -195,7 +194,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                             !value.geometry) {
                             return;
                         }
-                        ctx.updateHandler.execute(value.geometry.id, { ellipseWidth: newData });
+                        ctx.updateHandler(value.geometry.id, { ellipseWidth: newData });
                     }
                 }
             ];
@@ -229,7 +228,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                         /** Modify the coordinate. */
                         const newCoordinates = value.geometry.linesCoordinates;
                         newCoordinates[index] = newData;
-                        ctx.updateHandler.execute(value.geometry.id, {
+                        ctx.updateHandler(value.geometry.id, {
                             linesCoordinates: newCoordinates
                         });
                     }
@@ -246,7 +245,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                         }
                         /** Remove the coordinate. */
                         const newCoordinates = value.geometry.linesCoordinates.filter((existingCoordinate) => existingCoordinate.id != coordinate.id);
-                        ctx.updateHandler.execute(value.geometry.id, {
+                        ctx.updateHandler(value.geometry.id, {
                             linesCoordinates: newCoordinates
                         });
                     }
@@ -276,7 +275,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                         y: newCoordinates[newCoordinates.length - 1].y + 0.1
                     };
                     newCoordinates.push(newCoordinate);
-                    ctx.updateHandler.execute(value.geometry.id, {
+                    ctx.updateHandler(value.geometry.id, {
                         linesCoordinates: newCoordinates
                     });
                 }
@@ -292,7 +291,7 @@ export function geometryTreeItem(parentId, value, options, ctx) {
                         !value.geometry) {
                         return;
                     }
-                    ctx.updateHandler.execute(value.geometry.id, { linesClosed: newData });
+                    ctx.updateHandler(value.geometry.id, { linesClosed: newData });
                 }
             };
             if (options.includeLinesClosed) {

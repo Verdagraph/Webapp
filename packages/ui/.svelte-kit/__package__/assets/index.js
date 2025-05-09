@@ -1,1 +1,3 @@
-"use strict";
+export * from './links';
+export { default as VdgLogo } from './logo.svelte';
+export { default as iconIds } from './icons';
