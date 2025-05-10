@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type EditableAttributeProps } from './types';
 	import { type DateValue } from '@internationalized/date';
-	import DatePicker from '$components/ui/datepicker';
+	import DatePicker from '$core/datepicker';
 
 	let { value, editing, onChange }: EditableAttributeProps<DateValue> = $props();
 </script>

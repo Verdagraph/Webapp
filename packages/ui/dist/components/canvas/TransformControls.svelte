@@ -2,9 +2,9 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import type { CanvasContext } from './state';
-	import { Button } from '../ui/button/index.js';
-	import * as Collapsible from '../ui/collapsible/index.js';
-	import * as Tooltip from '../ui/tooltip/index.js';
+	import { Button } from '../../core/button/index.js';
+	import * as Collapsible from '../../core/collapsible/index.js';
+	import * as Tooltip from '../../core/tooltip/index.js';
 
 	type Direction = 'horizontal' | 'vertical';
 

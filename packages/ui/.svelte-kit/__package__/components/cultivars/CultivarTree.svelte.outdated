@@ -12,9 +12,9 @@
 	import { createFormErrors } from '$state/formErrors.svelte';
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import FormErrorPopover from '$components/misc/FormErrorPopover.svelte';
-	import * as Dialog from '$components/ui/dialog';
-	import { Textarea } from '$components/ui/textarea/index.js';
-	import TagsInput from '$components/ui/TagsInput.svelte';
+	import * as Dialog from '$core/dialog';
+	import { Textarea } from '$core/textarea/index.js';
+	import TagsInput from '$core/TagsInput.svelte';
 	import CultivarDeleteForm from './CultivarDeleteForm.svelte';
 	import debounce from '$lib/utils/debounce';
 	import { attributeKeyToComponent } from './attributes';

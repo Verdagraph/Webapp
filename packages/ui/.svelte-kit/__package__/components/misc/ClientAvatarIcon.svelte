@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Avatar from '../ui/avatar';
+	import * as Avatar from '../../core/avatar';
 
 	type Props = {
 		size: string;

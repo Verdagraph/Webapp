@@ -8,8 +8,7 @@
 	"exports": {
 		"./colors": "./colors.config.ts",
 		"./postcss": "./postcss.config.js",
-		"./tailwind": "./tailwind.config.ts",
-		"./pcss": "./base.pcss"
+		"./tailwind": "./tailwind.config.ts"
 	},
 	"devDependencies": {
 		"@radix-ui/colors": "^3.0.0",

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from 'bits-ui';
-	import { Input } from '$components/ui/input/index.js';
+	import { Input } from '$core/input/index.js';
 	import Icon from '@iconify/svelte';
 	import {
 		createUnitAwareValues,

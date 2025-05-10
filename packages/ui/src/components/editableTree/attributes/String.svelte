@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Input } from '$components/ui/input/index.js';
+	import { Input } from '$core/input/index.js';
 	import { type EditableAttributeProps } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 	import { getOninputString } from './utils';

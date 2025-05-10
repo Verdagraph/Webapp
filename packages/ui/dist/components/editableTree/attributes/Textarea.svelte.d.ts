@@ -1,4 +1,4 @@
-import { Textarea } from '../../ui/textarea/index.js';
+import { Textarea } from '../../../core/textarea/index.js';
 import { type EditableAttributeProps } from './types';
 declare const Textarea: import('svelte').Component<
 	EditableAttributeProps<string>,

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Resizable from '$components/ui/resizable';
+	import * as Resizable from '$core/resizable';
 	import Toolbar from './Toolbar.svelte';
 	import NoneditableSliderBar from '$components/timeline/TimelineSelector/NoneditableSliderBar.svelte';
 	import { type CalendarContext } from './context.svelte';

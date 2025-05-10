@@ -1,1 +1,0 @@
-{"version":3,"file":"scroll-area-scrollbar.svelte.d.ts","sourceRoot":"","sources":["../../../../src/components/ui/scroll-area/scroll-area-scrollbar.svelte.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,UAAU,IAAI,mBAAmB,EAAqB,MAAM,SAAS,CAAC;AA+B/E,QAAA,MAAM,mBAAmB,0FAAwC,CAAC;AAClE,KAAK,mBAAmB,GAAG,UAAU,CAAC,OAAO,mBAAmB,CAAC,CAAC;AAClE,eAAe,mBAAmB,CAAC"}

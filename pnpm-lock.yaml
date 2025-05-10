@@ -314,6 +314,9 @@ importers:
       '@vdg-webapp/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@vdg-webapp/tailwind-config':
+        specifier: workspace:*
+        version: link:../../packages/tailwind-config
       '@vdg-webapp/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config

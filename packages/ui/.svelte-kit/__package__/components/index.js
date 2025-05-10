@@ -5,6 +5,5 @@ export * from './rangeCalendar';
 export * from './selection';
 export * from './tabToolbox';
 export * from './timeline';
-export * from './ui';
 export * from './units';
 export * from './workspaces';

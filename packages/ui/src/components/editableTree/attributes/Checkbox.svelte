@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Checkbox } from '$components/ui/checkbox/index.js';
+	import { Checkbox } from '$core/checkbox/index.js';
 	import { type EditableAttributeProps } from './types';
 
 	let { value, editing, onChange }: EditableAttributeProps<boolean> = $props();

@@ -1,12 +1,13 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
+import { fontFamily } from 'tailwindcss/defaultTheme';
 import type { Config } from 'tailwindcss';
 import tailwindcssAnimate from 'tailwindcss-animate';
 import containerQueries from '@tailwindcss/container-queries';
 import colors, { type Color } from './colors.config.js';
 
 const config: Config = {
+	content: [],
+	safelist: ['dark'],
 	darkMode: 'selector',
-	content: ['./src/**/*.{html,js,svelte,ts}'],
 	plugins: [tailwindcssAnimate, containerQueries],
 	theme: {
 		container: {
@@ -67,7 +68,7 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: [...defaultTheme.fontFamily.sans]
+				sans: [...fontFamily.sans]
 			},
 			keyframes: {
 				'accordion-down': {

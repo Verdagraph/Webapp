@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Select from '../ui/select/index.js';
+	import * as Select from '../../core/select/index.js';
 	import { type GeometryType } from '@vdg-webapp/models';
 	import iconIds from '../../assets/icons';
 	import Icon from '@iconify/svelte';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ScrollArea } from '../ui/scroll-area/index.js';
+	import { ScrollArea } from '../../core/scroll-area/index.js';
 	import { type CalendarPaneContext, type CalendarContext } from './context.svelte';
 	import { calculateDeltaDays } from '../timeline/utils';
 	import { type DateValue } from '@internationalized/date';

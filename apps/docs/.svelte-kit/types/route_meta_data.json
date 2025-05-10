@@ -6,7 +6,7 @@
 	"/about": [
 		"src/routes/+layout.server.js"
 	],
-	"/docs": [
+	"/guides": [
 		"src/routes/+layout.server.js"
 	]
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import * as Tabs from '../ui/tabs';
+	import * as Tabs from '../../core/tabs';
 	import { ScrollArea } from 'bits-ui';
-	import { Button } from '../ui/button';
+	import { Button } from '../../core/button';
 	import iconIds from '../../assets/icons';
 	import createToolbox from './tools.svelte';
 

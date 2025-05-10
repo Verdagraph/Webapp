@@ -5,11 +5,11 @@
 	import { Button } from 'bits-ui';
 	import Icon from '@iconify/svelte';
 	import iconIds from '$lib/assets/icons';
-	import * as DropdownMenu from '$components/ui/dropdown-menu';
-	import * as Collapsible from '$components/ui/collapsible';
-	import * as Select from '$components/ui/select';
-	import * as Dialog from '$components/ui/dialog';
-	import { Textarea } from '$components/ui/textarea/index.js';
+	import * as DropdownMenu from '$core/dropdown-menu';
+	import * as Collapsible from '$core/collapsible';
+	import * as Select from '$core/select';
+	import * as Dialog from '$core/dialog';
+	import { Textarea } from '$core/textarea/index.js';
 	import { Field, Control, Label, FieldErrors, Description } from 'formsnap';
 	import cultivarFields from '$lib/backendSchema/specs/cultivar';
 	import { cultivarCollectionQuery } from '$data/cultivar/queries';
@@ -27,7 +27,7 @@
 	import FormInfoPopover from '$components/misc/FormInfoPopover.svelte';
 	import FormErrorPopover from '$components/misc/FormErrorPopover.svelte';
 	import CultivarCreateForm from './CultivarCreateForm.svelte';
-	import TagsInput from '$components/ui/TagsInput.svelte';
+	import TagsInput from '$core/TagsInput.svelte';
 	import debounce from '$lib/utils/debounce';
 	*/
 

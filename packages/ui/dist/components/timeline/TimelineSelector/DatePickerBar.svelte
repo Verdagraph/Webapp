@@ -1,14 +1,14 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import type { DateValue } from '@internationalized/date';
-	import DatePicker from '../../ui/datepicker';
-	import { Button } from '../../ui/button';
-	import * as Tooltip from '../../ui/tooltip';
+	import DatePicker from '../../../core/datepicker';
+	import { Button } from '../../../core/button';
+	import * as Tooltip from '../../../core/tooltip';
 	import iconIds from '../../../assets/icons';
 	import { type TimelineSelection } from '../timelineSelection.svelte';
-	import type { ButtonVariant } from '../../ui/button';
+	import type { ButtonVariant } from '../../../core/button';
 	import { IsMobile } from '../../../state/isMobile.svelte';
-	import * as Popover from '../../ui/popover';
+	import * as Popover from '../../../core/popover';
 
 	type Props = {
 		selection: TimelineSelection;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from '$components/ui/button/index.js';
+	import { Button } from '$core/button/index.js';
 	import { type EditableAttributeProps } from './types';
 	import iconIds from '$assets/icons';
 	import Icon from '@iconify/svelte';

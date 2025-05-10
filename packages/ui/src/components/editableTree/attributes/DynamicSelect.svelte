@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Select from '$components/ui/select/index.js';
+	import * as Select from '$core/select/index.js';
 	import { type EditableAttributeProps, type DynamicSelectValue } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 

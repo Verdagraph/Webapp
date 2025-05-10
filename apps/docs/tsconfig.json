@@ -2,5 +2,5 @@
 	"extends": [
 		"@vdg-webapp/typescript-config/tsconfig.json",
 		"./.svelte-kit/tsconfig.json"
-	],
+	]
 }

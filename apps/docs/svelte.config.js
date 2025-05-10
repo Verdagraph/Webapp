@@ -16,10 +16,7 @@ const config = {
 		adapter: adapter(),
 		//
 		alias: {
-			$data: path.resolve('./src/lib/data'),
-			$codegen: path.resolve('./src/lib/codegen'),
-			$state: path.resolve('./src/lib/state'),
-			$components: path.resolve('./src/lib/components')
+			$lib: path.resolve('./src/lib')
 		}
 	}
 };
