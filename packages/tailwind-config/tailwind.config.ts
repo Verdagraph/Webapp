@@ -1,8 +1,8 @@
-import { fontFamily } from 'tailwindcss/defaultTheme';
+import defaultTheme from 'tailwindcss/defaultTheme';
 import type { Config } from 'tailwindcss';
 import tailwindcssAnimate from 'tailwindcss-animate';
 import containerQueries from '@tailwindcss/container-queries';
-import colors, { type Color } from './src/lib/colors.config';
+import colors, { type Color } from './colors.config.js';
 
 const config: Config = {
 	darkMode: 'selector',
@@ -67,7 +67,7 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: [...fontFamily.sans]
+				sans: [...defaultTheme.fontFamily.sans]
 			},
 			keyframes: {
 				'accordion-down': {
@@ -105,6 +105,7 @@ function getColorScale(color: Color): Record<string, string> {
 	const name = colors[color].radixId;
 	const scale = {};
 	for (let i = 1; i <= 12; i++) {
+		// @ts-ignore
 		scale[i] = `var(--${name}-${i})`;
 		// next line only needed if using alpha values
 		//scale[`a${i}`] = `var(--${name}-a${i})`;

@@ -3,9 +3,4 @@
 		"@vdg-webapp/typescript-config/tsconfig.json",
 		"./.svelte-kit/tsconfig.json"
 	],
-	"compilerOptions": {
-		"sourceMap": true,
-		"strict": true,
-		"moduleResolution": "bundler"
-	}
 }

@@ -8,11 +8,18 @@
 	"exports": {
 		"./colors": "./colors.config.ts",
 		"./postcss": "./postcss.config.js",
-		"./tailwind": "./tailwind.config.ts"
+		"./tailwind": "./tailwind.config.ts",
+		"./pcss": "./base.pcss"
 	},
 	"devDependencies": {
+		"@radix-ui/colors": "^3.0.0",
 		"postcss": "^8.5.3",
-		"tailwindcss": "^4.1.5",
-		"@radix-ui/colors": "^3.0.0"
+		"tailwind-merge": "^2.6.0",
+		"tailwind-variants": "^0.2.1",
+		"tailwindcss": "^3.4.17",
+		"tailwindcss-animate": "^1.0.7"
+	},
+	"dependencies": {
+		"@tailwindcss/container-queries": "^0.1.1"
 	}
 }
