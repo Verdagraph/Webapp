@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import * as Card from '$lib/components/ui/card';
+	import { Card, iconIds } from '@vdg-webapp/ui';
 	import { userConfirmEmailConfirmation } from '$data/users/commands';
 	import Icon from '@iconify/svelte';
-	import iconIds from '../../../../../lib/assets/icons';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { UserConfirmEmailConfirmationCommand } from '@vdg-webapp/models';
+	import { type UserConfirmEmailConfirmationCommand } from '@vdg-webapp/models';
 
 	/* Initialize the mutation on page load with url parameter. */
 	const confirmationToken = page.params.confirmationToken;

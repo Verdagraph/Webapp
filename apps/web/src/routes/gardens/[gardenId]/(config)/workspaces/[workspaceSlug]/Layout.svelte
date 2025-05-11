@@ -1,8 +1,7 @@
 <script lang="ts">
-	import * as Canvas from '$components/canvas/';
 	import EditablePlantingAreaContainer from './EditablePlantingAreaContainer.svelte';
 	import CreatePlantingAreaContainer from './CreatePlantingAreaContainer.svelte';
-	import PlantingAreas from '$components/canvas/workspace/PlantingAreas.svelte';
+	import { Canvas, TransformControls, Gridlines, PlantingAreas } from '@vdg-webapp/ui';
 	import toolbox from '../tools';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 
@@ -22,11 +21,11 @@
 </script>
 
 {#snippet overlay()}
-	<Canvas.TransformControls {canvasId} />
+	<TransformControls {canvasId} />
 {/snippet}
 
-<Canvas.Root {canvasId} {overlay}>
-	<Canvas.Gridlines {canvasId} />
+<Canvas {canvasId} {overlay}>
+	<Gridlines {canvasId} />
 
 	<PlantingAreas {canvasId} {plantingAreaLayerId}>
 		{#if toolbox.isToolActive('plantingAreaCreate')}
@@ -37,4 +36,4 @@
 			<EditablePlantingAreaContainer {plantingAreaId} {plantingAreaLayerId} />
 		{/each}
 	</PlantingAreas>
-</Canvas.Root>
+</Canvas>

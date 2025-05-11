@@ -1,6 +1,5 @@
 <script lang="ts">
-	import * as Card from '$components/ui/card';
-	import Separator from '$components/ui/separator/separator.svelte';
+	import { Separator, Card } from '@vdg-webapp/ui';
 </script>
 
 <svelte:head>
@@ -19,11 +18,11 @@
 	<Card.Header class="m-auto flex flex-col items-center">
 		<Card.Title>Cultivars</Card.Title>
 		<Card.Description>Describes the behavior of plant species.</Card.Description>
-		<Separator class="bg-neutral-7" />
+		<Separator.Root class="bg-neutral-7" />
 	</Card.Header>
 	<Card.Content>
 		<div>Public Data - discover button</div>
 		<div>Your Data</div>
-		<Separator class="bg-neutral-7" />
+		<Separator.Root class="bg-neutral-7" />
 	</Card.Content>
 </Card.Root>

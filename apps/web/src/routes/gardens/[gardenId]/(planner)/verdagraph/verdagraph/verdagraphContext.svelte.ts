@@ -1,8 +1,10 @@
 import { setContext, getContext } from 'svelte';
-import { isMobile } from '$state/isMobile.svelte';
-import { localStore } from '../../../../../../../../../packages/ui/src/state/localStore.svelte';
-import * as Resizable from '$components/ui/resizable';
-import { createTimelineSelection } from '$components/timeline';
+import {
+	localStore,
+	isMobile,
+	Resizable,
+	createTimelineSelection
+} from '@vdg-webapp/ui';
 
 /** Verdagraph view config persisted to local storage. */
 export type VerdagraphViewSettings = {

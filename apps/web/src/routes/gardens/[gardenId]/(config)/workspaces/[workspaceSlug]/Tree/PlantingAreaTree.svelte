@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import {
+		ScrollArea,
 		createEditableTree,
 		EditableTree,
 		TreeString,
@@ -11,8 +11,9 @@
 		toTreeId,
 		fieldValid,
 		geometryTreeItem,
-		type Item
-	} from '$components/editableTree';
+		type Item,
+		locationHistoryTreeItem
+	} from '@vdg-webapp/ui';
 	import triplit from '$data/triplit';
 	import { plantingAreasQuery, workspacesQuery } from '$data/workspaces/queries';
 	import {
@@ -29,7 +30,6 @@
 		type FieldErrors
 	} from '@vdg-webapp/models';
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
-	import { locationHistoryTreeItem } from '$components/editableTree/items/locations';
 
 	type Props = {
 		plantingAreaIds: string[];
@@ -89,7 +89,12 @@
 				includeDelete: false,
 				includeLinesClosed: false
 			},
-			{ updateHandler: geometryUpdateCommandHandler, fieldErrors }
+			{
+				updateHandler: (id, data) => {
+					geometryUpdateCommandHandler.execute(id, data);
+				},
+				fieldErrors
+			}
 		);
 
 		const locationHistoryItem = locationHistoryTreeItem(
@@ -99,7 +104,9 @@
 				workspaces: workspacesOptions
 			},
 			{
-				locationUpdateHandler: locationUpdateCommandHandler,
+				locationUpdateHandler: (id, data) => {
+					locationUpdateCommandHandler.execute(id, data);
+				},
 				onLocationHistoryExtend: (id: string) => {
 					locationHistoryExtendCommandHandler.execute(
 						id,
@@ -229,7 +236,7 @@
 {#if plantingAreaIds.length === 0}
 	<span class="p-2 italic"> No planting areas. </span>
 {:else}
-	<ScrollArea class="h-full w-full px-2">
+	<ScrollArea.Root class="h-full w-full px-2">
 		<EditableTree {editableTree} {fieldErrors} editing={workspace.editing} />
-	</ScrollArea>
+	</ScrollArea.Root>
 {/if}

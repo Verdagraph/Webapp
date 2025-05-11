@@ -1,4 +1,4 @@
-import { createToolbox, type ToolAttributes } from '$components/tabToolbox';
+import { createToolbox, type ToolAttributes } from '@vdg-webapp/ui';
 import AddPlantingAreaForm from './PlantingAreaCreateForm.svelte';
 import TranslateForm from './TranslateForm.svelte';
 import LayoutConfig from './LayoutConfigForm.svelte';

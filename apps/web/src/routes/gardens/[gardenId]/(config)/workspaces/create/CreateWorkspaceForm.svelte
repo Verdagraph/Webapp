@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
+	import { Form, Input, Textarea } from '@vdg-webapp/ui';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { workspaceCreate } from '$data/workspaces/commands';
@@ -41,7 +39,7 @@
 					description={workspaceFields.workspaceNameSchema.description}
 					optional={false}>Name</Form.Label
 				>
-				<Input
+				<Input.Root
 					{...props}
 					type="text"
 					placeholder="Backyard"
@@ -60,7 +58,7 @@
 					description={workspaceFields.workspaceDescriptionSchema.description}
 					optional={true}>Description</Form.Label
 				>
-				<Textarea {...props} bind:value={$formData.description} />
+				<Textarea.Root {...props} bind:value={$formData.description} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.description} />

@@ -2,10 +2,7 @@
 	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
 	import { useQuery } from '@triplit/svelte';
-	import iconIds from '../../../../lib/assets/icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
-	import * as Popover from '$components/ui/popover';
+	import { iconIds, Button, Separator, Popover } from '@vdg-webapp/ui';
 	import auth from '$state/auth.svelte';
 	import GardenThumbnailScrollable from './GardenThumbnailScrollable.svelte';
 	import GardenInviteScrollable from './GardenInviteScrollable.svelte';
@@ -50,15 +47,15 @@
 	<ul class="flex h-full flex-row items-center">
 		<!-- Discovery page link. -->
 		<li class="h-full">
-			<Button variant="ghost" href="gardens/discover" class="rounded-none">
+			<Button.Root variant="ghost" href="gardens/discover" class="rounded-none">
 				<Icon icon={iconIds.gardensDiscoverIcon} width="1.5rem" class="mx-2" />
 				<span class="mx-2 hidden sm:block">Discovery</span>
-			</Button>
+			</Button.Root>
 		</li>
 		<li class="h-full">
 			<Popover.Root>
 				<Popover.Trigger>
-					<Button variant="ghost" class="rounded-none">
+					<Button.Root variant="ghost" class="rounded-none">
 						<Icon icon={iconIds.gardensInviteIcon} width="1.5rem" class="mx-2" />
 						<span class="mx-2 hidden sm:block">Invites</span>
 						<div class="border-neutral-9 h-6 w-6 rounded-2xl border">
@@ -70,7 +67,7 @@
 								{pendingAcceptanceMemberships.results.length}
 							{/if}
 						</div>
-					</Button>
+					</Button.Root>
 				</Popover.Trigger>
 				<Popover.Content>
 					{#if pendingAcceptanceMemberships.fetching}
@@ -86,10 +83,10 @@
 			</Popover.Root>
 		</li>
 		<li class="h-full">
-			<Button variant="default" href="gardens/create" class="rounded-none">
+			<Button.Root variant="default" href="gardens/create" class="rounded-none">
 				<Icon icon={iconIds.gardensCreateIcon} width="1.5rem" class="mx-2" />
 				<span class="mx-2 hidden sm:block">Create</span>
-			</Button>
+			</Button.Root>
 		</li>
 	</ul>
 </div>
@@ -102,7 +99,7 @@
 				{label}
 			</span>
 			<GardenThumbnailScrollable {gardens} />
-			<Separator class="bg-neutral-7 mb-4 mt-12 w-full" />
+			<Separator.Root class="bg-neutral-7 mb-4 mt-12 w-full" />
 		</div>
 	{/if}
 {/snippet}

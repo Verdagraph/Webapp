@@ -1,6 +1,5 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
+	import { Input, Form } from '@vdg-webapp/ui';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestEmailConfirmation } from '$data/users/commands';
@@ -43,7 +42,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label description={userFields.emailSchema.description}>Email</Form.Label>
-				<Input
+				<Input.Root
 					{...props}
 					type="email"
 					placeholder="email@example.com"

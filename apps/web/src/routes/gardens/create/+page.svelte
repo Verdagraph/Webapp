@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
+	import { Card } from '@vdg-webapp/ui';
 	import GardenCreateForm from './GardenCreateForm.svelte';
 </script>
 

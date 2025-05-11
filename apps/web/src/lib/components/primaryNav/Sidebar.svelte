@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { Separator } from '$components/ui/separator/index';
-	import Logo from '../../../assets/logo.svelte';
-	import ClientAvatarIcon from '$components/misc/ClientAvatarIcon.svelte';
+	import { Separator, VdgLogo, ClientAvatarIcon } from '@vdg-webapp/ui';
 	import { Button } from 'bits-ui';
 	import type { PrimaryTabSpec } from './tabs.svelte';
 	import Tab from './Tab.svelte';
@@ -32,7 +30,7 @@ Large screens sidebar.
 		<!-- Verdagraph logo. -->
 		<li class="hover:bg-neutral-3 p-2">
 			<Button.Root class="flex items-center justify-center" href="/">
-				<Logo size="2rem" />
+				<VdgLogo size="2rem" />
 			</Button.Root>
 		</li>
 
@@ -40,7 +38,7 @@ Large screens sidebar.
 		<Tab spec={gardensTab} side="right" iconSize="2rem" />
 
 		{#if gardenContext.id}
-			<Separator class="bg-neutral-6" />
+			<Separator.Root class="bg-neutral-6" />
 
 			<!-- Garden specific links. -->
 			{#each gardenTabs as tab}

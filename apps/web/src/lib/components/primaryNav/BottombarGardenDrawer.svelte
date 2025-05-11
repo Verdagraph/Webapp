@@ -1,8 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { Button } from 'bits-ui';
-	import * as Drawer from '$components/ui/drawer';
-	import iconIds from '$assets/icons';
+	import { Drawer, iconIds } from '@vdg-webapp/ui';
 	import { Accordion } from 'bits-ui';
 	import type { PrimaryTabSpec } from './tabs.svelte';
 

@@ -1,8 +1,7 @@
 <script lang="ts">
 	import 'tailwindcss/tailwind.css';
 	import PrimaryNav from '$components/primaryNav';
-	import { Toaster } from '$components/ui/sonner';
-	import * as Tooltip from '$components/ui/tooltip';
+	import { Toaster, Tooltip } from '@vdg-webapp/ui';
 	import { ModeWatcher } from 'mode-watcher';
 	import mode from '$state/theme.svelte';
 	import { mode as modeWatcher } from 'mode-watcher';
@@ -42,7 +41,7 @@
 <ModeWatcher />
 
 <!-- Sonner toaster from Shadcn-svelte -->
-<Toaster richColors />
+<!--<Toaster richColors />-->
 
 {#if initialized}
 	<div class="h-screen w-screen overflow-hidden">

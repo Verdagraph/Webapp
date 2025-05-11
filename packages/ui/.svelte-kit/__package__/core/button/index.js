@@ -1,4 +1,4 @@
-import Root, { buttonVariants, } from "./button.svelte";
+import Root, { buttonVariants } from './button.svelte';
 export { Root, 
 //
-Root as Button, buttonVariants, };
+Root as Button, buttonVariants };

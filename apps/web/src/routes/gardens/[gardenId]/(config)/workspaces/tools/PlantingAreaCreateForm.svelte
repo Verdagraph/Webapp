@@ -1,17 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
-	import * as Form from '$lib/components/ui/form';
-	import * as Textarea from '$lib/components/ui/textarea';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Separator } from '$lib/components/ui/separator';
-	import { UnitAwareInput, CoordinateInput } from '$components/units';
-	import GeometrySelect from '$components/workspaces/GeometrySelect.svelte';
-	import { Input } from '$lib/components/ui/input';
-	import iconIds from '../../../../../../../../lib/assets/icons';
+	import {
+		Form,
+		Input,
+		Textarea,
+		Button,
+		Separator,
+		UnitAwareInput,
+		CoordinateInput,
+		GeometrySelect,
+		iconIds
+	} from '@vdg-webapp/ui';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import { toast } from 'svelte-sonner';
 	import { AppError, workspaceFields } from '@vdg-webapp/models';
+	import userSettings from '$state/userSettings.svelte';
 
 	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;
@@ -40,7 +44,7 @@
 					description={workspaceFields.plantingAreaNameSchema.description}
 					optional={false}>Name</Form.Label
 				>
-				<Input
+				<Input.Root
 					{...props}
 					type="text"
 					placeholder="Big Bed"
@@ -75,6 +79,7 @@
 				>
 				<CoordinateInput
 					{...props}
+					initialUnitSystem={userSettings.value.units['distance']}
 					bind:x={$formData.location.coordinate.x}
 					bind:y={$formData.location.coordinate.y}
 				/>
@@ -87,7 +92,7 @@
 		<div class="my-2 flex items-center">
 			<span class="text-neutral-11 mr-2"> Geometry </span>
 			<span class="w-full">
-				<Separator class="w-full" />
+				<Separator.Root class="w-full" />
 			</span>
 		</div>
 
@@ -113,7 +118,11 @@
 						description={workspaceFields.geometryRotationSchema.description}
 						optional={true}>Rotation</Form.Label
 					>
-					<Input {...props} type="number" bind:value={$formData.geometry.rotation} />
+					<Input.Root
+						{...props}
+						type="number"
+						bind:value={$formData.geometry.rotation}
+					/>
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.rotation']} />
@@ -133,6 +142,7 @@
 							{...props}
 							min={0}
 							quantityType="distance"
+							initialUnitSystem={userSettings.value.units['distance']}
 							bind:value={$formData.geometry.rectangleLength}
 						/>
 					{/snippet}
@@ -154,6 +164,7 @@
 							{...props}
 							min={0}
 							quantityType="distance"
+							initialUnitSystem={userSettings.value.units['distance']}
 							bind:value={$formData.geometry.rectangleWidth}
 						/>
 					{/snippet}
@@ -173,7 +184,7 @@
 							description={workspaceFields.geometryPolygonNumSidesSchema.description}
 							optional={false}>Side Count</Form.Label
 						>
-						<Input
+						<Input.Root
 							{...props}
 							type="number"
 							min={3}
@@ -196,8 +207,9 @@
 						>
 						<UnitAwareInput
 							{...props}
-							quantityType="distance"
 							min={0}
+							quantityType="distance"
+							initialUnitSystem={userSettings.value.units['distance']}
 							bind:value={$formData.geometry.polygonRadius}
 						/>
 					{/snippet}
@@ -221,6 +233,7 @@
 							{...props}
 							min={0}
 							quantityType="distance"
+							initialUnitSystem={userSettings.value.units['distance']}
 							bind:value={$formData.geometry.ellipseLength}
 						/>
 					{/snippet}
@@ -242,6 +255,7 @@
 							{...props}
 							min={0}
 							quantityType="distance"
+							initialUnitSystem={userSettings.value.units['distance']}
 							bind:value={$formData.geometry.ellipseWidth}
 						/>
 					{/snippet}
@@ -265,6 +279,7 @@
 							>
 							<CoordinateInput
 								{...props}
+								initialUnitSystem={userSettings.value.units['distance']}
 								bind:x={$formData.geometry.linesCoordinates[index].x}
 								bind:y={$formData.geometry.linesCoordinates[index].y}
 							/>
@@ -277,7 +292,7 @@
 			{/each}
 
 			<!-- Coordinate add button. -->
-			<Button
+			<Button.Root
 				onclick={() => {
 					$formData.geometry.linesCoordinates = [
 						...$formData.geometry.linesCoordinates,
@@ -289,7 +304,7 @@
 			>
 				<span> Add Point </span>
 				<Icon icon={iconIds.addIcon} width="1.5rem" />
-			</Button>
+			</Button.Root>
 		{/if}
 	</fieldset>
 
@@ -298,7 +313,7 @@
 		<div class="my-2 flex items-center">
 			<span class="text-neutral-11 mr-2"> Other </span>
 			<span class="w-full">
-				<Separator class="w-full" />
+				<Separator.Root class="w-full" />
 			</span>
 		</div>
 
@@ -314,6 +329,7 @@
 						{...props}
 						min={0}
 						quantityType="distance"
+						initialUnitSystem={userSettings.value.units['distance']}
 						bind:value={$formData.depth}
 					/>
 				{/snippet}

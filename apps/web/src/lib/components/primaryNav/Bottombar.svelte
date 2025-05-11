@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ClientAvatarIcon from '$components/misc/ClientAvatarIcon.svelte';
+	import { ClientAvatarIcon } from '@vdg-webapp/ui';
 	import type { PrimaryTabSpec } from './tabs.svelte';
 	import Tab from './Tab.svelte';
 	import BottombarGardenDrawer from './BottombarGardenDrawer.svelte';

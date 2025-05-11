@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Sidebar from './Sidebar.svelte';
 	import Bottombar from './Bottombar.svelte';
-	import { IsMobile } from '$lib/state/isMobile.svelte';
+	import { IsMobile } from '@vdg-webapp/ui';
 
 	let { gardensTab, gardenTabs, profileTab, traitsTab, resourcesTab, children } =
 		$props();

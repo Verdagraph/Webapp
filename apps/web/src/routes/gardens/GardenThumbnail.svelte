@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from '$components/ui/button';
 	import type { Garden } from '@vdg-webapp/models';
+	import { Button } from '@vdg-webapp/ui';
 
 	type Props = {
 		garden: Garden;
@@ -9,7 +9,7 @@
 	let { garden }: Props = $props();
 </script>
 
-<Button
+<Button.Root
 	variant="outline"
 	href={`gardens/${garden.id}`}
 	class="bg-neutral-2 hover:bg-neutral-3 mx-4 flex h-48 w-64 flex-col justify-around text-xl"
@@ -22,4 +22,4 @@
 	>
 		{garden.id}
 	</span>
-</Button>
+</Button.Root>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
+	import { ScrollArea } from '@vdg-webapp/ui';
 	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
 	import GardenInvite from './GardenInvite.svelte';
 
@@ -10,7 +10,7 @@
 	let { invites }: Props = $props();
 </script>
 
-<ScrollArea
+<ScrollArea.Root
 	type="auto"
 	orientation="vertical"
 	class="w-auto {invites.length > 1 ? 'h-96' : 'h-48'}"
@@ -20,4 +20,4 @@
 			<GardenInvite {invite} />
 		{/each}
 	</ul>
-</ScrollArea>
+</ScrollArea.Root>

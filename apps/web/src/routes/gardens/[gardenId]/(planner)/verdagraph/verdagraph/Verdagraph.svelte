@@ -1,12 +1,10 @@
 <script lang="ts">
-	import * as Resizable from '$components/ui/resizable';
+	import { Resizable, TabToolbox, TimelineSelector } from '@vdg-webapp/ui';
 	import Toolbar from './Toolbar.svelte';
 	import { toolbox } from './tools/index';
-	import TabToolbox from '$components/tabToolbox';
 	import Calendar from './calendar/Calendar.svelte';
 	import Layout from './layout/Layout.svelte';
 	import Tree from './tree/Tree.svelte';
-	import { TimelineSelector } from '$components/timeline';
 	import { setVerdagraphContext } from './verdagraphContext.svelte';
 
 	const verdagraphContext = setVerdagraphContext();

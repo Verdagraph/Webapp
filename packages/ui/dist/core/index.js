@@ -19,7 +19,7 @@ export * as Select from './select';
 export * as Separator from './separator';
 export * as Sheet from './sheet';
 export * as Skeleton from './skeleton';
-export * as Sonner from './sonner';
+export * as Toaster from './sonner';
 export * as Tabs from './tabs';
 export * as Textarea from './textarea';
 export * as Tooltip from './tooltip';

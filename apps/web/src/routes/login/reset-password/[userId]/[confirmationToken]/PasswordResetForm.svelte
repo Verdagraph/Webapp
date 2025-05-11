@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
+	import { Input, Form } from '@vdg-webapp/ui';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userConfirmPasswordReset } from '$data/users/commands';
@@ -48,7 +47,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>New Password</Form.Label
 				>
-				<Input {...props} type="password" bind:value={$formData.password1} />
+				<Input.Root {...props} type="password" bind:value={$formData.password1} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
@@ -61,7 +60,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>Confirm Password</Form.Label
 				>
-				<Input {...props} type="password" bind:value={$formData.password2} />
+				<Input.Root {...props} type="password" bind:value={$formData.password2} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password2} />

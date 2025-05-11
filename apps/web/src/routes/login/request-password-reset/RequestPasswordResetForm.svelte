@@ -1,6 +1,5 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
+	import { Form, Input } from '@vdg-webapp/ui';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userRequestPasswordReset } from '$data/users/commands';
@@ -42,7 +41,7 @@
 				<Form.Label description={userFields.emailSchema.description} optional={false}
 					>Email</Form.Label
 				>
-				<Input
+				<Input.Root
 					{...props}
 					type="email"
 					placeholder="email@example.com"

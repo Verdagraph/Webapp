@@ -1,15 +1,18 @@
-import * as Resizable from '$components/ui/resizable';
-import { isMobile } from '$state/isMobile.svelte';
-import { localStore } from '../../../../../../../../packages/ui/src/state/localStore.svelte';
-import { plantingAreaCreate } from '$data/workspaces/commands';
-import createCommandHandler from '$state/commandHandler.svelte';
+import { setContext, getContext } from 'svelte';
 import { superForm, defaults } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { type CanvasContext, createCanvasContext } from '$components/canvas';
-import { setContext, getContext } from 'svelte';
-import { createTimelineSelection } from '$components/timeline';
+import {
+	localStore,
+	isMobile,
+	Resizable,
+	type CanvasContext,
+	createCanvasContext,
+	createTimelineSelection,
+	createSelectionManager
+} from '@vdg-webapp/ui';
+import { plantingAreaCreate } from '$data/workspaces/commands';
+import createCommandHandler from '$state/commandHandler.svelte';
 import toolbox from './tools';
-import { createSelectionManager } from '$components/selection';
 
 /** Workspace config persisted to local storage. */
 type WorkspaceViewConfig = {

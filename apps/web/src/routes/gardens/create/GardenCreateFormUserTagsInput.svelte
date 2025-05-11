@@ -1,12 +1,10 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import iconIds from '../../../../../lib/assets/icons';
+	import { iconIds, Popover } from '@vdg-webapp/ui';
 	import { createTagsInput, melt } from '@melt-ui/svelte';
 	import { userProfilesUsernameQuery } from '$data/users/queries';
 	import { useQuery } from '@triplit/svelte';
 	import triplit from '$data/triplit';
-	import * as Popover from '$components/ui/popover';
-	import PopoverContent from '$components/ui/popover/popover-content.svelte';
 
 	/** TODO: Redo this component once Melt-UI has updated the Tags-Input component to runes. */
 
@@ -84,7 +82,7 @@
 							<Icon icon={iconIds.errorIcon} class="text-destructive-8" width="1rem" />
 						{/if}
 					</Popover.Trigger>
-					<PopoverContent>
+					<Popover.Content>
 						{#if profiles.results && profiles.results.includes({ username: t.value })}
 							This user exists.
 						{:else if profiles.fetching}
@@ -92,7 +90,7 @@
 						{:else}
 							This user does not exist.
 						{/if}
-					</PopoverContent>
+					</Popover.Content>
 				</Popover.Root>
 				<button
 					use:melt={$deleteTrigger(t)}

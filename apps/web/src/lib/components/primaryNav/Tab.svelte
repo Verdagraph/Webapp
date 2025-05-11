@@ -1,11 +1,9 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import type { PrimaryTabSpec } from './tabs.svelte';
-	import { Separator } from '$components/ui/separator/index';
-	import * as Popover from '$components/ui/popover';
+	import { Separator, Popover, cn } from '@vdg-webapp/ui';
 	import { Button } from 'bits-ui';
 	import type { Snippet } from 'svelte';
-	import { cn } from '$lib/utils';
 
 	type Props = {
 		spec: PrimaryTabSpec /* Describes the content of the tab. */;
@@ -35,7 +33,7 @@
 					<span class="font-extralight">{spec.label}</span>
 				</li>
 
-				<Separator class="bg-neutral-6" />
+				<Separator.Root class="bg-neutral-6" />
 
 				{#each spec.submenuItems ?? [] as item}
 					<li class="group h-full w-full">

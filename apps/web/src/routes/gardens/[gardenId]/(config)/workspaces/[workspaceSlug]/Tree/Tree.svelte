@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Tabs from '$components/ui/tabs';
+	import { Tabs } from '@vdg-webapp/ui';
 	import PlantingAreaTree from './PlantingAreaTree.svelte';
 
 	type Props = {

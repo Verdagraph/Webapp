@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
+	import { Input, Form } from '@vdg-webapp/ui';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { userLogin } from '$data/users/auth';
@@ -35,7 +34,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label description={userFields.emailSchema.description}>Email</Form.Label>
-				<Input
+				<Input.Root
 					{...props}
 					type="email"
 					placeholder="email@example.com"
@@ -53,7 +52,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>Password</Form.Label
 				>
-				<Input {...props} type="password" bind:value={$formData.password} />
+				<Input.Root {...props} type="password" bind:value={$formData.password} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password} />

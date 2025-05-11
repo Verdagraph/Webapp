@@ -1,6 +1,5 @@
-import iconIds from '$assets/icons';
-import { externalLinks } from '$assets/links';
-import { Garden } from '@vdg-webapp/models';
+import { iconIds, externalLinks } from '@vdg-webapp/ui';
+import { type Garden } from '@vdg-webapp/models';
 
 /**
  * Utility to get the base URL for the active garden.

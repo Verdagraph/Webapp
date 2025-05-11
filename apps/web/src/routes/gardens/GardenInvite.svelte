@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import iconIds from '../../../../lib/assets/icons';
-	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
+	import { iconIds, Button, Separator } from '@vdg-webapp/ui';
 	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
 	import { userProfilesQuery } from '$data/users/queries';
 	import {
@@ -62,22 +60,22 @@
 		</div>
 	</div>
 	<div class="flex flex-col justify-evenly">
-		<Button
+		<Button.Root
 			variant="default"
 			onclick={() => {
 				gardenMembershipAcceptHandler.execute({ gardenId: invite.gardenId });
 			}}
 		>
 			<Icon icon={iconIds.gardenInviteAcceptIcon} width="1.5rem" />
-		</Button>
-		<Button
+		</Button.Root>
+		<Button.Root
 			variant="destructive"
 			onclick={() => {
 				gardenMembershipDeleteHandler.execute({ gardenId: invite.gardenId });
-			}}><Icon width="1.5rem" icon={iconIds.gardenInviteRejectIcon} /></Button
+			}}><Icon width="1.5rem" icon={iconIds.gardenInviteRejectIcon} /></Button.Root
 		>
 	</div>
 </li>
 <li class="mb-4 mt-2 last:hidden">
-	<Separator class="bg-neutral-5 w-full" />
+	<Separator.Root class="bg-neutral-5 w-full" />
 </li>

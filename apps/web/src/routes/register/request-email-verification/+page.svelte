@@ -1,8 +1,5 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import { Button } from '$components/ui/button';
-	import * as Dialog from '$components/ui/dialog';
-	import { externalLinks } from '../../../../lib/assets/links';
+	import { Card, Button, Dialog, externalLinks } from '@vdg-webapp/ui';
 	import RequestEmailConfirmationForm from './RequestEmailConfirmationForm.svelte';
 	/** Set to true on form success. */
 	let succeeded: boolean = $state(false);
@@ -37,10 +34,10 @@
 					>An email confirmation has been sent to {registeredEmail}</Dialog.Title
 				>
 				<Dialog.Description>
-					If the email remains unsent, <Button
+					If the email remains unsent, <Button.Root
 						variant="link"
 						class="text-neutral-11 inline p-0"
-						href={externalLinks.discord}>try reaching out to our community.</Button
+						href={externalLinks.discord}>try reaching out to our community.</Button.Root
 					>
 				</Dialog.Description>
 			</Dialog.Header>

@@ -2,9 +2,7 @@
 	import { onMount } from 'svelte';
 	import { getWorkspaceContext } from './activeWorkspace.svelte';
 	import type { Workspace } from '@vdg-webapp/models';
-	import { Button } from '$components/ui/button';
-	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
-	import WorkspaceThumbnail from '$components/workspaces/WorkspaceThumbnail.svelte';
+	import { WorkspaceThumbnail, Button, ScrollArea } from '@vdg-webapp/ui';
 
 	const workspaceContext = getWorkspaceContext();
 
@@ -39,7 +37,7 @@
 		<div
 			class="bg-neutral-1 md:bg-neutral-3 flex h-auto w-auto flex-col items-center justify-around gap-4 rounded-none border-b p-8 shadow-lg md:rounded-md md:border lg:flex-row"
 		>
-			<Button
+			<Button.Root
 				variant="outline"
 				href={`workspaces/${workspace.slug}`}
 				class="bg-neutral-2 hover:bg-neutral-1 relative mx-4 flex h-72 w-96 flex-col justify-around text-xl"
@@ -52,12 +50,12 @@
 				<div class="flex h-full w-full items-center justify-center p-2">
 					<WorkspaceThumbnail />
 				</div>
-			</Button>
-			<ScrollArea
+			</Button.Root>
+			<ScrollArea.Root
 				class="bg-neutral-2 h-auto max-h-72 w-96 rounded-md border px-6 py-4 lg:h-72 lg:w-1/2"
 			>
 				{workspace.description || 'No description provided.'}
-			</ScrollArea>
+			</ScrollArea.Root>
 		</div>
 	{/each}
 </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { GeometryUpdateCommand } from '@vdg-webapp/models';
-	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
+	import { PlantingArea } from '@vdg-webapp/ui';
 	import { plantingAreaQuery } from '$data/workspaces/queries';
 	import type { Vector2d } from 'konva/lib/types';
 	import { historySelect } from '@vdg-webapp/models';

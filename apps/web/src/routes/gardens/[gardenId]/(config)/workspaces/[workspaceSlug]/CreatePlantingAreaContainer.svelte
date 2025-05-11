@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PlantingArea from '$components/canvas/workspace/PlantingArea.svelte';
+	import { PlantingArea } from '@vdg-webapp/ui';
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import type { Vector2d } from 'konva/lib/types';
 	import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/models';

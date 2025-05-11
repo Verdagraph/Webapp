@@ -1,7 +1,5 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import { Button } from '$components/ui/button';
-	import * as Dialog from '$components/ui/dialog';
+	import { Button, Card, Dialog } from '@vdg-webapp/ui';
 	import RegistrationForm from './RegistrationForm.svelte';
 	/** Set to true on form success. */
 	let succeeded: boolean = $state(false);
@@ -18,8 +16,8 @@
 	<Card.Header>
 		<Card.Title>Create an account</Card.Title>
 		<Card.Description>
-			<Button variant="link" class="text-neutral-11 p-0" href="/login"
-				>Already have one?</Button
+			<Button.Root variant="link" class="text-neutral-11 p-0" href="/login"
+				>Already have one?</Button.Root
 			>
 		</Card.Description>
 	</Card.Header>
@@ -34,11 +32,11 @@
 					>An email confirmation has been sent to {registeredEmail}</Dialog.Title
 				>
 				<Dialog.Description>
-					If you don't receive it, <Button
+					If you don't receive it, <Button.Root
 						variant="link"
 						class="text-neutral-11 p-0"
 						href="/register/request-email-verification"
-						>request another through this link.</Button
+						>request another through this link.</Button.Root
 					>
 				</Dialog.Description>
 			</Dialog.Header>

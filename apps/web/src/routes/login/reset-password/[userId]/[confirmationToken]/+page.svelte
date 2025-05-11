@@ -1,7 +1,5 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import { Button } from '$components/ui/button';
-	import * as Dialog from '$components/ui/dialog';
+	import { Card, Button, Dialog } from '@vdg-webapp/ui';
 	import PasswordResetForm from './PasswordResetForm.svelte';
 
 	/** Set to true on form success. */
@@ -25,8 +23,8 @@
 			<Dialog.Header>
 				<Dialog.Title>Password has been successfully reset</Dialog.Title>
 				<Dialog.Description>
-					<Button variant="link" class="text-neutral-11 p-0" href="/login"
-						>Proceed to Login</Button
+					<Button.Root variant="link" class="text-neutral-11 p-0" href="/login"
+						>Proceed to Login</Button.Root
 					>
 				</Dialog.Description>
 			</Dialog.Header>

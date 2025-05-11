@@ -1,16 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
-	import * as Form from '$lib/components/ui/form';
-	import * as Select from '$lib/components/ui/select';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
+	import { Form, Select, Button, Input, Textarea, iconIds } from '@vdg-webapp/ui';
 	import { superForm, defaults } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { gardenCreate } from '$data/gardens/commands';
-	import iconIds from '../../../../../lib/assets/icons';
-	import { GardenVisibility, gardenFields } from '@vdg-webapp/models';
+	import { type GardenVisibility, gardenFields } from '@vdg-webapp/models';
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
 	import { generateGardenId } from '$data/gardens/utils';
 	import createCommandHandler from '$state/commandHandler.svelte';
@@ -78,14 +73,14 @@
 					optional={false}>ID</Form.Label
 				>
 				<span class="flex">
-					<Input
+					<Input.Root
 						{...props}
 						type="text"
 						placeholder="lettuce123"
 						class="rounded-r-none"
 						bind:value={$formData.id}
 					/>
-					<Button
+					<Button.Root
 						variant="outline"
 						onclick={() => {
 							gardenIdGenerationHandler.execute();
@@ -100,7 +95,7 @@
 								? 'animate-spin'
 								: 'animate-none'}
 						/>
-					</Button>
+					</Button.Root>
 				</span>
 			{/snippet}
 		</Form.Control>
@@ -116,7 +111,7 @@
 					description={gardenFields.gardenNameSchema.description}
 					optional={false}>Name</Form.Label
 				>
-				<Input
+				<Input.Root
 					{...props}
 					type="text"
 					placeholder="Gardens of Adonis"
@@ -179,7 +174,7 @@
 					description={gardenFields.gardenDescriptionSchema.description}
 					optional={true}>Description</Form.Label
 				>
-				<Textarea {...props} bind:value={$formData.description} />
+				<Textarea.Root {...props} bind:value={$formData.description} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors

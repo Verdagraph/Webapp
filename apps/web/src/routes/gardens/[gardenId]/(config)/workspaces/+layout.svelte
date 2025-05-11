@@ -2,8 +2,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
-	import iconIds from '../../../../../../../lib/assets/icons';
-	import * as Menubar from '$components/ui/menubar';
+	import { iconIds, Menubar } from '@vdg-webapp/ui';
 	import { Button } from 'bits-ui';
 	import { setWorkspaceContext } from './activeWorkspace.svelte';
 	import toolbox from './tools';
