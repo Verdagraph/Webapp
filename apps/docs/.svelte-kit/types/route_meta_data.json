@@ -6,6 +6,9 @@
 	"/about": [
 		"src/routes/+layout.server.js"
 	],
+	"/demo": [
+		"src/routes/+layout.server.js"
+	],
 	"/guides": [
 		"src/routes/+layout.server.js"
 	]

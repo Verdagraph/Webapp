@@ -15,7 +15,7 @@ export async function load({ params }) {
 	if (!garden) {
 		/** TODO: Make toasts work here. */
 		//toast.error('Garden does not exist.');
-		goto(`/app/gardens`);
+		goto(`/gardens`);
 		throw new AppError(`Garden ${params.gardenId} does not exist`);
 	}
 

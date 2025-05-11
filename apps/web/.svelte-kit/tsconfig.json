@@ -1,11 +1,11 @@
 {
 	"compilerOptions": {
 		"paths": {
-			"$data": [
-				"../src/lib/data"
+			"$assets": [
+				"../src/lib/assets"
 			],
-			"$data/*": [
-				"../src/lib/data/*"
+			"$assets/*": [
+				"../src/lib/assets/*"
 			],
 			"$codegen": [
 				"../src/lib/codegen"
@@ -13,17 +13,23 @@
 			"$codegen/*": [
 				"../src/lib/codegen/*"
 			],
-			"$state": [
-				"../src/lib/state"
-			],
-			"$state/*": [
-				"../src/lib/state/*"
-			],
 			"$components": [
 				"../src/lib/components"
 			],
 			"$components/*": [
 				"../src/lib/components/*"
+			],
+			"$data": [
+				"../src/lib/data"
+			],
+			"$data/*": [
+				"../src/lib/data/*"
+			],
+			"$state": [
+				"../src/lib/state"
+			],
+			"$state/*": [
+				"../src/lib/state/*"
 			],
 			"$utils": [
 				"../src/lib/utils"

@@ -5,7 +5,7 @@ const config: Config = {
 	presets: [baseConfig],
 	content: [
 		'./src/**/*.{html,js,svelte,ts}',
-		'./node_modules/@vdg-webapp/ui/**/*.{html,js,svelte,ts}'
+		'./node_modules/@vdg-webapp/ui/dist/**/*.{html,js,svelte,ts}'
 	]
 };
 export default config;

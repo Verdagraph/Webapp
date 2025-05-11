@@ -10,7 +10,7 @@
 
 	let formHandler = createCommandHandler(workspaceCreate.mutation, {
 		onSuccess: (workspace) => {
-			const workspaceHref = `/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
+			const workspaceHref = `/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
 			goto(workspaceHref);
 		}
 	});

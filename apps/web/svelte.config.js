@@ -16,10 +16,11 @@ const config = {
 		adapter: adapter(),
 		//
 		alias: {
-			$data: path.resolve('./src/lib/data'),
+			$assets: path.resolve('./src/lib/assets'),
 			$codegen: path.resolve('./src/lib/codegen'),
-			$state: path.resolve('./src/lib/state'),
 			$components: path.resolve('./src/lib/components'),
+			$data: path.resolve('./src/lib/data'),
+			$state: path.resolve('./src/lib/state'),
 			$utils: path.resolve('./src/lib/utils')
 		}
 	}

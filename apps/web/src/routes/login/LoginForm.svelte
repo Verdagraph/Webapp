@@ -9,7 +9,7 @@
 
 	let formHandler = createCommandHandler(userLogin.mutation, {
 		onSuccess: () => {
-			goto('/app');
+			goto('/');
 		}
 	});
 	const form = superForm(defaults(zod(userLogin.schema)), {

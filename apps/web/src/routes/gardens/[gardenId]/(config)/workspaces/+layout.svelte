@@ -52,7 +52,7 @@
 									<Button.Root
 										onclick={() => {
 											goto(
-												`/app/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
+												`/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`
 											);
 										}}
 										class="text-light h-full w-full italic"
@@ -65,7 +65,7 @@
 					{/if}
 					<Menubar.Item>
 						<Button.Root
-							href="/app/gardens/{page.params.gardenId}/workspaces"
+							href="/gardens/{page.params.gardenId}/workspaces"
 							class="flex h-full w-full justify-between"
 						>
 							<span> See All </span>
@@ -77,7 +77,7 @@
 					<Menubar.Separator />
 					<Menubar.Item>
 						<Button.Root
-							href="/app/gardens/{page.params.gardenId}/workspaces/create"
+							href="//gardens/{page.params.gardenId}/workspaces/create"
 							class="flex h-full w-full items-center justify-between"
 						>
 							<span> Create Workspace </span>

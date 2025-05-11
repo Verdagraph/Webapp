@@ -7,7 +7,7 @@
 
 	onMount(() => {
 		if (auth.isAuthenticated) {
-			goto('/app');
+			goto('/');
 		}
 	});
 </script>

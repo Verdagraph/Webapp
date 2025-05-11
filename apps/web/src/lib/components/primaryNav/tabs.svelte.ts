@@ -5,7 +5,7 @@ import { type Garden } from '@vdg-webapp/models';
  * Utility to get the base URL for the active garden.
  */
 const getGardenBaseUrl = (gardenId: string): string => {
-	return '/app/gardens/' + gardenId;
+	return '/gardens/' + gardenId;
 };
 
 /**

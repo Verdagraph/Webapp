@@ -77,8 +77,8 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
-		"@triplit/client": "^1.0.11",
-		"@triplit/svelte": "^1.0.11",
+		"@triplit/client": "^1.0.33",
+		"@triplit/svelte": "^1.0.33",
 		"@vdg-webapp/models": "workspace:*",
 		"konva": "^9.3.18",
 		"melt": "^0.14.1"

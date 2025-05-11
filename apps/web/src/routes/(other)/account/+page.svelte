@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { UnderConstructionPage } from '@vdg-webapp/ui/';
+	import { UnderConstructionPage } from '@vdg-webapp/ui';
 </script>
 
 <svelte:head>

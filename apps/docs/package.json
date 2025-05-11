@@ -61,6 +61,8 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
+		"@triplit/client": "^1.0.33",
+		"@triplit/svelte": "^1.0.33",
 		"@vdg-webapp/models": "workspace:*",
 		"@vdg-webapp/ui": "workspace:*",
 		"axios": "^1.8.2",

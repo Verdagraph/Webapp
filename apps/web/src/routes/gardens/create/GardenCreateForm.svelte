@@ -38,7 +38,7 @@
 	/** Garden creation form. */
 	let gardenCreateHandler = createCommandHandler(gardenCreate.mutation, {
 		onSuccess: (data) => {
-			goto('/app/gardens/' + data.id);
+			goto('/gardens/' + data.id);
 		}
 	});
 	const form = superForm(defaults(zod(gardenCreate.schema)), {
