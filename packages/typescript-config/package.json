@@ -1,0 +1,7 @@
+{
+	"name": "@vdg-webapp/typescript-config",
+	"type": "module",
+	"publishConfig": {
+		"access": "public"
+	}
+}

@@ -1,0 +1,52 @@
+
+
+> @vdg-webapp/ui@0.0.0 build /workspaces/Webapp/packages/ui
+> svelte-kit sync && svelte-package --input=src
+
+d.ts type declaration files for the following files were likely not generated due to the following errors:
+/workspaces/Webapp/packages/ui/src/core/collapsible/index.ts
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/collapsible/components/collapsible.svelte" but cannot be named.
+  - Exported variable 'Trigger' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/collapsible/components/collapsible-trigger.svelte" but cannot be named.
+  - Exported variable 'Content' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/collapsible/components/collapsible-content.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/command/index.ts
+  - Exported variable 'Loading' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/command/components/command-loading.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/dialog/index.ts
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/dialog/components/dialog.svelte" but cannot be named.
+  - Exported variable 'Trigger' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/dialog/components/dialog-trigger.svelte" but cannot be named.
+  - Exported variable 'Close' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/dialog/components/dialog-close.svelte" but cannot be named.
+  - Exported variable 'Portal' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/utilities/portal/portal.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/dropdown-menu/index.ts
+  - Exported variable 'Sub' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu-sub.svelte" but cannot be named.
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu.svelte" but cannot be named.
+  - Exported variable 'Trigger' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu-trigger.svelte" but cannot be named.
+  - Exported variable 'Group' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu-group.svelte" but cannot be named.
+  - Exported variable 'RadioGroup' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu-radio-group.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/menubar/index.ts
+  - Exported variable 'Menu' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menubar/components/menubar-menu.svelte" but cannot be named.
+  - Exported variable 'Group' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu-group.svelte" but cannot be named.
+  - Exported variable 'Sub' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu-sub.svelte" but cannot be named.
+  - Exported variable 'RadioGroup' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/menu/components/menu-radio-group.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/popover/index.ts
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/popover/components/popover.svelte" but cannot be named.
+  - Exported variable 'Trigger' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/popover/components/popover-trigger.svelte" but cannot be named.
+  - Exported variable 'Close' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/popover/components/popover-close.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/select/index.ts
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/select/components/select.svelte" but cannot be named.
+  - Exported variable 'Group' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/select/components/select-group.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/sheet/index.ts
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/dialog/components/dialog.svelte" but cannot be named.
+  - Exported variable 'Close' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/dialog/components/dialog-close.svelte" but cannot be named.
+  - Exported variable 'Trigger' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/dialog/components/dialog-trigger.svelte" but cannot be named.
+  - Exported variable 'Portal' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/utilities/portal/portal.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/tabs/index.ts
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/tabs/components/tabs.svelte" but cannot be named.
+/workspaces/Webapp/packages/ui/src/core/tooltip/index.ts
+  - Exported variable 'Root' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/tooltip/components/tooltip.svelte" but cannot be named.
+  - Exported variable 'Trigger' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/tooltip/components/tooltip-trigger.svelte" but cannot be named.
+  - Exported variable 'Provider' has or is using name '$$__sveltets_2_IsomorphicComponent' from external module "/workspaces/Webapp/node_modules/.pnpm/bits-ui@1.0.0-next.74_svelte@5.28.2/node_modules/bits-ui/dist/bits/tooltip/components/tooltip-provider.svelte" but cannot be named.
+[1m[32msrc -> dist[22m[39m
+[1m[33m@sveltejs/package found the following issues while packaging your library:[22m[39m
+[33mAvoid usage of `$app/environment` in your code, if you want to library to work for people not using SvelteKit (only regular Svelte, for example). Consider using packages like `esm-env` instead which provide cross-bundler-compatible environment variables.
+[39m
+[33mYou are using SvelteKit-specific imports in your code, but you have not declared a dependency on `@sveltejs/kit` in your `package.json`. Add it to your `dependencies` or `peerDependencies`.
+[39m

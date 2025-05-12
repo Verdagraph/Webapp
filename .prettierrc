@@ -6,9 +6,13 @@
 	"bracketSameLine": false,
 	"arrowParens": "always",
 	"printWidth": 88,
+	"importOrder": ["^@vdg-webapp/(.*)$", "^\\$.*$", "^[./]"],
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true,
 	"plugins": [
 		"prettier-plugin-svelte",
 		"prettier-plugin-tailwindcss",
+		"@trivago/prettier-plugin-sort-imports",
 		"prettier-plugin-merge"
 	],
 	"overrides": [

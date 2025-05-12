@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/gardens/[gardenId]/(planner)/verdagraph/+page.svelte";

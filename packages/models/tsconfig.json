@@ -1,0 +1,10 @@
+{
+	"extends": "@vdg-webapp/typescript-config/tsconfig.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"declaration": true,
+		"declarationMap": true
+	},
+	"include": ["src/**/*"]
+}

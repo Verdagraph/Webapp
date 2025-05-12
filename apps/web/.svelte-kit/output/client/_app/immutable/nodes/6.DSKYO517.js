@@ -1,0 +1,1 @@
+import"../chunks/Boh5s-Fb.js";import"../chunks/CR0Tndyg.js";import{$ as t}from"../chunks/BwwL9Z8J.js";import{h as r}from"../chunks/CklQGOQz.js";import{U as a}from"../chunks/D4UGYf9c.js";function s(o){r(i=>{t.title="Notifications - Verdagraph"}),a(o)}export{s as component};
