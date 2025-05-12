@@ -1,4 +1,4 @@
-import { type DateValue, type DateDuration } from '@internationalized/date';
+import { type DateDuration, type DateValue } from '@internationalized/date';
 export declare function createTimelineSelection(): {
     readonly focus: DateValue;
     readonly beginSelection: DateValue;

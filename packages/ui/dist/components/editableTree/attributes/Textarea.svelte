@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Textarea } from '../../../core/textarea/index.js';
+
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 	import { type EditableAttributeProps } from './types';
 	import { getOninputString } from './utils';

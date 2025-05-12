@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { Input } from '../../core/input/index.js';
 	import Icon from '@iconify/svelte';
 	import { Button } from 'bits-ui';
+
 	import { type Position } from '@vdg-webapp/models';
-	import { createUnitAwareValues, type UnitSystem } from './units.svelte';
+
+	import { Input } from '../../core/input/index.js';
+
+	import { type UnitSystem, createUnitAwareValues } from './units.svelte';
 
 	type Props = {
 		/** The output X value. Guarnteed to be in metric. */

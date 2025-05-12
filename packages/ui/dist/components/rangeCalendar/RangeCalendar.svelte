@@ -2,6 +2,7 @@
 	import { type TimelineSelection } from '../timeline';
 	import NoneditableSliderBar from '../timeline/TimelineSelector/NoneditableSliderBar.svelte';
 	import * as Resizable from '../../core/resizable';
+
 	import RangeCalendarPane from './RangeCalendarPane.svelte';
 	import Toolbar from './Toolbar.svelte';
 	import { type CalendarContext } from './context.svelte';

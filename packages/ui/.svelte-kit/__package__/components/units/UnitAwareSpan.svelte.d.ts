@@ -1,4 +1,4 @@
-import { type UnitSystem, type UnitAwareQuantity } from './units.svelte';
+import { type UnitAwareQuantity, type UnitSystem } from './units.svelte';
 type Props = {
     /** The value. */
     value: number;

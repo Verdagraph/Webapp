@@ -1,6 +1,6 @@
+import { AppError } from '@vdg-webapp/models/src/errors';
 import { isMobile } from '../../../state/isMobile.svelte';
 import { LocalStore } from '../../../state/localStore.svelte';
-import { AppError } from '@vdg-webapp/models/src/errors';
 import {} from './container.svelte';
 /** The default position of the transform controls. */
 const defaultButtonPosition = isMobile() ? 'br' : 'bl';

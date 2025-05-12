@@ -1,4 +1,4 @@
-import { today, getLocalTimeZone } from '@internationalized/date';
+import { getLocalTimeZone, today } from '@internationalized/date';
 import { calculateDeltaDays, calendarDateToUtc } from './utils';
 /** Default offset between selected day and the upper selection range. */
 const defaultUpperSelectionOffset = { weeks: 3 };

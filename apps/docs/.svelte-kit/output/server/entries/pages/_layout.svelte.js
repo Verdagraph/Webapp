@@ -4366,9 +4366,9 @@ function Separator($$payload, $$props) {
 function Nav($$payload, $$props) {
   push();
   let navLinks = [
-    { url: "/app/gardens", label: "Gardens" },
-    { url: "/guides", label: "Guides" },
-    { url: externalLinks.project, label: "Project" }
+    { url: "/demo", label: "Demonstration" },
+    { url: "/guides", label: "Documentation" },
+    { url: externalLinks.project, label: "About" }
   ];
   const each_array = ensure_array_like(navLinks);
   $$payload.out += `<header class="border-neutral-7 sticky left-0 top-0 w-full rounded-none border-b-2 drop-shadow-md"><nav class="bg-neutral-2 flex items-center justify-around py-4"><div><ul class="flex items-center gap-6 p-2 text-lg"><li><a href="/">`;
@@ -4421,8 +4421,6 @@ function Nav($$payload, $$props) {
           $$payload3.out += `<!--]--> `;
           Separator($$payload3, { class: "bg-neutral-6 w-full opacity-50" });
           $$payload3.out += `<!----> <li>`;
-          menuLink($$payload3, "/login", "Login");
-          $$payload3.out += `<!----></li> <li>`;
           menuLink($$payload3, "/register", "Get Started");
           $$payload3.out += `<!----></li></ul>`;
         },
@@ -4436,15 +4434,6 @@ function Nav($$payload, $$props) {
   Button($$payload, {
     href: "/login",
     variant: "default",
-    children: ($$payload2) => {
-      $$payload2.out += `<!---->Login`;
-    },
-    $$slots: { default: true }
-  });
-  $$payload.out += `<!----></li> <li>`;
-  Button($$payload, {
-    href: "/register",
-    variant: "outline",
     children: ($$payload2) => {
       $$payload2.out += `<!---->Get Started`;
     },

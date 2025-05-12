@@ -1,4 +1,4 @@
-import { type CalendarPaneContext, type CalendarContext } from './context.svelte';
+import { type CalendarContext, type CalendarPaneContext } from './context.svelte';
 type Props = {
     context: CalendarContext<any>;
     pane: CalendarPaneContext;

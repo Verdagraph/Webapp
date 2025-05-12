@@ -1,5 +1,5 @@
-import { localStore, LocalStore } from '../../state/localStore.svelte';
 import { Tree } from 'melt/builders';
+import { LocalStore, localStore } from '../../state/localStore.svelte';
 import {} from '../timeline';
 import {} from './types';
 const DEFAULT_SECTION_HEIGHT = 48;

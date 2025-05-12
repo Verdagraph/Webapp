@@ -1,4 +1,4 @@
-import { type Geometry, type GeometryHistory, type FieldErrors, type GeometryUpdateCommand } from '@vdg-webapp/models';
+import { type FieldErrors, type Geometry, type GeometryHistory, type GeometryUpdateCommand } from '@vdg-webapp/models';
 import { type Item } from '..';
 type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
 /**

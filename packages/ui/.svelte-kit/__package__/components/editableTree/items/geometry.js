@@ -1,6 +1,6 @@
-import { getLocalTimeZone, fromDate } from '@internationalized/date';
+import { fromDate, getLocalTimeZone } from '@internationalized/date';
 import { workspaceFields } from '@vdg-webapp/models';
-import { TreeNumber, TreeDistance, TreeGeometryType, TreeDate, TreeCoordinate, TreeAddButton, TreeDeleteButton, TreeCheckbox, toTreeId, fieldValid } from '..';
+import { TreeAddButton, TreeCheckbox, TreeCoordinate, TreeDate, TreeDeleteButton, TreeDistance, TreeGeometryType, TreeNumber, fieldValid, toTreeId } from '..';
 /**
  * Constructs an editable tree item for a geometry.
  * @param parentId The base ID of the parent tree item.

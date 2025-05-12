@@ -1,4 +1,7 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+	import type { DateValue } from '@internationalized/date';
+
 	import iconIds from '../../../assets/icons';
 	import { Button } from '../../../core/button';
 	import type { ButtonVariant } from '../../../core/button';
@@ -6,8 +9,7 @@
 	import * as Popover from '../../../core/popover';
 	import * as Tooltip from '../../../core/tooltip';
 	import { IsMobile } from '../../../state/isMobile.svelte';
-	import Icon from '@iconify/svelte';
-	import type { DateValue } from '@internationalized/date';
+
 	import { type TimelineSelection } from '../timelineSelection.svelte';
 
 	type Props = {

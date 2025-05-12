@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { cn } from '../../utils';
 	import type { WithElementRef, WithoutChildren } from 'bits-ui';
 	import type { HTMLTextareaAttributes } from 'svelte/elements';
+
+	import { cn } from '../../utils';
 
 	let {
 		ref = $bindable(null),

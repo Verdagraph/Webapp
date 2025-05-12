@@ -1,6 +1,8 @@
 <script lang="ts">
-	import GeometrySelect from '../../workspaces/GeometrySelect.svelte';
 	import { type GeometryType } from '@vdg-webapp/models';
+
+	import GeometrySelect from '../../workspaces/GeometrySelect.svelte';
+
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 	import { type EditableAttributeProps } from './types';
 

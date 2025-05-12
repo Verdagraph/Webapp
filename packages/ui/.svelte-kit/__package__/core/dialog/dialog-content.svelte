@@ -1,9 +1,11 @@
 <script lang="ts">
-	import icons from '../../assets/icons';
-	import { cn } from '../../utils';
 	import Icon from '@iconify/svelte';
 	import { Dialog as DialogPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
 	import type { Snippet } from 'svelte';
+
+	import icons from '../../assets/icons';
+	import { cn } from '../../utils';
+
 	import * as Dialog from './index.js';
 
 	let {

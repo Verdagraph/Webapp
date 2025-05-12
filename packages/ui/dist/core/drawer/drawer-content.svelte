@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { cn } from '../../utils';
 	import { Drawer as DrawerPrimitive } from 'vaul-svelte';
+
+	import { cn } from '../../utils';
+
 	import DrawerOverlay from './drawer-overlay.svelte';
 
 	let {

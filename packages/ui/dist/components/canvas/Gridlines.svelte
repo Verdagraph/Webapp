@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
+
 	import type { CanvasContext } from './state/context.svelte';
 
 	/** Props. */

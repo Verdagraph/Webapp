@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { cn } from '../../utils';
 	import { Select as SelectPrimitive, type WithoutChild } from 'bits-ui';
 	import Check from 'lucide-svelte/icons/check';
+
+	import { cn } from '../../utils';
 
 	let {
 		ref = $bindable(null),

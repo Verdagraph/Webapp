@@ -1,1 +1,1 @@
-{"version":3,"file":"form-legend.svelte.d.ts","sourceRoot":"","sources":["../../../src/core/form/form-legend.svelte.ts"],"names":[],"mappings":"AAKA,OAAO,KAAK,aAAa,MAAM,UAAU,CAAC;AAqB1C,QAAA,MAAM,UAAU,iFAAwC,CAAC;AACzD,KAAK,UAAU,GAAG,UAAU,CAAC,OAAO,UAAU,CAAC,CAAC;AAChD,eAAe,UAAU,CAAC"}
+{"version":3,"file":"form-legend.svelte.d.ts","sourceRoot":"","sources":["../../../src/core/form/form-legend.svelte.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,aAAa,MAAM,UAAU,CAAC;AAwB1C,QAAA,MAAM,UAAU,iFAAwC,CAAC;AACzD,KAAK,UAAU,GAAG,UAAU,CAAC,OAAO,UAAU,CAAC,CAAC;AAChD,eAAe,UAAU,CAAC"}

@@ -1,7 +1,9 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+
 	import iconIds from '../../../assets/icons';
 	import { Button } from '../../../core/button/index.js';
-	import Icon from '@iconify/svelte';
+
 	import { type EditableAttributeProps } from './types';
 
 	let { editing, onChange }: EditableAttributeProps<undefined> = $props();

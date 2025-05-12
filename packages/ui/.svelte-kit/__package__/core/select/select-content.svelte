@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { cn } from '../../utils';
 	import { Select as SelectPrimitive, type WithoutChild } from 'bits-ui';
+
+	import { cn } from '../../utils';
+
 	import SelectScrollDownButton from './select-scroll-down-button.svelte';
 	import SelectScrollUpButton from './select-scroll-up-button.svelte';
 

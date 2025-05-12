@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from '../../utils';
 	import {
 		DropdownMenu as DropdownMenuPrimitive,
 		type WithoutChildrenOrChild
@@ -7,6 +6,8 @@
 	import Check from 'lucide-svelte/icons/check';
 	import Minus from 'lucide-svelte/icons/minus';
 	import type { Snippet } from 'svelte';
+
+	import { cn } from '../../utils';
 
 	let {
 		ref = $bindable(null),

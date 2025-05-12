@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { cn } from '../../utils';
 	import type { WithoutChild } from 'bits-ui';
 	import * as FormPrimitive from 'formsnap';
+
+	import { cn } from '../../utils';
 
 	/**
 	 * Verdagraph - Modified to allow passing custom errors.

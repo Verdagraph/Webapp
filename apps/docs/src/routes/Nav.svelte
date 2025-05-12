@@ -1,27 +1,22 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import {
-		Button,
-		Popover,
-		Separator,
-		VdgLogo,
-		externalLinks,
-		iconIds
-	} from '@vdg-webapp/ui';
+	import { Button, Popover, Separator, VdgLogo, iconIds } from '@vdg-webapp/ui';
+
+	import env from '$lib/env';
 
 	let navLinks = [
 		{
-			url: '/app/gardens',
-			label: 'Gardens'
+			url: '/demo',
+			label: 'Demonstration'
 		},
 		{
-			url: '/guides',
-			label: 'Guides'
+			url: '/docs',
+			label: 'Documentation'
 		},
 		{
-			url: externalLinks.project,
-			label: 'Project'
+			url: '/about',
+			label: 'About'
 		}
 	];
 </script>
@@ -73,7 +68,7 @@ isn't within the context of a Garden.
             Navigation links.
             Displayed within dropdown menu on smaller screens.
         -->
-		<div class="flex md:hidden">
+		<div class="flex lg:hidden">
 			<Popover.Root>
 				<Popover.Trigger>
 					<Icon icon={iconIds.dropdownMenuIcon} width="3rem" />
@@ -96,10 +91,7 @@ isn't within the context of a Garden.
 						{/each}
 						<Separator.Root class="bg-neutral-6 w-full opacity-50" />
 						<li>
-							{@render menuLink('/login', 'Login')}
-						</li>
-						<li>
-							{@render menuLink('/register', 'Get Started')}
+							{@render menuLink(env.APP_URL, 'Get Started')}
 						</li>
 					</ul>
 				</Popover.Content>
@@ -112,10 +104,7 @@ isn't within the context of a Garden.
     	-->
 		<ul class="hidden gap-8 text-lg md:flex">
 			<li class="hidden lg:block">
-				<Button.Root href="/login" variant="default">Login</Button.Root>
-			</li>
-			<li>
-				<Button.Root href="/register" variant="outline">Get Started</Button.Root>
+				<Button.Root href={env.APP_URL} variant="default">Get Started</Button.Root>
 			</li>
 		</ul>
 	</nav>

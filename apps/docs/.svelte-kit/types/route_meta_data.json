@@ -9,7 +9,7 @@
 	"/demo": [
 		"src/routes/+layout.server.js"
 	],
-	"/guides": [
+	"/docs": [
 		"src/routes/+layout.server.js"
 	]
 }

@@ -6,9 +6,10 @@
 </script>
 
 <script lang="ts" generics="T extends Record<string, unknown>, U extends _FormPath<T>">
-	import { cn } from '../../utils';
 	import type { WithoutChild } from 'bits-ui';
 	import * as FormPrimitive from 'formsnap';
+
+	import { cn } from '../../utils';
 
 	let {
 		ref = $bindable(null),

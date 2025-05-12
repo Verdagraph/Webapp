@@ -15,7 +15,7 @@ export const dictionary = {
 		"/": [2],
 		"/about": [3],
 		"/demo": [4],
-		"/guides": [5]
+		"/docs": [5]
 	};
 
 export const hooks = {

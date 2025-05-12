@@ -6,10 +6,11 @@
 </script>
 
 <script lang="ts" generics="T extends Record<string, unknown>, U extends _FormPath<T>">
-	import { cn } from '../../utils';
-	import type { WithoutChildren, WithElementRef } from 'bits-ui';
+	import type { WithElementRef, WithoutChildren } from 'bits-ui';
 	import * as FormPrimitive from 'formsnap';
 	import type { HTMLAttributes } from 'svelte/elements';
+
+	import { cn } from '../../utils';
 
 	let {
 		ref = $bindable(null),

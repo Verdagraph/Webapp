@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { getContext } from 'svelte';
+
 	import { type CanvasContext } from './state';
 
 	/** Props. */

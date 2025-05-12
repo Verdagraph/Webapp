@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { cn } from '../../../utils';
 	import { getDayOfWeek } from '@internationalized/date';
+
+	import { cn } from '../../../utils';
+
 	import { type TimelineSelection } from '../timelineSelection.svelte';
-	import { getMonthString, type MonthNumber } from '../utils';
+	import { type MonthNumber, getMonthString } from '../utils';
 	import {
-		tickLineWidth,
-		tickLabelThreshold,
 		baseTickClass,
 		baseTickDayLabelClass,
-		baseTickLineClass
+		baseTickLineClass,
+		tickLabelThreshold,
+		tickLineWidth
 	} from './common';
 
 	type Props = {

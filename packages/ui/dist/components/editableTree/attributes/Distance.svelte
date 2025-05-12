@@ -1,5 +1,6 @@
 <script lang="ts">
 	import UnitAwareInput from '../../units/UnitAwareInput.svelte';
+
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
 	import { type EditableAttributeProps } from './types';
 

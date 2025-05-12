@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { roundToDecimalPlaces } from '../../../utils';
 	import Konva from 'konva';
 	import { getContext, onDestroy } from 'svelte';
+
 	import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/models';
 	import { AppError } from '@vdg-webapp/models';
+
+	import { roundToDecimalPlaces } from '../../../utils';
+
 	import type { CanvasContext } from '../state';
 	import { getGeometryResizePoints } from './utils';
 

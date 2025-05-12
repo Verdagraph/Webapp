@@ -1,7 +1,7 @@
-import { localStore } from '../../../state/localStore.svelte';
-import { getColor } from '../../../utils';
 import Konva from 'konva';
 import { mode } from 'mode-watcher';
+import { localStore } from '../../../state/localStore.svelte';
+import { getColor } from '../../../utils';
 import {} from './container.svelte';
 import {} from './transform.svelte';
 /**

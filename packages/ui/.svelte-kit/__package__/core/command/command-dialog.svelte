@@ -1,11 +1,13 @@
 <script lang="ts">
-	import * as Dialog from '../dialog/index.js';
 	import type {
 		Command as CommandPrimitive,
 		Dialog as DialogPrimitive,
 		WithoutChildrenOrChild
 	} from 'bits-ui';
 	import type { Snippet } from 'svelte';
+
+	import * as Dialog from '../dialog/index.js';
+
 	import Command from './command.svelte';
 
 	let {

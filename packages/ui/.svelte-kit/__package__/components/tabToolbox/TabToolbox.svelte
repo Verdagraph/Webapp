@@ -1,9 +1,11 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+	import { ScrollArea } from 'bits-ui';
+
 	import iconIds from '../../assets/icons';
 	import { Button } from '../../core/button';
 	import * as Tabs from '../../core/tabs';
-	import Icon from '@iconify/svelte';
-	import { ScrollArea } from 'bits-ui';
+
 	import createToolbox from './tools.svelte';
 
 	type Props = {
