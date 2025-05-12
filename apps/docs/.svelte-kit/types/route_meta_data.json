@@ -11,5 +11,8 @@
 	],
 	"/docs": [
 		"src/routes/+layout.server.js"
+	],
+	"/support": [
+		"src/routes/+layout.server.js"
 	]
 }

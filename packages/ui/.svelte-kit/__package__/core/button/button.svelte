@@ -12,7 +12,8 @@
 					'bg-destructive-3 hover:bg-destructive-4 active:bg-destructive-5 text-destructive-12',
 				outline:
 					'border-neutral-7 hover:bg-accent-3 active:bg-accent-4 hover:text-accent-12 border',
-				secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+				secondary:
+					'bg-secondary-3 hover:bg-secondary-4 active:bg-secondary-5 text-secondary-12',
 				ghost: 'hover:bg-accent-3 active:bg-accent-4 hover:text-accent-12',
 				link: 'text-neutral-12 underline-offset-4 hover:underline hover:opacity-90'
 			},

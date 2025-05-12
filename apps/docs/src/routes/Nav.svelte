@@ -17,22 +17,20 @@
 		{
 			url: '/about',
 			label: 'About'
-		}
+		},
+		{ url: '/support', label: 'Support' }
 	];
 </script>
 
 <!--
 @component
-Primary navigation between static pages app resources.
-
-Shown to un-authenticated users everywhere in the app that
-isn't within the context of a Garden.
+Primary navigation between the docs pages and app resources.
 -->
 <header
-	class="border-neutral-7 sticky left-0 top-0 w-full rounded-none border-b-2
+	class="border-neutral-6 sticky left-0 top-0 w-full rounded-none border-b
 		drop-shadow-md"
 >
-	<nav class="bg-neutral-2 flex items-center justify-around py-2">
+	<nav class="bg-neutral-2 flex items-center justify-between px-8 py-2">
 		<!-- 
             Logo and Verdagraph text.
             Logo displayed always. Text displayed on larger screens.
@@ -86,7 +84,7 @@ isn't within the context of a Garden.
 						{/each}
 						<Separator.Root class="bg-neutral-6 w-full opacity-50" />
 						<li>
-							{@render menuLink(env.APP_URL, 'Get Started')}
+							{@render menuLink(env.APP_URL, 'Start the Application')}
 						</li>
 					</ul>
 				</Popover.Content>
@@ -94,7 +92,7 @@ isn't within the context of a Garden.
 		</div>
 
 		<!-- 
-        Login and registration links.
+        Rightmost button links.
         Displayed with a top horizontal menu on larger screens.
     	-->
 		<ul class="hidden gap-8 text-lg md:flex">
