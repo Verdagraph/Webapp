@@ -1,5 +1,4 @@
 import triplit from '$data/triplit';
-
 /**
  * Names are assumed to be less than the
  * maximum ID length minus (GENERATED_KEY_RANDOM_SECTION_LENGTH + 1)

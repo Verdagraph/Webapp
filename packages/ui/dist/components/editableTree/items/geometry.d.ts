@@ -1,10 +1,5 @@
+import { type Geometry, type GeometryHistory, type FieldErrors, type GeometryUpdateCommand } from '@vdg-webapp/models';
 import { type Item } from '..';
-import {
-	type Geometry,
-	type GeometryHistory,
-	type FieldErrors,
-	type GeometryUpdateCommand
-} from '@vdg-webapp/models';
 type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
 /**
  * Constructs an editable tree item for a geometry.
@@ -14,23 +9,18 @@ type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
  * @param ctx Tree context.
  * @returns The tree items that represent the geometry.
  */
-export declare function geometryTreeItem(
-	parentId: string,
-	value: {
-		geometry: Geometry | null | undefined;
-		index: number;
-	},
-	options: {
-		includeIndex: boolean;
-		includeDelete: boolean;
-		includeDate: boolean;
-		includeLinesClosed: boolean;
-	},
-	ctx: {
-		updateHandler: GeometryUpdateHandler;
-		fieldErrors: FieldErrors;
-	}
-): Item;
+export declare function geometryTreeItem(parentId: string, value: {
+    geometry: Geometry | null | undefined;
+    index: number;
+}, options: {
+    includeIndex: boolean;
+    includeDelete: boolean;
+    includeDate: boolean;
+    includeLinesClosed: boolean;
+}, ctx: {
+    updateHandler: GeometryUpdateHandler;
+    fieldErrors: FieldErrors;
+}): Item;
 /**
  * Constructs a tree item for a geometry history.
  * @param baseId The base ID of the parent tree item.
@@ -39,19 +29,14 @@ export declare function geometryTreeItem(
  * @param ctx Tree context.
  * @returns The tree item.
  */
-export declare function geometryHistoryTreeItem(
-	baseId: string,
-	value: {
-		geometryHistory: GeometryHistory | null;
-	},
-	options: {
-		includeLinesClosed: boolean;
-	},
-	ctx: {
-		geometryUpdateHandler: GeometryUpdateHandler;
-		onGeometryHistoryExtend: () => void;
-		fieldErrors: FieldErrors;
-	}
-): Item;
+export declare function geometryHistoryTreeItem(baseId: string, value: {
+    geometryHistory: GeometryHistory | null;
+}, options: {
+    includeLinesClosed: boolean;
+}, ctx: {
+    geometryUpdateHandler: GeometryUpdateHandler;
+    onGeometryHistoryExtend: () => void;
+    fieldErrors: FieldErrors;
+}): Item;
 export {};
 //# sourceMappingURL=geometry.d.ts.map

@@ -1,7 +1,9 @@
-import env from 'env.js';
 import { diContainer } from '@fastify/awilix';
-import { type UserCreateCommand } from '@vdg-webapp/models';
 import { ValidationError } from 'common/errors.js';
+import env from 'env.js';
+
+import { type UserCreateCommand } from '@vdg-webapp/models';
+
 import { hashPassword } from '../auth/passwords.js';
 import { encodeEmailConfirmationToken } from '../auth/tokens.js';
 

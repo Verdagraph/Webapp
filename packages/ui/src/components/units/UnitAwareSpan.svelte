@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { Button } from 'bits-ui';
 	import Icon from '@iconify/svelte';
+	import { Button } from 'bits-ui';
+
 	import {
-		createUnitAwareValues,
+		type UnitAwareQuantity,
 		type UnitSystem,
-		type UnitAwareQuantity
+		createUnitAwareValues
 	} from './units.svelte';
 
 	type Props = {

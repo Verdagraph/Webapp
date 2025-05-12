@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Input } from '$core/input/index.js';
-	import { type EditableAttributeProps } from './types';
+
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
+	import { type EditableAttributeProps } from './types';
 	import { getOninputString } from './utils';
 
 	let { value, editing, onChange }: EditableAttributeProps<string> = $props();

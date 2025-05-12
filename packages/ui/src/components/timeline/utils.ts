@@ -1,4 +1,4 @@
-import { getLocalTimeZone, type DateValue } from '@internationalized/date';
+import { type DateValue, getLocalTimeZone } from '@internationalized/date';
 
 /** The number of miliseconds in a day. */
 const msPerDay = 1000 * 60 * 60 * 24;

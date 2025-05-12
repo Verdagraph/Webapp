@@ -6,9 +6,5 @@ import { type Color } from '@vdg-webapp/tailwind-config/colors';
  * @param mode String representing the theme.
  * @returns A hex value for the color.
  */
-export declare function getColor(
-	name: Color,
-	number: number,
-	mode: 'light' | 'dark' | undefined
-): string;
+export declare function getColor(name: Color, number: number, mode: 'light' | 'dark' | undefined): string;
 //# sourceMappingURL=colors.d.ts.map

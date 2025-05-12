@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Button, Card, Dialog } from '@vdg-webapp/ui';
+
 	import RegistrationForm from './RegistrationForm.svelte';
+
 	/** Set to true on form success. */
 	let succeeded: boolean = $state(false);
 

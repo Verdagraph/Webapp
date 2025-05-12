@@ -7,25 +7,17 @@ export type UnitAwareQuantity = 'distance' | 'temperature' | 'mass' | 'volume';
  * @param decimalPlaces The number of decimal places to prefer when converting values.
  * @returns A unit aware value.
  */
-export declare function createUnitAwareValues(
-	quantityType: UnitAwareQuantity,
-	initialValuesMetric: Array<number>,
-	initialUnitSystem?: UnitSystem,
-	decimalPlaces?: number
-): {
-	readonly unitSystem: UnitSystem;
-	displayValues: number[];
-	readonly metricValues: number[];
-	readonly unitSymbol: string;
-	setDisplayValues: (newVal: Array<number>) => void;
-	handleInput: (
-		event: Event & {
-			currentTarget: EventTarget & HTMLInputElement;
-		},
-		index: number
-	) => void;
-	swapUnits: () => void;
-	metricToCurrentUnit: (metricValue: number) => number;
+export declare function createUnitAwareValues(quantityType: UnitAwareQuantity, initialValuesMetric: Array<number>, initialUnitSystem?: UnitSystem, decimalPlaces?: number): {
+    readonly unitSystem: UnitSystem;
+    displayValues: number[];
+    readonly metricValues: number[];
+    readonly unitSymbol: string;
+    setDisplayValues: (newVal: Array<number>) => void;
+    handleInput: (event: Event & {
+        currentTarget: EventTarget & HTMLInputElement;
+    }, index: number) => void;
+    swapUnits: () => void;
+    metricToCurrentUnit: (metricValue: number) => number;
 };
 export type UnitAwareValues = ReturnType<typeof createUnitAwareValues>;
 //# sourceMappingURL=units.svelte.d.ts.map

@@ -1,20 +1,23 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
 	import { useQuery } from '@triplit/svelte';
-	import { iconIds, Button, Separator, Popover } from '@vdg-webapp/ui';
-	import auth from '$state/auth.svelte';
-	import GardenThumbnailScrollable from './GardenThumbnailScrollable.svelte';
-	import GardenInviteScrollable from './GardenInviteScrollable.svelte';
+
+	import type { Garden } from '@vdg-webapp/models';
+	import { Button, Popover, Separator, iconIds } from '@vdg-webapp/ui';
+
+	import { goto } from '$app/navigation';
 	import {
+		acceptancePendingMembershipsQuery,
 		adminGardensQuery,
 		editorGardensQuery,
-		viewerGardensQuery,
 		favoriteMembershipsQuery,
-		acceptancePendingMembershipsQuery
+		viewerGardensQuery
 	} from '$data/gardens/queries';
 	import triplit from '$data/triplit';
-	import type { Garden } from '@vdg-webapp/models';
+	import auth from '$state/auth.svelte';
+
+	import GardenInviteScrollable from './GardenInviteScrollable.svelte';
+	import GardenThumbnailScrollable from './GardenThumbnailScrollable.svelte';
 
 	/**
 	 * If a non-authenticated user accesses this page,

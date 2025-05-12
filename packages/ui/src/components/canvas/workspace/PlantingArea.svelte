@@ -1,16 +1,19 @@
 <script lang="ts">
 	import Konva from 'konva';
 	import type { Vector2d } from 'konva/lib/types';
-	import { getContext, onDestroy } from 'svelte';
-	import {
-		type GeometryUpdateCommand,
-		getGeometryHeight,
-		type Geometry
-	} from '@vdg-webapp/models';
-	import type { CanvasContext } from '../state';
-	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
-	import { getColor } from '$utils';
 	import { mode } from 'mode-watcher';
+	import { getContext, onDestroy } from 'svelte';
+
+	import {
+		type Geometry,
+		type GeometryUpdateCommand,
+		getGeometryHeight
+	} from '@vdg-webapp/models';
+
+	import { getColor } from '$utils';
+
+	import type { CanvasContext } from '../state';
+	import { type SupportedShape, getClosedShape, updateShape } from '../utils';
 	import EditableGeometryResizePoints from './EditableGeometryResizePoints.svelte';
 
 	type Props = {

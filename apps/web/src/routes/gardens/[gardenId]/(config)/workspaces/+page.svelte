@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getWorkspaceContext } from './activeWorkspace.svelte';
+
 	import type { Workspace } from '@vdg-webapp/models';
-	import { WorkspaceThumbnail, Button, ScrollArea } from '@vdg-webapp/ui';
+	import { Button, ScrollArea, WorkspaceThumbnail } from '@vdg-webapp/ui';
+
+	import { getWorkspaceContext } from './activeWorkspace.svelte';
 
 	const workspaceContext = getWorkspaceContext();
 

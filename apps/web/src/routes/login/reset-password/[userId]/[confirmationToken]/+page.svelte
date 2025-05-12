@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Card, Button, Dialog } from '@vdg-webapp/ui';
+	import { Button, Card, Dialog } from '@vdg-webapp/ui';
+
 	import PasswordResetForm from './PasswordResetForm.svelte';
 
 	/** Set to true on form success. */

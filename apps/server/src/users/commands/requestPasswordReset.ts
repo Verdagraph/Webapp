@@ -1,9 +1,10 @@
 import { diContainer } from '@fastify/awilix';
-import { type UserRequestPasswordResetCommand } from '@vdg-webapp/models';
 import { NotFoundError } from 'common/errors.js';
-
-import { encodePasswordResetToken } from 'users/auth/tokens.js';
 import env from 'env.js';
+import { encodePasswordResetToken } from 'users/auth/tokens.js';
+
+import { type UserRequestPasswordResetCommand } from '@vdg-webapp/models';
+
 /**
  * Requests a new password reset.
  * @param command The request command.

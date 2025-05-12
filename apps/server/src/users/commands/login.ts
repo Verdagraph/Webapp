@@ -1,6 +1,8 @@
 import { diContainer } from '@fastify/awilix';
+import { AuthenticationError, NotFoundError } from 'common/errors.js';
+
 import { type UserLoginCommand } from '@vdg-webapp/models';
-import { NotFoundError, AuthenticationError } from 'common/errors.js';
+
 import { verifyPassword } from '../auth/passwords.js';
 import { encodeAccessToken, encodeRefreshToken } from '../auth/tokens.js';
 

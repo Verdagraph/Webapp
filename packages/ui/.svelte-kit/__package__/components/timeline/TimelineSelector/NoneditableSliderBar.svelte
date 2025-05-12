@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { type TimelineSelection } from '../timelineSelection.svelte';
-	import { getDayOfWeek } from '@internationalized/date';
 	import { cn } from '../../../utils';
+	import { getDayOfWeek } from '@internationalized/date';
+	import { type TimelineSelection } from '../timelineSelection.svelte';
 	import { getMonthString, type MonthNumber } from '../utils';
 	import {
 		tickLineWidth,

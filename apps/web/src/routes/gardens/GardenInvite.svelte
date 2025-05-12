@@ -1,14 +1,16 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { iconIds, Button, Separator } from '@vdg-webapp/ui';
-	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
-	import { userProfilesQuery } from '$data/users/queries';
+	import { useQuery } from '@triplit/svelte';
+
+	import { Button, Separator, iconIds } from '@vdg-webapp/ui';
+
 	import {
 		gardenMembershipAccept,
 		gardenMembershipDelete
 	} from '$data/gardens/commands';
-	import { useQuery } from '@triplit/svelte';
+	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
 	import triplit from '$data/triplit';
+	import { userProfilesQuery } from '$data/users/queries';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	type Props = {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import iconIds from '$assets/icons';
 	import * as Button from '$core/button/index.js';
 

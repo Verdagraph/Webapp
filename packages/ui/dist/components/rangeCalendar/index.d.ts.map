@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/components/rangeCalendar/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,qBAAqB,EAAE,MAAM,kBAAkB,CAAC;AAEzD,OAAO,aAAa,MAAM,wBAAwB,CAAC;AACnD,OAAO,EAAE,aAAa,EAAE,CAAC"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/components/rangeCalendar/index.ts"],"names":[],"mappings":"AAAA,OAAO,aAAa,MAAM,wBAAwB,CAAC;AAEnD,OAAO,EAAE,qBAAqB,EAAE,MAAM,kBAAkB,CAAC;AAEzD,OAAO,EAAE,aAAa,EAAE,CAAC"}

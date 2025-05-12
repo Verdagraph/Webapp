@@ -49,10 +49,8 @@ import { type Geometry } from '@vdg-webapp/models';
  * @param geometry The geometry to extract from.
  * @returns The list of points which can be used as resize points.
  */
-export declare function getGeometryResizePoints(
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>
-): Array<{
-	x: number;
-	y: number;
+export declare function getGeometryResizePoints(geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>): Array<{
+    x: number;
+    y: number;
 }>;
 //# sourceMappingURL=utils.d.ts.map

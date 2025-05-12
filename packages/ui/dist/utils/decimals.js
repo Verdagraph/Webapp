@@ -5,6 +5,6 @@
  * @returns The rounded number.
  */
 export function roundToDecimalPlaces(num, places) {
-	const factor = 10 ** places;
-	return Math.round(num * factor) / factor;
+    const factor = 10 ** places;
+    return Math.round(num * factor) / factor;
 }

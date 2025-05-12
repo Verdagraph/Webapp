@@ -1,10 +1,12 @@
 import Konva from 'konva';
-import { type CanvasContainer } from './container.svelte';
-import { type CanvasTransform } from './transform.svelte';
-import { getColor } from '$utils';
-import { localStore } from '$state/localStore.svelte';
 import type { Vector2d } from 'konva/lib/types';
 import { mode } from 'mode-watcher';
+
+import { localStore } from '$state/localStore.svelte';
+import { getColor } from '$utils';
+
+import { type CanvasContainer } from './container.svelte';
+import { type CanvasTransform } from './transform.svelte';
 
 type GridManagerPersistedState = {
 	snapToGrid: boolean;

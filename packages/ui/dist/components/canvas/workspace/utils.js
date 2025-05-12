@@ -50,38 +50,38 @@ import {} from '@vdg-webapp/models';
  * @returns The list of points which can be used as resize points.
  */
 export function getGeometryResizePoints(geometry) {
-	switch (geometry.type) {
-		case 'RECTANGLE': {
-			const halfLength = geometry.rectangleLength / 2;
-			const halfWidth = geometry.rectangleWidth / 2;
-			return [
-				{ x: -halfLength, y: halfWidth },
-				{ x: 0, y: halfWidth },
-				{ x: halfLength, y: halfWidth },
-				{ x: halfLength, y: 0 },
-				{ x: halfLength, y: -halfWidth },
-				{ x: 0, y: -halfWidth },
-				{ x: -halfLength, y: -halfWidth },
-				{ x: -halfLength, y: 0 }
-			];
-		}
-		case 'POLYGON': {
-			return [{ x: 0, y: geometry.polygonRadius }];
-		}
-		case 'ELLIPSE': {
-			const radiusLength = geometry.ellipseLength / 2;
-			const radiusWidth = geometry.ellipseWidth / 2;
-			return [
-				{ x: 0, y: radiusWidth },
-				{ x: radiusLength, y: 0 },
-				{ x: 0, y: -radiusWidth },
-				{ x: -radiusLength, y: 0 }
-			];
-		}
-		case 'LINES': {
-			return geometry.linesCoordinates.map((coordinate) => {
-				return { x: coordinate.x, y: coordinate.y };
-			});
-		}
-	}
+    switch (geometry.type) {
+        case 'RECTANGLE': {
+            const halfLength = geometry.rectangleLength / 2;
+            const halfWidth = geometry.rectangleWidth / 2;
+            return [
+                { x: -halfLength, y: halfWidth },
+                { x: 0, y: halfWidth },
+                { x: halfLength, y: halfWidth },
+                { x: halfLength, y: 0 },
+                { x: halfLength, y: -halfWidth },
+                { x: 0, y: -halfWidth },
+                { x: -halfLength, y: -halfWidth },
+                { x: -halfLength, y: 0 }
+            ];
+        }
+        case 'POLYGON': {
+            return [{ x: 0, y: geometry.polygonRadius }];
+        }
+        case 'ELLIPSE': {
+            const radiusLength = geometry.ellipseLength / 2;
+            const radiusWidth = geometry.ellipseWidth / 2;
+            return [
+                { x: 0, y: radiusWidth },
+                { x: radiusLength, y: 0 },
+                { x: 0, y: -radiusWidth },
+                { x: -radiusLength, y: 0 }
+            ];
+        }
+        case 'LINES': {
+            return geometry.linesCoordinates.map((coordinate) => {
+                return { x: coordinate.x, y: coordinate.y };
+            });
+        }
+    }
 }

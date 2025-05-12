@@ -1,7 +1,8 @@
-import { fontFamily } from 'tailwindcss/defaultTheme';
+import containerQueries from '@tailwindcss/container-queries';
 import type { Config } from 'tailwindcss';
 import tailwindcssAnimate from 'tailwindcss-animate';
-import containerQueries from '@tailwindcss/container-queries';
+import { fontFamily } from 'tailwindcss/defaultTheme';
+
 import colors, { type Color } from './colors.config.js';
 
 const config: Config = {

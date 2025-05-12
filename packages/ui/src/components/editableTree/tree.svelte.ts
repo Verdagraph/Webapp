@@ -1,6 +1,7 @@
 import { Tree } from 'melt/builders';
-import { fromTreeId } from './utils';
+
 import type { Item } from './types';
+import { fromTreeId } from './utils';
 
 /**
  * Creates a container for a Melt-UI tree,

@@ -1,5 +1,6 @@
 import { diContainer } from '@fastify/awilix';
 import { AuthenticationError } from 'common/errors.js';
+
 import {
 	decodeRefreshToken,
 	encodeAccessToken,

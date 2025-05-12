@@ -1,8 +1,10 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { Button } from 'bits-ui';
-	import { Drawer, iconIds } from '@vdg-webapp/ui';
 	import { Accordion } from 'bits-ui';
+
+	import { Drawer, iconIds } from '@vdg-webapp/ui';
+
 	import type { PrimaryTabSpec } from './tabs.svelte';
 
 	type Props = {

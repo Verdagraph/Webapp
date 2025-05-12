@@ -1,13 +1,16 @@
 <script lang="ts">
-	import { getVerdagraphContext } from '../verdagraphContext.svelte';
+	import { CalendarDate } from '@internationalized/date';
+
 	import {
-		createCalendarContext,
 		RangeCalendar,
+		createCalendarContext,
 		getColor,
 		iconIds
 	} from '@vdg-webapp/ui';
-	import { CalendarDate } from '@internationalized/date';
+
 	import mode from '$state/theme.svelte';
+
+	import { getVerdagraphContext } from '../verdagraphContext.svelte';
 
 	const verdagraphContext = getVerdagraphContext();
 	const calendarContext = createCalendarContext(verdagraphContext.timeline, [

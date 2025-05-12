@@ -1,7 +1,7 @@
-import { Tree } from 'melt/builders';
 import { localStore, LocalStore } from '../../state/localStore.svelte';
-import {} from './types';
+import { Tree } from 'melt/builders';
 import {} from '../timeline';
+import {} from './types';
 const DEFAULT_SECTION_HEIGHT = 48;
 /**
  * Holds context for the calendar.

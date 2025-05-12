@@ -1,5 +1,6 @@
-import { AppError, type FieldErrors, validateField } from '@vdg-webapp/models';
 import { type ZodType } from 'zod';
+
+import { AppError, type FieldErrors, validateField } from '@vdg-webapp/models';
 
 const TREE_ID_DELIMITER = '/~';
 

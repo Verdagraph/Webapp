@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Button } from 'bits-ui';
 	import { Input } from '../../core/input/index.js';
 	import Icon from '@iconify/svelte';
+	import { Button } from 'bits-ui';
 	import {
 		createUnitAwareValues,
 		type UnitAwareQuantity,

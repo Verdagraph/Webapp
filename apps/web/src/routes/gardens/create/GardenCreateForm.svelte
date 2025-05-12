@@ -1,14 +1,17 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
-	import { Form, Select, Button, Input, Textarea, iconIds } from '@vdg-webapp/ui';
-	import { superForm, defaults } from 'sveltekit-superforms';
+	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { gardenCreate } from '$data/gardens/commands';
+
 	import { type GardenVisibility, gardenFields } from '@vdg-webapp/models';
-	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
+	import { Button, Form, Input, Select, Textarea, iconIds } from '@vdg-webapp/ui';
+
+	import { goto } from '$app/navigation';
+	import { gardenCreate } from '$data/gardens/commands';
 	import { generateGardenId } from '$data/gardens/utils';
 	import createCommandHandler from '$state/commandHandler.svelte';
+
+	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions: {

@@ -1,6 +1,6 @@
 import { LocalStore } from '../../state/localStore.svelte';
-import { type CalendarItem } from './types';
 import { type TimelineSelection } from '../timeline';
+import { type CalendarItem } from './types';
 /** Calendar config persisted to local storage. */
 export type ViewPanesOptions = 'plants' | 'plantingWindows' | 'actions';
 export type CalendarConfig = {

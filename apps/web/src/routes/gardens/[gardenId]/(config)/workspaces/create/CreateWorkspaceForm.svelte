@@ -1,12 +1,14 @@
 <script lang="ts">
+	import { defaults, superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+
+	import { workspaceFields } from '@vdg-webapp/models';
+	import { Form, Input, Textarea } from '@vdg-webapp/ui';
+
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { Form, Input, Textarea } from '@vdg-webapp/ui';
-	import { superForm, defaults } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
 	import { workspaceCreate } from '$data/workspaces/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { workspaceFields } from '@vdg-webapp/models';
 
 	let formHandler = createCommandHandler(workspaceCreate.mutation, {
 		onSuccess: (workspace) => {

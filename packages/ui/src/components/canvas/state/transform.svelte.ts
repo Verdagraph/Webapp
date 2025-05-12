@@ -1,8 +1,11 @@
-import { type CanvasContainer } from './container.svelte';
+import type { Vector2d } from 'konva/lib/types';
+
+import { AppError } from '@vdg-webapp/models/src/errors';
+
 import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
-import type { Vector2d } from 'konva/lib/types';
-import { AppError } from '@vdg-webapp/models/src/errors';
+
+import { type CanvasContainer } from './container.svelte';
 
 /**
  * Indicates a corner of the canvas.

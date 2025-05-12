@@ -1,5 +1,5 @@
-import { AppError, validateField } from '@vdg-webapp/models';
 import {} from 'zod';
+import { AppError, validateField } from '@vdg-webapp/models';
 const TREE_ID_DELIMITER = '/~';
 /**
  * Every item in the tree needs a unique ID.
@@ -19,7 +19,7 @@ const TREE_ID_DELIMITER = '/~';
  * @returns The Tree item id.
  */
 export function toTreeBaseId(entityType, entityId) {
-	return `${entityType}${TREE_ID_DELIMITER}${entityId}`;
+    return `${entityType}${TREE_ID_DELIMITER}${entityId}`;
 }
 /**
  * This function composes a tree ID of a field given a base ID.
@@ -28,7 +28,7 @@ export function toTreeBaseId(entityType, entityId) {
  * @returns The Tree item id.
  */
 export function toTreeId(baseId, field) {
-	return `${baseId}${TREE_ID_DELIMITER}${field}`;
+    return `${baseId}${TREE_ID_DELIMITER}${field}`;
 }
 /**
  * This function extracts an entity type, ID, and field name
@@ -37,13 +37,13 @@ export function toTreeId(baseId, field) {
  * @returns The entity type, ID, and field name.
  */
 export function fromTreeId(id) {
-	const parts = id.split(TREE_ID_DELIMITER);
-	if (parts.length < 2 || parts.length > 3) {
-		throw new AppError(`Invalid Tree ID format: ${id}`);
-	}
-	return parts[2]
-		? { entityType: parts[0], entityId: parts[1], field: parts[2] }
-		: { entityType: parts[0], entityId: parts[1] };
+    const parts = id.split(TREE_ID_DELIMITER);
+    if (parts.length < 2 || parts.length > 3) {
+        throw new AppError(`Invalid Tree ID format: ${id}`);
+    }
+    return parts[2]
+        ? { entityType: parts[0], entityId: parts[1], field: parts[2] }
+        : { entityType: parts[0], entityId: parts[1] };
 }
 /**
  * Validates a tree item's value against a schema.
@@ -56,11 +56,12 @@ export function fromTreeId(id) {
  * @returns False if validation failed.
  */
 export function fieldValid(treeId, value, schema, fieldErrors) {
-	const errors = validateField(value, schema);
-	if (errors) {
-		fieldErrors[treeId] = errors;
-		return false;
-	} else {
-		return true;
-	}
+    const errors = validateField(value, schema);
+    if (errors) {
+        fieldErrors[treeId] = errors;
+        return false;
+    }
+    else {
+        return true;
+    }
 }

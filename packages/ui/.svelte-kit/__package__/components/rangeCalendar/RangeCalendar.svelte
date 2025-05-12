@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as Resizable from '../../core/resizable';
-	import Toolbar from './Toolbar.svelte';
-	import NoneditableSliderBar from '../timeline/TimelineSelector/NoneditableSliderBar.svelte';
-	import { type CalendarContext } from './context.svelte';
-	import RangeCalendarPane from './RangeCalendarPane.svelte';
 	import { type TimelineSelection } from '../timeline';
+	import NoneditableSliderBar from '../timeline/TimelineSelector/NoneditableSliderBar.svelte';
+	import * as Resizable from '../../core/resizable';
+	import RangeCalendarPane from './RangeCalendarPane.svelte';
+	import Toolbar from './Toolbar.svelte';
+	import { type CalendarContext } from './context.svelte';
 
 	type Props = {
 		timeline: TimelineSelection;

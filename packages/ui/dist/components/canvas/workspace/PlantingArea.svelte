@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { getColor } from '../../../utils';
 	import Konva from 'konva';
 	import type { Vector2d } from 'konva/lib/types';
+	import { mode } from 'mode-watcher';
 	import { getContext, onDestroy } from 'svelte';
 	import {
 		type GeometryUpdateCommand,
@@ -9,8 +11,6 @@
 	} from '@vdg-webapp/models';
 	import type { CanvasContext } from '../state';
 	import { getClosedShape, updateShape, type SupportedShape } from '../utils';
-	import { getColor } from '../../../utils';
-	import { mode } from 'mode-watcher';
 	import EditableGeometryResizePoints from './EditableGeometryResizePoints.svelte';
 
 	type Props = {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Separator, Card } from '@vdg-webapp/ui';
+	import { Card, Separator } from '@vdg-webapp/ui';
 </script>
 
 <svelte:head>

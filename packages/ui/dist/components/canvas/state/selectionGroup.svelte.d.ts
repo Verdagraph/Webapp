@@ -1,6 +1,6 @@
 import { type CanvasContainer } from './container.svelte';
 export declare function createSelectionGroup(container: CanvasContainer): {
-	setDocumentCursor: () => void;
+    setDocumentCursor: () => void;
 };
 export default createSelectionGroup;
 export type SelectGroup = ReturnType<typeof createSelectionGroup>;

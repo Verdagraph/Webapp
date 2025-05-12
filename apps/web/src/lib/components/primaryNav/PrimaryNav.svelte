@@ -1,9 +1,21 @@
 <script lang="ts">
-	import Sidebar from './Sidebar.svelte';
-	import Bottombar from './Bottombar.svelte';
+	import type { Snippet } from 'svelte';
+
 	import { IsMobile } from '@vdg-webapp/ui';
 
-	let { gardensTab, gardenTabs, profileTab, traitsTab, resourcesTab, children } =
+	import Bottombar from './Bottombar.svelte';
+	import Sidebar from './Sidebar.svelte';
+	import { type PrimaryTabSpec } from './tabs.svelte';
+
+	type Props = {
+		gardensTab: PrimaryTabSpec;
+		gardenTabs: PrimaryTabSpec[];
+		profileTab: PrimaryTabSpec;
+		traitsTab: PrimaryTabSpec;
+		resourcesTab: PrimaryTabSpec;
+		children: Snippet;
+	};
+	let { gardensTab, gardenTabs, profileTab, traitsTab, resourcesTab, children }: Props =
 		$props();
 
 	const isMobile = new IsMobile();

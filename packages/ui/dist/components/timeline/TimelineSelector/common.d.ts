@@ -9,8 +9,7 @@
 export declare const tickLineWidth = 2;
 /** The minimum amount of pixels that will allow the tick day labels to show. */
 export declare const tickLabelThreshold = 16;
-export declare const baseTickClass = 'self-end flex items-end h-[14px]';
-export declare const baseTickDayLabelClass =
-	'absolute text-[9px] text-neutral-9 w-[14px] text-center';
-export declare const baseTickLineClass = 'bg-neutral-7 h-[12px] w-[2px] rounded-t-lg';
+export declare const baseTickClass = "self-end flex items-end h-[14px]";
+export declare const baseTickDayLabelClass = "absolute text-[9px] text-neutral-9 w-[14px] text-center";
+export declare const baseTickLineClass = "bg-neutral-7 h-[12px] w-[2px] rounded-t-lg";
 //# sourceMappingURL=common.d.ts.map

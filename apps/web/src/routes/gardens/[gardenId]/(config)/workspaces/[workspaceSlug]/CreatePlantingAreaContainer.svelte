@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { PlantingArea } from '@vdg-webapp/ui';
-	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import type { Vector2d } from 'konva/lib/types';
+
 	import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/models';
+	import { PlantingArea } from '@vdg-webapp/ui';
+
+	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 
 	type Props = {
 		plantingAreaLayerId: string;

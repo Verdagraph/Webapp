@@ -1,14 +1,14 @@
 <script lang="ts">
-	import CalendarIcon from 'lucide-svelte/icons/calendar';
+	import { buttonVariants } from '../button/index.js';
+	import { Calendar } from '../calendar/index.js';
+	import * as Popover from '../popover/index.js';
+	import { cn } from '../../utils';
 	import {
 		DateFormatter,
 		type DateValue,
 		getLocalTimeZone
 	} from '@internationalized/date';
-	import { cn } from '../../utils';
-	import { buttonVariants } from '../button/index.js';
-	import { Calendar } from '../calendar/index.js';
-	import * as Popover from '../popover/index.js';
+	import CalendarIcon from 'lucide-svelte/icons/calendar';
 
 	type Props = {
 		value: DateValue | undefined;

@@ -1,10 +1,11 @@
-import { createToolbox, type ToolAttributes } from '@vdg-webapp/ui';
-import AddPlantingAreaForm from './PlantingAreaCreateForm.svelte';
-import TranslateForm from './TranslateForm.svelte';
-import LayoutConfig from './LayoutConfigForm.svelte';
+import { type ToolAttributes, createToolbox } from '@vdg-webapp/ui';
+
+import DeleteForm from './DeleteForm.svelte';
 import EnvironmentCreateForm from './EnvironmentCreateForm.svelte';
 import ExpireForm from './ExpireForm.svelte';
-import DeleteForm from './DeleteForm.svelte';
+import LayoutConfig from './LayoutConfigForm.svelte';
+import AddPlantingAreaForm from './PlantingAreaCreateForm.svelte';
+import TranslateForm from './TranslateForm.svelte';
 
 type WorkspaceToolIds =
 	| 'plantingAreaCreate'

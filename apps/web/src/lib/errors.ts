@@ -1,5 +1,6 @@
-import { type AppErrors } from '@vdg-webapp/models';
 import { toast } from 'svelte-sonner';
+
+import { type AppErrors } from '@vdg-webapp/models';
 
 /**
  * Provides common error handling for AppErrors.

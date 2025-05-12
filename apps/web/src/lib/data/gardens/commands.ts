@@ -2,25 +2,27 @@ import {
 	AppError,
 	type GardenCreateCommand,
 	GardenCreateCommandSchema,
-	type GardenMembershipCreateCommand,
-	GardenMembershipCreateCommandSchema,
 	type GardenMembershipAcceptCommand,
 	GardenMembershipAcceptCommandSchema,
+	type GardenMembershipCreateCommand,
+	GardenMembershipCreateCommandSchema,
 	type GardenMembershipDeleteCommand,
 	GardenMembershipDeleteCommandSchema,
 	type GardenMembershipRevokeCommand,
 	GardenMembershipRevokeCommandSchema,
 	type GardenMembershipRoleChangeCommand,
 	GardenMembershipRoleChangeCommandSchema,
-	isUserAuthorized,
-	isProfileMember
+	isProfileMember,
+	isUserAuthorized
 } from '@vdg-webapp/models';
 import type { Garden, User } from '@vdg-webapp/models';
-import triplit from '../triplit';
+
 import { getClientOrError } from '$data/users/auth';
 import { type ActionType, requiredRole } from '$lib/permissions';
-import { gardenQuery, membershipQuery } from './queries';
+
+import triplit from '../triplit';
 import { userProfilesUsernameQuery } from '../users/queries';
+import { gardenQuery, membershipQuery } from './queries';
 
 /** Helpers. */
 

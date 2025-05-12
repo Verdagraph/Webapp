@@ -1,7 +1,8 @@
+import { AppError } from '@vdg-webapp/models/src/errors.js';
+
+import { goto } from '$app/navigation';
 import triplit from '$data/triplit';
 import { workspaceSlugQuery } from '$data/workspaces/queries.js';
-import { goto } from '$app/navigation';
-import { AppError } from '@vdg-webapp/models/src/errors.js';
 
 /**
  * Retrieve the workspace.

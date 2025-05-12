@@ -1,5 +1,5 @@
-import { AppError, validateField } from '@vdg-webapp/models';
 import {} from 'zod';
+import { AppError, validateField } from '@vdg-webapp/models';
 const TREE_ID_DELIMITER = '/~';
 /**
  * Every item in the tree needs a unique ID.

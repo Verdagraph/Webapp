@@ -1,11 +1,14 @@
 <script lang="ts">
-	import 'tailwindcss/tailwind.css';
-	import PrimaryNav from '$components/primaryNav';
-	import { Toaster, Tooltip } from '@vdg-webapp/ui';
 	import { ModeWatcher } from 'mode-watcher';
-	import mode from '$state/theme.svelte';
 	import { mode as modeWatcher } from 'mode-watcher';
+	import 'tailwindcss/tailwind.css';
+
+	import { Toaster, Tooltip } from '@vdg-webapp/ui';
+
+	import PrimaryNav from '$components/primaryNav';
 	import { userLogin } from '$data/users/auth';
+	import mode from '$state/theme.svelte';
+
 	import '../app.pcss';
 
 	let { children } = $props();

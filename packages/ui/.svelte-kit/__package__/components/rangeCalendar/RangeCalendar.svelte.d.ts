@@ -1,5 +1,5 @@
-import { type CalendarContext } from './context.svelte';
 import { type TimelineSelection } from '../timeline';
+import { type CalendarContext } from './context.svelte';
 type Props = {
     timeline: TimelineSelection;
     context: CalendarContext<any>;

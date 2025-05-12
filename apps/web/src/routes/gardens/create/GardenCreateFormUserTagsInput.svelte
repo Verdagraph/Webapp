@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { iconIds, Popover } from '@vdg-webapp/ui';
 	import { createTagsInput, melt } from '@melt-ui/svelte';
-	import { userProfilesUsernameQuery } from '$data/users/queries';
 	import { useQuery } from '@triplit/svelte';
+
+	import { Popover, iconIds } from '@vdg-webapp/ui';
+
 	import triplit from '$data/triplit';
+	import { userProfilesUsernameQuery } from '$data/users/queries';
 
 	/** TODO: Redo this component once Melt-UI has updated the Tags-Input component to runes. */
 

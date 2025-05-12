@@ -1,15 +1,16 @@
 import {
-	UserCreateCommandSchema,
 	UserConfirmEmailConfirmationCommandSchema,
+	UserConfirmPasswordResetCommandSchema,
+	UserCreateCommandSchema,
 	UserRequestEmailConfirmationCommandSchema,
-	UserRequestPasswordResetCommandSchema,
-	UserConfirmPasswordResetCommandSchema
+	UserRequestPasswordResetCommandSchema
 } from '@vdg-webapp/models';
+
 import {
-	userCreateOp,
 	userConfirmEmailOp,
-	userRequestEmailConfirmationOp,
 	userConfirmPasswordResetOp,
+	userCreateOp,
+	userRequestEmailConfirmationOp,
 	userRequestPasswordResetOp
 } from '$codegen';
 

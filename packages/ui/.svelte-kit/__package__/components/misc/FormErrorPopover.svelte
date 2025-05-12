@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import iconIds from '../../assets/icons';
 	import * as Popover from '../../core/popover';
+	import Icon from '@iconify/svelte';
 
 	type Props = { description: string; errorAttrs?: unknown };
 

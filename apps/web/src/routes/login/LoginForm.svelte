@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { Input, Form } from '@vdg-webapp/ui';
-	import { superForm, defaults } from 'sveltekit-superforms';
+	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
+
+	import { userFields } from '@vdg-webapp/models';
+	import { Form, Input } from '@vdg-webapp/ui';
+
+	import { goto } from '$app/navigation';
 	import { userLogin } from '$data/users/auth';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { userFields } from '@vdg-webapp/models';
 
 	let formHandler = createCommandHandler(userLogin.mutation, {
 		onSuccess: () => {

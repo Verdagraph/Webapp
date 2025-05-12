@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Tabs } from '@vdg-webapp/ui';
+
 	import PlantingAreaTree from './PlantingAreaTree.svelte';
 
 	type Props = {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getWorkspaceContext } from '../activeWorkspace.svelte.js';
-	import Workspace from './Workspace.svelte';
 	import type { PageData } from './$types';
+	import Workspace from './Workspace.svelte';
 
 	type Props = {
 		data: PageData;

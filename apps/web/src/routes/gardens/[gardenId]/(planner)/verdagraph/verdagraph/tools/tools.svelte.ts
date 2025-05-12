@@ -1,4 +1,5 @@
-import { createToolbox, type ToolAttributes } from '@vdg-webapp/ui';
+import { type ToolAttributes, createToolbox } from '@vdg-webapp/ui';
+
 import DeleteForm from './DeleteForm.svelte';
 import GeneratorsForm from './GeneratorsForm.svelte';
 import GroupsForm from './GroupsForm.svelte';

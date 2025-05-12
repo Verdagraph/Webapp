@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import type { CanvasContext } from './state';
 	import { Button } from '../../core/button/index.js';
 	import * as Collapsible from '../../core/collapsible/index.js';
 	import * as Tooltip from '../../core/tooltip/index.js';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import type { CanvasContext } from './state';
 
 	type Direction = 'horizontal' | 'vertical';
 

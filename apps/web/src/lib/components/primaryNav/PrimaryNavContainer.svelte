@@ -1,9 +1,15 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	import auth from '$state/auth.svelte';
+
 	import PrimaryNavContainerAuth from './PrimaryNavContainerAuth.svelte';
 	import PrimaryNavContainerUnauth from './PrimaryNavContainerUnauth.svelte';
 
-	let { children } = $props();
+	type Props = {
+		children: Snippet;
+	};
+	let { children }: Props = $props();
 </script>
 
 {#if auth.isAuthenticated}

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import * as Select from '$core/select/index.js';
-	import { type EditableAttributeProps, type DynamicSelectValue } from './types';
+
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
+	import { type DynamicSelectValue, type EditableAttributeProps } from './types';
 
 	let { value, editing, onChange }: EditableAttributeProps<DynamicSelectValue> =
 		$props();

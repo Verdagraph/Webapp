@@ -1,15 +1,16 @@
+import env from 'env.js';
 import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+
 import {
-	registerDiContainer,
 	registerAuth,
-	registerRouters,
+	registerCookies,
+	registerCors,
+	registerDiContainer,
 	registerErrorHandler,
 	registerOpenapi,
-	registerCors,
-	registerCookies
+	registerRouters
 } from './plugins/index.js';
-import env from 'env.js';
 
 export const buildApp = () => {
 	const app = Fastify({ logger: true });

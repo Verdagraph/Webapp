@@ -5,6 +5,7 @@
  * Server of the Verdagraph web application.
  * OpenAPI spec version: 0.0.1
  */
+import { axiosClient } from '../../../data/customAxios';
 import type {
 	UserConfirmEmailOpBody,
 	UserConfirmPasswordResetOpBody,
@@ -14,7 +15,6 @@ import type {
 	UserRequestPasswordResetOpBody,
 	UserUpdateOpBody
 } from '../../types';
-import { axiosClient } from '../../../data/customAxios';
 
 /**
  * Grants an access and refresh token on a correct username and password.

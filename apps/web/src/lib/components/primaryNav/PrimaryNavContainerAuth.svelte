@@ -1,25 +1,32 @@
 <script lang="ts">
 	import { useQuery } from '@triplit/svelte';
-	import {
-		getGardenSpecifcTabs,
-		getGardensAuthTab,
-		getTraitsTab,
-		getResourcesTab,
-		getAuthProfileTab
-	} from './tabs.svelte';
+	import type { Snippet } from 'svelte';
+
 	import type { Garden } from '@vdg-webapp/models';
-	import triplit from '$data/triplit';
+
 	import {
-		gardenQuery,
 		adminGardensQuery,
 		editorGardensQuery,
-		viewerGardensQuery,
-		favoriteMembershipsQuery
+		favoriteMembershipsQuery,
+		gardenQuery,
+		viewerGardensQuery
 	} from '$data/gardens/queries';
+	import triplit from '$data/triplit';
 	import gardenContext from '$state/gardenContext.svelte';
-	import PrimaryNav from './PrimaryNav.svelte';
 
-	let { children } = $props();
+	import PrimaryNav from './PrimaryNav.svelte';
+	import {
+		getAuthProfileTab,
+		getGardenSpecifcTabs,
+		getGardensAuthTab,
+		getResourcesTab,
+		getTraitsTab
+	} from './tabs.svelte';
+
+	type Props = {
+		children: Snippet;
+	};
+	let { children }: Props = $props();
 
 	/* Queries */
 	let activeGarden = $derived(

@@ -1,10 +1,11 @@
 import z from 'zod';
+
+import { commonFields } from '../commands.js';
 import { userFields } from '../users/commands.js';
 import {
-	GardenVisibilityEnumOptions,
-	GardenMembershipRoleEnumOptions
+	GardenMembershipRoleEnumOptions,
+	GardenVisibilityEnumOptions
 } from './schema.js';
-import { commonFields } from '../commands.js';
 
 /** Field specifications. */
 const gardenIdSchema = z

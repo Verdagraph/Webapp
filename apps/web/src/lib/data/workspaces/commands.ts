@@ -1,28 +1,28 @@
 import {
-	historySelectDay,
-	type TriplitTransaction,
-	WorkspaceCreateCommandSchema,
-	type WorkspaceCreateCommand,
-	WorkspaceUpdateCommandSchema,
-	type WorkspaceUpdateCommand,
-	PlantingAreaCreateCommandSchema,
-	type PlantingAreaCreateCommand,
-	type LocationCreateCommand,
-	type LocationUpdateCommand,
-	type Workspace,
 	type Geometry,
-	type LocationHistory,
 	type GeometryCreateCommand,
 	type GeometryUpdateCommand,
+	type LocationCreateCommand,
+	type LocationHistory,
 	type LocationHistoryUpdateCommand,
+	type LocationUpdateCommand,
+	type PlantingAreaCreateCommand,
+	PlantingAreaCreateCommandSchema,
+	type PlantingAreaUpdateCommand,
 	PlantingAreaUpdateCommandSchema,
-	type PlantingAreaUpdateCommand
+	type TriplitTransaction,
+	type Workspace,
+	type WorkspaceCreateCommand,
+	WorkspaceCreateCommandSchema,
+	type WorkspaceUpdateCommand,
+	WorkspaceUpdateCommandSchema,
+	historySelectDay
 } from '@vdg-webapp/models';
-import { slugify } from '$lib/utils';
-import triplit from '$data/triplit';
 import { AppError } from '@vdg-webapp/models/src/errors';
+
 import { requireRole } from '$data/gardens/commands';
-import { type CommandHandler } from '$state/commandHandler.svelte';
+import triplit from '$data/triplit';
+import { slugify } from '$lib/utils';
 
 /** Helpers. */
 
@@ -179,7 +179,6 @@ export async function geometryUpdate(id: string, data: GeometryUpdateCommand) {
 		});
 	});
 }
-export type GeometryUpdateHandler = CommandHandler<typeof geometryUpdate>;
 
 export async function geometryHistoryExtend(id: string, date: Date) {
 	const geometryHistory = await triplit.fetchOne(
@@ -256,7 +255,6 @@ export async function locationUpdate(id: string, data: LocationUpdateCommand) {
 		}
 	});
 }
-export type LocationUpdateHandler = CommandHandler<typeof locationUpdate>;
 
 /**
  * Updates a location history with a new position.
@@ -332,7 +330,6 @@ export async function locationHistoryExtend(id: string, date: Date) {
 		});
 	});
 }
-export type LocationHistoryExtendHandler = CommandHandler<typeof locationHistoryExtend>;
 
 /** Creates a new workspace in a garden. */
 export const workspaceCreate = {

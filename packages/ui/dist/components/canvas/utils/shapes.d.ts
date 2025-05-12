@@ -1,19 +1,11 @@
 import Konva from 'konva';
 import type { ShapeConfig } from 'konva/lib/Shape';
+import { type Coordinate, type Geometry, type GeometryUpdateCommand } from '@vdg-webapp/models';
 import type { CanvasContext } from '../state';
-import {
-	type Coordinate,
-	type Geometry,
-	type GeometryUpdateCommand
-} from '@vdg-webapp/models';
 /**
  * Union of supported shape types in Konva for geometry objects.
  */
-export type SupportedShape =
-	| Konva.Rect
-	| Konva.Ellipse
-	| Konva.RegularPolygon
-	| Konva.Line;
+export type SupportedShape = Konva.Rect | Konva.Ellipse | Konva.RegularPolygon | Konva.Line;
 /**
  * Constructs a Konva shape from geometry and position objects.
  * The resulting shape may be closed or unclosed.
@@ -23,12 +15,7 @@ export type SupportedShape =
  * @param position The position of the shape, if any.
  * @returns The Konva shape. Null, if the geometry is not well-defined.
  */
-export declare function getShape(
-	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>,
-	config?: Partial<ShapeConfig>,
-	position?: Coordinate
-): SupportedShape | null;
+export declare function getShape(canvas: CanvasContext, geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>, config?: Partial<ShapeConfig>, position?: Coordinate): SupportedShape | null;
 /**
  * Constructs a Konva shape from geometry and position objects.
  * The resulting shape is closed.
@@ -38,12 +25,7 @@ export declare function getShape(
  * @param position The position of the shape, if any.
  * @returns The Konva shape. Null, if the geometry is not well-defined.
  */
-export declare function getClosedShape(
-	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>,
-	config?: Partial<ShapeConfig>,
-	position?: Coordinate
-): SupportedShape | null;
+export declare function getClosedShape(canvas: CanvasContext, geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>, config?: Partial<ShapeConfig>, position?: Coordinate): SupportedShape | null;
 /**
  * Given an existing shape object and a partial of geometry
  * updates, update the shape object.
@@ -51,9 +33,5 @@ export declare function getClosedShape(
  * @param newGeometry The new geometry updated attributes.
  * @param shape The existing shape object.
  */
-export declare function updateShape(
-	canvas: CanvasContext,
-	newGeometry: GeometryUpdateCommand,
-	shape: SupportedShape
-): void;
+export declare function updateShape(canvas: CanvasContext, newGeometry: GeometryUpdateCommand, shape: SupportedShape): void;
 //# sourceMappingURL=shapes.d.ts.map

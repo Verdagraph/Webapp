@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { Card, Button, Dialog, externalLinks } from '@vdg-webapp/ui';
+	import { Button, Card, Dialog, externalLinks } from '@vdg-webapp/ui';
+
 	import RequestEmailConfirmationForm from './RequestEmailConfirmationForm.svelte';
+
 	/** Set to true on form success. */
 	let succeeded: boolean = $state(false);
 

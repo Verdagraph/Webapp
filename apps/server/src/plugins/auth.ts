@@ -1,7 +1,8 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { getAccessTokenHeader, decodeAccessToken } from 'users/auth/tokens.js';
-import { AuthenticationError } from 'common/errors.js';
 import { asValue } from 'awilix';
+import { AuthenticationError } from 'common/errors.js';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { decodeAccessToken, getAccessTokenHeader } from 'users/auth/tokens.js';
+
 import { UserAccount } from '@vdg-webapp/models';
 
 /**

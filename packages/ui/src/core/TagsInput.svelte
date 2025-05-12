@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import { type Tag, createTagsInput, melt } from '@melt-ui/svelte';
+
 	import iconIds from '$assets/icons';
-	import { createTagsInput, melt, type Tag } from '@melt-ui/svelte';
 
 	type Props = {
 		tagsInput: string[] | undefined;

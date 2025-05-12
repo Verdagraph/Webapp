@@ -1,6 +1,8 @@
-import { AppError, type ServerErrorResponse, type AppErrors } from '@vdg-webapp/models';
 import { isAxiosError } from 'axios';
 import type { AxiosError } from 'axios';
+
+import { AppError, type AppErrors, type ServerErrorResponse } from '@vdg-webapp/models';
+
 import { handleErrors } from '$lib/errors';
 
 /**
@@ -108,8 +110,7 @@ export function createCommandHandler<TParams extends unknown[], TResult = unknow
 	};
 }
 export default createCommandHandler;
-export type CommandHandler<T extends (...args: unknown[]) => Promise<unknown>> =
-	ReturnType<typeof createCommandHandler<Parameters<T>, Awaited<ReturnType<T>>>>;
+
 /**
  * Converts any type of error which may be raised by the async function
  * into the normalized AppErrors format.

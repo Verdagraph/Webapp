@@ -1,9 +1,11 @@
-import env from 'env.js';
 import { diContainer } from '@fastify/awilix';
-import { type UserUpdateCommand, type UserAccount } from '@vdg-webapp/models';
 import { ValidationError } from 'common/errors.js';
-import { hashPassword, verifyPassword } from '../auth/passwords.js';
 import { AuthenticationError } from 'common/errors.js';
+import env from 'env.js';
+
+import { type UserAccount, type UserUpdateCommand } from '@vdg-webapp/models';
+
+import { hashPassword, verifyPassword } from '../auth/passwords.js';
 
 /**
  * Updates an existing user in the database.

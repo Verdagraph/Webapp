@@ -1,7 +1,7 @@
 import createCanvasContainer from './container.svelte';
-import createCanvasTransform from './transform.svelte';
-import createSelectionGroup from './selectionGroup.svelte';
 import createCanvasGridManager from './grid.svelte';
+import createSelectionGroup from './selectionGroup.svelte';
+import createCanvasTransform from './transform.svelte';
 
 export * from './transform.svelte';
 

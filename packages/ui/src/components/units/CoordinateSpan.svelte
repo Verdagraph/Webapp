@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Button } from 'bits-ui';
 	import Icon from '@iconify/svelte';
-	import { createUnitAwareValues, type UnitSystem } from './units.svelte';
+	import { Button } from 'bits-ui';
+
+	import { type UnitSystem, createUnitAwareValues } from './units.svelte';
 
 	type Props = {
 		/** The output X value. Guarnteed to be in metric. */

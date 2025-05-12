@@ -1,9 +1,10 @@
-import triplit from '$data/triplit';
-import { gardenQuery } from '$data/gardens/queries.js';
-import { goto } from '$app/navigation';
-import activeGarden from '$state/gardenContext.svelte';
 import { AppError } from '@vdg-webapp/models/src/errors';
+
+import { goto } from '$app/navigation';
+import { gardenQuery } from '$data/gardens/queries.js';
+import triplit from '$data/triplit';
 import { getClient } from '$data/users/auth';
+import activeGarden from '$state/gardenContext.svelte';
 
 /**
  * Retrieve the garden and set it as active.

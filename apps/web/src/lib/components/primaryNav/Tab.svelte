@@ -1,9 +1,11 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import type { PrimaryTabSpec } from './tabs.svelte';
-	import { Separator, Popover, cn } from '@vdg-webapp/ui';
 	import { Button } from 'bits-ui';
 	import type { Snippet } from 'svelte';
+
+	import { Popover, Separator, cn } from '@vdg-webapp/ui';
+
+	import type { PrimaryTabSpec } from './tabs.svelte';
 
 	type Props = {
 		spec: PrimaryTabSpec /* Describes the content of the tab. */;

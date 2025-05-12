@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { useQuery } from '@triplit/svelte';
+
+	import { Resizable, TabToolbox, TimelineSelector } from '@vdg-webapp/ui';
+
 	import triplit from '$data/triplit';
-	import { Resizable, TimelineSelector, TabToolbox } from '@vdg-webapp/ui';
+	import { plantingAreaIdsQuery } from '$data/workspaces/queries';
+
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
-	import Tree from './Tree';
 	import Layout from './Layout.svelte';
-	import { plantingAreaIdsQuery } from '$data/workspaces/queries';
+	import Tree from './Tree';
 
 	const workspaceContext = getWorkspaceContext();
 

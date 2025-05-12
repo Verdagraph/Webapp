@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import iconIds from '../../assets/icons';
-	import FormInfoPopover from '../misc/FormInfoPopover.svelte';
 	import FormErrorsPopover from '../misc/FormErrorsPopover.svelte';
+	import FormInfoPopover from '../misc/FormInfoPopover.svelte';
+	import Icon from '@iconify/svelte';
 	import type { EditableTreeContext } from './tree.svelte';
 	import { fromTreeId } from './utils';
 

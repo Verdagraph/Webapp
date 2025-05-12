@@ -6,17 +6,17 @@ import Konva from 'konva';
  * @returns The container context.
  */
 export declare function createCanvasContainer(canvasId: string): {
-	readonly containerId: string;
-	readonly stage: import('konva/lib/Stage').Stage | null;
-	readonly pixelsPerMeter: number;
-	readonly initialized: boolean;
-	width: number;
-	height: number;
-	initialize: () => void;
-	addLayer: (layerId: string) => Konva.Layer;
-	getLayer: (layerId: string) => Konva.Layer;
-	onResize: () => void;
-	addResizeFunction: (func: () => void) => void;
+    readonly containerId: string;
+    readonly stage: import("konva/lib/Stage").Stage | null;
+    readonly pixelsPerMeter: number;
+    readonly initialized: boolean;
+    width: number;
+    height: number;
+    initialize: () => void;
+    addLayer: (layerId: string) => Konva.Layer;
+    getLayer: (layerId: string) => Konva.Layer;
+    onResize: () => void;
+    addResizeFunction: (func: () => void) => void;
 };
 export default createCanvasContainer;
 export type CanvasContainer = ReturnType<typeof createCanvasContainer>;

@@ -1,8 +1,11 @@
 import { TriplitClient } from '@triplit/client';
+
+import { AppError, roles, schema } from '@vdg-webapp/models';
+
 import { browser } from '$app/environment';
-import { schema, roles, AppError } from '@vdg-webapp/models';
-import { userRefresh } from './users/auth';
 import { handleErrors } from '$lib/errors';
+
+import { userRefresh } from './users/auth';
 
 export const TRIPLIT_ANON_TOKEN =
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6ImFub24iLCJ4LXRyaXBsaXQtcHJvamVjdC1pZCI6ImxvY2FsLXByb2plY3QtaWQifQ.9xYxsdR7ecDQ251Iv6oF7GrjBXAe1WcXY849g-soXVU';

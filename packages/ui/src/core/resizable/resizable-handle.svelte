@@ -1,7 +1,8 @@
 <script lang="ts">
+	import type { WithoutChildrenOrChild } from 'bits-ui';
 	import GripVertical from 'lucide-svelte/icons/grip-vertical';
 	import * as ResizablePrimitive from 'paneforge';
-	import type { WithoutChildrenOrChild } from 'bits-ui';
+
 	import { cn } from '$utils';
 
 	let {

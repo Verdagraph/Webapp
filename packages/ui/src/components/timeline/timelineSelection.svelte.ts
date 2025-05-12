@@ -1,9 +1,10 @@
 import {
-	today,
-	getLocalTimeZone,
+	type DateDuration,
 	type DateValue,
-	type DateDuration
+	getLocalTimeZone,
+	today
 } from '@internationalized/date';
+
 import { calculateDeltaDays, calendarDateToUtc } from './utils';
 
 /** Default offset between selected day and the upper selection range. */

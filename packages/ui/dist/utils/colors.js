@@ -1,4 +1,4 @@
-import colors from '@vdg-webapp/tailwind-config/colors';
+import colors, {} from '@vdg-webapp/tailwind-config/colors';
 /**
  * Retrieves the correct hex code for a color given the current theme.
  * @param name The name of the color.
@@ -7,12 +7,14 @@ import colors from '@vdg-webapp/tailwind-config/colors';
  * @returns A hex value for the color.
  */
 export function getColor(name, number, mode) {
-	const colorId = `${colors[name].radixId}${number}`;
-	if (mode == 'light') {
-		return colors[name].radixLightValue[colorId];
-	} else if (mode == 'dark') {
-		return colors[name].radixDarkValue[colorId];
-	} else {
-		return colors[name].radixLightValue[colorId];
-	}
+    const colorId = `${colors[name].radixId}${number}`;
+    if (mode == 'light') {
+        return colors[name].radixLightValue[colorId];
+    }
+    else if (mode == 'dark') {
+        return colors[name].radixDarkValue[colorId];
+    }
+    else {
+        return colors[name].radixLightValue[colorId];
+    }
 }

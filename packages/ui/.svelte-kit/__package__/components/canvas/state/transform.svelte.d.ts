@@ -1,5 +1,5 @@
-import { type CanvasContainer } from './container.svelte';
 import type { Vector2d } from 'konva/lib/types';
+import { type CanvasContainer } from './container.svelte';
 /**
  * Indicates a corner of the canvas.
  * Same as tailwind class names.

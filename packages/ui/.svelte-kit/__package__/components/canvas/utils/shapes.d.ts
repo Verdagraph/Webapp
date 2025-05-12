@@ -1,7 +1,7 @@
 import Konva from 'konva';
 import type { ShapeConfig } from 'konva/lib/Shape';
-import type { CanvasContext } from '../state';
 import { type Coordinate, type Geometry, type GeometryUpdateCommand } from '@vdg-webapp/models';
+import type { CanvasContext } from '../state';
 /**
  * Union of supported shape types in Konva for geometry objects.
  */

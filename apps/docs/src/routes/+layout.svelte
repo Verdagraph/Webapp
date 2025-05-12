@@ -1,9 +1,11 @@
 <script lang="ts">
-	import 'tailwindcss/tailwind.css';
 	import { ModeWatcher } from 'mode-watcher';
+	import 'tailwindcss/tailwind.css';
+
 	import { Tooltip } from '@vdg-webapp/ui';
-	import Nav from './Nav.svelte';
+
 	import '../app.pcss';
+	import Nav from './Nav.svelte';
 
 	let { children } = $props();
 </script>

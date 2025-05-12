@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { type TimelineSelection } from '../timelineSelection.svelte';
 	import DatePickerBar from './DatePickerBar.svelte';
 	import SliderBar from './SliderBar.svelte';
-	import { type TimelineSelection } from '../timelineSelection.svelte';
 
 	type Props = {
 		selection: TimelineSelection;

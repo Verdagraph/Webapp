@@ -1,4 +1,4 @@
-import { Schema as S, type Entity, type Roles } from '@triplit/client';
+import { type Entity, type Roles, Schema as S } from '@triplit/client';
 
 export const roles: Roles = {
 	anon: {

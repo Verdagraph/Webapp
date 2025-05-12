@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+
 import { default as baseConfig } from '@vdg-webapp/tailwind-config/tailwind';
 
 const config: Config = {

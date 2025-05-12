@@ -1,9 +1,9 @@
+import env from 'env.js';
+import * as fs from 'fs';
+import * as handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
 import type { Transporter as NodemailerTransporter } from 'nodemailer';
-import * as handlebars from 'handlebars';
-import * as fs from 'fs';
 import * as path from 'path';
-import env from 'env.js';
 
 const files: Record<string, Record<string, string>> = {
 	emailConfirmation: {

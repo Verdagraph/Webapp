@@ -1,7 +1,8 @@
 import { diContainer } from '@fastify/awilix';
-import { type UserConfirmEmailConfirmationCommand } from '@vdg-webapp/models';
-import { decodeEmailConfirmationToken } from 'users/auth/tokens.js';
 import { ValidationError } from 'common/errors.js';
+import { decodeEmailConfirmationToken } from 'users/auth/tokens.js';
+
+import { type UserConfirmEmailConfirmationCommand } from '@vdg-webapp/models';
 
 /**
  * Closes an email confirmation request.

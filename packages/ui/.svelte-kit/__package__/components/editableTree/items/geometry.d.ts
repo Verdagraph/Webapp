@@ -1,5 +1,5 @@
-import { type Item } from '..';
 import { type Geometry, type GeometryHistory, type FieldErrors, type GeometryUpdateCommand } from '@vdg-webapp/models';
+import { type Item } from '..';
 type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
 /**
  * Constructs an editable tree item for a geometry.

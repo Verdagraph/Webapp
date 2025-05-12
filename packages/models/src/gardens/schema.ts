@@ -1,4 +1,5 @@
-import { Schema as S, type Entity, or } from '@triplit/client';
+import { type Entity, Schema as S, or } from '@triplit/client';
+
 import { userSchema } from '../users/schema.js';
 
 /**

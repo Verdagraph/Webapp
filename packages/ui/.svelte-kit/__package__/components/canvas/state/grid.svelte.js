@@ -1,9 +1,9 @@
+import { localStore } from '../../../state/localStore.svelte';
+import { getColor } from '../../../utils';
 import Konva from 'konva';
+import { mode } from 'mode-watcher';
 import {} from './container.svelte';
 import {} from './transform.svelte';
-import { getColor } from '../../../utils';
-import { localStore } from '../../../state/localStore.svelte';
-import { mode } from 'mode-watcher';
 /**
  * Rounds the number up to the nearest multiple of step.
  * @param number The number to round.

@@ -1,7 +1,7 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { InternalFailureException } from 'common/errors.js';
 import env from 'env.js';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const ACCESS_HEADER_KEY = 'Authorization';
 const REFRESH_COOKIE_KEY = 'refresh';

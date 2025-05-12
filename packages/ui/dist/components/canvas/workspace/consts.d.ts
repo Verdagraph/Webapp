@@ -1,2 +1,2 @@
-export declare const plantingAreaLayerId = 'plantingAreas';
+export declare const plantingAreaLayerId = "plantingAreas";
 //# sourceMappingURL=consts.d.ts.map

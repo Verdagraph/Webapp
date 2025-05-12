@@ -1,13 +1,14 @@
-import triplit from '$data/triplit';
-import { userLoginOp, userRefreshOp } from '$codegen';
 import {
-	type User,
 	AppError,
+	type User,
 	type UserLoginCommand,
 	UserLoginCommandSchema
 } from '@vdg-webapp/models';
-import auth from '$state/auth.svelte';
+
+import { userLoginOp, userRefreshOp } from '$codegen';
+import triplit from '$data/triplit';
 import { TRIPLIT_ANON_TOKEN } from '$data/triplit';
+import auth from '$state/auth.svelte';
 
 /**
  * Sends an authentication request to the backend.

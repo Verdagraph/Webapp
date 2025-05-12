@@ -1,34 +1,37 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import { useQuery } from '@triplit/svelte';
+
 	import {
-		ScrollArea,
-		createEditableTree,
+		type FieldErrors,
+		type PlantingArea,
+		workspaceFields
+	} from '@vdg-webapp/models';
+	import {
 		EditableTree,
+		type Item,
+		ScrollArea,
+		TreeDistance,
 		TreeString,
 		TreeTextarea,
-		TreeDistance,
-		toTreeBaseId,
-		toTreeId,
+		createEditableTree,
 		fieldValid,
 		geometryTreeItem,
-		type Item,
-		locationHistoryTreeItem
+		locationHistoryTreeItem,
+		toTreeBaseId,
+		toTreeId
 	} from '@vdg-webapp/ui';
+
+	import { page } from '$app/state';
 	import triplit from '$data/triplit';
-	import { plantingAreasQuery, workspacesQuery } from '$data/workspaces/queries';
 	import {
-		plantingAreaUpdate,
 		geometryUpdate,
+		locationHistoryExtend,
 		locationUpdate,
-		locationHistoryExtend
+		plantingAreaUpdate
 	} from '$data/workspaces/commands';
+	import { plantingAreasQuery, workspacesQuery } from '$data/workspaces/queries';
 	import createCommandHandler from '$state/commandHandler.svelte';
-	import { useQuery } from '@triplit/svelte';
-	import {
-		type PlantingArea,
-		workspaceFields,
-		type FieldErrors
-	} from '@vdg-webapp/models';
+
 	import { getWorkspaceContext } from '../../activeWorkspace.svelte';
 
 	type Props = {

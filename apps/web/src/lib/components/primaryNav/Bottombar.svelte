@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { ClientAvatarIcon } from '@vdg-webapp/ui';
-	import type { PrimaryTabSpec } from './tabs.svelte';
-	import Tab from './Tab.svelte';
-	import BottombarGardenDrawer from './BottombarGardenDrawer.svelte';
+
 	import gardenContext from '$state/gardenContext.svelte';
+
+	import BottombarGardenDrawer from './BottombarGardenDrawer.svelte';
+	import Tab from './Tab.svelte';
+	import type { PrimaryTabSpec } from './tabs.svelte';
 
 	type Props = {
 		gardensTab: PrimaryTabSpec;

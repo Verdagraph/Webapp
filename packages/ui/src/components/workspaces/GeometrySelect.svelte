@@ -1,8 +1,10 @@
 <script lang="ts">
-	import * as Select from '$core/select/index.js';
-	import { type GeometryType } from '@vdg-webapp/models';
-	import iconIds from '$assets/icons';
 	import Icon from '@iconify/svelte';
+
+	import { type GeometryType } from '@vdg-webapp/models';
+
+	import iconIds from '$assets/icons';
+	import * as Select from '$core/select/index.js';
 
 	type Props = {
 		value: GeometryType;

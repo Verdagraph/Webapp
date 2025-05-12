@@ -1,5 +1,5 @@
-import { type UnitSystem } from './units.svelte';
 import { type Position } from '@vdg-webapp/models';
+import { type UnitSystem } from './units.svelte';
 type Props = {
     /** The output X value. Guarnteed to be in metric. */
     x: number;

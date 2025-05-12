@@ -1,7 +1,9 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { toolbox } from './tools';
+
 	import { Menubar, iconIds } from '@vdg-webapp/ui';
+
+	import { toolbox } from './tools';
 	import { getVerdagraphContext } from './verdagraphContext.svelte';
 
 	const verdagraphContext = getVerdagraphContext();

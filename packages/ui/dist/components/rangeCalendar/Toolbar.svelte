@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Toolbar } from 'bits-ui';
 	import * as Select from '../../core/select/index.js';
+	import { Toolbar } from 'bits-ui';
 	import { type CalendarContext } from './context.svelte';
 	import { type ViewPanesOptions } from './context.svelte';
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { type EditableAttributeProps } from './types';
-	import DefaultStaticValue from './DefaultStaticValue.svelte';
-	import { type GeometryType } from '@vdg-webapp/models';
 	import GeometrySelect from '../../workspaces/GeometrySelect.svelte';
+	import { type GeometryType } from '@vdg-webapp/models';
+	import DefaultStaticValue from './DefaultStaticValue.svelte';
+	import { type EditableAttributeProps } from './types';
 
 	let { value, editing, onChange }: EditableAttributeProps<GeometryType> = $props();
 

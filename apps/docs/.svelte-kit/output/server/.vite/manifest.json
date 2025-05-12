@@ -1,0 +1,139 @@
+{
+  "../../node_modules/.pnpm/@sveltejs+kit@2.20.8_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.28.2_vite@5.4.19_@type_ccf1bc9b54e9b057a5628d45d72f71d0/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "../../node_modules/.pnpm/@sveltejs+kit@2.20.8_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.28.2_vite@5.4.19_@type_ccf1bc9b54e9b057a5628d45d72f71d0/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_runtime.js",
+      "_exports.js",
+      "_index.js"
+    ]
+  },
+  "../../node_modules/.pnpm/@sveltejs+kit@2.20.8_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.28.2_vite@5.4.19_@type_ccf1bc9b54e9b057a5628d45d72f71d0/node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "../../node_modules/.pnpm/@sveltejs+kit@2.20.8_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.28.2_vite@5.4.19_@type_ccf1bc9b54e9b057a5628d45d72f71d0/node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_runtime.js",
+      "_internal.js",
+      "_exports.js",
+      "_index.js"
+    ]
+  },
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js"
+    ]
+  },
+  "_Icon.js": {
+    "file": "chunks/Icon.js",
+    "name": "Icon",
+    "imports": [
+      "_index2.js"
+    ]
+  },
+  "_UnderConstructionPage.js": {
+    "file": "chunks/UnderConstructionPage.js",
+    "name": "UnderConstructionPage",
+    "imports": [
+      "_Icon.js"
+    ]
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "name": "index",
+    "imports": [
+      "_runtime.js"
+    ]
+  },
+  "_index2.js": {
+    "file": "chunks/index2.js",
+    "name": "index"
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_runtime.js",
+      "_index2.js"
+    ]
+  },
+  "_runtime.js": {
+    "file": "chunks/runtime.js",
+    "name": "runtime",
+    "imports": [
+      "_index2.js"
+    ]
+  },
+  "src/routes/+layout.server.js": {
+    "file": "entries/pages/_layout.server.js",
+    "name": "entries/pages/_layout.server",
+    "src": "src/routes/+layout.server.js",
+    "isEntry": true
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_index2.js",
+      "_runtime.js",
+      "_Icon.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.CiHn9CKW.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js"
+    ]
+  },
+  "src/routes/about/+page.svelte": {
+    "file": "entries/pages/about/_page.svelte.js",
+    "name": "entries/pages/about/_page.svelte",
+    "src": "src/routes/about/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_UnderConstructionPage.js"
+    ]
+  },
+  "src/routes/demo/+page.svelte": {
+    "file": "entries/pages/demo/_page.svelte.js",
+    "name": "entries/pages/demo/_page.svelte",
+    "src": "src/routes/demo/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_UnderConstructionPage.js"
+    ]
+  },
+  "src/routes/guides/+page.svelte": {
+    "file": "entries/pages/guides/_page.svelte.js",
+    "name": "entries/pages/guides/_page.svelte",
+    "src": "src/routes/guides/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_UnderConstructionPage.js"
+    ]
+  }
+}

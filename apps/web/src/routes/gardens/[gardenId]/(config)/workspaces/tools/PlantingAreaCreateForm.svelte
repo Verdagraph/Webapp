@@ -1,21 +1,24 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
+	import { toast } from 'svelte-sonner';
+
+	import { AppError, workspaceFields } from '@vdg-webapp/models';
 	import {
-		Form,
-		Input,
-		Textarea,
 		Button,
-		Separator,
-		UnitAwareInput,
 		CoordinateInput,
+		Form,
 		GeometrySelect,
+		Input,
+		Separator,
+		Textarea,
+		UnitAwareInput,
 		iconIds
 	} from '@vdg-webapp/ui';
-	import { getWorkspaceContext } from '../activeWorkspace.svelte';
-	import { toast } from 'svelte-sonner';
-	import { AppError, workspaceFields } from '@vdg-webapp/models';
+
+	import { page } from '$app/state';
 	import userSettings from '$state/userSettings.svelte';
+
+	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 
 	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;

@@ -1,18 +1,24 @@
 <script lang="ts">
 	import { useQuery } from '@triplit/svelte';
+	import type { Snippet } from 'svelte';
+
+	import { gardenQuery } from '$data/gardens/queries';
+	import triplit from '$data/triplit';
+	import gardenContext from '$state/gardenContext.svelte';
+
+	import PrimaryNav from './PrimaryNav.svelte';
 	import {
+		getAnonProfileTab,
 		getGardenSpecifcTabs,
 		getGardensAnonTab,
-		getTraitsTab,
 		getResourcesTab,
-		getAnonProfileTab
+		getTraitsTab
 	} from './tabs.svelte';
-	import triplit from '$data/triplit';
-	import { gardenQuery } from '$data/gardens/queries';
-	import gardenContext from '$state/gardenContext.svelte';
-	import PrimaryNav from './PrimaryNav.svelte';
 
-	let { children } = $props();
+	type Props = {
+		children: Snippet;
+	};
+	let { children }: Props = $props();
 
 	/* Queries */
 	let activeGarden = useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }));

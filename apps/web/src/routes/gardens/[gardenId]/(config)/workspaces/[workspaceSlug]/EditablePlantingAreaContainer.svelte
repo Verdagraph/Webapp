@@ -1,15 +1,18 @@
 <script lang="ts">
-	import type { GeometryUpdateCommand } from '@vdg-webapp/models';
-	import { PlantingArea } from '@vdg-webapp/ui';
-	import { plantingAreaQuery } from '$data/workspaces/queries';
-	import type { Vector2d } from 'konva/lib/types';
-	import { historySelect } from '@vdg-webapp/models';
-	import triplit from '$data/triplit';
-	import { locationHistoryUpdate, geometryUpdate } from '$data/workspaces/commands';
 	import { useQuery } from '@triplit/svelte';
+	import type { Vector2d } from 'konva/lib/types';
+
+	import type { GeometryUpdateCommand } from '@vdg-webapp/models';
+	import { historySelect } from '@vdg-webapp/models';
+	import { PlantingArea } from '@vdg-webapp/ui';
+
+	import triplit from '$data/triplit';
+	import { geometryUpdate, locationHistoryUpdate } from '$data/workspaces/commands';
+	import { plantingAreaQuery } from '$data/workspaces/queries';
+	import createCommandHandler from '$state/commandHandler.svelte';
+
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
 	import toolbox from '../tools';
-	import createCommandHandler from '$state/commandHandler.svelte';
 
 	type Props = {
 		plantingAreaLayerId: string;

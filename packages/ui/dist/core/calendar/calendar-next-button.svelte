@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Calendar as CalendarPrimitive } from 'bits-ui';
-	import Icon from '@iconify/svelte';
+	import icons from '../../assets/icons';
 	import { buttonVariants } from '../button/index.js';
 	import { cn } from '../../utils';
-	import icons from '../../assets/icons';
+	import Icon from '@iconify/svelte';
+	import { Calendar as CalendarPrimitive } from 'bits-ui';
 
 	let {
 		ref = $bindable(null),

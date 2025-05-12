@@ -1,13 +1,13 @@
-import { FastifyInstance } from 'fastify';
 import { diContainer } from '@fastify/awilix';
-import { HttpClient as TriplitHttpClient } from '@triplit/client';
-import { asClass, asValue, Lifetime } from 'awilix';
-import env from 'env.js';
-import { UserRepository } from 'users/repository.js';
-import { UserAccount } from '@vdg-webapp/models';
-import EmailSender from 'common/emails/sender.js';
-
 import { fastifyAwilixPlugin } from '@fastify/awilix';
+import { HttpClient as TriplitHttpClient } from '@triplit/client';
+import { Lifetime, asClass, asValue } from 'awilix';
+import EmailSender from 'common/emails/sender.js';
+import env from 'env.js';
+import { FastifyInstance } from 'fastify';
+import { UserRepository } from 'users/repository.js';
+
+import { UserAccount } from '@vdg-webapp/models';
 
 /** Declares the types of dependencies available. */
 declare module '@fastify/awilix' {

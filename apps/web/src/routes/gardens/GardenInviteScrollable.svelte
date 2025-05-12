@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { ScrollArea } from '@vdg-webapp/ui';
+
 	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
+
 	import GardenInvite from './GardenInvite.svelte';
 
 	type Props = {

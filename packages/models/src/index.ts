@@ -1,6 +1,7 @@
 import type { DBTransaction } from '@triplit/client';
-import { roles } from './users/schema.js';
+
 import { plantSchema } from './plants/index.js';
+import { roles } from './users/schema.js';
 
 /** Export common modules. */
 export * from './users/index.js';

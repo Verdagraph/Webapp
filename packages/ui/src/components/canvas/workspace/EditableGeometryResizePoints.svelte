@@ -1,11 +1,14 @@
 <script lang="ts">
+	import Konva from 'konva';
+	import { getContext, onDestroy } from 'svelte';
+
 	import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/models';
 	import { AppError } from '@vdg-webapp/models';
-	import { getContext, onDestroy } from 'svelte';
-	import Konva from 'konva';
-	import { getGeometryResizePoints } from './utils';
-	import type { CanvasContext } from '../state';
+
 	import { roundToDecimalPlaces } from '$utils';
+
+	import type { CanvasContext } from '../state';
+	import { getGeometryResizePoints } from './utils';
 
 	type Props = {
 		/** The ID of the canvas. */

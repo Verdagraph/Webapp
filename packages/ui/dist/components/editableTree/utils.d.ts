@@ -1,5 +1,5 @@
-import { type FieldErrors } from '@vdg-webapp/models';
 import { type ZodType } from 'zod';
+import { type FieldErrors } from '@vdg-webapp/models';
 /**
  * Every item in the tree needs a unique ID.
  * In order to synchronize the tree's selection
@@ -17,10 +17,7 @@ import { type ZodType } from 'zod';
  * @param entityId The ID of the entity.
  * @returns The Tree item id.
  */
-export declare function toTreeBaseId<EntityTypeT extends string>(
-	entityType: EntityTypeT,
-	entityId: string
-): string;
+export declare function toTreeBaseId<EntityTypeT extends string>(entityType: EntityTypeT, entityId: string): string;
 /**
  * This function composes a tree ID of a field given a base ID.
  * @param baseId The base ID of the tree item.
@@ -34,12 +31,10 @@ export declare function toTreeId(baseId: string, field: string): string;
  * @param id The Tree item id.
  * @returns The entity type, ID, and field name.
  */
-export declare function fromTreeId<EntityTypeT extends string>(
-	id: string
-): {
-	entityType: EntityTypeT;
-	entityId: string;
-	field?: string;
+export declare function fromTreeId<EntityTypeT extends string>(id: string): {
+    entityType: EntityTypeT;
+    entityId: string;
+    field?: string;
 };
 /**
  * Validates a tree item's value against a schema.
@@ -51,10 +46,5 @@ export declare function fromTreeId<EntityTypeT extends string>(
  * @param fieldErrors The tree errors.
  * @returns False if validation failed.
  */
-export declare function fieldValid(
-	treeId: string,
-	value: unknown,
-	schema: ZodType,
-	fieldErrors: FieldErrors
-): boolean;
+export declare function fieldValid(treeId: string, value: unknown, schema: ZodType, fieldErrors: FieldErrors): boolean;
 //# sourceMappingURL=utils.d.ts.map

@@ -1,6 +1,8 @@
-import triplit from '$data/triplit';
 import type { QueryResult } from '@triplit/client';
+
 import { schema } from '@vdg-webapp/models';
+
+import triplit from '$data/triplit';
 
 export const gardenQuery = triplit.query('gardens').Id('$query.id');
 

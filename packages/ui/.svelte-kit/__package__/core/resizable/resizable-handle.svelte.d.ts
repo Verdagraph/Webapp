@@ -1,5 +1,5 @@
-import * as ResizablePrimitive from 'paneforge';
 import type { WithoutChildrenOrChild } from 'bits-ui';
+import * as ResizablePrimitive from 'paneforge';
 type $$ComponentProps = WithoutChildrenOrChild<ResizablePrimitive.PaneResizerProps> & {
     withHandle?: boolean;
 };

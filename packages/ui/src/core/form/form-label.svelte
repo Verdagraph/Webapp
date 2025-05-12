@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { WithoutChild } from 'bits-ui';
 	import * as FormPrimitive from 'formsnap';
+
 	import { Label } from '$core/label/index.js';
 	import { cn } from '$utils';
+
 	import FormInfoPopover from './form-info-popover.svelte';
 
 	/**

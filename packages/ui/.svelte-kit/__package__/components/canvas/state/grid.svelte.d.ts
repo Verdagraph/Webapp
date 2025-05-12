@@ -1,6 +1,6 @@
+import type { Vector2d } from 'konva/lib/types';
 import { type CanvasContainer } from './container.svelte';
 import { type CanvasTransform } from './transform.svelte';
-import type { Vector2d } from 'konva/lib/types';
 type GridManagerPersistedState = {
     snapToGrid: boolean;
     rightAngleConstraint: boolean;

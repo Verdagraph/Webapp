@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Card } from '@vdg-webapp/ui';
+
 	import CreateWorkspaceForm from './CreateWorkspaceForm.svelte';
 </script>
 

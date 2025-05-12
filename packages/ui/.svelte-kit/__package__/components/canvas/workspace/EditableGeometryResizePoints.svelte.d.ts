@@ -1,5 +1,5 @@
-import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/models';
 import Konva from 'konva';
+import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/models';
 type Props = {
     /** The ID of the canvas. */
     canvasId: string;

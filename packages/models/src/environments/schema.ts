@@ -1,6 +1,7 @@
-import { Schema as S, type Entity, or } from '@triplit/client';
-import { EnvironmentAttributes } from './attributes/index.js';
+import { type Entity, Schema as S, or } from '@triplit/client';
+
 import { workspaceSchema } from '../workspaces/schema.js';
+import { EnvironmentAttributes } from './attributes/index.js';
 
 /**
  * Defines the parent entity that the environment describes characteristics for.

@@ -1,6 +1,6 @@
 import type { FormPath as _FormPath } from 'sveltekit-superforms';
-import * as FormPrimitive from 'formsnap';
 import type { WithElementRef } from 'bits-ui';
+import * as FormPrimitive from 'formsnap';
 import type { HTMLAttributes } from 'svelte/elements';
 declare class __sveltets_Render<T extends Record<string, unknown>, U extends _FormPath<T>> {
     props(): FormPrimitive.FieldProps<T, U, any> & Omit<WithElementRef<HTMLAttributes<HTMLDivElement>>, "children">;

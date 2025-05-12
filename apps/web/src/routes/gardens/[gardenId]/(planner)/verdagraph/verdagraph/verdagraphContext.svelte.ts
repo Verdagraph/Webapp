@@ -1,9 +1,10 @@
-import { setContext, getContext } from 'svelte';
+import { getContext, setContext } from 'svelte';
+
 import {
-	localStore,
-	isMobile,
 	Resizable,
-	createTimelineSelection
+	createTimelineSelection,
+	isMobile,
+	localStore
 } from '@vdg-webapp/ui';
 
 /** Verdagraph view config persisted to local storage. */

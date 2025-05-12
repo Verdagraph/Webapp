@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { EnvironmentParentTypeEnumOptions } from './schema.js';
+
 import { commonFields } from '../commands.js';
 import { attributesSchemas } from './attributes/index.js';
+import { EnvironmentParentTypeEnumOptions } from './schema.js';
 
 /** Field specifications. */
 const environmentNameSchema = commonFields.nameSchema.describe(

@@ -1,13 +1,15 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import {
+		Button,
 		Popover,
 		Separator,
-		Button,
 		VdgLogo,
 		externalLinks,
 		iconIds
 	} from '@vdg-webapp/ui';
+
 	let navLinks = [
 		{
 			url: '/app/gardens',

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Garden } from '@vdg-webapp/models';
 	import { ScrollArea } from '@vdg-webapp/ui';
+
 	import GardenThumbnail from './GardenThumbnail.svelte';
 
 	type Props = {

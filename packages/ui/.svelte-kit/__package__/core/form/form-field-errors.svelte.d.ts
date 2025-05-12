@@ -1,5 +1,5 @@
-import * as FormPrimitive from 'formsnap';
 import type { WithoutChild } from 'bits-ui';
+import * as FormPrimitive from 'formsnap';
 type $$ComponentProps = WithoutChild<FormPrimitive.FieldErrorsProps> & {
     errorClasses?: string | undefined | null;
     handlerErrors?: Array<string>;

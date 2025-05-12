@@ -10,18 +10,11 @@ import type { Item } from './types';
  * after the synchronization has happened.
  * @returns Editable tree.
  */
-export declare function createEditableTree<EntityTypeT extends string>(
-	items: () => Item[],
-	entitySelectionHandlers: Record<
-		EntityTypeT,
-		{
-			add: (id: string) => void;
-			remove: (id: string) => void;
-		}
-	>,
-	onSelectedChange?: (value: Set<string>) => void
-): {
-	tree: any;
+export declare function createEditableTree<EntityTypeT extends string>(items: () => Item[], entitySelectionHandlers: Record<EntityTypeT, {
+    add: (id: string) => void;
+    remove: (id: string) => void;
+}>, onSelectedChange?: (value: Set<string>) => void): {
+    tree: any;
 };
 export type EditableTreeContext = ReturnType<typeof createEditableTree>;
 //# sourceMappingURL=tree.svelte.d.ts.map

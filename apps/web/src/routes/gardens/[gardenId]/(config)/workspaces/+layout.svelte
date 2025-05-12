@@ -1,18 +1,21 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
-	import { iconIds, Menubar } from '@vdg-webapp/ui';
-	import { Button } from 'bits-ui';
-	import { setWorkspaceContext } from './activeWorkspace.svelte';
-	import toolbox from './tools';
 	import { useQuery } from '@triplit/svelte';
+	import { Button } from 'bits-ui';
+
+	import { Menubar, iconIds } from '@vdg-webapp/ui';
+
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import triplit from '$data/triplit';
 	import {
 		plantingAreaSelectionQuery,
 		workspacesQuery
 	} from '$data/workspaces/queries';
 	import gardenContext from '$state/gardenContext.svelte';
+
+	import { setWorkspaceContext } from './activeWorkspace.svelte';
+	import toolbox from './tools';
 
 	let { children } = $props();
 

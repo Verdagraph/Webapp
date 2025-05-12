@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+
 	import { Button, Card } from '@vdg-webapp/ui';
-	import LoginForm from './LoginForm.svelte';
+
+	import { goto } from '$app/navigation';
 	import auth from '$state/auth.svelte';
+
+	import LoginForm from './LoginForm.svelte';
 
 	onMount(() => {
 		if (auth.isAuthenticated) {

@@ -1,4 +1,5 @@
-import { Schema as S, type Entity, type QueryResult, or } from '@triplit/client';
+import { type Entity, type QueryResult, Schema as S, or } from '@triplit/client';
+
 import { gardenSchema } from '../gardens/index.js';
 
 /**

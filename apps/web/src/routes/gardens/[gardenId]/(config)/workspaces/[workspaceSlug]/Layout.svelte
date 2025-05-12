@@ -1,9 +1,10 @@
 <script lang="ts">
-	import EditablePlantingAreaContainer from './EditablePlantingAreaContainer.svelte';
-	import CreatePlantingAreaContainer from './CreatePlantingAreaContainer.svelte';
-	import { Canvas, TransformControls, Gridlines, PlantingAreas } from '@vdg-webapp/ui';
-	import toolbox from '../tools';
+	import { Canvas, Gridlines, PlantingAreas, TransformControls } from '@vdg-webapp/ui';
+
 	import { getWorkspaceContext } from '../activeWorkspace.svelte';
+	import toolbox from '../tools';
+	import CreatePlantingAreaContainer from './CreatePlantingAreaContainer.svelte';
+	import EditablePlantingAreaContainer from './EditablePlantingAreaContainer.svelte';
 
 	type Props = {
 		plantingAreaIds: string[];

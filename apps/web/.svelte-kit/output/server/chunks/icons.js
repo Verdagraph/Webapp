@@ -1,0 +1,72 @@
+const iconIds = {
+  formFieldDescriptionIcon: "material-symbols:info-outline-rounded",
+  defaultSpinnerIcon: "humbleicons:spinner-earring",
+  defaultRefreshIcon: "material-symbols:refresh-rounded",
+  defaultClose: "mdi:close",
+  chevronLeft: "material-symbols:chevron-left-rounded",
+  chevronRight: "material-symbols:chevron-right-rounded",
+  addIcon: "mdi:plus-circle-outline",
+  startEditingIcon: "material-symbols:edit-outline",
+  endEditingIcon: "material-symbols:edit-off-outline",
+  deleteIcon: "material-symbols:delete-outline",
+  listIcon: "material-symbols:list-rounded",
+  homeIcon: "material-symbols:home",
+  /** Selection. */
+  pointerSelectIcon: "mdi:cursor-default-outline",
+  groupSelectIcon: "mdi:select-multiple",
+  /* Navigation and UI. */
+  gardenDrawerIcon: "material-symbols:menu-open-rounded",
+  /* Static pages. */
+  resourcesIcon: "material-symbols:book-2-outline-rounded",
+  resourcesGuidesIcon: "mdi:file-document-multiple-outline",
+  resourcesProjectIcon: "mdi:github",
+  resourcesDonateIcon: "material-symbols:attach-money-rounded",
+  profileIcon: "material-symbols:apps",
+  profileNotificationsIcon: "material-symbols:notifications-outline-rounded",
+  profileAccountIcon: "material-symbols:account-circle-outline",
+  profileSettingsIcon: "mdi:cog-outline",
+  /* Non-garden specific. */
+  traitsIcon: "tdesign:share",
+  cultivarsIcon: "tabler:plant-2",
+  cultivarIcon: "tabler:plant-2",
+  workspaceIcon: "tabler:tools",
+  environmentIcon: "material-symbols:sunny-outline-rounded",
+  /* Garden specific */
+  gardensIcon: "mdi:planet",
+  gardensCreateIcon: "mdi:plus-circle-outline",
+  gardensDiscoverIcon: "ic:round-travel-explore",
+  gardensInviteIcon: "material-symbols:mail-outline",
+  /* Workspaces */
+  plantingAreaIcon: "fluent:plant-cattail-24-regular",
+  rectangleIcon: "material-symbols:square-outline-rounded",
+  polygonIcon: "material-symbols:pentagon-outline-rounded",
+  ellipseIcon: "material-symbols:circle-outline",
+  linesIcon: "ph:polygon",
+  verdagraphAddIcon: "mdi:plus-circle-outline",
+  verdagraphGroupIcon: "mdi:group",
+  verdagraphTranslateIcon: "lucide:move",
+  verdagraphDeleteIcon: "material-symbols:delete-outline",
+  verdagraphRecordSeedIcon: "mdi:seed-outline",
+  verdagraphRecorcGerminationicon: "mdi:seedling-outline",
+  verdagraphRecordHarvestIcon: "mdi:bread",
+  verdagraphRecordExpireIcon: "mdi:compost",
+  verdagraphRecordTransplantIcon: "material-symbols:move-item-rounded",
+  verdagraphRecordNoteIcon: "mdi:note-outline",
+  verdagraphPatternsIcon: "mdi:dots-hexagon",
+  verdagraphGeneratorsIcon: "mdi:creation",
+  verdagraphLayoutIcon: "mdi:land-plots-circle-variant",
+  verdagraphCalendarIcon: "mdi:calendar-text",
+  verdagraphTreeIcon: "material-symbols:account-tree-rounded",
+  /** TimelineSelector. */
+  verdagraphMonthReverseIcon: "mdi:chevron-triple-left",
+  verdagraphWeekReverseIcon: "mdi:chevron-double-left",
+  verdagraphDayReverseIcon: "mdi:chevron-left",
+  verdagraphDayForwardIcon: "mdi:chevron-right",
+  verdagraphWeekForwardIcon: "mdi:chevron-double-right",
+  verdagraphMonthForwardIcon: "mdi:chevron-triple-right",
+  timelineSelectorTranslateIcon: "lucide:move-horizontal",
+  timelineSelectorShrinkIcon: "uil:shrink"
+};
+export {
+  iconIds as i
+};

@@ -1,5 +1,5 @@
-import { type FieldErrors } from '@vdg-webapp/models';
 import { type ZodType } from 'zod';
+import { type FieldErrors } from '@vdg-webapp/models';
 /**
  * Every item in the tree needs a unique ID.
  * In order to synchronize the tree's selection

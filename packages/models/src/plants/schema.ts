@@ -1,4 +1,5 @@
-import { Schema as S, type Entity, or, type QueryResult } from '@triplit/client';
+import { type Entity, type QueryResult, Schema as S, or } from '@triplit/client';
+
 import { CultivarAttributes } from '../cultivars/attributes/index.js';
 import { environmentSchema } from '../environments/schema.js';
 

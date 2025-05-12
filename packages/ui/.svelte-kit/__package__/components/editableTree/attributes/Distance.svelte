@@ -1,7 +1,7 @@
 <script lang="ts">
 	import UnitAwareInput from '../../units/UnitAwareInput.svelte';
-	import { type EditableAttributeProps } from './types';
 	import DefaultStaticValue from './DefaultStaticValue.svelte';
+	import { type EditableAttributeProps } from './types';
 
 	let { value, editing, onChange }: EditableAttributeProps<number> = $props();
 </script>

@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { Separator, VdgLogo, ClientAvatarIcon } from '@vdg-webapp/ui';
 	import { Button } from 'bits-ui';
-	import type { PrimaryTabSpec } from './tabs.svelte';
-	import Tab from './Tab.svelte';
+
+	import { ClientAvatarIcon, Separator, VdgLogo } from '@vdg-webapp/ui';
+
 	import gardenContext from '$state/gardenContext.svelte';
+
+	import Tab from './Tab.svelte';
+	import type { PrimaryTabSpec } from './tabs.svelte';
 
 	type Props = {
 		gardensTab: PrimaryTabSpec;

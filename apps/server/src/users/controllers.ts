@@ -1,32 +1,34 @@
 import { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
-import z from 'zod';
-import {
-	UserLoginCommandSchema,
-	UserCreateCommandSchema,
-	UserUpdateCommandSchema,
-	UserRequestEmailConfirmationCommandSchema,
-	UserConfirmEmailConfirmationCommandSchema,
-	UserRequestPasswordResetCommandSchema,
-	UserConfirmPasswordResetCommandSchema
-} from '@vdg-webapp/models';
+import { requireAuth } from 'plugins/auth.js';
 import { setTag } from 'plugins/openapi.js';
+import z from 'zod';
+
 import {
+	UserConfirmEmailConfirmationCommandSchema,
+	UserConfirmPasswordResetCommandSchema,
+	UserCreateCommandSchema,
+	UserLoginCommandSchema,
+	UserRequestEmailConfirmationCommandSchema,
+	UserRequestPasswordResetCommandSchema,
+	UserUpdateCommandSchema
+} from '@vdg-webapp/models';
+
+import {
+	getRefreshTokenCookie,
+	setAccessTokenHeader,
+	setRefreshTokenCookie
+} from './auth/tokens.js';
+import {
+	confirmEmailConfirmation,
+	confirmPasswordReset,
+	create,
 	login,
 	refresh,
-	create,
-	update,
 	requestEmailConfirmation,
-	confirmEmailConfirmation,
 	requestPasswordReset,
-	confirmPasswordReset
+	update
 } from './commands/index.js';
-import {
-	setRefreshTokenCookie,
-	getRefreshTokenCookie,
-	setAccessTokenHeader
-} from './auth/tokens.js';
-import { requireAuth } from 'plugins/auth.js';
 
 export const userRouter = async (app: FastifyInstance) => {
 	setTag(app, 'user');
