@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { Button, Popover, Separator, VdgLogo, iconIds } from '@vdg-webapp/ui';
+	import { Button, Popover, Separator, iconIds } from '@vdg-webapp/ui';
 
 	import env from '$lib/env';
 
@@ -32,7 +32,7 @@ isn't within the context of a Garden.
 	class="border-neutral-7 sticky left-0 top-0 w-full rounded-none border-b-2
 		drop-shadow-md"
 >
-	<nav class="bg-neutral-2 flex items-center justify-around py-4">
+	<nav class="bg-neutral-2 flex items-center justify-around py-2">
 		<!-- 
             Logo and Verdagraph text.
             Logo displayed always. Text displayed on larger screens.
@@ -40,12 +40,7 @@ isn't within the context of a Garden.
 		<div>
 			<ul class="flex items-center gap-6 p-2 text-lg">
 				<li>
-					<a href="/">
-						<VdgLogo size="4rem" />
-					</a>
-				</li>
-				<li>
-					<a href="/" class="hidden lg:block">
+					<a href="/" class="">
 						<span class="font-semibold">Verdagraph</span>
 					</a>
 				</li>

@@ -13,7 +13,7 @@
 <!-- Theme switcher. -->
 <ModeWatcher />
 
-<div class="h-screen w-screen overflow-hidden">
+<div class="h-screen w-screen">
 	<Tooltip.Provider delayDuration={500}>
 		<Nav />
 		{@render children()}
