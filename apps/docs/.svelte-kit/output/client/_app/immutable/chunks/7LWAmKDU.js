@@ -1,1 +1,110 @@
-import{i as m,g as D,H,a as L,b as p,s as c,c as E,h as O,d as _,e as I,f as Y,j,k,l as C,m as M,n as S,o as V,p as $,q,r as w,t as P,u as W}from"./BvF3OQQc.js";import{a as z,r as N,h,i as B}from"./DYloJB2f.js";import{r as F,a as G}from"./CNAEEddD.js";function X(r,e){var t=e==null?"":typeof e=="object"?e+"":e;t!==(r.__t??(r.__t=r.nodeValue))&&(r.__t=t,r.nodeValue=t+"")}function J(r,e){return b(r,e)}function Z(r,e){m(),e.intro=e.intro??!1;const t=e.target,l=w,u=_;try{for(var a=D(t);a&&(a.nodeType!==8||a.data!==H);)a=L(a);if(!a)throw p;c(!0),E(a),O();const d=b(r,{...e,anchor:a});if(_===null||_.nodeType!==8||_.data!==I)throw Y(),p;return c(!1),d}catch(d){if(d===p)return e.recover===!1&&j(),m(),k(t),c(!1),J(r,e);throw d}finally{c(l),E(u),F()}}const i=new Map;function b(r,{target:e,anchor:t,props:l={},events:u,context:a,intro:d=!0}){m();var v=new Set,y=o=>{for(var s=0;s<o.length;s++){var n=o[s];if(!v.has(n)){v.add(n);var f=B(n);e.addEventListener(n,h,{passive:f});var T=i.get(n);T===void 0?(document.addEventListener(n,h,{passive:f}),i.set(n,1)):i.set(n,T+1)}}};y(C(z)),N.add(y);var g=void 0,A=M(()=>{var o=t??e.appendChild(S());return V(()=>{if(a){$({});var s=q;s.c=a}u&&(l.$$events=u),w&&G(o,null),g=r(o,l)||{},w&&(P.nodes_end=_),a&&W()}),()=>{var f;for(var s of v){e.removeEventListener(s,h);var n=i.get(s);--n===0?(document.removeEventListener(s,h),i.delete(s)):i.set(s,n)}N.delete(y),o!==t&&((f=o.parentNode)==null||f.removeChild(o))}});return R.set(g,A),g}let R=new WeakMap;function x(r,e){const t=R.get(r);return t?(R.delete(r),t(e)):Promise.resolve()}export{Z as h,J as m,X as s,x as u};
+import {
+	p as $,
+	l as C,
+	g as D,
+	c as E,
+	H,
+	e as I,
+	a as L,
+	m as M,
+	h as O,
+	t as P,
+	n as S,
+	o as V,
+	u as W,
+	f as Y,
+	d as _,
+	s as c,
+	j,
+	k,
+	i as m,
+	b as p,
+	q,
+	r as w
+} from './BvF3OQQc.js';
+import { r as F, a as G } from './CNAEEddD.js';
+import { i as B, r as N, h, a as z } from './DYloJB2f.js';
+
+function X(r, e) {
+	var t = e == null ? '' : typeof e == 'object' ? e + '' : e;
+	t !== (r.__t ?? (r.__t = r.nodeValue)) && ((r.__t = t), (r.nodeValue = t + ''));
+}
+function J(r, e) {
+	return b(r, e);
+}
+function Z(r, e) {
+	m(), (e.intro = e.intro ?? !1);
+	const t = e.target,
+		l = w,
+		u = _;
+	try {
+		for (var a = D(t); a && (a.nodeType !== 8 || a.data !== H); ) a = L(a);
+		if (!a) throw p;
+		c(!0), E(a), O();
+		const d = b(r, { ...e, anchor: a });
+		if (_ === null || _.nodeType !== 8 || _.data !== I) throw (Y(), p);
+		return c(!1), d;
+	} catch (d) {
+		if (d === p) return e.recover === !1 && j(), m(), k(t), c(!1), J(r, e);
+		throw d;
+	} finally {
+		c(l), E(u), F();
+	}
+}
+const i = new Map();
+function b(
+	r,
+	{ target: e, anchor: t, props: l = {}, events: u, context: a, intro: d = !0 }
+) {
+	m();
+	var v = new Set(),
+		y = (o) => {
+			for (var s = 0; s < o.length; s++) {
+				var n = o[s];
+				if (!v.has(n)) {
+					v.add(n);
+					var f = B(n);
+					e.addEventListener(n, h, { passive: f });
+					var T = i.get(n);
+					T === void 0
+						? (document.addEventListener(n, h, { passive: f }), i.set(n, 1))
+						: i.set(n, T + 1);
+				}
+			}
+		};
+	y(C(z)), N.add(y);
+	var g = void 0,
+		A = M(() => {
+			var o = t ?? e.appendChild(S());
+			return (
+				V(() => {
+					if (a) {
+						$({});
+						var s = q;
+						s.c = a;
+					}
+					u && (l.$$events = u),
+						w && G(o, null),
+						(g = r(o, l) || {}),
+						w && (P.nodes_end = _),
+						a && W();
+				}),
+				() => {
+					var f;
+					for (var s of v) {
+						e.removeEventListener(s, h);
+						var n = i.get(s);
+						--n === 0 ? (document.removeEventListener(s, h), i.delete(s)) : i.set(s, n);
+					}
+					N.delete(y), o !== t && ((f = o.parentNode) == null || f.removeChild(o));
+				}
+			);
+		});
+	return R.set(g, A), g;
+}
+let R = new WeakMap();
+function x(r, e) {
+	const t = R.get(r);
+	return t ? (R.delete(r), t(e)) : Promise.resolve();
+}
+export { Z as h, J as m, X as s, x as u };

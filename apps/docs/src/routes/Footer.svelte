@@ -30,7 +30,8 @@
 			label: 'Contact',
 			links: [
 				{ label: 'Email', href: '' },
-				{ label: 'Support the Project', href: '/support' }
+				{ label: 'Support the Project', href: '/support' },
+				{ label: 'Contributing', href: '' }
 			]
 		}
 	];

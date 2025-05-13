@@ -12,20 +12,24 @@ export const nodes = [
 export const server_loads = [];
 
 export const dictionary = {
-		"/": [2],
-		"/about": [3],
-		"/demo": [4],
-		"/guides": [5]
-	};
+	'/': [2],
+	'/about': [3],
+	'/demo': [4],
+	'/guides': [5]
+};
 
 export const hooks = {
-	handleError: (({ error }) => { console.error(error) }),
-	
-	reroute: (() => {}),
+	handleError: ({ error }) => {
+		console.error(error);
+	},
+
+	reroute: () => {},
 	transport: {}
 };
 
-export const decoders = Object.fromEntries(Object.entries(hooks.transport).map(([k, v]) => [k, v.decode]));
+export const decoders = Object.fromEntries(
+	Object.entries(hooks.transport).map(([k, v]) => [k, v.decode])
+);
 
 export const hash = false;
 

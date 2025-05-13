@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import type { Color } from '@vdg-webapp/tailwind-config/colors';
 	import { Button, Input, VdgLogo, cn } from '@vdg-webapp/ui';
 
 	import env from '$lib/env';
@@ -17,10 +16,10 @@
 	};
 	const explainers: Explainer[] = [
 		{
-			title: 'Model plants and their cultivation',
+			title: 'A garden productivity tool and agro-ecological model',
 			points: [
-				'Organize plants throughout space and time',
-				'Tune recommendations to your local environmental conditions',
+				'Maximize the use of space by simulating plants throughout space and time',
+				'Tune recommendations for starting plants to local environmental conditions',
 				'Compare multiple plans against estimated metrics of yield and eco benefit'
 			],
 			icon: 'mdi:plant-outline',
@@ -28,21 +27,23 @@
 			iconClass: 'text-primary-1'
 		},
 		{
-			title: 'Share your garden with others',
+			title:
+				'A community hub for the coordination of labour and the distribution of produce',
 			points: [
-				'Collaborate on garden edits with other users in real-time',
-				'Assign tasks generated from models state',
-				'Keep track of harvests and notify possible receipients'
+				'Edit gardens with other users in real time',
+				'Generate tasks and assign responsibilities',
+				'Record harvests and notify subscribers'
 			],
 			icon: 'mdi:handshake-outline',
 			iconContainerClass: 'bg-secondary-8 border-secondary-10',
 			iconClass: 'text-secondary-1'
 		},
 		{
-			title: 'Connect your garden to data and control',
+			title:
+				'An interface for external devices to send data to and receive commands from',
 			points: [
-				'Use realtime environmental data to inform planning',
-				'Intelligently control outputs such as irrigation based on model state'
+				'Use environmental data to inform planning and update the model',
+				'Use the model to intelligently control outputs such as irrigation'
 			],
 			icon: 'ant-design:control-outlined',
 			iconContainerClass: 'bg-accent-8 border-accent-10',
@@ -61,11 +62,11 @@
 
 {#snippet explainerSnippet(explainer: Explainer)}
 	<div class="mt-8 flex justify-between">
-		<div class="flex h-full flex-col items-center">
-			<h3 class="text-neutral-12 w-full self-start text-lg font-semibold">
+		<div class="flex h-full flex-col">
+			<h3 class="text-neutral-12 w-full text-lg font-semibold">
 				{explainer.title}
 			</h3>
-			<ul class="mt-4 flex list-disc flex-col gap-4 self-center rounded-lg p-4">
+			<ul class="mt-4 flex list-disc flex-col gap-4 rounded-lg p-4">
 				{#each explainer.points as point}
 					<li class="text-neutral-11 text-sm">
 						{point}
@@ -142,6 +143,8 @@
 				<p class="text-neutral-11 italic">
 					Verdagraph is a collection of open source tools that seek to empower the
 					collaborative planning, tracking, and automation of agro-ecological systems.
+					It currently consists of a garden productivity application and a smart
+					irrigation controller.
 				</p>
 
 				{#each explainers as explainer}
