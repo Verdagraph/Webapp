@@ -86,7 +86,7 @@
 {/snippet}
 
 <div class="flex h-full w-full justify-center">
-	<div class="flex w-11/12 flex-col md:w-3/4 lg:w-1/2 2xl:w-3/4">
+	<div class="flex w-11/12 flex-col md:w-3/4 lg:w-1/2 2xl:w-1/4">
 		<div class="mt-12 flex w-full items-center justify-between">
 			<h1 class="text-left text-3xl font-bold">
 				Eco-modelling tools for collaboratively organized agriculture

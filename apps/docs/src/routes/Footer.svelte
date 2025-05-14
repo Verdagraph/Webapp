@@ -29,7 +29,7 @@
 		{
 			label: 'Contact',
 			links: [
-				{ label: 'Email', href: '' },
+				{ label: 'Email', href: 'mailto:contact@verdagraph.org' },
 				{ label: 'Support the Project', href: '/support' },
 				{ label: 'Contributing', href: '' }
 			]

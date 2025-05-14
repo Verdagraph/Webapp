@@ -1,7 +1,21 @@
 {
-	"/": ["src/routes/+layout.server.js", "src/routes/+layout.server.js"],
-	"/about": ["src/routes/+layout.server.js"],
-	"/demo": ["src/routes/+layout.server.js"],
-	"/docs": ["src/routes/+layout.server.js"],
-	"/support": ["src/routes/+layout.server.js"]
+	"/": [
+		"src/routes/+layout.server.js",
+		"src/routes/+layout.server.js"
+	],
+	"/about": [
+		"src/routes/+layout.server.js"
+	],
+	"/blog": [
+		"src/routes/+layout.server.js"
+	],
+	"/demo": [
+		"src/routes/+layout.server.js"
+	],
+	"/docs": [
+		"src/routes/+layout.server.js"
+	],
+	"/support": [
+		"src/routes/+layout.server.js"
+	]
 }

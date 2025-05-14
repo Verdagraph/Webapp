@@ -2,14 +2,6 @@
 	import { Button, Input, VdgLogo, cn } from '@vdg-webapp/ui';
 
 	import env from '$lib/env';
-
-	type Contributor = {
-		name: string;
-		img: string;
-	};
-	const contributors: Contributor[] = [
-		{ name: 'Nathaniel', img: 'static/contributors/NathanielKing.jpg' }
-	];
 </script>
 
 <svelte:head>
