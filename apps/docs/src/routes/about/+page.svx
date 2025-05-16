@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button, Input, VdgLogo, cn } from '@vdg-webapp/ui';
-    import MainContentContainer from '$components/MainContentContainer.svelte'
 
+    import MainContentContainer from '$components/MainContentContainer.svelte'
 	import env from '$lib/env';
 
 </script>
@@ -11,7 +11,6 @@
 </svelte:head>
 
 <MainContentContainer> 
-
 
 <div class="flex w-full items-center justify-between">
     <h1 class="text-left text-3xl font-bold">
@@ -36,9 +35,9 @@
 Verdagraph is a collection of open source tools that seek to empower the collaborative planning, tracking, and automation of agro-ecological systems. 
 
 The goals of Verdagraph can be summarized into three points:
-- **Garden Productivity Engine:** An interactive model of plants and the environment which facilitates the data-driven planning of productive gardens and the collaborative coordination of labour at any scale.
-- **Agro-Ecology Optimization Model:** A model which captures the relationship between agriculture and the broader ecological system, with the goal of producing a healthy abundance and diversity of food with minimal reliance on conditions of resource depletion and ecological destruction.
-- **IoT Automation Suite:** An Internet-of-Things (IoT) platform which serves as an extensible interface for integration with external APIs and a set of embedded devices designed to automate the process of obtaining measurements and executing tasks.
+- **Garden Productivity Engine:** An interactive model of plants and the environment which facilitates the data-driven planning of productive gardens and the collaborative coordination of labour.
+- **Agro-Ecology Optimization Model:** A model which captures the relationship between agriculture and the broader ecological system, with the goal of producing a healthy abundance and diversity of food while minimizing reliance on the depletion of resources and the distruption of ecology.
+- **IoT Automation Suite:** An Internet-of-Things (IoT) platform which serves as an extensible interface for integration with external devices and a set of embedded devices designed to automate the process of obtaining measurements and executing tasks.
 
 Verdagraph has been in development since early 2021. Verdagraph is built with [sentientist values](https://sentientism.info/) in mind, and as such does not consider sentient beings as acceptable subjects of exploitation for food or any other purpose.
 
@@ -67,27 +66,30 @@ Merriam Webster [defines ecology as](https://www.merriam-webster.com/dictionary/
 In our world today, the relationship between ecology and human society is more important than ever. We rely on Earth's ecosystems for services that are vital to our existence. The Millenium Ecosystem Assessment provides [four categories](https://earth.org/what-are-ecosystem-services/) of ecosystem services:
 
 - Provisioning services produce material resources such as food, water, fibers, oil, and minerals.
-- Regulating services maintain favorable ecological, climate, and other conditions, such as climate regulation, flood protection, pollination, and water purification.
+- Regulating services maintain favorable conditions such as climate regulation, flood protection, pollination, and water purification.
 - Supporting services maintain the foundation of a functioning ecosystem, including the water cycle, nutrient cycle, and biodiversity.
 - Cultural services provide non-material benefits such as spiritual, intellectual, recreational, and aesthetic values.
 
-Despite our reliance on these services, we maintain relationships with the ecologies responsible for them that are largely destructive and unsustainable. The combined ecological impact of all our systems of extraction, production, pollution, and emission amounts to a truly devastating level of resource depletion, biosphere destruction, climate change, and more. The situation is intolerable. It falls on us to figure out how we need to adapt and then to undertake it.
+Despite our reliance on these services, we maintain relationships with the ecologies responsible for them that are largely destructive and unsustainable. The combined ecological impact of all human extraction, production, pollution, and emission amounts to a truly devastating level of resource depletion, biosphere destruction, climate change, and more. 
+
+The situation is intolerable. It falls on us to figure out how we need to adapt and then to undertake it.
 
 A truly sustainable society requires many adaptations. Some are technological, including changes to what resources we depend on and what processes we use to achieve our goals. Technological adaptations involve some combination of meeting our energy and material demands through sustainable resources and finding ways to reduce the amount of those resources required for the services we demand. Other adaptations are social, including changes to what our goals are and thus what services we demand and how we organize ourselves to meet them. Social adaptations involve the creation of human organization centered around solidarity, equality, and cooperation towards collective success and the equal interest of all individuals across species and generations.
 
-Almost all of these adaptations are interconnected, and massive in scope. Verdagraph focuses specifically on agriculture and its relation to ecology and the organization of human labour.
+Almost all of these adaptations are interconnected and massive in scope. Verdagraph focuses specifically on agriculture and its relation to ecology and the organization of human labour.
 
 ### Modern Industrial Agriculture and the Ecological Alternative
 
 Our modern industrial agriculture system leaves much to be desired in the way of ecological sustainability. To summarize this article titled [How sustainable agriculture can address the environmental and human health harms of industrial agriculture](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1240832/):
 
 - The intensive use of monocultures, synthetic fertilizers, and pesticides causes biodiversity destruction and environmental pollution.
-- A reliance on non-renewable fossil fuels for the production of chemical inputs and mechanical work, as well as the use of renewable resources such as soil and water faster than their rate of regeneration, creates a dependency on unsustainable conditions of ecological destruction.
-- The monopolization of the means of agricultural production leads to a social rift between producers and consumers.
+- A reliance on non-renewable fuels for the production of chemical inputs and mechanical work, as well as the use of renewable resources such as soil and water faster than their rate of regeneration, creates a dependency on unsustainable conditions of ecological destruction.
+- The monopolization and centralization of the means of agricultural production leads to a social rift between producers and consumers and a lack of autonomy over essential resources.
+- The industrial exploitation of animals degrades public health through pollution, pandemic risk, and antibiotic resistance.
 
 In a sentence, the modern industrial agriculture system is dependent on systems which undermine the conditions required for its own existence and that of society.
 
-The application of ecological analysis to agriculture highlights a clear need for a transition to sustainable agriculture as a core sector of sustainable development. The concept of agro-ecology seeks to provide a framework for understanding the path that we need to take. The United Nations Food and Agriculture Organization (FAO) [defines agro-ecology as](https://www.fao.org/3/i9037en/i9037en.pdf):
+The application of ecological analysis highlights a clear need for agriculture as a core sector of sustainable development. The concept of agro-ecology seeks to provide a framework for understanding the path that we need to take. The United Nations Food and Agriculture Organization (FAO) [defines agro-ecology as](https://www.fao.org/3/i9037en/i9037en.pdf):
 
 > Agroecology is an integrated approach that simultaneously applies ecological and social concepts and principles to the design and management of food and agricultural systems. It seeks to optimize the interactions between plants, animals, humans and the environment while taking into consideration the social aspects that need to be addressed for a sustainable and fair food system. Rather than tweaking the practices of unsustainable agricultural systems, agroecology seeks to transform food and agricultural systems, addressing the root causes of problems in an integrated way and providing holistic and long-term solutions. [Agroecology] is based on bottom-up and territorial processes, helping to deliver contextualised solutions to local problems. Agroecological innovations are based on the co-creation of knowledge, combining science with the traditional, practical and local knowledge of producers. By enhancing their autonomy and adaptive capacity, agroecology empowers producers and communities as key agents of change.
 
@@ -101,7 +103,7 @@ In other words, the transition away from simple artificial ecosystems and non-re
 
 In short, the goal of Verdagraph is to create tools which:
 
-- Minimize the knowledge and cognitive load required to plan, track, optimize, and automate agro-ecological systems at any scale.
+- Minimize the knowledge and cognitive load required to plan, track, and automate agro-ecological systems at any scale.
 - Transfer the co-creation of ecological knowledge into digital models made freely accessible to contextualized application.
 - Facilitate the horizontal organization of human labour through collaborative systems.
 - Ultimately enhance our adaptive capacity towards a sustainable agriculture system by putting the means of agro-ecological production and innovation into the hands of everyone.

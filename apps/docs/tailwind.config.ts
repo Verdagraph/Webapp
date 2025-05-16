@@ -7,7 +7,7 @@ const config: Config = {
 	presets: [baseConfig],
 	plugins: [typography],
 	content: [
-		'./src/**/*.{html,js,svelte,ts}',
+		'./src/**/*.{html,js,svelte,ts,svx}',
 		'./node_modules/@vdg-webapp/ui/dist/**/*.{html,js,svelte,ts}'
 	]
 };

@@ -9,7 +9,11 @@ const EnvSchema = z.object({
 			description: 'The base URL of the application.'
 		})
 		.url()
-		.default('http://localhost:5173')
+		.default('http://localhost:5173'),
+	NEWSLETTER_URL: z
+		.string({ description: 'The URL to the newsletter signup.' })
+		.url()
+		.default('https://newsletter.verdagraph.org/subscription/form')
 });
 
 const env = EnvSchema.parse(variables);

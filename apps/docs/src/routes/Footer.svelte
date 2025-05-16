@@ -11,8 +11,8 @@
 		{
 			label: 'Project',
 			links: [
-				{ label: 'About', href: '/about' },
 				{ label: 'Documentation', href: '/docs' },
+				{ label: 'About', href: '/about' },
 				{ label: 'Source Code', href: externalLinks.repository }
 			]
 		},

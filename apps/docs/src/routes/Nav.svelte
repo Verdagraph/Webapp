@@ -8,12 +8,13 @@
 	let navLinks = [
 		{
 			url: '/demo',
-			label: 'Demonstration'
+			label: 'Demo'
 		},
 		{
 			url: '/docs',
-			label: 'Documentation'
+			label: 'Docs'
 		},
+		{ url: '/blog', label: 'Blog' },
 		{
 			url: '/about',
 			label: 'About'
@@ -82,7 +83,7 @@ Primary navigation between the docs pages and app resources.
 								{@render menuLink(link.url, link.label)}
 							</li>
 						{/each}
-						<Separator.Root class="bg-neutral-6 w-full opacity-50" />
+						<Separator.Root class="bg-neutral-6 my-2 w-full opacity-50" />
 						<li>
 							{@render menuLink(env.APP_URL, 'Start the Application')}
 						</li>
