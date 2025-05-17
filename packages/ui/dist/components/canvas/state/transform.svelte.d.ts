@@ -15,12 +15,15 @@ type TransformControlsState = {
 /**
  * Context which handles canvas positioning and scaling.
  * @param container The container context.
+ * @param draggable: The draggable Konva value.
+ * @param strokeScale: The default value for strokeScaleEnabled for shapes.
  * @returns The transform context.
  */
-export declare function createCanvasTransform(container: CanvasContainer): {
+export declare function createCanvasTransform(container: CanvasContainer, draggable: boolean, strokeScale: boolean): {
     config: TransformControlsState;
     scaleFactor: Vector2d;
     position: Vector2d;
+    readonly strokeScale: boolean;
     canvasXPos: (modelPos: number) => number;
     modelXPos: (canvasPos: number) => number;
     canvasYPos: (modelPos: number) => number;

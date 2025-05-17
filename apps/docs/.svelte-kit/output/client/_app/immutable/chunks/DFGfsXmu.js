@@ -1,0 +1,1 @@
+import{t as e,f as i}from"./mSri9W3G.js";import{U as s,V as n}from"./pM0_cG1C.js";import{s as p}from"./2WFHagv8.js";var m=e('<div class="prose dark:prose-invert mx-auto mt-12 w-11/12 md:w-3/4 lg:w-1/2 2xl:w-1/4"><!></div>');function f(t,a){var r=m(),o=s(r);p(o,()=>a.children),n(r),i(t,r)}export{f as M};

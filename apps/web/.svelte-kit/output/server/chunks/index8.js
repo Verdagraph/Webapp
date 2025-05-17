@@ -1,6 +1,6 @@
-import { p as push, c as spread_attributes, d as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props, q as clsx } from "./index2.js";
-import { i as iconIds } from "./icons.js";
+import { p as push, d as spread_attributes, b as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props, t as clsx } from "./index2.js";
 import { I as Icon } from "./Icon.js";
+import { i as iconIds } from "./icons.js";
 import { c as useDialogTitle, d as useDialogDescription, e as useDialogClose, a as Dialog_content$1, b as Dialog_overlay$1, D as Dialog } from "./dialog-content.js";
 import { b as Portal$1 } from "./index3.js";
 import { c as cn } from "./shadcn.js";

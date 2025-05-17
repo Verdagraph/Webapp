@@ -1,4 +1,4 @@
-import { o as once, p as push, c as spread_attributes, d as bind_props, a as pop, g as spread_props, e as copy_payload, f as assign_payload } from "./index2.js";
+import { o as once, p as push, d as spread_attributes, b as bind_props, a as pop, g as spread_props, e as copy_payload, f as assign_payload } from "./index2.js";
 import { u as useRefById, f as box, e as useId, m as mergeProps } from "./use-id.js";
 import "clsx";
 import { c as createContext, y as useStateMachine, P as Presence_layer } from "./index3.js";

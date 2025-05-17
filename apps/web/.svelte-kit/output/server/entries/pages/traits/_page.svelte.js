@@ -1,4 +1,4 @@
-import { t as head } from "../../../chunks/index2.js";
+import { h as head } from "../../../chunks/index2.js";
 import { C as Card, a as Card_header, b as Card_title, c as Card_content } from "../../../chunks/card.js";
 import { C as Card_description } from "../../../chunks/card-description.js";
 import { S as Separator } from "../../../chunks/separator.js";

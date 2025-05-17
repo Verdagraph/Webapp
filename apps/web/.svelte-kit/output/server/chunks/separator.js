@@ -1,4 +1,4 @@
-import { o as once, p as push, c as spread_attributes, d as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props } from "./index2.js";
+import { o as once, p as push, d as spread_attributes, b as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props } from "./index2.js";
 import { u as useRefById, g as getDataOrientation, l as getAriaHidden, i as getAriaOrientation, e as useId, f as box, m as mergeProps } from "./use-id.js";
 import "clsx";
 import { c as cn } from "./shadcn.js";

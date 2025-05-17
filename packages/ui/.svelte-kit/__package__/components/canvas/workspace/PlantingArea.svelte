@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Konva from 'konva';
 	import type { Vector2d } from 'konva/lib/types';
-	import { mode } from 'mode-watcher';
 	import { getContext, onDestroy } from 'svelte';
 
 	import {
@@ -27,7 +26,7 @@
 		/** The current position of the planting area in the workspace, in model quantity (meters). */
 		position: Vector2d | null;
 		/** The geometry of the planting area. */
-		geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>;
+		geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>;
 		/** If true, the planting area may be moved and resized. */
 		editable: boolean;
 		/** If true, the planting area is selected. */
@@ -97,16 +96,17 @@
 	 * Shape config settings.
 	 */
 	let strokeColor = $derived(
-		selected ? getColor('accent', 8, mode.current) : getColor('brown', 10, mode.current)
+		selected ? getColor('accent', 8, canvas.mode.current) : getColor('brown', 10, canvas.mode.current)
 	);
+	$inspect(canvas.mode.current)
 	let fillColor = $derived(
-		selected ? getColor('accent', 5, mode.current) : getColor('brown', 3, mode.current)
+		selected ? getColor('accent', 5, canvas.mode.current) : getColor('brown', 3, canvas.mode.current)
 	);
 	let strokeWidth = $derived(selected ? 3 : 2);
 	let nameTextFillColor = $derived(
 		selected
-			? getColor('accent', 11, mode.current)
-			: getColor('brown', 11, mode.current)
+			? getColor('accent', 11, canvas.mode.current)
+			: getColor('brown', 11, canvas.mode.current)
 	);
 
 	/** Update shapes upon geometry change. */

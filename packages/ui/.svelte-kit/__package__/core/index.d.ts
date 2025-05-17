@@ -2,6 +2,7 @@ export * as Avatar from './avatar';
 export * as Button from './button';
 export * as Calendar from './calendar';
 export * as Card from './card';
+export * as Carousel from './carousel';
 export * as Checkbox from './checkbox';
 export * as Collapsible from './collapsible';
 export * as Command from './command';

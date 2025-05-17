@@ -10,9 +10,11 @@ const maxScaleFactor = 10;
 /**
  * Context which handles canvas positioning and scaling.
  * @param container The container context.
+ * @param draggable: The draggable Konva value.
+ * @param strokeScale: The default value for strokeScaleEnabled for shapes.
  * @returns The transform context.
  */
-export function createCanvasTransform(container) {
+export function createCanvasTransform(container, draggable, strokeScale) {
     /** Runes. */
     let scaleFactor = $state({ x: 1, y: 1 });
     let position = $state({ x: 0, y: 0 });
@@ -153,7 +155,7 @@ export function createCanvasTransform(container) {
         }
         position = initialPosition();
         container.stage.position(position);
-        container.stage.draggable(true);
+        container.stage.draggable(draggable);
         $effect(() => {
             if (!container.stage)
                 return;
@@ -180,6 +182,9 @@ export function createCanvasTransform(container) {
         },
         get position() {
             return position;
+        },
+        get strokeScale() {
+            return strokeScale;
         },
         set config(newVal) {
             config.value = newVal;

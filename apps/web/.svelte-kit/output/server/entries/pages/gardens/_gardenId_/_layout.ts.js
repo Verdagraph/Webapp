@@ -1,6 +1,6 @@
+import { g as getClient, t as triplit, A as AppError } from "../../../../chunks/auth.svelte.js";
 import { g as goto } from "../../../../chunks/client.js";
 import { g as gardenQuery } from "../../../../chunks/queries.js";
-import { g as getClient, t as triplit, A as AppError } from "../../../../chunks/auth.svelte.js";
 import { g as gardenContext } from "../../../../chunks/gardenContext.svelte.js";
 async function load({ params }) {
   const client = await getClient();

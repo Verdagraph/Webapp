@@ -6,30 +6,30 @@ export const nodes = [
 	() => import('./nodes/2'),
 	() => import('./nodes/3'),
 	() => import('./nodes/4'),
-	() => import('./nodes/5')
+	() => import('./nodes/5'),
+	() => import('./nodes/6'),
+	() => import('./nodes/7')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
-	'/': [2],
-	'/about': [3],
-	'/demo': [4],
-	'/guides': [5]
-};
+		"/": [2],
+		"/about": [3],
+		"/blog": [4],
+		"/demo": [5],
+		"/docs": [6],
+		"/support": [7]
+	};
 
 export const hooks = {
-	handleError: ({ error }) => {
-		console.error(error);
-	},
-
-	reroute: () => {},
+	handleError: (({ error }) => { console.error(error) }),
+	
+	reroute: (() => {}),
 	transport: {}
 };
 
-export const decoders = Object.fromEntries(
-	Object.entries(hooks.transport).map(([k, v]) => [k, v.decode])
-);
+export const decoders = Object.fromEntries(Object.entries(hooks.transport).map(([k, v]) => [k, v.decode]));
 
 export const hash = false;
 

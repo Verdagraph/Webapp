@@ -19,8 +19,8 @@
 		{
 			label: 'Application',
 			links: [
-				{ label: 'View the Demonstration', href: '/demo' },
 				{ label: 'Start the application', href: env.APP_URL },
+				{ label: 'View the Demonstration', href: '/demo' },
 				/** TODO: Update once this href is known. */
 				{ label: 'Self-hosting Instructions', href: '/docs' }
 			]
@@ -29,8 +29,11 @@
 		{
 			label: 'Contact',
 			links: [
+				{ label: 'Blog', href: '/blog' },
+				{ label: 'Newsletter', href: env.NEWSLETTER_URL },
 				{ label: 'Email', href: 'mailto:contact@verdagraph.org' },
 				{ label: 'Support the Project', href: '/support' },
+				{ label: 'Liberapay', href: externalLinks.donation },
 				{ label: 'Contributing', href: '' }
 			]
 		}

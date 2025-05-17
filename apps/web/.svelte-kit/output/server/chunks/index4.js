@@ -1,5 +1,5 @@
 import "clsx";
-import { o as once, d as bind_props, a as pop, p as push, c as spread_attributes } from "./index2.js";
+import { o as once, b as bind_props, a as pop, p as push, d as spread_attributes } from "./index2.js";
 import { f as box, u as useRefById, a as getDataDisabled, e as useId, m as mergeProps } from "./use-id.js";
 import { v as isBrowser, c as createContext, x as isFocusVisible, n as noop, F as Floating_layer, u as Floating_layer_anchor } from "./index3.js";
 function useTimeoutFn(cb, interval, options = {}) {

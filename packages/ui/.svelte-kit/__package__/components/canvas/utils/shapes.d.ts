@@ -15,7 +15,7 @@ export type SupportedShape = Konva.Rect | Konva.Ellipse | Konva.RegularPolygon |
  * @param position The position of the shape, if any.
  * @returns The Konva shape. Null, if the geometry is not well-defined.
  */
-export declare function getShape(canvas: CanvasContext, geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>, config?: Partial<ShapeConfig>, position?: Coordinate): SupportedShape | null;
+export declare function getShape(canvas: CanvasContext, geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>, config?: Partial<ShapeConfig>, position?: Coordinate): SupportedShape | null;
 /**
  * Constructs a Konva shape from geometry and position objects.
  * The resulting shape is closed.
@@ -25,7 +25,7 @@ export declare function getShape(canvas: CanvasContext, geometry: Omit<Geometry,
  * @param position The position of the shape, if any.
  * @returns The Konva shape. Null, if the geometry is not well-defined.
  */
-export declare function getClosedShape(canvas: CanvasContext, geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>, config?: Partial<ShapeConfig>, position?: Coordinate): SupportedShape | null;
+export declare function getClosedShape(canvas: CanvasContext, geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>, config?: Partial<ShapeConfig>, position?: Coordinate): SupportedShape | null;
 /**
  * Given an existing shape object and a partial of geometry
  * updates, update the shape object.

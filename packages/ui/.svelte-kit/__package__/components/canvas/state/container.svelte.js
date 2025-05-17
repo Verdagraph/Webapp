@@ -9,7 +9,7 @@ import { AppError } from '@vdg-webapp/models/src/errors';
 export function createCanvasContainer(canvasId) {
     /** Consts. */
     const containerId = canvasId; /** ID of the container HTML element. */
-    const pixelsPerMeter = 100; /** The initial scale of rendering, pre-scaling. */
+    let pixelsPerMeter = $state(100); /** The initial scale of rendering, pre-scaling. */
     /** Konva. */
     let stage = null;
     const layers = {}; /** Record to track references to layers. */
@@ -75,7 +75,7 @@ export function createCanvasContainer(canvasId) {
         stage = new Konva.Stage({
             container: containerId,
             width: width,
-            height: height
+            height: height,
         });
         initialized = true;
     }
@@ -103,6 +103,9 @@ export function createCanvasContainer(canvasId) {
         },
         set height(newVal) {
             height = newVal;
+        },
+        set pixelsPerMeter(newVal) {
+            pixelsPerMeter = newVal;
         },
         initialize,
         addLayer,

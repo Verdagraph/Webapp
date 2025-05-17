@@ -1,7 +1,7 @@
-import { o as once, p as push, c as spread_attributes, d as bind_props, a as pop, q as clsx, s as setContext, k as getContext, l as ensure_array_like, m as escape_html, e as copy_payload, f as assign_payload, g as spread_props } from "./index2.js";
+import { o as once, p as push, d as spread_attributes, b as bind_props, a as pop, t as clsx, s as setContext, l as getContext, m as ensure_array_like, n as escape_html, e as copy_payload, f as assign_payload, g as spread_props } from "./index2.js";
 import { c as cn } from "./shadcn.js";
-import { i as iconIds } from "./icons.js";
 import { I as Icon, t as tick, o as onDestroy } from "./Icon.js";
+import { i as iconIds } from "./icons.js";
 import { B as Button } from "./button2.js";
 import { u as useRefById, e as useId$1, f as box, m as mergeProps, y as getDefaultExportFromCjs } from "./use-id.js";
 import "clsx";

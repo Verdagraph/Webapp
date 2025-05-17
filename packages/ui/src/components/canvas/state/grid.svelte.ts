@@ -8,6 +8,10 @@ import { getColor } from '$utils';
 import { type CanvasContainer } from './container.svelte';
 import { type CanvasTransform } from './transform.svelte';
 
+export type GridManagerConfig = {
+	metersPerBackgroundGridline: number;
+};
+
 type GridManagerPersistedState = {
 	snapToGrid: boolean;
 	rightAngleConstraint: boolean;

@@ -1,4 +1,4 @@
-import { D as current_component, z as sanitize_props, c as spread_attributes, a as pop, p as push } from "./index2.js";
+import { D as current_component, z as sanitize_props, d as spread_attributes, a as pop, p as push } from "./index2.js";
 function html(value) {
   var html2 = String(value ?? "");
   var open = "<!---->";

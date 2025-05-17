@@ -1,6 +1,6 @@
 import "clsx";
-import { o as handleErrors, A as AppError } from "./auth.svelte.js";
 import { isAxiosError } from "axios";
+import { o as handleErrors, A as AppError } from "./auth.svelte.js";
 function createCommandHandler(asyncFn, options) {
   let isLoading = false;
   let isError = false;

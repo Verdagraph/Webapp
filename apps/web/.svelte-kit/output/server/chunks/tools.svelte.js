@@ -221,32 +221,6 @@ function createSubscriber(_) {
   return () => {
   };
 }
-class LocalStore {
-  _rune;
-  _key = "";
-  constructor(key, value) {
-    this._key = key;
-    this._rune = value;
-  }
-  get value() {
-    return this._rune;
-  }
-  set value(newVal) {
-    this._rune = newVal;
-  }
-  persist() {
-    localStorage.setItem(this._key, this.serialize(this._rune));
-  }
-  serialize(value) {
-    return JSON.stringify(value);
-  }
-  deserialize(item) {
-    return JSON.parse(item);
-  }
-}
-function localStore(key, value) {
-  return new LocalStore(key, value);
-}
 const defaultWindow = void 0;
 function getActiveElement(document) {
   let activeElement = document.activeElement;
@@ -288,6 +262,32 @@ function watchPre(sources, effect, options) {
   runWatcher(sources, "pre", effect, options);
 }
 watch.pre = watchPre;
+class LocalStore {
+  _rune;
+  _key = "";
+  constructor(key, value) {
+    this._key = key;
+    this._rune = value;
+  }
+  get value() {
+    return this._rune;
+  }
+  set value(newVal) {
+    this._rune = newVal;
+  }
+  persist() {
+    localStorage.setItem(this._key, this.serialize(this._rune));
+  }
+  serialize(value) {
+    return JSON.stringify(value);
+  }
+  deserialize(item) {
+    return JSON.parse(item);
+  }
+}
+function localStore(key, value) {
+  return new LocalStore(key, value);
+}
 const msPerDay = 1e3 * 60 * 60 * 24;
 const monthStrings = {
   1: "Jan",

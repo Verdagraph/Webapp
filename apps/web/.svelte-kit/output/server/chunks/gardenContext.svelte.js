@@ -1,6 +1,6 @@
 import "clsx";
-import { r as requiredRole } from "./permissions.js";
 import "./auth.svelte.js";
+import { r as requiredRole } from "./permissions.js";
 let id = null;
 let role = null;
 function authorize(action) {

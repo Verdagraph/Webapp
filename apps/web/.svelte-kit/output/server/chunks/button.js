@@ -1,4 +1,4 @@
-import { y as element, d as bind_props, a as pop, p as push, c as spread_attributes } from "./index2.js";
+import { y as element, b as bind_props, a as pop, p as push, d as spread_attributes } from "./index2.js";
 function Button($$payload, $$props) {
   push();
   let {

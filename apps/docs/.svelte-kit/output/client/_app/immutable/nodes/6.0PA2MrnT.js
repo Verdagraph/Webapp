@@ -1,0 +1,1 @@
+import{d as t}from"../chunks/mSri9W3G.js";import"../chunks/BYCRH5r5.js";import{$ as r}from"../chunks/pM0_cG1C.js";import{U as a}from"../chunks/x3YYoYrL.js";function c(o){t(n=>{r.title="Documentation - Verdagraph"}),a(o)}export{c as component};

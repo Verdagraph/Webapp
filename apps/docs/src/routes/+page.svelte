@@ -1,11 +1,10 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { Button, Input, VdgLogo, cn } from '@vdg-webapp/ui';
+	import { Button, VdgLogo, cn } from '@vdg-webapp/ui';
 
+	import LandingPageDemo from '$components/landingPage/LandingPageDemo.svelte';
 	import env from '$lib/env';
-
-	import LandingPageDemo from './LandingPageDemo.svelte';
 
 	type Explainer = {
 		title: string;

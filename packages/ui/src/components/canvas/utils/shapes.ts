@@ -38,6 +38,7 @@ function getClosedOrUnclosedShape(
 	const commonShapeConfig: Partial<ShapeConfig> = {
 		x: canvas.transform.canvasXPos(position?.x || 0),
 		y: canvas.transform.canvasYPos(position?.y || 0),
+		strokeScaleEnabled: canvas.transform.strokeScale,
 		...config
 	};
 
@@ -96,7 +97,7 @@ function getClosedOrUnclosedShape(
  */
 export function getShape(
 	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>,
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
 ): SupportedShape | null {
@@ -114,7 +115,7 @@ export function getShape(
  */
 export function getClosedShape(
 	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>,
+	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>,
 	config?: Partial<ShapeConfig>,
 	position?: Coordinate
 ): SupportedShape | null {
