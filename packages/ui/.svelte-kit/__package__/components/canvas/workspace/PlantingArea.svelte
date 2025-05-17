@@ -31,6 +31,7 @@
 		editable: boolean;
 		/** If true, the planting area is selected. */
 		selected: boolean;
+		labelTranslate?: Vector2d; 
 		/** The grid attributes of the planting area. */
 		grid?: { numRows: number; numCols: number };
 		/** Called when the position is moved in the canvas. */
@@ -59,6 +60,7 @@
 		geometry,
 		editable,
 		selected,
+		labelTranslate = {x: 0, y: 0},
 		// grid,
 		onTranslate,
 		onTransform: onTransformContainer,
@@ -96,11 +98,15 @@
 	 * Shape config settings.
 	 */
 	let strokeColor = $derived(
-		selected ? getColor('accent', 8, canvas.mode.current) : getColor('brown', 10, canvas.mode.current)
+		selected
+			? getColor('accent', 8, canvas.mode.current)
+			: getColor('brown', 10, canvas.mode.current)
 	);
-	$inspect(canvas.mode.current)
+	$inspect(canvas.mode.current);
 	let fillColor = $derived(
-		selected ? getColor('accent', 5, canvas.mode.current) : getColor('brown', 3, canvas.mode.current)
+		selected
+			? getColor('accent', 5, canvas.mode.current)
+			: getColor('brown', 3, canvas.mode.current)
 	);
 	let strokeWidth = $derived(selected ? 3 : 2);
 	let nameTextFillColor = $derived(
@@ -122,13 +128,15 @@
 			if (plantingAreaShape) {
 				group.add(plantingAreaShape);
 				group.rotation(geometry.rotation);
-				nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
+				nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry) + labelTranslate.y));
+				nameText.x(canvas.transform.canvasXPos(labelTranslate.x))
 			}
 
 			/** Otherwise, update the existing shape.*/
 		} else {
 			updateShape(canvas, geometry, plantingAreaShape);
-			nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)));
+			nameText.y(canvas.transform.canvasYPos(getGeometryHeight(geometry)  + labelTranslate.y));
+			nameText.x(canvas.transform.canvasXPos(labelTranslate.x))
 		}
 
 		previousGeometryType = geometry.type;

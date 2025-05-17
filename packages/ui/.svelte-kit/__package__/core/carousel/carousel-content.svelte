@@ -19,7 +19,7 @@
 
 <!-- svelte-ignore event_directive_deprecated -->
 <div
-	class="overflow-hidden w-full h-full"
+	class="h-full w-full overflow-hidden"
 	use:emblaCarouselSvelte={{
 		options: {
 			container: '[data-embla-container]',

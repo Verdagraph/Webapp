@@ -1,4 +1,4 @@
-import { p as push, d as spread_attributes, b as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props, j as stringify } from "../../../../../../chunks/index2.js";
+import { p as push, c as spread_attributes, d as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props, j as stringify } from "../../../../../../chunks/index2.js";
 import { I as Icon } from "../../../../../../chunks/Icon.js";
 import { u as useQuery } from "../../../../../../chunks/index.svelte.js";
 import "../../../../../../chunks/client.js";

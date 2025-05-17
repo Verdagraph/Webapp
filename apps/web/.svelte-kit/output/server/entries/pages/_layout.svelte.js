@@ -1,21 +1,20 @@
 import "clsx";
-import { h as head, b as bind_props, a as pop, p as push, c as attr, o as once, d as spread_attributes, e as copy_payload, f as assign_payload, g as spread_props, j as stringify, s as setContext$1, k as hasContext, l as getContext$1, m as ensure_array_like, n as escape_html, q as attr_class, t as clsx } from "../../chunks/index2.js";
-import { g as get, w as writable, d as derived } from "../../chunks/index.js";
-import { i as is_array, y as get_prototype_of, z as object_prototype, A as fallback } from "../../chunks/utils.js";
+import { b as attr, a as pop, p as push, h as head, o as once, c as spread_attributes, d as bind_props, e as copy_payload, f as assign_payload, g as spread_props, j as stringify, s as setContext$1, k as hasContext, l as getContext$1, m as ensure_array_like, n as escape_html, q as attr_class, t as clsx } from "../../chunks/index2.js";
+import { m as modeStorageKey, t as themeStorageKey, d as darkClassNames, l as lightClassNames, a as disableTransitions, b as themeColors, B as Button, c as derivedMode } from "../../chunks/button.js";
+import { u as useRefById$1, g as getDataOrientation, a as getDataDisabled, b as getDataOpenClosed, c as getAriaDisabled, d as getAriaExpanded, e as useId$1, f as box, m as mergeProps } from "../../chunks/use-id.js";
+import { I as IsMobile } from "../../chunks/isMobile.svelte.js";
 import { h as html, I as Icon } from "../../chunks/Icon.js";
 import { t as triplit, a as auth, u as userLogin } from "../../chunks/auth.svelte.js";
 import { u as useQuery } from "../../chunks/index.svelte.js";
 import { g as gardenQuery } from "../../chunks/queries.js";
 import { g as gardenContext } from "../../chunks/gardenContext.svelte.js";
-import { u as useRefById$1, g as getDataOrientation, a as getDataDisabled, b as getDataOpenClosed, c as getAriaDisabled, d as getAriaExpanded, e as useId$1, f as box, m as mergeProps } from "../../chunks/use-id.js";
+import { i as is_array, y as get_prototype_of, z as object_prototype } from "../../chunks/utils.js";
 import { u as useDialogTrigger, D as Dialog, a as Dialog_content, b as Dialog_overlay } from "../../chunks/dialog-content.js";
 import { i as iconIds } from "../../chunks/icons.js";
 import { c as createContext$1, S as SPACE, E as ENTER, w as watch, a as afterTick, n as noop$1, P as Presence_layer, b as Portal, R as Root, T as Trigger$2, d as Popover_content } from "../../chunks/index3.js";
 import { c as cn } from "../../chunks/shadcn.js";
 import { u as useRovingFocus } from "../../chunks/use-roving-focus.svelte.js";
-import { B as Button } from "../../chunks/button.js";
 import { S as Separator } from "../../chunks/separator.js";
-import { I as IsMobile } from "../../chunks/isMobile.svelte.js";
 import { e as externalLinks } from "../../chunks/links.js";
 import { m as mode } from "../../chunks/theme.svelte.js";
 import { P as Provider } from "../../chunks/index4.js";
@@ -100,249 +99,24 @@ function clone(value, cloned, path, paths, original = null) {
     );
   }
 }
-let timeoutAction;
-let timeoutEnable;
-function withoutTransition(action) {
-  if (typeof document === "undefined")
-    return;
-  clearTimeout(timeoutAction);
-  clearTimeout(timeoutEnable);
-  const style = document.createElement("style");
-  const css = document.createTextNode(`* {
-     -webkit-transition: none !important;
-     -moz-transition: none !important;
-     -o-transition: none !important;
-     -ms-transition: none !important;
-     transition: none !important;
-  }`);
-  style.appendChild(css);
-  const disable = () => document.head.appendChild(style);
-  const enable = () => document.head.removeChild(style);
-  if (typeof window.getComputedStyle !== "undefined") {
-    disable();
-    action();
-    window.getComputedStyle(style).opacity;
-    enable();
-    return;
-  }
-  if (typeof window.requestAnimationFrame !== "undefined") {
-    disable();
-    action();
-    window.requestAnimationFrame(enable);
-    return;
-  }
-  disable();
-  timeoutAction = window.setTimeout(() => {
-    action();
-    timeoutEnable = window.setTimeout(enable, 120);
-  }, 120);
-}
-function sanitizeClassNames(classNames) {
-  return classNames.filter((className) => className.length > 0);
-}
-const noopStorage = {
-  getItem: (_key) => null,
-  setItem: (_key, _value) => {
-  }
-};
-const isBrowser$1 = typeof document !== "undefined";
-const modes = ["dark", "light", "system"];
-const modeStorageKey = writable("mode-watcher-mode");
-const themeStorageKey = writable("mode-watcher-theme");
-const userPrefersMode = createUserPrefersMode();
-const systemPrefersMode = createSystemMode();
-const themeColors = writable(void 0);
-const theme = createCustomTheme();
-const disableTransitions = writable(true);
-const darkClassNames = writable([]);
-const lightClassNames = writable([]);
-const derivedMode = createDerivedMode();
-createDerivedTheme();
-function createUserPrefersMode() {
-  const defaultValue = "system";
-  const storage = isBrowser$1 ? localStorage : noopStorage;
-  const initialValue = storage.getItem(getModeStorageKey());
-  let value = isValidMode(initialValue) ? initialValue : defaultValue;
-  function getModeStorageKey() {
-    return get(modeStorageKey);
-  }
-  const { subscribe, set: _set } = writable(value, () => {
-    if (!isBrowser$1)
-      return;
-    const handler = (e) => {
-      if (e.key !== getModeStorageKey())
-        return;
-      const newValue = e.newValue;
-      if (isValidMode(newValue)) {
-        _set(value = newValue);
-      } else {
-        _set(value = defaultValue);
-      }
-    };
-    addEventListener("storage", handler);
-    return () => removeEventListener("storage", handler);
-  });
-  function set2(v) {
-    _set(value = v);
-    storage.setItem(getModeStorageKey(), value);
-  }
-  return {
-    subscribe,
-    set: set2
-  };
-}
-function createCustomTheme() {
-  const storage = isBrowser$1 ? localStorage : noopStorage;
-  const initialValue = storage.getItem(getThemeStorageKey());
-  let value = initialValue === null || initialValue === void 0 ? "" : initialValue;
-  function getThemeStorageKey() {
-    return get(themeStorageKey);
-  }
-  const { subscribe, set: _set } = writable(value, () => {
-    if (!isBrowser$1)
-      return;
-    const handler = (e) => {
-      if (e.key !== getThemeStorageKey())
-        return;
-      const newValue = e.newValue;
-      if (newValue === null) {
-        _set(value = "");
-      } else {
-        _set(value = newValue);
-      }
-    };
-    addEventListener("storage", handler);
-    return () => removeEventListener("storage", handler);
-  });
-  function set2(v) {
-    _set(value = v);
-    storage.setItem(getThemeStorageKey(), value);
-  }
-  return {
-    subscribe,
-    set: set2
-  };
-}
-function createSystemMode() {
-  const defaultValue = void 0;
-  let track = true;
-  const { subscribe, set: set2 } = writable(defaultValue, () => {
-    if (!isBrowser$1)
-      return;
-    const handler = (e) => {
-      if (!track)
-        return;
-      set2(e.matches ? "light" : "dark");
-    };
-    const mediaQueryState = window.matchMedia("(prefers-color-scheme: light)");
-    mediaQueryState.addEventListener("change", handler);
-    return () => mediaQueryState.removeEventListener("change", handler);
-  });
-  function query() {
-    if (!isBrowser$1)
-      return;
-    const mediaQueryState = window.matchMedia("(prefers-color-scheme: light)");
-    set2(mediaQueryState.matches ? "light" : "dark");
-  }
-  function tracking(active) {
-    track = active;
-  }
-  return {
-    subscribe,
-    query,
-    tracking
-  };
-}
-function createDerivedMode() {
-  const { subscribe } = derived([
-    userPrefersMode,
-    systemPrefersMode,
-    themeColors,
-    disableTransitions,
-    darkClassNames,
-    lightClassNames
-  ], ([$userPrefersMode, $systemPrefersMode, $themeColors, $disableTransitions, $darkClassNames, $lightClassNames]) => {
-    if (!isBrowser$1)
-      return void 0;
-    const derivedMode2 = $userPrefersMode === "system" ? $systemPrefersMode : $userPrefersMode;
-    const sanitizedDarkClassNames = sanitizeClassNames($darkClassNames);
-    const sanitizedLightClassNames = sanitizeClassNames($lightClassNames);
-    function update() {
-      const htmlEl = document.documentElement;
-      const themeColorEl = document.querySelector('meta[name="theme-color"]');
-      if (derivedMode2 === "light") {
-        if (sanitizedDarkClassNames.length)
-          htmlEl.classList.remove(...sanitizedDarkClassNames);
-        if (sanitizedLightClassNames.length)
-          htmlEl.classList.add(...sanitizedLightClassNames);
-        htmlEl.style.colorScheme = "light";
-        if (themeColorEl && $themeColors) {
-          themeColorEl.setAttribute("content", $themeColors.light);
-        }
-      } else {
-        if (sanitizedLightClassNames.length)
-          htmlEl.classList.remove(...sanitizedLightClassNames);
-        if (sanitizedDarkClassNames.length)
-          htmlEl.classList.add(...sanitizedDarkClassNames);
-        htmlEl.style.colorScheme = "dark";
-        if (themeColorEl && $themeColors) {
-          themeColorEl.setAttribute("content", $themeColors.dark);
-        }
-      }
-    }
-    if ($disableTransitions) {
-      withoutTransition(update);
-    } else {
-      update();
-    }
-    return derivedMode2;
-  });
-  return {
-    subscribe
-  };
-}
-function createDerivedTheme() {
-  const { subscribe } = derived([theme, disableTransitions], ([$theme, $disableTransitions]) => {
-    if (!isBrowser$1)
-      return void 0;
-    function update() {
-      const htmlEl = document.documentElement;
-      htmlEl.setAttribute("data-theme", $theme);
-    }
-    if ($disableTransitions) {
-      withoutTransition(update);
-    } else {
-      update();
-    }
-    return $theme;
-  });
-  return {
-    subscribe
-  };
-}
-function isValidMode(value) {
-  if (typeof value !== "string")
-    return false;
-  return modes.includes(value);
-}
 function defineConfig(config) {
   return config;
 }
-function setInitialMode({ defaultMode, themeColors: themeColors2, darkClassNames: darkClassNames2 = ["dark"], lightClassNames: lightClassNames2 = [], defaultTheme = "" }) {
+function setInitialMode({ defaultMode = "system", themeColors: themeColors2, darkClassNames: darkClassNames2 = ["dark"], lightClassNames: lightClassNames2 = [], defaultTheme = "", modeStorageKey: modeStorageKey2 = "mode-watcher-mode", themeStorageKey: themeStorageKey2 = "mode-watcher-theme" }) {
   const rootEl = document.documentElement;
-  const mode2 = localStorage.getItem("mode-watcher-mode") || defaultMode;
-  const theme2 = localStorage.getItem("mode-watcher-theme") || defaultTheme;
+  const mode2 = localStorage.getItem(modeStorageKey2) ?? defaultMode;
+  const theme = localStorage.getItem(themeStorageKey2) ?? defaultTheme;
   const light = mode2 === "light" || mode2 === "system" && window.matchMedia("(prefers-color-scheme: light)").matches;
   if (light) {
     if (darkClassNames2.length)
-      rootEl.classList.remove(...darkClassNames2);
+      rootEl.classList.remove(...darkClassNames2.filter(Boolean));
     if (lightClassNames2.length)
-      rootEl.classList.add(...lightClassNames2);
+      rootEl.classList.add(...lightClassNames2.filter(Boolean));
   } else {
     if (lightClassNames2.length)
-      rootEl.classList.remove(...lightClassNames2);
+      rootEl.classList.remove(...lightClassNames2.filter(Boolean));
     if (darkClassNames2.length)
-      rootEl.classList.add(...darkClassNames2);
+      rootEl.classList.add(...darkClassNames2.filter(Boolean));
   }
   rootEl.style.colorScheme = light ? "light" : "dark";
   if (themeColors2) {
@@ -351,70 +125,80 @@ function setInitialMode({ defaultMode, themeColors: themeColors2, darkClassNames
       themeMetaEl.setAttribute("content", mode2 === "light" ? themeColors2.light : themeColors2.dark);
     }
   }
-  if (theme2) {
-    rootEl.setAttribute("data-theme", theme2);
-    localStorage.setItem("mode-watcher-theme", theme2);
+  if (theme) {
+    rootEl.setAttribute("data-theme", theme);
+    localStorage.setItem(themeStorageKey2, theme);
   }
-  localStorage.setItem("mode-watcher-mode", mode2);
+  localStorage.setItem(modeStorageKey2, mode2);
+}
+function Mode_watcher_lite($$payload, $$props) {
+  push();
+  let { themeColors: themeColors2 } = $$props;
+  if (themeColors2) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<meta name="theme-color"${attr("content", themeColors2.dark)}>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]-->`;
+  pop();
+}
+function Mode_watcher_full($$payload, $$props) {
+  push();
+  let { trueNonce = "", initConfig, themeColors: themeColors2 } = $$props;
+  head($$payload, ($$payload2) => {
+    if (themeColors2) {
+      $$payload2.out += "<!--[-->";
+      $$payload2.out += `<meta name="theme-color"${attr("content", themeColors2.dark)}>`;
+    } else {
+      $$payload2.out += "<!--[!-->";
+    }
+    $$payload2.out += `<!--]--> ${html(`<script${trueNonce ? ` nonce=${trueNonce}` : ""}>(` + setInitialMode.toString() + `)(` + JSON.stringify(initConfig) + `);<\/script>`)}`;
+  });
+  pop();
 }
 function Mode_watcher($$payload, $$props) {
   push();
-  let trueNonce;
-  let track = fallback($$props["track"], true);
-  let defaultMode = fallback($$props["defaultMode"], "system");
-  let themeColors$1 = fallback($$props["themeColors"], () => void 0, true);
-  let disableTransitions$1 = fallback($$props["disableTransitions"], true);
-  let darkClassNames$1 = fallback($$props["darkClassNames"], () => ["dark"], true);
-  let lightClassNames$1 = fallback($$props["lightClassNames"], () => [], true);
-  let defaultTheme = fallback($$props["defaultTheme"], "");
-  let nonce = fallback($$props["nonce"], "");
-  let themeStorageKey$1 = fallback($$props["themeStorageKey"], "mode-watcher-theme");
-  let modeStorageKey$1 = fallback($$props["modeStorageKey"], "mode-watcher-mode");
+  let {
+    defaultMode = "system",
+    themeColors: themeColorsProp,
+    disableTransitions: disableTransitionsProp = true,
+    darkClassNames: darkClassNamesProp = ["dark"],
+    lightClassNames: lightClassNamesProp = [],
+    defaultTheme = "",
+    nonce = "",
+    themeStorageKey: themeStorageKeyProp = "mode-watcher-theme",
+    modeStorageKey: modeStorageKeyProp = "mode-watcher-mode",
+    disableHeadScriptInjection = false
+  } = $$props;
+  modeStorageKey.current = modeStorageKeyProp;
+  themeStorageKey.current = themeStorageKeyProp;
+  darkClassNames.current = darkClassNamesProp;
+  lightClassNames.current = lightClassNamesProp;
+  disableTransitions.current = disableTransitionsProp;
+  themeColors.current = themeColorsProp;
   const initConfig = defineConfig({
     defaultMode,
-    themeColors: themeColors$1,
-    darkClassNames: darkClassNames$1,
-    lightClassNames: lightClassNames$1,
+    themeColors: themeColorsProp,
+    darkClassNames: darkClassNamesProp,
+    lightClassNames: lightClassNamesProp,
     defaultTheme,
-    modeStorageKey: modeStorageKey$1,
-    themeStorageKey: themeStorageKey$1
+    modeStorageKey: modeStorageKeyProp,
+    themeStorageKey: themeStorageKeyProp
   });
-  disableTransitions.set(disableTransitions$1);
-  themeColors.set(themeColors$1);
-  darkClassNames.set(darkClassNames$1);
-  lightClassNames.set(lightClassNames$1);
-  modeStorageKey.set(modeStorageKey$1);
-  themeStorageKey.set(themeStorageKey$1);
-  trueNonce = typeof window === "undefined" ? nonce : "";
-  head($$payload, ($$payload2) => {
-    if (themeColors$1) {
-      $$payload2.out += "<!--[-->";
-      $$payload2.out += `<meta name="theme-color"${attr("content", themeColors$1.dark)}>`;
-    } else {
-      $$payload2.out += "<!--[!-->";
-    }
-    $$payload2.out += `<!--]--> `;
-    if (trueNonce) {
-      $$payload2.out += "<!--[-->";
-      $$payload2.out += `${html(`<script nonce=${trueNonce}>(` + setInitialMode.toString() + `)(` + JSON.stringify(initConfig) + `);<\/script>`)}`;
-    } else {
-      $$payload2.out += "<!--[!-->";
-      $$payload2.out += `${html(`<script>(` + setInitialMode.toString() + `)(` + JSON.stringify(initConfig) + `);<\/script>`)}`;
-    }
-    $$payload2.out += `<!--]-->`;
-  });
-  bind_props($$props, {
-    track,
-    defaultMode,
-    themeColors: themeColors$1,
-    disableTransitions: disableTransitions$1,
-    darkClassNames: darkClassNames$1,
-    lightClassNames: lightClassNames$1,
-    defaultTheme,
-    nonce,
-    themeStorageKey: themeStorageKey$1,
-    modeStorageKey: modeStorageKey$1
-  });
+  const trueNonce = typeof window === "undefined" ? nonce : "";
+  if (disableHeadScriptInjection) {
+    $$payload.out += "<!--[-->";
+    Mode_watcher_lite($$payload, { themeColors: themeColors.current });
+  } else {
+    $$payload.out += "<!--[!-->";
+    Mode_watcher_full($$payload, {
+      trueNonce,
+      initConfig,
+      themeColors: themeColors.current
+    });
+  }
+  $$payload.out += `<!--]-->`;
   pop();
 }
 function Logo($$payload, $$props) {
@@ -1432,14 +1216,14 @@ class PositionFixed {
 function setContext(key, value) {
   return setContext$1(key, value);
 }
-function getContext(key, fallback2) {
+function getContext(key, fallback) {
   const trueKey = typeof key === "symbol" ? key : key;
   const description = typeof key === "symbol" ? key.description : key;
   if (!hasContext(trueKey)) {
-    if (fallback2 === void 0) {
+    if (fallback === void 0) {
       throw new Error(`Missing context dependency: ${description} and no fallback was provided.`);
     }
-    return fallback2;
+    return fallback;
   }
   return getContext$1(key);
 }
@@ -1452,8 +1236,8 @@ function createContext(providerComponentName, contextName, useSymbol = true) {
   const symbolDescription = getSymbolDescription(providerComponentName);
   const symbol = Symbol(symbolDescription);
   const key = symbolDescription;
-  function getCtx(fallback2) {
-    const context = getContext(useSymbol ? symbol : key, fallback2);
+  function getCtx(fallback) {
+    const context = getContext(useSymbol ? symbol : key, fallback);
     if (context === void 0) {
       throw new Error(`Context \`${symbolDescription}\` not found. Component must be used within ${Array.isArray(providerComponentName) ? `one of the following components: ${providerComponentName.join(", ")}` : `\`${providerComponentName}\``}`);
     }

@@ -1,8 +1,8 @@
+import { mode } from 'mode-watcher';
 import createCanvasContainer from './container.svelte';
 import createCanvasGridManager from './grid.svelte';
 import createSelectionGroup from './selectionGroup.svelte';
 import createCanvasTransform from './transform.svelte';
-import { mode } from 'mode-watcher';
 export * from './transform.svelte';
 /**
  * The Canvas Context provides access to all canvas state

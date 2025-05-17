@@ -1,4 +1,4 @@
-import { s as setContext$1, k as hasContext, l as getContext$1, p as push, a as pop, C as getAllContexts, o as once, g as spread_props, b as bind_props, d as spread_attributes, e as copy_payload, f as assign_payload } from "./index2.js";
+import { s as setContext$1, k as hasContext, l as getContext$1, p as push, a as pop, C as getAllContexts, o as once, g as spread_props, d as bind_props, c as spread_attributes, e as copy_payload, f as assign_payload } from "./index2.js";
 import "clsx";
 import { f as box, u as useRefById, z as executeCallbacks, e as useId, A as composeHandlers, B as cssToStyleObj, v as styleToString, m as mergeProps, b as getDataOpenClosed, d as getAriaExpanded } from "./use-id.js";
 import { t as tick } from "./Icon.js";

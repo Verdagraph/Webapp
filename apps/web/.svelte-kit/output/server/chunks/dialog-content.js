@@ -1,4 +1,4 @@
-import { o as once, p as push, b as bind_props, a as pop, d as spread_attributes, g as spread_props } from "./index2.js";
+import { o as once, p as push, d as bind_props, a as pop, c as spread_attributes, g as spread_props } from "./index2.js";
 import { b as getDataOpenClosed, u as useRefById, d as getAriaExpanded, e as useId, f as box, m as mergeProps } from "./use-id.js";
 import { c as createContext, S as SPACE, E as ENTER, P as Presence_layer, n as noop, z as Focus_scope, B as Escape_layer, D as Dismissible_layer, C as Text_selection_layer, G as Scroll_lock } from "./index3.js";
 import "clsx";

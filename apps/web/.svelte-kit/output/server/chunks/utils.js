@@ -1242,8 +1242,8 @@ function subscribe_to_store(store, run2, invalidate) {
   return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
 }
 export {
-  fallback as A,
-  run as B,
+  run as A,
+  fallback as B,
   noop as C,
   DEV as D,
   subscribe_to_store as E,

@@ -1,4 +1,4 @@
-import { h as head } from "../../../chunks/index2.js";
+import { q as head } from "../../../chunks/index.js";
 import { U as UnderConstructionPage } from "../../../chunks/UnderConstructionPage.js";
 function _page($$payload) {
   head($$payload, ($$payload2) => {

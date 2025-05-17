@@ -16,6 +16,7 @@ type Props = {
     editable: boolean;
     /** If true, the planting area is selected. */
     selected: boolean;
+    labelTranslate?: Vector2d;
     /** The grid attributes of the planting area. */
     grid?: {
         numRows: number;

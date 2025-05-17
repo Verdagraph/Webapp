@@ -1,253 +1,27 @@
 import { clsx } from "clsx";
-import { g as get$1, w as writable, d as derived } from "../../chunks/index.js";
-import { g as fallback, h as head, j as bind_props, f as pop, p as push, k as attr, s as setContext$1, l as hasContext, m as getContext$1, n as getAllContexts, o as once, q as spread_attributes, t as spread_props, u as copy_payload, v as assign_payload, w as ensure_array_like, x as escape_html } from "../../chunks/index2.js";
+import { m as modeStorageKey, t as themeStorageKey, d as darkClassNames, l as lightClassNames, a as disableTransitions, b as themeColors, p as parse } from "../../chunks/states.svelte.js";
+import { n as attr, m as pop, p as push, q as head, s as setContext$1, t as hasContext, u as getContext$1, v as getAllContexts, w as once, x as spread_attributes, y as bind_props, z as spread_props, A as copy_payload, B as assign_payload, C as ensure_array_like, D as escape_html } from "../../chunks/index.js";
 import { h as html, t as tick, I as Icon } from "../../chunks/Icon.js";
 import { c as cn, e as env, B as Button } from "../../chunks/env.js";
 import { e as externalLinks } from "../../chunks/links.js";
-var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-let timeoutAction;
-let timeoutEnable;
-function withoutTransition(action) {
-  if (typeof document === "undefined")
-    return;
-  clearTimeout(timeoutAction);
-  clearTimeout(timeoutEnable);
-  const style = document.createElement("style");
-  const css = document.createTextNode(`* {
-     -webkit-transition: none !important;
-     -moz-transition: none !important;
-     -o-transition: none !important;
-     -ms-transition: none !important;
-     transition: none !important;
-  }`);
-  style.appendChild(css);
-  const disable = () => document.head.appendChild(style);
-  const enable = () => document.head.removeChild(style);
-  if (typeof window.getComputedStyle !== "undefined") {
-    disable();
-    action();
-    window.getComputedStyle(style).opacity;
-    enable();
-    return;
-  }
-  if (typeof window.requestAnimationFrame !== "undefined") {
-    disable();
-    action();
-    window.requestAnimationFrame(enable);
-    return;
-  }
-  disable();
-  timeoutAction = window.setTimeout(() => {
-    action();
-    timeoutEnable = window.setTimeout(enable, 120);
-  }, 120);
-}
-function sanitizeClassNames(classNames) {
-  return classNames.filter((className) => className.length > 0);
-}
-const noopStorage = {
-  getItem: (_key) => null,
-  setItem: (_key, _value) => {
-  }
-};
-const isBrowser$1 = typeof document !== "undefined";
-const modes = ["dark", "light", "system"];
-const modeStorageKey = writable("mode-watcher-mode");
-const themeStorageKey = writable("mode-watcher-theme");
-const userPrefersMode = createUserPrefersMode();
-const systemPrefersMode = createSystemMode();
-const themeColors = writable(void 0);
-const theme = createCustomTheme();
-const disableTransitions = writable(true);
-const darkClassNames = writable([]);
-const lightClassNames = writable([]);
-createDerivedMode();
-createDerivedTheme();
-function createUserPrefersMode() {
-  const defaultValue = "system";
-  const storage = isBrowser$1 ? localStorage : noopStorage;
-  const initialValue = storage.getItem(getModeStorageKey());
-  let value = isValidMode(initialValue) ? initialValue : defaultValue;
-  function getModeStorageKey() {
-    return get$1(modeStorageKey);
-  }
-  const { subscribe, set: _set } = writable(value, () => {
-    if (!isBrowser$1)
-      return;
-    const handler = (e) => {
-      if (e.key !== getModeStorageKey())
-        return;
-      const newValue = e.newValue;
-      if (isValidMode(newValue)) {
-        _set(value = newValue);
-      } else {
-        _set(value = defaultValue);
-      }
-    };
-    addEventListener("storage", handler);
-    return () => removeEventListener("storage", handler);
-  });
-  function set(v) {
-    _set(value = v);
-    storage.setItem(getModeStorageKey(), value);
-  }
-  return {
-    subscribe,
-    set
-  };
-}
-function createCustomTheme() {
-  const storage = isBrowser$1 ? localStorage : noopStorage;
-  const initialValue = storage.getItem(getThemeStorageKey());
-  let value = initialValue === null || initialValue === void 0 ? "" : initialValue;
-  function getThemeStorageKey() {
-    return get$1(themeStorageKey);
-  }
-  const { subscribe, set: _set } = writable(value, () => {
-    if (!isBrowser$1)
-      return;
-    const handler = (e) => {
-      if (e.key !== getThemeStorageKey())
-        return;
-      const newValue = e.newValue;
-      if (newValue === null) {
-        _set(value = "");
-      } else {
-        _set(value = newValue);
-      }
-    };
-    addEventListener("storage", handler);
-    return () => removeEventListener("storage", handler);
-  });
-  function set(v) {
-    _set(value = v);
-    storage.setItem(getThemeStorageKey(), value);
-  }
-  return {
-    subscribe,
-    set
-  };
-}
-function createSystemMode() {
-  const defaultValue = void 0;
-  let track = true;
-  const { subscribe, set } = writable(defaultValue, () => {
-    if (!isBrowser$1)
-      return;
-    const handler = (e) => {
-      if (!track)
-        return;
-      set(e.matches ? "light" : "dark");
-    };
-    const mediaQueryState = window.matchMedia("(prefers-color-scheme: light)");
-    mediaQueryState.addEventListener("change", handler);
-    return () => mediaQueryState.removeEventListener("change", handler);
-  });
-  function query() {
-    if (!isBrowser$1)
-      return;
-    const mediaQueryState = window.matchMedia("(prefers-color-scheme: light)");
-    set(mediaQueryState.matches ? "light" : "dark");
-  }
-  function tracking(active) {
-    track = active;
-  }
-  return {
-    subscribe,
-    query,
-    tracking
-  };
-}
-function createDerivedMode() {
-  const { subscribe } = derived([
-    userPrefersMode,
-    systemPrefersMode,
-    themeColors,
-    disableTransitions,
-    darkClassNames,
-    lightClassNames
-  ], ([$userPrefersMode, $systemPrefersMode, $themeColors, $disableTransitions, $darkClassNames, $lightClassNames]) => {
-    if (!isBrowser$1)
-      return void 0;
-    const derivedMode = $userPrefersMode === "system" ? $systemPrefersMode : $userPrefersMode;
-    const sanitizedDarkClassNames = sanitizeClassNames($darkClassNames);
-    const sanitizedLightClassNames = sanitizeClassNames($lightClassNames);
-    function update() {
-      const htmlEl = document.documentElement;
-      const themeColorEl = document.querySelector('meta[name="theme-color"]');
-      if (derivedMode === "light") {
-        if (sanitizedDarkClassNames.length)
-          htmlEl.classList.remove(...sanitizedDarkClassNames);
-        if (sanitizedLightClassNames.length)
-          htmlEl.classList.add(...sanitizedLightClassNames);
-        htmlEl.style.colorScheme = "light";
-        if (themeColorEl && $themeColors) {
-          themeColorEl.setAttribute("content", $themeColors.light);
-        }
-      } else {
-        if (sanitizedLightClassNames.length)
-          htmlEl.classList.remove(...sanitizedLightClassNames);
-        if (sanitizedDarkClassNames.length)
-          htmlEl.classList.add(...sanitizedDarkClassNames);
-        htmlEl.style.colorScheme = "dark";
-        if (themeColorEl && $themeColors) {
-          themeColorEl.setAttribute("content", $themeColors.dark);
-        }
-      }
-    }
-    if ($disableTransitions) {
-      withoutTransition(update);
-    } else {
-      update();
-    }
-    return derivedMode;
-  });
-  return {
-    subscribe
-  };
-}
-function createDerivedTheme() {
-  const { subscribe } = derived([theme, disableTransitions], ([$theme, $disableTransitions]) => {
-    if (!isBrowser$1)
-      return void 0;
-    function update() {
-      const htmlEl = document.documentElement;
-      htmlEl.setAttribute("data-theme", $theme);
-    }
-    if ($disableTransitions) {
-      withoutTransition(update);
-    } else {
-      update();
-    }
-    return $theme;
-  });
-  return {
-    subscribe
-  };
-}
-function isValidMode(value) {
-  if (typeof value !== "string")
-    return false;
-  return modes.includes(value);
-}
 function defineConfig(config) {
   return config;
 }
-function setInitialMode({ defaultMode, themeColors: themeColors2, darkClassNames: darkClassNames2 = ["dark"], lightClassNames: lightClassNames2 = [], defaultTheme = "" }) {
+function setInitialMode({ defaultMode = "system", themeColors: themeColors2, darkClassNames: darkClassNames2 = ["dark"], lightClassNames: lightClassNames2 = [], defaultTheme = "", modeStorageKey: modeStorageKey2 = "mode-watcher-mode", themeStorageKey: themeStorageKey2 = "mode-watcher-theme" }) {
   const rootEl = document.documentElement;
-  const mode = localStorage.getItem("mode-watcher-mode") || defaultMode;
-  const theme2 = localStorage.getItem("mode-watcher-theme") || defaultTheme;
+  const mode = localStorage.getItem(modeStorageKey2) ?? defaultMode;
+  const theme = localStorage.getItem(themeStorageKey2) ?? defaultTheme;
   const light = mode === "light" || mode === "system" && window.matchMedia("(prefers-color-scheme: light)").matches;
   if (light) {
     if (darkClassNames2.length)
-      rootEl.classList.remove(...darkClassNames2);
+      rootEl.classList.remove(...darkClassNames2.filter(Boolean));
     if (lightClassNames2.length)
-      rootEl.classList.add(...lightClassNames2);
+      rootEl.classList.add(...lightClassNames2.filter(Boolean));
   } else {
     if (lightClassNames2.length)
-      rootEl.classList.remove(...lightClassNames2);
+      rootEl.classList.remove(...lightClassNames2.filter(Boolean));
     if (darkClassNames2.length)
-      rootEl.classList.add(...darkClassNames2);
+      rootEl.classList.add(...darkClassNames2.filter(Boolean));
   }
   rootEl.style.colorScheme = light ? "light" : "dark";
   if (themeColors2) {
@@ -256,70 +30,80 @@ function setInitialMode({ defaultMode, themeColors: themeColors2, darkClassNames
       themeMetaEl.setAttribute("content", mode === "light" ? themeColors2.light : themeColors2.dark);
     }
   }
-  if (theme2) {
-    rootEl.setAttribute("data-theme", theme2);
-    localStorage.setItem("mode-watcher-theme", theme2);
+  if (theme) {
+    rootEl.setAttribute("data-theme", theme);
+    localStorage.setItem(themeStorageKey2, theme);
   }
-  localStorage.setItem("mode-watcher-mode", mode);
+  localStorage.setItem(modeStorageKey2, mode);
+}
+function Mode_watcher_lite($$payload, $$props) {
+  push();
+  let { themeColors: themeColors2 } = $$props;
+  if (themeColors2) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<meta name="theme-color"${attr("content", themeColors2.dark)}>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]-->`;
+  pop();
+}
+function Mode_watcher_full($$payload, $$props) {
+  push();
+  let { trueNonce = "", initConfig, themeColors: themeColors2 } = $$props;
+  head($$payload, ($$payload2) => {
+    if (themeColors2) {
+      $$payload2.out += "<!--[-->";
+      $$payload2.out += `<meta name="theme-color"${attr("content", themeColors2.dark)}>`;
+    } else {
+      $$payload2.out += "<!--[!-->";
+    }
+    $$payload2.out += `<!--]--> ${html(`<script${trueNonce ? ` nonce=${trueNonce}` : ""}>(` + setInitialMode.toString() + `)(` + JSON.stringify(initConfig) + `);<\/script>`)}`;
+  });
+  pop();
 }
 function Mode_watcher($$payload, $$props) {
   push();
-  let trueNonce;
-  let track = fallback($$props["track"], true);
-  let defaultMode = fallback($$props["defaultMode"], "system");
-  let themeColors$1 = fallback($$props["themeColors"], () => void 0, true);
-  let disableTransitions$1 = fallback($$props["disableTransitions"], true);
-  let darkClassNames$1 = fallback($$props["darkClassNames"], () => ["dark"], true);
-  let lightClassNames$1 = fallback($$props["lightClassNames"], () => [], true);
-  let defaultTheme = fallback($$props["defaultTheme"], "");
-  let nonce = fallback($$props["nonce"], "");
-  let themeStorageKey$1 = fallback($$props["themeStorageKey"], "mode-watcher-theme");
-  let modeStorageKey$1 = fallback($$props["modeStorageKey"], "mode-watcher-mode");
+  let {
+    defaultMode = "system",
+    themeColors: themeColorsProp,
+    disableTransitions: disableTransitionsProp = true,
+    darkClassNames: darkClassNamesProp = ["dark"],
+    lightClassNames: lightClassNamesProp = [],
+    defaultTheme = "",
+    nonce = "",
+    themeStorageKey: themeStorageKeyProp = "mode-watcher-theme",
+    modeStorageKey: modeStorageKeyProp = "mode-watcher-mode",
+    disableHeadScriptInjection = false
+  } = $$props;
+  modeStorageKey.current = modeStorageKeyProp;
+  themeStorageKey.current = themeStorageKeyProp;
+  darkClassNames.current = darkClassNamesProp;
+  lightClassNames.current = lightClassNamesProp;
+  disableTransitions.current = disableTransitionsProp;
+  themeColors.current = themeColorsProp;
   const initConfig = defineConfig({
     defaultMode,
-    themeColors: themeColors$1,
-    darkClassNames: darkClassNames$1,
-    lightClassNames: lightClassNames$1,
+    themeColors: themeColorsProp,
+    darkClassNames: darkClassNamesProp,
+    lightClassNames: lightClassNamesProp,
     defaultTheme,
-    modeStorageKey: modeStorageKey$1,
-    themeStorageKey: themeStorageKey$1
+    modeStorageKey: modeStorageKeyProp,
+    themeStorageKey: themeStorageKeyProp
   });
-  disableTransitions.set(disableTransitions$1);
-  themeColors.set(themeColors$1);
-  darkClassNames.set(darkClassNames$1);
-  lightClassNames.set(lightClassNames$1);
-  modeStorageKey.set(modeStorageKey$1);
-  themeStorageKey.set(themeStorageKey$1);
-  trueNonce = typeof window === "undefined" ? nonce : "";
-  head($$payload, ($$payload2) => {
-    if (themeColors$1) {
-      $$payload2.out += "<!--[-->";
-      $$payload2.out += `<meta name="theme-color"${attr("content", themeColors$1.dark)}>`;
-    } else {
-      $$payload2.out += "<!--[!-->";
-    }
-    $$payload2.out += `<!--]--> `;
-    if (trueNonce) {
-      $$payload2.out += "<!--[-->";
-      $$payload2.out += `${html(`<script nonce=${trueNonce}>(` + setInitialMode.toString() + `)(` + JSON.stringify(initConfig) + `);<\/script>`)}`;
-    } else {
-      $$payload2.out += "<!--[!-->";
-      $$payload2.out += `${html(`<script>(` + setInitialMode.toString() + `)(` + JSON.stringify(initConfig) + `);<\/script>`)}`;
-    }
-    $$payload2.out += `<!--]-->`;
-  });
-  bind_props($$props, {
-    track,
-    defaultMode,
-    themeColors: themeColors$1,
-    disableTransitions: disableTransitions$1,
-    darkClassNames: darkClassNames$1,
-    lightClassNames: lightClassNames$1,
-    defaultTheme,
-    nonce,
-    themeStorageKey: themeStorageKey$1,
-    modeStorageKey: modeStorageKey$1
-  });
+  const trueNonce = typeof window === "undefined" ? nonce : "";
+  if (disableHeadScriptInjection) {
+    $$payload.out += "<!--[-->";
+    Mode_watcher_lite($$payload, { themeColors: themeColors.current });
+  } else {
+    $$payload.out += "<!--[!-->";
+    Mode_watcher_full($$payload, {
+      trueNonce,
+      initConfig,
+      themeColors: themeColors.current
+    });
+  }
+  $$payload.out += `<!--]-->`;
   pop();
 }
 const iconIds = {
@@ -354,13 +138,13 @@ function box(initialValue) {
   };
 }
 function boxWith(getter, setter) {
-  const derived2 = getter();
+  const derived = getter();
   if (setter) {
     return {
       [BoxSymbol]: true,
       [isWritableSymbol]: true,
       get current() {
-        return derived2;
+        return derived;
       },
       set current(v) {
         setter(v);
@@ -436,166 +220,6 @@ function composeHandlers(...handlers) {
     }
   };
 }
-var cjs = {};
-var COMMENT_REGEX = /\/\*[^*]*\*+([^/*][^*]*\*+)*\//g;
-var NEWLINE_REGEX = /\n/g;
-var WHITESPACE_REGEX = /^\s*/;
-var PROPERTY_REGEX = /^(\*?[-#/*\\\w]+(\[[0-9a-z_-]+\])?)\s*/;
-var COLON_REGEX = /^:\s*/;
-var VALUE_REGEX = /^((?:'(?:\\'|.)*?'|"(?:\\"|.)*?"|\([^)]*?\)|[^};])+)/;
-var SEMICOLON_REGEX = /^[;\s]*/;
-var TRIM_REGEX = /^\s+|\s+$/g;
-var NEWLINE = "\n";
-var FORWARD_SLASH = "/";
-var ASTERISK = "*";
-var EMPTY_STRING = "";
-var TYPE_COMMENT = "comment";
-var TYPE_DECLARATION = "declaration";
-var inlineStyleParser = function(style, options) {
-  if (typeof style !== "string") {
-    throw new TypeError("First argument must be a string");
-  }
-  if (!style) return [];
-  options = options || {};
-  var lineno = 1;
-  var column = 1;
-  function updatePosition(str) {
-    var lines = str.match(NEWLINE_REGEX);
-    if (lines) lineno += lines.length;
-    var i = str.lastIndexOf(NEWLINE);
-    column = ~i ? str.length - i : column + str.length;
-  }
-  function position() {
-    var start = { line: lineno, column };
-    return function(node) {
-      node.position = new Position(start);
-      whitespace();
-      return node;
-    };
-  }
-  function Position(start) {
-    this.start = start;
-    this.end = { line: lineno, column };
-    this.source = options.source;
-  }
-  Position.prototype.content = style;
-  function error(msg) {
-    var err = new Error(
-      options.source + ":" + lineno + ":" + column + ": " + msg
-    );
-    err.reason = msg;
-    err.filename = options.source;
-    err.line = lineno;
-    err.column = column;
-    err.source = style;
-    if (options.silent) ;
-    else {
-      throw err;
-    }
-  }
-  function match(re) {
-    var m = re.exec(style);
-    if (!m) return;
-    var str = m[0];
-    updatePosition(str);
-    style = style.slice(str.length);
-    return m;
-  }
-  function whitespace() {
-    match(WHITESPACE_REGEX);
-  }
-  function comments(rules) {
-    var c;
-    rules = rules || [];
-    while (c = comment()) {
-      if (c !== false) {
-        rules.push(c);
-      }
-    }
-    return rules;
-  }
-  function comment() {
-    var pos = position();
-    if (FORWARD_SLASH != style.charAt(0) || ASTERISK != style.charAt(1)) return;
-    var i = 2;
-    while (EMPTY_STRING != style.charAt(i) && (ASTERISK != style.charAt(i) || FORWARD_SLASH != style.charAt(i + 1))) {
-      ++i;
-    }
-    i += 2;
-    if (EMPTY_STRING === style.charAt(i - 1)) {
-      return error("End of comment missing");
-    }
-    var str = style.slice(2, i - 2);
-    column += 2;
-    updatePosition(str);
-    style = style.slice(i);
-    column += 2;
-    return pos({
-      type: TYPE_COMMENT,
-      comment: str
-    });
-  }
-  function declaration() {
-    var pos = position();
-    var prop = match(PROPERTY_REGEX);
-    if (!prop) return;
-    comment();
-    if (!match(COLON_REGEX)) return error("property missing ':'");
-    var val = match(VALUE_REGEX);
-    var ret = pos({
-      type: TYPE_DECLARATION,
-      property: trim(prop[0].replace(COMMENT_REGEX, EMPTY_STRING)),
-      value: val ? trim(val[0].replace(COMMENT_REGEX, EMPTY_STRING)) : EMPTY_STRING
-    });
-    match(SEMICOLON_REGEX);
-    return ret;
-  }
-  function declarations() {
-    var decls = [];
-    comments(decls);
-    var decl;
-    while (decl = declaration()) {
-      if (decl !== false) {
-        decls.push(decl);
-        comments(decls);
-      }
-    }
-    return decls;
-  }
-  whitespace();
-  return declarations();
-};
-function trim(str) {
-  return str ? str.replace(TRIM_REGEX, EMPTY_STRING) : EMPTY_STRING;
-}
-var __importDefault = commonjsGlobal && commonjsGlobal.__importDefault || function(mod) {
-  return mod && mod.__esModule ? mod : { "default": mod };
-};
-Object.defineProperty(cjs, "__esModule", { value: true });
-var _default = cjs.default = StyleToObject;
-var inline_style_parser_1 = __importDefault(inlineStyleParser);
-function StyleToObject(style, iterator) {
-  var styleObject = null;
-  if (!style || typeof style !== "string") {
-    return styleObject;
-  }
-  var declarations = (0, inline_style_parser_1.default)(style);
-  var hasIterator = typeof iterator === "function";
-  declarations.forEach(function(declaration) {
-    if (declaration.type !== "declaration") {
-      return;
-    }
-    var property = declaration.property, value = declaration.value;
-    if (hasIterator) {
-      iterator(property, value, declaration);
-    } else if (value) {
-      styleObject = styleObject || {};
-      styleObject[property] = value;
-    }
-  });
-  return styleObject;
-}
-const parse = _default.default || _default;
 const NUMBER_CHAR_RE = /\d/;
 const STR_SPLITTERS = ["-", "_", "/", "."];
 function isUppercase(char = "") {
@@ -848,14 +472,14 @@ function isElementHidden(node, stopAt) {
 function setContext(key, value) {
   return setContext$1(key, value);
 }
-function getContext(key, fallback2) {
+function getContext(key, fallback) {
   const trueKey = typeof key === "symbol" ? key : key;
   const description = typeof key === "symbol" ? key.description : key;
   if (!hasContext(trueKey)) {
-    if (fallback2 === void 0) {
+    if (fallback === void 0) {
       throw new Error(`Missing context dependency: ${description} and no fallback was provided.`);
     }
-    return fallback2;
+    return fallback;
   }
   return getContext$1(key);
 }
@@ -872,8 +496,8 @@ function createContext(providerComponentName, contextName, useSymbol = true) {
   const symbolDescription = getSymbolDescription(providerComponentName, contextName);
   const symbol = Symbol.for(`bits-ui.${symbolDescription}`);
   const key = symbolDescription;
-  function getCtx(fallback2) {
-    const context = getContext(useSymbol ? symbol : key, fallback2);
+  function getCtx(fallback) {
+    const context = getContext(useSymbol ? symbol : key, fallback);
     if (context === void 0) {
       throw new Error(`Context \`${symbolDescription}\` not found. Component must be used within ${Array.isArray(providerComponentName) ? `one of the following components: ${providerComponentName.join(", ")}` : `\`${providerComponentName}\``}`);
     }
@@ -964,7 +588,7 @@ function Portal($$payload, $$props) {
   $$payload.out += `<!--]-->`;
   pop();
 }
-function addEventListener$1(target, event, handler, options) {
+function addEventListener(target, event, handler, options) {
   const events = Array.isArray(event) ? event : [event];
   events.forEach((_event) => target.addEventListener(_event, handler, options));
   return () => {
@@ -1043,17 +667,17 @@ class DismissibleLayerState {
       * to avoid checking if is responsible layer during interaction end
       * when a new floating element may have been opened.
       */
-      addEventListener$1(this.#documentObj, "pointerdown", executeCallbacks(this.#markInterceptedEvent, this.#markResponsibleLayer), true),
+      addEventListener(this.#documentObj, "pointerdown", executeCallbacks(this.#markInterceptedEvent, this.#markResponsibleLayer), true),
       /**
       * BUBBLE INTERACTION START
       * Mark interaction-start event as non-intercepted. Debounce `onInteractOutsideStart`
       * to avoid prematurely checking if other events were intercepted.
       */
-      addEventListener$1(this.#documentObj, "pointerdown", executeCallbacks(this.#markNonInterceptedEvent, this.#handleInteractOutside)),
+      addEventListener(this.#documentObj, "pointerdown", executeCallbacks(this.#markNonInterceptedEvent, this.#handleInteractOutside)),
       /**
       * HANDLE FOCUS OUTSIDE
       */
-      addEventListener$1(this.#documentObj, "focusin", this.#handleFocus)
+      addEventListener(this.#documentObj, "focusin", this.#handleFocus)
     );
   }
   #handleDismiss = (e) => {
@@ -1084,7 +708,7 @@ class DismissibleLayerState {
       }
       if (e.pointerType === "touch") {
         this.#unsubClickListener();
-        this.#unsubClickListener = addEventListener$1(this.#documentObj, "click", this.#handleDismiss, { once: true });
+        this.#unsubClickListener = addEventListener(this.#documentObj, "click", this.#handleDismiss, { once: true });
       } else {
         this.#interactOutsideProp.current(event);
       }
@@ -1221,7 +845,7 @@ class EscapeLayerState {
     this.#enabled = props.enabled;
   }
   #addEventListener = () => {
-    return addEventListener$1(document, "keydown", this.#onkeydown, { passive: false });
+    return addEventListener(document, "keydown", this.#onkeydown, { passive: false });
   };
   #onkeydown = (e) => {
     if (e.key !== ESCAPE || !isResponsibleEscapeLayer(this)) return;
@@ -1400,7 +1024,7 @@ class TextSelectionLayerState {
     });
   }
   #addEventListeners() {
-    return executeCallbacks(addEventListener$1(document, "pointerdown", this.#pointerdown), addEventListener$1(document, "pointerup", composeHandlers(this.#resetSelectionLock, this.#onPointerUpProp)));
+    return executeCallbacks(addEventListener(document, "pointerdown", this.#pointerdown), addEventListener(document, "pointerup", composeHandlers(this.#resetSelectionLock, this.#onPointerUpProp)));
   }
   #pointerdown = (e) => {
     const node = this.#ref.current;

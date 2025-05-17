@@ -75,7 +75,7 @@ export function createCanvasContainer(canvasId) {
         stage = new Konva.Stage({
             container: containerId,
             width: width,
-            height: height,
+            height: height
         });
         initialized = true;
     }

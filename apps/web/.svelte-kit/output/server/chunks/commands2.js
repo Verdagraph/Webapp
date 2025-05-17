@@ -1,4 +1,4 @@
-import { p as push, d as spread_attributes, t as clsx, n as escape_html, b as bind_props, a as pop } from "./index2.js";
+import { p as push, c as spread_attributes, t as clsx, n as escape_html, d as bind_props, a as pop } from "./index2.js";
 import { c as cn } from "./shadcn.js";
 import { G as GardenCreateCommandSchema, c as getClientOrError, t as triplit, A as AppError } from "./auth.svelte.js";
 import { r as requiredRole } from "./permissions.js";

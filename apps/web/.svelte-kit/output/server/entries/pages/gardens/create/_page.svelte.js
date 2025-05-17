@@ -1,4 +1,4 @@
-import { p as push, d as spread_attributes, b as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props, m as ensure_array_like, v as store_get, n as escape_html, w as unsubscribe_stores, x as store_mutate, h as head } from "../../../../chunks/index2.js";
+import { p as push, c as spread_attributes, d as bind_props, a as pop, e as copy_payload, f as assign_payload, g as spread_props, m as ensure_array_like, v as store_get, n as escape_html, w as unsubscribe_stores, x as store_mutate, h as head } from "../../../../chunks/index2.js";
 import { o as onDestroy, t as tick, I as Icon } from "../../../../chunks/Icon.js";
 import { g as goto } from "../../../../chunks/client.js";
 import "clsx";

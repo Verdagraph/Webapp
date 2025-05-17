@@ -1,0 +1,1 @@
+import{d as r}from"../chunks/HWDk4eir.js";import"../chunks/B1d5rMd0.js";import{$ as t}from"../chunks/DgmMHYUv.js";import{U as a}from"../chunks/Cp_vbEY-.js";function c(o){r(e=>{t.title="Blog - Verdagraph"}),a(o)}export{c as component};

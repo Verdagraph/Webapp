@@ -1,16 +1,16 @@
 import "clsx";
-import { l as getContext, c as attr, a as pop, p as push, o as once, d as spread_attributes, b as bind_props, e as copy_payload, f as assign_payload, q as attr_class, j as stringify, n as escape_html, t as clsx, m as ensure_array_like, u as attr_style, v as store_get, w as unsubscribe_stores, x as store_mutate } from "../../../../../../../chunks/index2.js";
-import { d as derivedMode, F as FormInfoPopover, c as createUnitAwareValues, C as CoordinateInput, U as UnitAwareInput, G as GeometrySelect, g as getWorkspaceContext, t as toolbox } from "../../../../../../../chunks/activeWorkspace.svelte.js";
+import { l as getContext, b as attr, a as pop, p as push, o as once, c as spread_attributes, d as bind_props, e as copy_payload, f as assign_payload, q as attr_class, j as stringify, n as escape_html, t as clsx, m as ensure_array_like, u as attr_style, v as store_get, w as unsubscribe_stores, x as store_mutate } from "../../../../../../../chunks/index2.js";
+import { F as FormInfoPopover, c as createUnitAwareValues, C as CoordinateInput, U as UnitAwareInput, G as GeometrySelect, g as getWorkspaceContext, t as toolbox } from "../../../../../../../chunks/activeWorkspace.svelte.js";
 import { u as useQuery } from "../../../../../../../chunks/index.svelte.js";
 import { A as AppError, w as workspaceFields, t as triplit } from "../../../../../../../chunks/auth.svelte.js";
 import { a as plantingAreaQuery, b as plantingAreasQuery, w as workspacesQuery, c as plantingAreaIdsQuery } from "../../../../../../../chunks/queries2.js";
 import Konva from "konva";
 import { I as Icon, o as onDestroy } from "../../../../../../../chunks/Icon.js";
-import { u as useRefById, a as getDataDisabled, b as getDataOpenClosed, d as getAriaExpanded, e as useId, f as box, m as mergeProps } from "../../../../../../../chunks/use-id.js";
 import { g as getColor } from "../../../../../../../chunks/tools.svelte.js";
 import { h as historySelect, l as locationHistoryUpdate, g as geometryUpdate, p as plantingAreaUpdate, a as locationHistoryExtend, b as locationUpdate } from "../../../../../../../chunks/commands.js";
 import { c as createCommandHandler } from "../../../../../../../chunks/commandHandler.svelte.js";
 import { B as Button } from "../../../../../../../chunks/button2.js";
+import { u as useRefById, a as getDataDisabled, b as getDataOpenClosed, d as getAriaExpanded, e as useId, f as box, m as mergeProps } from "../../../../../../../chunks/use-id.js";
 import { c as createContext, S as SPACE, E as ENTER, n as noop, P as Presence_layer, R as Root$2, T as Trigger$2, d as Popover_content } from "../../../../../../../chunks/index3.js";
 import { R as Root$1, T as Trigger$1 } from "../../../../../../../chunks/index4.js";
 import { T as Tooltip_content, D as DatePicker, a as Tree$1, R as Root$4, b as Tabs_list, c as Tabs_trigger, d as Tabs_content, e as Resizable_pane_group, P as Pane, f as Resizable_handle, g as TabToolbox, h as TimelineSelector } from "../../../../../../../chunks/TabToolbox.js";
@@ -866,6 +866,7 @@ function PlantingArea($$payload, $$props) {
     geometry,
     editable,
     selected,
+    labelTranslate = { x: 0, y: 0 },
     // grid,
     onTranslate,
     onTransform: onTransformContainer,
@@ -884,9 +885,9 @@ function PlantingArea($$payload, $$props) {
   });
   group.add(nameText);
   geometry.type;
-  selected ? getColor("accent", 8, derivedMode.current) : getColor("brown", 10, derivedMode.current);
-  selected ? getColor("accent", 5, derivedMode.current) : getColor("brown", 3, derivedMode.current);
-  selected ? getColor("accent", 11, derivedMode.current) : getColor("brown", 11, derivedMode.current);
+  selected ? getColor("accent", 8, canvas.mode.current) : getColor("brown", 10, canvas.mode.current);
+  selected ? getColor("accent", 5, canvas.mode.current) : getColor("brown", 3, canvas.mode.current);
+  selected ? getColor("accent", 11, canvas.mode.current) : getColor("brown", 11, canvas.mode.current);
   onDestroy(() => {
     group.destroy();
   });

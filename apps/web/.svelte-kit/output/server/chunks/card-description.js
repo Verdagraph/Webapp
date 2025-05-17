@@ -1,4 +1,4 @@
-import { d as spread_attributes, t as clsx, b as bind_props, a as pop, p as push } from "./index2.js";
+import { c as spread_attributes, t as clsx, d as bind_props, a as pop, p as push } from "./index2.js";
 import { c as cn } from "./shadcn.js";
 function Card_description($$payload, $$props) {
   push();

@@ -1,1 +1,0 @@
-import{t as r,a as t}from"../chunks/Boh5s-Fb.js";import"../chunks/CR0Tndyg.js";import{$ as p}from"../chunks/BwwL9Z8J.js";import{h as e}from"../chunks/CklQGOQz.js";var i=r("<div></div>");function c(a){var o=i();e(m=>{p.title="Cultivar - Verdagraph"}),t(a,o)}export{c as component};

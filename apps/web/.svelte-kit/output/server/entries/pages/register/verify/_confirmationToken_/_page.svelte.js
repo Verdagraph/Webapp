@@ -1,12 +1,12 @@
-import { h as head, a as pop, p as push, m as ensure_array_like, n as escape_html } from "../../../../../chunks/index2.js";
+import { h as head, m as ensure_array_like, n as escape_html, a as pop, p as push } from "../../../../../chunks/index2.js";
 import { I as Icon } from "../../../../../chunks/Icon.js";
 import { g as goto } from "../../../../../chunks/client.js";
 import { p as page } from "../../../../../chunks/index5.js";
 import { d as userConfirmEmailConfirmation } from "../../../../../chunks/commands3.js";
 import { c as createCommandHandler } from "../../../../../chunks/commandHandler.svelte.js";
 import { C as Card, a as Card_header, b as Card_title, c as Card_content } from "../../../../../chunks/card.js";
-import { i as iconIds } from "../../../../../chunks/icons.js";
 import { C as Card_description } from "../../../../../chunks/card-description.js";
+import { i as iconIds } from "../../../../../chunks/icons.js";
 function _page($$payload, $$props) {
   push();
   const confirmationToken = page.params.confirmationToken;

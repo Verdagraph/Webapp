@@ -1,4 +1,4 @@
-import { h as head, k as attr, f as pop, p as push } from "../../../chunks/index2.js";
+import { q as head, n as attr, m as pop, p as push } from "../../../chunks/index.js";
 import { M as MainContentContainer } from "../../../chunks/MainContentContainer.js";
 import { B as Button } from "../../../chunks/env.js";
 import { e as externalLinks } from "../../../chunks/links.js";

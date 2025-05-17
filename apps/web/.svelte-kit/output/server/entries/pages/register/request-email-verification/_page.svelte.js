@@ -1,4 +1,4 @@
-import { p as push, e as copy_payload, f as assign_payload, b as bind_props, a as pop, g as spread_props, x as store_mutate, v as store_get, w as unsubscribe_stores, h as head, n as escape_html } from "../../../../chunks/index2.js";
+import { p as push, e as copy_payload, f as assign_payload, d as bind_props, a as pop, g as spread_props, x as store_mutate, v as store_get, w as unsubscribe_stores, h as head, n as escape_html } from "../../../../chunks/index2.js";
 import "../../../../chunks/client.js";
 import "clsx";
 import { s as superForm, z as zod, d as defaults, F as Form_field, C as Control, a as Form_field_errors, b as Form_label, I as Input, c as Form_button } from "../../../../chunks/zod.js";

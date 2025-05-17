@@ -1,4 +1,4 @@
-import { K as current_component, L as sanitize_props, q as spread_attributes, f as pop, p as push } from "./index2.js";
+import { J as current_component, K as sanitize_props, x as spread_attributes, m as pop, p as push } from "./index.js";
 function html(value) {
   var html2 = String(value ?? "");
   var open = "<!---->";
@@ -1667,5 +1667,6 @@ function Icon($$payload, $$props) {
 export {
   Icon as I,
   html as h,
+  onDestroy as o,
   tick as t
 };
