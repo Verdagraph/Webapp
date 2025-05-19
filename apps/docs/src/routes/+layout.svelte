@@ -5,8 +5,7 @@
 	import { Tooltip } from '@vdg-webapp/ui';
 
 	import '../app.pcss';
-	import Footer from './Footer.svelte';
-	import Nav from './Nav.svelte';
+	import Nav from '$components/nav/Nav.svelte';
 
 	let { children } = $props();
 </script>
@@ -18,10 +17,9 @@
 	<Tooltip.Provider delayDuration={500}>
 		<div class="flex flex-col">
 			<Nav />
-			<div class="min-h-screen">
+			<div class="order-first sm:order-last">
 				{@render children()}
 			</div>
-			<Footer />
 		</div>
 	</Tooltip.Provider>
 </div>

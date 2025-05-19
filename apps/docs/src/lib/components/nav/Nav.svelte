@@ -5,21 +5,18 @@
 
 	import env from '$lib/env';
 
+	import MobileNav from './MobileNav.svelte';
+
 	let navLinks = [
 		{
 			url: '/demo',
 			label: 'Demo'
 		},
+		{ url: env.APP_URL, label: 'App' },
 		{
 			url: '/docs',
 			label: 'Docs'
-		},
-		{ url: '/blog', label: 'Blog' },
-		{
-			url: '/about',
-			label: 'About'
-		},
-		{ url: '/support', label: 'Support' }
+		}
 	];
 </script>
 
@@ -28,8 +25,8 @@
 Primary navigation between the docs pages and app resources.
 -->
 <header
-	class="border-neutral-6 sticky left-0 top-0 w-full rounded-none border-b
-		drop-shadow-md"
+	class="sticky bottom-0 left-0 w-full rounded-none border-t drop-shadow-md sm:top-0
+		sm:border-b"
 >
 	<nav class="bg-neutral-2 flex items-center justify-between px-8 py-2">
 		<!-- 
@@ -63,43 +60,7 @@ Primary navigation between the docs pages and app resources.
             Displayed within dropdown menu on smaller screens.
         -->
 		<div class="flex lg:hidden">
-			<Popover.Root>
-				<Popover.Trigger>
-					<Icon icon={iconIds.dropdownMenuIcon} width="3rem" />
-				</Popover.Trigger>
-				<Popover.Content class="w-auto">
-					<ul class="flex flex-col">
-						<!-- 
-							Navigation menu link snippet.
-						-->
-						{#snippet menuLink(url: string, label: string)}
-							<Button.Root href={url} variant="link">
-								{label}
-							</Button.Root>
-						{/snippet}
-
-						{#each navLinks as link}
-							<li>
-								{@render menuLink(link.url, link.label)}
-							</li>
-						{/each}
-						<Separator.Root class="bg-neutral-6 my-2 w-full opacity-50" />
-						<li>
-							{@render menuLink(env.APP_URL, 'Start the Application')}
-						</li>
-					</ul>
-				</Popover.Content>
-			</Popover.Root>
+			<MobileNav />
 		</div>
-
-		<!-- 
-        Rightmost button links.
-        Displayed with a top horizontal menu on larger screens.
-    	-->
-		<ul class="hidden gap-8 text-lg md:flex">
-			<li class="hidden lg:block">
-				<Button.Root href={env.APP_URL} variant="default">Get Started</Button.Root>
-			</li>
-		</ul>
 	</nav>
 </header>
