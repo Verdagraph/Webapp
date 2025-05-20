@@ -1,4 +1,2 @@
 const ssr = false;
-export {
-  ssr
-};
+export { ssr };

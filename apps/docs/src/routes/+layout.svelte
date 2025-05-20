@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '@fontsource/atkinson-hyperlegible';
 	import { ModeWatcher } from 'mode-watcher';
 	import 'tailwindcss/tailwind.css';
 
@@ -18,7 +19,7 @@
 	<Tooltip.Provider delayDuration={500}>
 		<div class="flex flex-col">
 			<Nav />
-			<div class="order-first sm:order-last">
+			<div class="">
 				{@render children()}
 			</div>
 		</div>

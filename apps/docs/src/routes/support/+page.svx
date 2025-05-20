@@ -35,10 +35,6 @@ The current monthy expenses of the project, including the fees to run the applic
 	<span class="italic text-neutral-10">{CURRENT_MONTHLY_EXPENSES_CAD}</span>
 </div>
 
-## Marketing
-
-If you know anyone who is interested in technology and agriculture, feel free to show them this project.
-
 ## Feedback
 
 All ideas for how to improve the project are welcome. 

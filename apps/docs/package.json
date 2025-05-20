@@ -14,6 +14,7 @@
 		"codegen": "rm -r ./src/lib/codegen/; orval --config ./orval.config.ts"
 	},
 	"devDependencies": {
+		"@fontsource/atkinson-hyperlegible": "^5.2.5",
 		"@iconify/svelte": "^4.2.0",
 		"@internationalized/date": "^3.7.0",
 		"@melt-ui/pp": "^0.3.2",

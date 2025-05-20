@@ -1,21 +1,16 @@
 {
-	"/": [
-		"src/routes/+layout.server.js",
-		"src/routes/+layout.server.js"
+	"/": [],
+	"/about": [],
+	"/api/docs": [
+		"src/routes/api/docs/+server.ts"
 	],
-	"/about": [
-		"src/routes/+layout.server.js"
-	],
-	"/blog": [
-		"src/routes/+layout.server.js"
-	],
-	"/demo": [
-		"src/routes/+layout.server.js"
-	],
+	"/blog": [],
+	"/demo": [],
 	"/docs": [
-		"src/routes/+layout.server.js"
+		"src/routes/docs/+page.server.ts"
 	],
-	"/support": [
-		"src/routes/+layout.server.js"
-	]
+	"/docs/[slug]": [
+		"src/routes/docs/[slug]/+page.ts"
+	],
+	"/support": []
 }

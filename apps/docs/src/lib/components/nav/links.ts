@@ -1,59 +1,81 @@
+import type { TreeItem } from 'melt/builders';
+
 import { externalLinks } from '@vdg-webapp/ui';
 
 import env from '$lib/env';
 
-export type NavTreeItem = {
+export type NavTreeItem = TreeItem & {
 	label: string;
 	url?: string;
 
 	children?: NavTreeItem[];
 };
 
+/**
+ * The item ID should match the name of the file, if applicable.
+ */
 export const navItems: NavTreeItem[] = [
 	{
+		id: 'app',
 		label: 'Application',
 		children: [
-			{ label: 'Start the Application', url: env.APP_URL },
-			{ label: 'View the Demonstration', url: '/demo' }
+			{ id: 'appStart', label: 'Start the Application', url: env.APP_URL },
+			{ id: 'appDemo', label: 'View the Demonstration', url: '/demo' }
 		]
 	},
 	{
+		id: 'project',
 		label: 'Project',
 		children: [
-			{ label: 'About', url: '/about' },
-			{ label: 'Support the Project', url: '/about#support-the-project' },
-			{ label: 'Donation', url: '/about#financial' },
-			{ label: 'Contributing', url: '/about#development' },
-			{ label: 'Source Code', url: externalLinks.repository }
+			{ id: 'about', label: 'About', url: '/about' },
+			{
+				id: 'support',
+				label: 'Support the Project',
+				url: '/about#support-the-project'
+			},
+			{ id: 'donate', label: 'Donation', url: '/about#financial' },
+			{ id: 'source', label: 'Source Code', url: externalLinks.repository }
 		]
 	},
 	{
+		id: 'community',
 		label: 'Community',
 		children: [
-			{ label: 'Newsletter', url: 'newsletter.verdagraph.org' },
-			{ label: 'Blog', url: '/blog' },
-			{ label: 'Email', url: 'mailto:contact@verdagraph.org' }
+			{ id: 'newsletter', label: 'Newsletter', url: env.NEWSLETTER_URL },
+			{ id: 'blog', label: 'Blog', url: '/blog' },
+			{ id: 'email', label: 'Email', url: 'mailto:contact@verdagraph.org' }
 		]
-	}
-];
-
-export const docsNavItems: NavTreeItem[] = [
+	},
 	{
+		id: 'docs',
 		label: 'Documentation',
 		children: [
-			{ label: 'Introduction', url: '/docs' },
-			{ label: 'Concepts', url: '/docs/concepts' },
-			{ label: 'Self Hosting Instructions', url: '/docs/self-hosting' },
+			{ id: 'introduction', label: 'Introduction', url: '/docs/introduction' },
+			{ id: 'faq', label: 'Frequently Asked Questions', url: '/docs/faq' },
+			{ id: 'concepts', label: 'Concepts', url: '/docs/concepts' },
+			{ id: 'hosting', label: 'Self Hosting Instructions', url: '/docs/self-hosting' },
 			{
+				id: 'usage',
 				label: 'General Usage',
 				children: [
-					{ label: 'Gardens Management', url: '' },
-					{ label: 'Workspace & Environment Configuration', url: '' },
-					{ label: 'Cutivar Configuration', url: '' },
-					{ label: 'Plant Modelling', url: '' }
+					{ id: 'gardensManagement', label: 'Gardens Management', url: '' },
+					{
+						id: 'workspaceEnvironmentManagement',
+						label: 'Workspace & Environment Configuration',
+						url: ''
+					},
+					{ id: 'cultivarConfig', label: 'Cutivar Configuration', url: '' },
+					{ id: 'plantModelling', label: 'Plant Modelling', url: '' }
 				]
 			},
-			{ label: 'Tutorials', children: [{ label: 'Creating your First Plan', url: '' }] }
+			{
+				id: 'tutorials',
+				label: 'Tutorials',
+				children: [
+					{ id: 'gardenSetupTutorial', label: 'Setup a New Garden', url: '' },
+					{ id: 'firstPlanTutorial', label: 'Creating your First Plan', url: '' }
+				]
+			}
 		]
 	}
 ];

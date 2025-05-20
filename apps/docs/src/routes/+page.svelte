@@ -84,7 +84,7 @@
 	</div>
 {/snippet}
 
-<div class="flex h-full w-full justify-center">
+<div class="mb-12 flex h-full w-full justify-center">
 	<div class="flex w-11/12 flex-col md:w-5/6 lg:w-3/4 2xl:w-1/2">
 		<div class="mt-12 flex w-full items-center justify-between">
 			<h1 class="text-left text-3xl font-bold">

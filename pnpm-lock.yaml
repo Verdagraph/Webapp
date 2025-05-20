@@ -61,6 +61,9 @@ importers:
         specifier: ^0.14.1
         version: 0.14.1(@floating-ui/dom@1.7.0)(svelte@5.28.2)
     devDependencies:
+      '@fontsource/atkinson-hyperlegible':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@iconify/svelte':
         specifier: ^4.2.0
         version: 4.2.0(svelte@5.28.2)
@@ -1441,6 +1444,9 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@fontsource/atkinson-hyperlegible@5.2.5':
+    resolution: {integrity: sha512-looo8B/DHWsKG439j4hHsr2Fq3/CRkM9gpwxUu35aID4q24tYgxLmQqHbwAKA8+uV7y/fHnPkqBNsM83g+cu2A==}
 
   '@gcornut/valibot-json-schema@0.31.0':
     resolution: {integrity: sha512-3xGptCurm23e7nuPQkdrE5rEs1FeTPHhAUsBuwwqG4/YeZLwJOoYZv+fmsppUEfo5y9lzUwNQrNqLS/q7HMc7g==}
@@ -5458,6 +5464,8 @@ snapshots:
       '@floating-ui/utils': 0.2.9
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@fontsource/atkinson-hyperlegible@5.2.5': {}
 
   '@gcornut/valibot-json-schema@0.31.0':
     dependencies:
