@@ -1,6 +1,6 @@
 import type { Vector2d } from 'konva/lib/types';
 
-import { AppError } from '@vdg-webapp/models/src/errors';
+import { AppError } from '@vdg-webapp/models';
 
 import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';

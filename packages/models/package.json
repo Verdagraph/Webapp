@@ -2,9 +2,12 @@
 	"name": "@vdg-webapp/models",
 	"version": "1.0.0",
 	"type": "module",
-	"main": "src/index.ts",
+	"exports": {
+		".": "./dist/index.js"
+	},
 	"scripts": {
 		"dev": "TRIPLIT_JWT_SECRET=secret npx triplit dev --seed=triplit/seeds/seed.ts",
+		"build": "tsc",
 		"seed": "triplit seed"
 	},
 	"devDependencies": {

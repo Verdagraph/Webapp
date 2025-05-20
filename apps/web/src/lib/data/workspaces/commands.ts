@@ -18,7 +18,7 @@ import {
 	WorkspaceUpdateCommandSchema,
 	historySelectDay
 } from '@vdg-webapp/models';
-import { AppError } from '@vdg-webapp/models/src/errors';
+import { AppError } from '@vdg-webapp/models';
 
 import { requireRole } from '$data/gardens/commands';
 import triplit from '$data/triplit';

@@ -1,4 +1,4 @@
-import { AppError } from '@vdg-webapp/models/src/errors';
+import { AppError } from '@vdg-webapp/models';
 import { isMobile } from '../../../state/isMobile.svelte';
 import { LocalStore } from '../../../state/localStore.svelte';
 import {} from './container.svelte';

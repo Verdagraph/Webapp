@@ -1,5 +1,4 @@
 <script lang="ts">
-	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import type { WithoutChildren } from 'bits-ui';
 
 	import { Button, type Props } from '$core/button/index.js';
@@ -34,6 +33,6 @@
 	{...restProps}
 	bind:ref
 >
-	<ArrowLeft class="size-4" />
+	left
 	<span class="sr-only">Previous slide</span>
 </Button>

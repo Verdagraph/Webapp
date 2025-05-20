@@ -1,6 +1,6 @@
 import Konva from 'konva';
 
-import { AppError } from '@vdg-webapp/models/src/errors';
+import { AppError } from '@vdg-webapp/models';
 
 /**
  * Context which stores the Konva stage, container div sizing,

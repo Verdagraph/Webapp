@@ -68,6 +68,7 @@
 		"@vdg-webapp/models": "workspace:*",
 		"@vdg-webapp/ui": "workspace:*",
 		"axios": "^1.8.2",
+		"canvas": "npm:@napi-rs/canvas@0.1.69",
 		"konva": "^9.3.18",
 		"melt": "^0.14.1"
 	}

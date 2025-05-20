@@ -1,7 +1,13 @@
 import { untrack } from 'svelte';
+import { browser } from '$app/environment';
 const MOBILE_BREAKPOINT = 768;
 export const isMobile = () => {
-    return window.innerWidth < MOBILE_BREAKPOINT;
+    if (browser) {
+        return window.innerWidth < MOBILE_BREAKPOINT;
+    }
+    else {
+        return false;
+    }
 };
 export class IsMobile {
     #current = $state(false);
