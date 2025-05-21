@@ -10,6 +10,6 @@ export async function load({ params }) {
 		};
 		// eslint-disable-next-line
 	} catch (e) {
-		error(404, `Could not find ${params.slug}`);
+		error(404, `The documentation article "${params.slug}" could not be found.`);
 	}
 }

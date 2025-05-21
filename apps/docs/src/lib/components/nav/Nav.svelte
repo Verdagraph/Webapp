@@ -6,17 +6,14 @@
 	import env from '$lib/env';
 
 	import MobileNav from './MobileNav.svelte';
+	import Search from './Search.svelte';
 
 	let navLinks = [
 		{
 			url: '/docs',
 			label: 'Docs'
 		},
-		{ url: env.APP_URL, label: 'App' },
-		{
-			url: '/demo',
-			label: 'Demo'
-		}
+		{ url: env.APP_URL, label: 'App' }
 	];
 </script>
 
@@ -24,9 +21,7 @@
 @component
 Primary navigation between the docs pages and app resources.
 -->
-<header
-	class="border-neutral-6 sticky left-0 top-0 z-50 h-12 w-full rounded-none border-b drop-shadow-md"
->
+<header class="sticky left-0 top-0 z-50 h-12 w-full drop-shadow-md">
 	<nav class="bg-neutral-2 flex h-12 items-center justify-between px-8 py-2">
 		<!-- 
             Logo and Verdagraph text.
@@ -47,7 +42,9 @@ Primary navigation between the docs pages and app resources.
             Displayed within top horizontal menu on larger screens.
         -->
 		<div class="flex items-center gap-8">
-			<div class="bg-neutral-8 h-8 w-[300px]"></div>
+			<div class="w-max-[300px] w-1/2">
+				<Search />
+			</div>
 
 			<ul class="hidden gap-4 md:flex md:gap-8 lg:gap-12">
 				{#each navLinks as link}

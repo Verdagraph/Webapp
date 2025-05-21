@@ -31,9 +31,9 @@ export const navItems: NavTreeItem[] = [
 			{
 				id: 'support',
 				label: 'Support the Project',
-				url: '/about#support-the-project'
+				url: '/support'
 			},
-			{ id: 'donate', label: 'Donation', url: '/about#financial' },
+			{ id: 'donate', label: 'Donation', url: externalLinks.donation },
 			{ id: 'source', label: 'Source Code', url: externalLinks.repository }
 		]
 	},

@@ -1,21 +1,72 @@
 <script lang="ts">
-	import { ScrollArea } from '@vdg-webapp/ui';
+	import { createTableOfContents } from '@melt-ui/svelte';
 
+	import { Collapsible, ScrollArea } from '@vdg-webapp/ui';
+
+	import { pushState } from '$app/navigation';
+
+	import TableOfContents from './nav/ TableOfContents.svelte';
 	import Tree from './nav/Tree.svelte';
 
 	let { children } = $props();
+
+	const {
+		elements: { item },
+		states: { activeHeadingIdxs, headingsTree }
+	} = createTableOfContents({
+		selector: '#content-container',
+		exclude: ['h1'],
+		activeType: 'all',
+		/**
+		 * Here we can optionally provide SvelteKit's `pushState` function.
+		 * This function preserve navigation state within the framework.
+		 */
+		//pushStateFn: pushState,
+		headingFilterFn: (heading) => !heading.hasAttribute('data-toc-ignore')
+	});
+
+	let hideHeading = false;
 </script>
 
-<div class="mx-auto mb-12 mt-12 flex flex-row justify-center gap-8 px-4 md:px-8">
+<div class="mx-auto mb-12 mt-0 flex flex-row justify-center gap-8 px-0 md:mt-12">
 	<div class="sticky top-20 hidden h-full md:block">
-		<ScrollArea.Root class="h-screen">
-			<Tree />
-		</ScrollArea.Root>
+		<Tree />
 	</div>
-	<div class="flex flex-col md:flex-row">
-		<div class="prose dark:prose-invert">
-			{@render children()}
+	<div>
+		<div class="sticky top-12 z-50">
+			<Collapsible.Root
+				class="bg-neutral-2 border-neutral-6 mb-4 flex flex-col border px-8 py-4 md:hidden"
+			>
+				<Collapsible.Trigger class="text-neutral-11 font-semibold"
+					>On This Page</Collapsible.Trigger
+				>
+				<Collapsible.Content>
+					{#key $headingsTree}
+						<TableOfContents
+							tree={$headingsTree}
+							activeHeadingIdxs={$activeHeadingIdxs}
+							{item}
+						/>
+					{/key}
+				</Collapsible.Content>
+			</Collapsible.Root>
 		</div>
-		<div class="order-first md:order-last">toc</div>
+		<div id="content-container" class="prose dark:prose-invert px-2 md:px-0">
+			<ScrollArea.Root class="h-full">
+				{@render children()}
+			</ScrollArea.Root>
+		</div>
+	</div>
+	<div class="sticky top-20 hidden h-full w-[200px] md:block">
+		<p class="text-neutral-11 font-semibold">On This Page</p>
+		<nav>
+			{#key $headingsTree}
+				<TableOfContents
+					tree={$headingsTree}
+					activeHeadingIdxs={$activeHeadingIdxs}
+					{item}
+				/>
+			{/key}
+		</nav>
 	</div>
 </div>

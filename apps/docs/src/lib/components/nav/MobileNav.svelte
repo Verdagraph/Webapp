@@ -1,13 +1,9 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Button } from 'bits-ui';
-	import { Accordion } from 'bits-ui';
 
 	import { ScrollArea, Sheet, iconIds } from '@vdg-webapp/ui';
 
 	import Tree from './Tree.svelte';
-
-	let open = $state(false);
 </script>
 
 <Sheet.Root>

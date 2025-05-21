@@ -1,16 +1,32 @@
 {
-	"/": [],
-	"/about": [],
+	"/": [
+		"src/routes/+layout.ts",
+		"src/routes/+layout.ts"
+	],
+	"/about": [
+		"src/routes/+layout.ts"
+	],
 	"/api/docs": [
 		"src/routes/api/docs/+server.ts"
 	],
-	"/blog": [],
-	"/demo": [],
+	"/blog": [
+		"src/routes/+layout.ts"
+	],
+	"/demo": [
+		"src/routes/+layout.ts"
+	],
 	"/docs": [
-		"src/routes/docs/+page.server.ts"
+		"src/routes/docs/+page.server.ts",
+		"src/routes/+layout.ts"
 	],
 	"/docs/[slug]": [
-		"src/routes/docs/[slug]/+page.ts"
+		"src/routes/docs/[slug]/+page.ts",
+		"src/routes/+layout.ts"
 	],
-	"/support": []
+	"/search.json": [
+		"src/routes/search.json/+server.ts"
+	],
+	"/support": [
+		"src/routes/+layout.ts"
+	]
 }

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Tree } from 'melt/builders';
 
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
 	import { navItems } from './links';
@@ -88,6 +87,6 @@
 	{/each}
 {/snippet}
 
-<ul class="w-full list-none" {...tree.root}>
+<ul class="w-[200px] list-none" {...tree.root}>
 	{@render treeItems(tree.children, 0)}
 </ul>

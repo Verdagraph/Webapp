@@ -15,13 +15,9 @@
 <!-- Theme switcher. -->
 <ModeWatcher />
 
-<div class="h-screen w-screen">
-	<Tooltip.Provider delayDuration={500}>
-		<div class="flex flex-col">
-			<Nav />
-			<div class="">
-				{@render children()}
-			</div>
-		</div>
-	</Tooltip.Provider>
-</div>
+<Tooltip.Provider delayDuration={500}>
+	<div class="flex h-full w-full flex-col">
+		<Nav />
+		{@render children()}
+	</div>
+</Tooltip.Provider>
