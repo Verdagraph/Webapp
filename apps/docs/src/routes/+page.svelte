@@ -4,6 +4,7 @@
 	import { Button, VdgLogo, cn } from '@vdg-webapp/ui';
 
 	import LandingPageDemo from '$components/landingPage/LandingPageDemo.svelte';
+	import Nav from '$components/nav/Nav.svelte';
 	import env from '$lib/env';
 
 	type Explainer = {
@@ -84,69 +85,75 @@
 	</div>
 {/snippet}
 
-<div class="mb-12 flex h-full w-full justify-center">
-	<div class="flex w-11/12 flex-col md:w-5/6 lg:w-3/4 2xl:w-1/2">
-		<div class="mt-12 flex w-full items-center justify-between">
-			<h1 class="text-left text-3xl font-bold">
-				Eco-modelling tools for collaboratively organized agriculture
-			</h1>
-			<div class="ml-8">
-				<VdgLogo size="8rem" />
-			</div>
-		</div>
-
-		<div class="mt-8 flex justify-between gap-4">
-			<Button.Root variant="default" href="/demo" class="w-full"
-				>Try the Demonstration</Button.Root
-			>
-			<Button.Root variant="default" href={env.APP_URL} class="w-full"
-				>Get Started</Button.Root
-			>
-		</div>
-
-		<div
-			class="border-neutral-6 bg-neutral-2 mt-6 aspect-video w-full rounded-lg border shadow-md"
-		>
-			<LandingPageDemo />
-		</div>
-
-		<div class="mt-8 flex w-full flex-col gap-6">
-			<div class="flex items-center justify-between">
-				<h2 class="text-neutral-11 font-semibold">Project status:</h2>
-				<div class="bg-neutral-6 mx-8 h-[1px] grow rounded-lg"></div>
-				<span class={cn(developmentStatusClass, 'rounded-lg border px-4 py-2 text-sm')}>
-					Early development
-				</span>
+<div class="flex w-full flex-col">
+	<Nav />
+	<div class="mb-12 flex h-full w-full justify-center">
+		<div class="flex w-11/12 flex-col md:w-5/6 lg:w-3/4 2xl:w-1/2">
+			<div class="mt-12 flex w-full items-center justify-between">
+				<h1 class="text-left text-3xl font-bold">
+					Eco-modelling tools for collaboratively organized agriculture
+				</h1>
+				<div class="ml-8">
+					<VdgLogo size="8rem" />
+				</div>
 			</div>
 
-			<div class="mt-4 flex flex-col gap-4">
-				<Button.Root variant="secondary" href={env.NEWSLETTER_URL} class="w-full"
-					>Join the newsletter for new features and progress updates</Button.Root
+			<div class="mt-8 flex justify-between gap-4">
+				<Button.Root variant="default" href="/demo" class="w-full"
+					>Try the Demonstration</Button.Root
+				>
+				<Button.Root variant="default" href={env.APP_URL} class="w-full"
+					>Get Started</Button.Root
 				>
 			</div>
 
-			<div class="bg-neutral-6 mt-4 h-[1px] grow rounded-lg"></div>
-
-			<div class="mt-4 flex flex-col gap-8">
-				<p class="text-neutral-11 italic">
-					Verdagraph is a collection of open source tools that seek to empower the
-					collaborative planning, tracking, and automation of agro-ecological systems.
-					It currently consists of a garden productivity application and a smart
-					irrigation controller.
-				</p>
-
-				{#each explainers as explainer}
-					{@render explainerSnippet(explainer)}
-				{/each}
+			<div
+				class="border-neutral-6 bg-neutral-2 mt-6 aspect-video w-full rounded-lg border shadow-md"
+			>
+				<LandingPageDemo />
 			</div>
-		</div>
 
-		<div class="mt-12 flex justify-between gap-4">
-			<Button.Root variant="outline" href="/about" class="w-full">Read More</Button.Root
-			>
-			<Button.Root variant="outline" href="/support" class="w-full"
-				>Support the Project</Button.Root
-			>
+			<div class="mt-8 flex w-full flex-col gap-6">
+				<div class="flex items-center justify-between">
+					<h2 class="text-neutral-11 font-semibold">Project status:</h2>
+					<div class="bg-neutral-6 mx-8 h-[1px] grow rounded-lg"></div>
+					<span
+						class={cn(developmentStatusClass, 'rounded-lg border px-4 py-2 text-sm')}
+					>
+						Early development
+					</span>
+				</div>
+
+				<div class="mt-4 flex flex-col gap-4">
+					<Button.Root variant="secondary" href={env.NEWSLETTER_URL} class="w-full"
+						>Join the newsletter for new features and progress updates</Button.Root
+					>
+				</div>
+
+				<div class="bg-neutral-6 mt-4 h-[1px] grow rounded-lg"></div>
+
+				<div class="mt-4 flex flex-col gap-8">
+					<p class="text-neutral-11 italic">
+						Verdagraph is a collection of open source tools that seek to empower the
+						collaborative planning, tracking, and automation of agro-ecological systems.
+						It currently consists of a garden productivity application and a smart
+						irrigation controller.
+					</p>
+
+					{#each explainers as explainer}
+						{@render explainerSnippet(explainer)}
+					{/each}
+				</div>
+			</div>
+
+			<div class="mt-12 flex justify-between gap-4">
+				<Button.Root variant="outline" href="/about" class="w-full"
+					>Read More</Button.Root
+				>
+				<Button.Root variant="outline" href="/support" class="w-full"
+					>Support the Project</Button.Root
+				>
+			</div>
 		</div>
 	</div>
 </div>

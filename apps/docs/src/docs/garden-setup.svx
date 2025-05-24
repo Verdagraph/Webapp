@@ -1,0 +1,13 @@
+---
+title: Setup your First Garden
+description: Instructions for creating and configuring a garden.
+updatedDate: '2025-4-16'
+categories:
+  - tutorials
+published: true
+---
+
+
+## WIP PLACEHOLDER
+
+This document is a work in progress

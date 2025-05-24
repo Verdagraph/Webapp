@@ -1,0 +1,12 @@
+---
+title: Workspace & Environment Configuration
+description: Instructions for configuring workspaces and environments.
+updatedDate: '2025-4-16'
+categories:
+  - usage
+published: true
+---
+
+## WIP PLACEHOLDER
+
+This document is a work in progress

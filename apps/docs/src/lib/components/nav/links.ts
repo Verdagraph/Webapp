@@ -58,22 +58,37 @@ export const navItems: NavTreeItem[] = [
 				id: 'usage',
 				label: 'General Usage',
 				children: [
-					{ id: 'gardensManagement', label: 'Gardens Management', url: '' },
 					{
-						id: 'workspaceEnvironmentManagement',
-						label: 'Workspace & Environment Configuration',
-						url: ''
+						id: 'garden-management',
+						label: 'Garden Management',
+						url: '/docs/garden-management'
 					},
-					{ id: 'cultivarConfig', label: 'Cutivar Configuration', url: '' },
-					{ id: 'plantModelling', label: 'Plant Modelling', url: '' }
+					{
+						id: 'workspace-environment-config',
+						label: 'Workspace & Environment Configuration',
+						url: '/docs/workspace-environment-config'
+					},
+					{
+						id: 'cultivar-config',
+						label: 'Cutivar Configuration',
+						url: '/docs/cultivar-config'
+					}
 				]
 			},
 			{
 				id: 'tutorials',
 				label: 'Tutorials',
 				children: [
-					{ id: 'gardenSetupTutorial', label: 'Setup a New Garden', url: '' },
-					{ id: 'firstPlanTutorial', label: 'Creating your First Plan', url: '' }
+					{
+						id: 'garden-setup',
+						label: 'Setup a New Garden',
+						url: '/docs/garden-setup'
+					},
+					{
+						id: 'first-plan',
+						label: 'Creating your First Plan',
+						url: '/docs/first-plan'
+					}
 				]
 			}
 		]

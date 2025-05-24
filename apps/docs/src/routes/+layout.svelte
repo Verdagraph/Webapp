@@ -16,8 +16,5 @@
 <ModeWatcher />
 
 <Tooltip.Provider delayDuration={500}>
-	<div class="flex h-full w-full flex-col">
-		<Nav />
-		{@render children()}
-	</div>
+	{@render children()}
 </Tooltip.Provider>

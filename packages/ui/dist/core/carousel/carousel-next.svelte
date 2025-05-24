@@ -1,5 +1,4 @@
 <script lang="ts">
-
 	import type { WithoutChildren } from 'bits-ui';
 
 	import { Button, type Props } from '../button/index.js';

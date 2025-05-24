@@ -1,0 +1,82 @@
+import { TriplitClient as TriplitClientBase } from '@triplit/client';
+
+import {
+	type ActionType,
+	AppError,
+	type Garden,
+	type User,
+	isUserAuthorized,
+	requiredRole,
+	schema
+} from './index.js';
+
+type TriplitClient = TriplitClientBase<typeof schema>;
+
+export function createController(
+	triplit: TriplitClient,
+	getClient: (triplit: TriplitClient) => Promise<User | null>
+) {
+	const gardenQuery = triplit.query('gardens').Id('$query.id');
+	/**
+	 * Fetches the client's Account and Profile objects.
+	 * If the client fails to authenticate, an access refresh is attempted.
+	 * If this fails, an AppError is raised.
+	 * @returns The client.
+	 */
+	async function getClientOrError(): Promise<User> {
+		/** Return the client if authenticated. */
+		const client = await getClient(triplit);
+		if (client) {
+			return client;
+		}
+
+		throw new AppError('Authentication failed.', {
+			nonFormErrors: ['Authentication failed. A login is required.']
+		});
+	}
+
+	/**
+	 * Given a garden and an action, retrieve the client
+	 * and throw an error if the client does not have at least
+	 * that role.
+	 * @param gardenId The garden to retrieve.
+	 * @param action The action to authorize for.
+	 * @returns The client and garden objects.
+	 */
+	async function requireRole(
+		gardenId: string,
+		action: ActionType
+	): Promise<{
+		client: User;
+		garden: Garden;
+	}> {
+		/** Retrieve client. */
+		const client = await getClientOrError();
+
+		/** Retrieve garden. */
+		const garden = await triplit.fetchOne(gardenQuery.Vars({ id: gardenId }));
+		if (garden == null) {
+			throw new AppError('Garden key does not exist.', {
+				nonFormErrors: ['Garden key does not exist.']
+			});
+		}
+
+		/** Ensure client is of the specified role. */
+		const role = requiredRole(action);
+		if (!isUserAuthorized(garden, client.profile.id, role)) {
+			throw new AppError(`Requires ${role} access.`, {
+				nonFormErrors: [`This action requires the ${role} role.`]
+			});
+		}
+
+		return { client, garden };
+	}
+
+	return {
+		triplit,
+		getClient,
+		getClientOrError,
+		requireRole
+	};
+}
+export type ControllerContext = ReturnType<typeof createController>;

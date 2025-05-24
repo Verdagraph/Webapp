@@ -9,6 +9,7 @@ export * from './environments/index.js';
 export * from './plants/index.js';
 export * from './utils.js';
 export * from './errors.js';
+export * from './controller.js';
 /**
  * Export Triplit schemas.
  * Note that only plantSchema is exported because currently

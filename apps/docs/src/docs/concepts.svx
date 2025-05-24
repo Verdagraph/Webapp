@@ -1,0 +1,13 @@
+---
+title: Concepts
+description: Summary of project concepts and terminology.
+updatedDate: '2025-4-16'
+categories:
+  - general
+published: true
+---
+
+
+## WIP PLACEHOLDER
+
+This document is a work in progress

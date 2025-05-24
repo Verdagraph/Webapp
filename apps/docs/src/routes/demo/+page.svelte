@@ -1,9 +1,14 @@
 <script lang="ts">
-	import { UnderConstructionPage } from '@vdg-webapp/ui';
+	import Nav from '$components/nav/Nav.svelte';
+
+	import Demo from './Demo.svelte';
 </script>
 
 <svelte:head>
 	<title>Demo - Verdagraph</title>
 </svelte:head>
 
-<UnderConstructionPage />
+<div class="flex h-screen w-full flex-col">
+	<Nav />
+	<Demo />
+</div>

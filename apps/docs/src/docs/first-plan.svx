@@ -1,0 +1,13 @@
+---
+title: Create your First Plan
+description: Instructions for configuring cultivars.
+updatedDate: '2025-4-16'
+categories:
+  - tutorials
+published: true
+---
+
+
+## WIP PLACEHOLDER
+
+This document is a work in progress
