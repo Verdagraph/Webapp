@@ -1,5 +1,7 @@
+import { type ControllerContext } from '../controller.js';
 import {
 	AppError,
+	type Garden,
 	type GardenCreateCommand,
 	type GardenMembershipAcceptCommand,
 	type GardenMembershipCreateCommand,
@@ -7,10 +9,7 @@ import {
 	type GardenMembershipRevokeCommand,
 	type GardenMembershipRoleChangeCommand,
 	isProfileMember
-} from '@vdg-webapp/models';
-import type { Garden } from '@vdg-webapp/models';
-
-import { type ControllerContext } from '../controller.js';
+} from '../index.js';
 
 /** Helpers. */
 

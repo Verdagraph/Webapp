@@ -24,7 +24,7 @@ import {
 	toTreeId
 } from '..';
 
-type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
+export type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
 
 /**
  * Constructs an editable tree item for a geometry.

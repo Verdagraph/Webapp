@@ -1,73 +1,26 @@
 <script lang="ts">
 	import { TriplitClient } from '@triplit/client';
+	import { setContext } from 'svelte';
 
-	import { createController, roles, schema } from '@vdg-webapp/models';
+	import {
+		CONTROLLER_CONTEXT_ID,
+		type User,
+		createController,
+		roles,
+		schema
+	} from '@vdg-webapp/models';
+	import { setSettingsContext } from '@vdg-webapp/ui';
 
-	import { TabToolbox, TimelineSelector } from '$components';
-	import { Resizable } from '$core';
-
-	import Toolbar from './Toolbar.svelte';
-	import Calendar from './calendar/Calendar.svelte';
-	import Layout from './layout/Layout.svelte';
-	import { toolbox } from './tools/index';
-	import Tree from './tree/Tree.svelte';
-	import { setVerdagraphContext } from './verdagraphContext.svelte';
-
-	/**
-	 * Currently, the demo tries to replicate the features of the workspace editor.
-	 * After, it will be made to mimic the Verdagraph.
-	 */
+	import { demos } from './demos';
+	import { user } from './demos/seed';
 
 	const triplit = new TriplitClient({ schema, roles, autoConnect: false });
-	function getClient(triplitClient: typeof triplit) {
-		return {};
+	async function getClient(triplitClient: typeof triplit) {
+		return { account: user.account, profile: user.profile };
 	}
-	const controller = createController();
+	const controller = createController(triplit, getClient);
 
-	/** Force a re-render of the PaneGroup if the direction is changed. */
-	let initialized = $state(true);
-	$effect(() => {
-		if (verdagraphContext.contentPaneDirection) {
-			initialized = false;
-			initialized = true;
-		}
-	});
+	/** Set settings context and controller context. */
+	setContext(CONTROLLER_CONTEXT_ID, controller);
+	setSettingsContext();
 </script>
-
-<div class="bg-neutral-1 flex h-full flex-col">
-	<Toolbar />
-
-	<div class="overflow-none grow">
-		{#if initialized}
-			<Resizable.PaneGroup direction={verdagraphContext.contentPaneDirection}>
-				{#if verdagraphContext.layoutEnabled}
-					<Resizable.Pane defaultSize={30} minSize={5} order={0}>
-						<Layout />
-					</Resizable.Pane>
-					<Resizable.Handle withHandle={false} />
-				{/if}
-				{#if verdagraphContext.calendarEnabled}
-					<Resizable.Pane defaultSize={30} minSize={5} order={1}>
-						<Calendar />
-					</Resizable.Pane>
-					<Resizable.Handle withHandle={false} />
-				{/if}
-				{#if toolbox.isActive}
-					<Resizable.Pane defaultSize={15} minSize={5} order={2}>
-						<TabToolbox {toolbox} />
-					</Resizable.Pane>
-					<Resizable.Handle withHandle={false} />
-				{/if}
-				{#if verdagraphContext.treeEnabled}
-					<Resizable.Pane defaultSize={25} minSize={5} order={3}>
-						<Tree />
-					</Resizable.Pane>
-				{/if}
-			</Resizable.PaneGroup>
-		{/if}
-	</div>
-
-	<div class="bottom-0 h-24">
-		<TimelineSelector selection={verdagraphContext.timeline} />
-	</div>
-</div>

@@ -2,7 +2,7 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 
-	import { workspaceFields } from '@vdg-webapp/models';
+	import { workspaceFields, workspaceCreate } from '@vdg-webapp/models';
 	import { Form, Input, Textarea } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';

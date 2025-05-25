@@ -1,0 +1,1 @@
+export const gardenId = 'garden';

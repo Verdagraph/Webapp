@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import { iconIds } from '../../assets';
-	import { Menubar, } from '../../core';
+	import { Menubar } from '../../core';
 
 	import { toolbox } from './tools';
 	import { getVerdagraphContext } from './verdagraphContext.svelte';

@@ -1,23 +1,69 @@
-import { Resizable } from '../../core';
-/** Verdagraph view config persisted to local storage. */
-export type VerdagraphViewSettings = {
-    /** Whether the tree pane is open. */
-    treeEnabled: boolean;
-    /** Whether the calendar pane is open. */
-    calendarEnabled: boolean;
-    /** Whether the layout pane is open. */
-    layoutEnabled: boolean;
-    /** Controls the orientation between the content panes. */
-    contentPaneDirection: Resizable.Direction;
-};
 /**
  * Holds context for the verdagraph.
  */
 declare function createVerdagraphContext(): {
-    treeEnabled: boolean;
-    calendarEnabled: boolean;
-    layoutEnabled: boolean;
-    contentPaneDirection: Resizable.Direction;
+    readonly layoutCanvasContext: {
+        readonly canvasId: string;
+        readonly workspaceId: string;
+        transform: {
+            config: {
+                buttonsExpanded: boolean;
+                buttonsPosition: "tl" | "tr" | "br" | "bl";
+            };
+            scaleFactor: import("konva/lib/types").Vector2d;
+            position: import("konva/lib/types").Vector2d;
+            readonly strokeScale: boolean;
+            canvasXPos: (modelPos: number) => number;
+            modelXPos: (canvasPos: number) => number;
+            canvasYPos: (modelPos: number) => number;
+            modelYPos: (canvasPos: number) => number;
+            canvasDistance: (modelDistance: number) => number;
+            modelDistance: (canvasDistance: number) => number;
+            translate: (translation: import("konva/lib/types").Vector2d) => void;
+            addScale: (scale: number) => void;
+            reset: () => void;
+            addTransformFunction: (func: () => void) => void;
+            initialize: () => void;
+        };
+        container: {
+            readonly containerId: string;
+            readonly stage: import("konva/lib/Stage").Stage | null;
+            pixelsPerMeter: number;
+            readonly initialized: boolean;
+            width: number;
+            height: number;
+            initialize: () => void;
+            addLayer: (layerId: string) => import("konva").default.Layer;
+            getLayer: (layerId: string) => import("konva").default.Layer;
+            onResize: () => void;
+            addResizeFunction: (func: () => void) => void;
+        };
+        selectionGroup: {
+            setDocumentCursor: () => void;
+        };
+        gridManager: {
+            config: {
+                snapToGrid: boolean;
+                rightAngleConstraint: boolean;
+                metersPerBackgroundGridline: number;
+            };
+            initialize: () => void;
+            snapToGrid: (pos: import("konva/lib/types").Vector2d) => import("konva/lib/types").Vector2d;
+        };
+        initialize: () => void;
+        destroy: () => void;
+        mode: {
+            readonly current: import("mode-watcher").SystemModeValue;
+        };
+    };
+    /** Setters. */
+    paneSettings: {
+        readonly direction: import("../../core/resizable").Direction;
+        isEnabled: (pane: "tree" | "calendar" | "layout") => boolean;
+        enable: (pane: "tree" | "calendar" | "layout") => void;
+        disable: (pane: "tree" | "calendar" | "layout") => void;
+        reset: () => void;
+    };
     timeline: {
         readonly focus: import("@internationalized/date").DateValue;
         readonly beginSelection: import("@internationalized/date").DateValue;
@@ -45,10 +91,68 @@ declare function createVerdagraphContext(): {
 };
 export type VerdagraphContext = ReturnType<typeof createVerdagraphContext>;
 export declare function setVerdagraphContext(): {
-    treeEnabled: boolean;
-    calendarEnabled: boolean;
-    layoutEnabled: boolean;
-    contentPaneDirection: Resizable.Direction;
+    readonly layoutCanvasContext: {
+        readonly canvasId: string;
+        readonly workspaceId: string;
+        transform: {
+            config: {
+                buttonsExpanded: boolean;
+                buttonsPosition: "tl" | "tr" | "br" | "bl";
+            };
+            scaleFactor: import("konva/lib/types").Vector2d;
+            position: import("konva/lib/types").Vector2d;
+            readonly strokeScale: boolean;
+            canvasXPos: (modelPos: number) => number;
+            modelXPos: (canvasPos: number) => number;
+            canvasYPos: (modelPos: number) => number;
+            modelYPos: (canvasPos: number) => number;
+            canvasDistance: (modelDistance: number) => number;
+            modelDistance: (canvasDistance: number) => number;
+            translate: (translation: import("konva/lib/types").Vector2d) => void;
+            addScale: (scale: number) => void;
+            reset: () => void;
+            addTransformFunction: (func: () => void) => void;
+            initialize: () => void;
+        };
+        container: {
+            readonly containerId: string;
+            readonly stage: import("konva/lib/Stage").Stage | null;
+            pixelsPerMeter: number;
+            readonly initialized: boolean;
+            width: number;
+            height: number;
+            initialize: () => void;
+            addLayer: (layerId: string) => import("konva").default.Layer;
+            getLayer: (layerId: string) => import("konva").default.Layer;
+            onResize: () => void;
+            addResizeFunction: (func: () => void) => void;
+        };
+        selectionGroup: {
+            setDocumentCursor: () => void;
+        };
+        gridManager: {
+            config: {
+                snapToGrid: boolean;
+                rightAngleConstraint: boolean;
+                metersPerBackgroundGridline: number;
+            };
+            initialize: () => void;
+            snapToGrid: (pos: import("konva/lib/types").Vector2d) => import("konva/lib/types").Vector2d;
+        };
+        initialize: () => void;
+        destroy: () => void;
+        mode: {
+            readonly current: import("mode-watcher").SystemModeValue;
+        };
+    };
+    /** Setters. */
+    paneSettings: {
+        readonly direction: import("../../core/resizable").Direction;
+        isEnabled: (pane: "tree" | "calendar" | "layout") => boolean;
+        enable: (pane: "tree" | "calendar" | "layout") => void;
+        disable: (pane: "tree" | "calendar" | "layout") => void;
+        reset: () => void;
+    };
     timeline: {
         readonly focus: import("@internationalized/date").DateValue;
         readonly beginSelection: import("@internationalized/date").DateValue;
@@ -75,10 +179,68 @@ export declare function setVerdagraphContext(): {
     };
 };
 export declare function getVerdagraphContext(): {
-    treeEnabled: boolean;
-    calendarEnabled: boolean;
-    layoutEnabled: boolean;
-    contentPaneDirection: Resizable.Direction;
+    readonly layoutCanvasContext: {
+        readonly canvasId: string;
+        readonly workspaceId: string;
+        transform: {
+            config: {
+                buttonsExpanded: boolean;
+                buttonsPosition: "tl" | "tr" | "br" | "bl";
+            };
+            scaleFactor: import("konva/lib/types").Vector2d;
+            position: import("konva/lib/types").Vector2d;
+            readonly strokeScale: boolean;
+            canvasXPos: (modelPos: number) => number;
+            modelXPos: (canvasPos: number) => number;
+            canvasYPos: (modelPos: number) => number;
+            modelYPos: (canvasPos: number) => number;
+            canvasDistance: (modelDistance: number) => number;
+            modelDistance: (canvasDistance: number) => number;
+            translate: (translation: import("konva/lib/types").Vector2d) => void;
+            addScale: (scale: number) => void;
+            reset: () => void;
+            addTransformFunction: (func: () => void) => void;
+            initialize: () => void;
+        };
+        container: {
+            readonly containerId: string;
+            readonly stage: import("konva/lib/Stage").Stage | null;
+            pixelsPerMeter: number;
+            readonly initialized: boolean;
+            width: number;
+            height: number;
+            initialize: () => void;
+            addLayer: (layerId: string) => import("konva").default.Layer;
+            getLayer: (layerId: string) => import("konva").default.Layer;
+            onResize: () => void;
+            addResizeFunction: (func: () => void) => void;
+        };
+        selectionGroup: {
+            setDocumentCursor: () => void;
+        };
+        gridManager: {
+            config: {
+                snapToGrid: boolean;
+                rightAngleConstraint: boolean;
+                metersPerBackgroundGridline: number;
+            };
+            initialize: () => void;
+            snapToGrid: (pos: import("konva/lib/types").Vector2d) => import("konva/lib/types").Vector2d;
+        };
+        initialize: () => void;
+        destroy: () => void;
+        mode: {
+            readonly current: import("mode-watcher").SystemModeValue;
+        };
+    };
+    /** Setters. */
+    paneSettings: {
+        readonly direction: import("../../core/resizable").Direction;
+        isEnabled: (pane: "tree" | "calendar" | "layout") => boolean;
+        enable: (pane: "tree" | "calendar" | "layout") => void;
+        disable: (pane: "tree" | "calendar" | "layout") => void;
+        reset: () => void;
+    };
     timeline: {
         readonly focus: import("@internationalized/date").DateValue;
         readonly beginSelection: import("@internationalized/date").DateValue;

@@ -1,16 +1,12 @@
 <script lang="ts">
 	import { CalendarDate } from '@internationalized/date';
+	import { mode } from 'mode-watcher';
 
-	import {
-		RangeCalendar,
-		createCalendarContext,
-	} from '../..';
-
-	import {mode} from 'mode-watcher';
+	import { iconIds } from '../../../assets';
+	import { RangeCalendar, createCalendarContext } from '../..';
+	import { getColor } from '../../../utils';
 
 	import { getVerdagraphContext } from '../verdagraphContext.svelte';
-	import { getColor } from '../../../utils';
-	import { iconIds } from '../../../assets';
 
 	const verdagraphContext = getVerdagraphContext();
 	const calendarContext = createCalendarContext(verdagraphContext.timeline, [

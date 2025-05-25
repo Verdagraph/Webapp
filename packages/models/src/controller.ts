@@ -12,6 +12,15 @@ import {
 
 type TriplitClient = TriplitClientBase<typeof schema>;
 
+export const CONTROLLER_CONTEXT_ID = 'TriplitController';
+
+/**
+ * Controller class: singleton interface to the data layer.
+ * Passed to controller functions to provide configurable behaviour.
+ * @param triplit The Triplit client to perform operations on.
+ * @param getClient A function for returning an authenticated user.
+ * @returns ControllerContext.
+ */
 export function createController(
 	triplit: TriplitClient,
 	getClient: (triplit: TriplitClient) => Promise<User | null>

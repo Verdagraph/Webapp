@@ -318,7 +318,9 @@ export async function locationHistoryUpdate(
 
 export async function locationHistoryExtend(
 	id: string,
-	date: Date,
+	data: {
+		date: Date;
+	},
 	ctx: ControllerContext
 ) {
 	const locationHistory = await ctx.triplit.fetchOne(
@@ -330,7 +332,7 @@ export async function locationHistoryExtend(
 		});
 	}
 
-	const nearestLocation = historySelectDay(locationHistory.locations, date) ||
+	const nearestLocation = historySelectDay(locationHistory.locations, data.date) ||
 		locationHistory.locations[locationHistory.locations.length - 1] || { x: 0, y: 0 };
 	await ctx.triplit.transact(async (transaction) => {
 		const location = await transaction.insert('locations', {
@@ -338,7 +340,7 @@ export async function locationHistoryExtend(
 			workspaceId: nearestLocation.workspaceId,
 			x: nearestLocation.x,
 			y: nearestLocation.y,
-			date: date
+			date: data.date
 		});
 		await transaction.update('locationHistories', id, (locationHistory) => {
 			locationHistory.locationIds.add(location.id);

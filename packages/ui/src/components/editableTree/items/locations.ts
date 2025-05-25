@@ -21,7 +21,8 @@ import {
 	toTreeId
 } from '..';
 
-type LocationUpdateHandler = (id: string, data: LocationUpdateCommand) => void;
+export type LocationUpdateHandler = (id: string, data: LocationUpdateCommand) => void;
+export type LocationHistoryExtendHandler = (id: string) => void;
 
 /**
  * Constructs an editable tree item for a geometry.
@@ -156,7 +157,7 @@ export function locationHistoryTreeItem(
 	},
 	ctx: {
 		locationUpdateHandler: LocationUpdateHandler;
-		onLocationHistoryExtend: (id: string) => void;
+		onLocationHistoryExtend: LocationHistoryExtendHandler;
 		fieldErrors: FieldErrors;
 	}
 ): Item {

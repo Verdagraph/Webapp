@@ -131,19 +131,19 @@ export declare const LocationUpdateCommandSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     date?: Date | undefined;
     workspaceId?: string | undefined;
+    delete?: boolean | undefined;
     coordinate?: {
         x: number;
         y: number;
     } | undefined;
-    delete?: boolean | undefined;
 }, {
     date?: Date | undefined;
     workspaceId?: string | undefined;
+    delete?: boolean | undefined;
     coordinate?: {
         x: number;
         y: number;
     } | undefined;
-    delete?: boolean | undefined;
 }>;
 export type LocationUpdateCommand = z.infer<typeof LocationUpdateCommandSchema>;
 /**
