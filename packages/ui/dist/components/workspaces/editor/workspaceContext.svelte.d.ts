@@ -131,8 +131,40 @@ export declare function createWorkspaceContext(id: string): {
         disable: (pane: "tree" | "layout") => void;
         reset: () => void;
     };
-    timelineSelection: any;
-    selections: any;
+    timelineSelection: {
+        readonly focus: import("@internationalized/date").DateValue;
+        readonly beginSelection: import("@internationalized/date").DateValue;
+        readonly endSelection: import("@internationalized/date").DateValue;
+        readonly focusUtc: Date;
+        readonly beginSelectionUtc: Date;
+        readonly endSelectionUtc: Date;
+        readonly minSliderValue: number;
+        readonly maxSliderValue: number;
+        readonly sliderValue: number[];
+        readonly disabled: boolean;
+        minSelectOffset: import("@internationalized/date").DateDuration;
+        maxSelectOffset: import("@internationalized/date").DateDuration;
+        reset: () => void;
+        resetSliderRange: () => void;
+        refocus: (newFocus: import("@internationalized/date").DateValue) => void;
+        changeBeginSelection: (newBeginSelection: import("@internationalized/date").DateValue) => void;
+        changeEndSelection: (newEndSelection: import("@internationalized/date").DateValue) => void;
+        translate: (translation: import("@internationalized/date").DateDuration) => void;
+        sliderValueToDateValue: (sliderValue: number) => import("@internationalized/date").DateValue;
+        updateSlider: (newVal: number[]) => void;
+        disable: () => void;
+        enable: () => void;
+    };
+    selections: {
+        tool: "pointer" | "group";
+        get: (entityType: "environment" | "plantingArea") => Set<string>;
+        has: (entityType: "environment" | "plantingArea", entityId: string) => boolean;
+        select: (entityType: "environment" | "plantingArea", entityId: string) => void;
+        deselect: (entityType: "environment" | "plantingArea", entityId: string) => void;
+        reset: (entityType: "environment" | "plantingArea") => void;
+        resetAll: () => void;
+        addSelectionChangeHandler: (entityType: "environment" | "plantingArea", handler: (addedIds: Array<string>, removedIds: Array<string>) => void) => void;
+    };
     plantingAreaCreateForm: {
         handler: {
             readonly isLoading: boolean;
@@ -281,8 +313,40 @@ export declare function setWorkspaceContext(id: string): {
         disable: (pane: "tree" | "layout") => void;
         reset: () => void;
     };
-    timelineSelection: any;
-    selections: any;
+    timelineSelection: {
+        readonly focus: import("@internationalized/date").DateValue;
+        readonly beginSelection: import("@internationalized/date").DateValue;
+        readonly endSelection: import("@internationalized/date").DateValue;
+        readonly focusUtc: Date;
+        readonly beginSelectionUtc: Date;
+        readonly endSelectionUtc: Date;
+        readonly minSliderValue: number;
+        readonly maxSliderValue: number;
+        readonly sliderValue: number[];
+        readonly disabled: boolean;
+        minSelectOffset: import("@internationalized/date").DateDuration;
+        maxSelectOffset: import("@internationalized/date").DateDuration;
+        reset: () => void;
+        resetSliderRange: () => void;
+        refocus: (newFocus: import("@internationalized/date").DateValue) => void;
+        changeBeginSelection: (newBeginSelection: import("@internationalized/date").DateValue) => void;
+        changeEndSelection: (newEndSelection: import("@internationalized/date").DateValue) => void;
+        translate: (translation: import("@internationalized/date").DateDuration) => void;
+        sliderValueToDateValue: (sliderValue: number) => import("@internationalized/date").DateValue;
+        updateSlider: (newVal: number[]) => void;
+        disable: () => void;
+        enable: () => void;
+    };
+    selections: {
+        tool: "pointer" | "group";
+        get: (entityType: "environment" | "plantingArea") => Set<string>;
+        has: (entityType: "environment" | "plantingArea", entityId: string) => boolean;
+        select: (entityType: "environment" | "plantingArea", entityId: string) => void;
+        deselect: (entityType: "environment" | "plantingArea", entityId: string) => void;
+        reset: (entityType: "environment" | "plantingArea") => void;
+        resetAll: () => void;
+        addSelectionChangeHandler: (entityType: "environment" | "plantingArea", handler: (addedIds: Array<string>, removedIds: Array<string>) => void) => void;
+    };
     plantingAreaCreateForm: {
         handler: {
             readonly isLoading: boolean;
@@ -430,8 +494,40 @@ export declare function getWorkspaceContext(): {
         disable: (pane: "tree" | "layout") => void;
         reset: () => void;
     };
-    timelineSelection: any;
-    selections: any;
+    timelineSelection: {
+        readonly focus: import("@internationalized/date").DateValue;
+        readonly beginSelection: import("@internationalized/date").DateValue;
+        readonly endSelection: import("@internationalized/date").DateValue;
+        readonly focusUtc: Date;
+        readonly beginSelectionUtc: Date;
+        readonly endSelectionUtc: Date;
+        readonly minSliderValue: number;
+        readonly maxSliderValue: number;
+        readonly sliderValue: number[];
+        readonly disabled: boolean;
+        minSelectOffset: import("@internationalized/date").DateDuration;
+        maxSelectOffset: import("@internationalized/date").DateDuration;
+        reset: () => void;
+        resetSliderRange: () => void;
+        refocus: (newFocus: import("@internationalized/date").DateValue) => void;
+        changeBeginSelection: (newBeginSelection: import("@internationalized/date").DateValue) => void;
+        changeEndSelection: (newEndSelection: import("@internationalized/date").DateValue) => void;
+        translate: (translation: import("@internationalized/date").DateDuration) => void;
+        sliderValueToDateValue: (sliderValue: number) => import("@internationalized/date").DateValue;
+        updateSlider: (newVal: number[]) => void;
+        disable: () => void;
+        enable: () => void;
+    };
+    selections: {
+        tool: "pointer" | "group";
+        get: (entityType: "environment" | "plantingArea") => Set<string>;
+        has: (entityType: "environment" | "plantingArea", entityId: string) => boolean;
+        select: (entityType: "environment" | "plantingArea", entityId: string) => void;
+        deselect: (entityType: "environment" | "plantingArea", entityId: string) => void;
+        reset: (entityType: "environment" | "plantingArea") => void;
+        resetAll: () => void;
+        addSelectionChangeHandler: (entityType: "environment" | "plantingArea", handler: (addedIds: Array<string>, removedIds: Array<string>) => void) => void;
+    };
     plantingAreaCreateForm: {
         handler: {
             readonly isLoading: boolean;

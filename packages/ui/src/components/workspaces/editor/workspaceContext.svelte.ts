@@ -9,17 +9,15 @@ import {
 	PlantingAreaCreateCommandSchema,
 	plantingAreaCreate
 } from '@vdg-webapp/models';
+
 import {
 	createSelectionManager,
 	createTimelineSelection,
-	isMobile
-} from '@vdg-webapp/ui';
-
-import {
 	getCanvasContext,
 	resetCanvasContext,
 	setCanvasContext
-} from '$components/canvas';
+} from '$components';
+import { isMobile } from '$state';
 import { createPaneSettings } from '$state';
 import createCommandHandler from '$state/commandHandler.svelte';
 

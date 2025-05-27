@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { useQuery } from '@triplit/svelte';
 
-	import { Resizable, TabToolbox, TimelineSelector } from '@vdg-webapp/ui';
-
+	import { TabToolbox, TimelineSelector } from '$components';
+	import { Resizable } from '$core';
 	import { getControllerContext } from '$state';
 
 	import Layout from './Layout.svelte';

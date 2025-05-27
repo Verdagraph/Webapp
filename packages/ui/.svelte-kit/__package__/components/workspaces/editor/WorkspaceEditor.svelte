@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { useQuery } from '@triplit/svelte';
 
-	import { Resizable, TabToolbox, TimelineSelector } from '@vdg-webapp/ui';
+	import { TabToolbox, TimelineSelector } from '../..';
+	import { Resizable } from '../../../core';
 
 	import { getControllerContext } from '../../../state';
 
@@ -73,7 +74,7 @@
 				{/if}
 				{#if workspaceContext.paneSettings.isEnabled('tree')}
 					<Resizable.Pane defaultSize={30} order={3} minSize={10}>
-						<Tree {plantingAreas} {workspacesInGarden}/>
+						<Tree {plantingAreas} {workspacesInGarden} />
 					</Resizable.Pane>
 				{/if}
 			</Resizable.PaneGroup>

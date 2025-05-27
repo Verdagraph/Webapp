@@ -39,7 +39,9 @@ export declare function locationUpdate(id: string, data: LocationUpdateCommand, 
  * @param data The history update command.
  */
 export declare function locationHistoryUpdate(data: LocationHistoryUpdateCommand, ctx: ControllerContext): Promise<void>;
-export declare function locationHistoryExtend(id: string, date: Date, ctx: ControllerContext): Promise<void>;
+export declare function locationHistoryExtend(id: string, data: {
+    date: Date;
+}, ctx: ControllerContext): Promise<void>;
 /** Creates a new workspace in a garden. */
 export declare function workspaceCreate(data: WorkspaceCreateCommand, ctx: ControllerContext): Promise<Workspace>;
 /** Updates a new workspace in a garden. */

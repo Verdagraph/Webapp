@@ -13,6 +13,13 @@
 		"src/routes/+layout.ts"
 	],
 	"/demo": [
+		"src/routes/demo/+layout.server.js",
+		"src/routes/+layout.ts",
+		"src/routes/demo/+layout.server.js",
+		"src/routes/+layout.ts"
+	],
+	"/demo/[demoId]": [
+		"src/routes/demo/+layout.server.js",
 		"src/routes/+layout.ts"
 	],
 	"/docs": [

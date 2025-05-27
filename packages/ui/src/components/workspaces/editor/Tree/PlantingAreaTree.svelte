@@ -70,7 +70,7 @@
 					locationHistoryExtendHandler: (id) => {
 						locationHistoryExtendCommandHandler.execute(
 							id,
-							workspaceContext.timelineSelection.focusUtc,
+							{ date: workspaceContext.timelineSelection.focusUtc },
 							controller
 						);
 					}

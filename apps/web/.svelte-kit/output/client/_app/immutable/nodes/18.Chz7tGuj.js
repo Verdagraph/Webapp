@@ -1,1 +1,0 @@
-import"../chunks/BLh5GmnI.js";import"../chunks/B-cjbRtE.js";import{$ as r}from"../chunks/DHe4-ApK.js";import{h as t}from"../chunks/BWEqFMly.js";import{U as a}from"../chunks/DTTNgOpj.js";function s(o){t(m=>{r.title="Workbook - Verdagraph"}),a(o)}export{s as component};

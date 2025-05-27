@@ -1,1 +1,0 @@
-import"../chunks/BLh5GmnI.js";import"../chunks/B-cjbRtE.js";import{$ as t}from"../chunks/DHe4-ApK.js";import{h as r}from"../chunks/BWEqFMly.js";import{U as a}from"../chunks/DTTNgOpj.js";function c(o){r(e=>{t.title="Settings - Verdagraph"}),a(o)}export{c as component};

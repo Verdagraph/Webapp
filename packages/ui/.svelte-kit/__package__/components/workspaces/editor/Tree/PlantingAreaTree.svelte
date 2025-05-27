@@ -14,10 +14,10 @@
 	import { EditableTree, createEditableTree, toTreeId } from '../../..';
 	import { plantingAreaTreeItem } from '../../..';
 	import { ScrollArea } from '../../../../core';
+	import { getControllerContext } from '../../../../state';
 	import createCommandHandler from '../../../../state/commandHandler.svelte';
 
 	import { getWorkspaceContext } from '../workspaceContext.svelte';
-	import { getControllerContext } from '../../../../state';
 
 	type Props = {
 		plantingAreas: PlantingArea[];
@@ -29,7 +29,7 @@
 	type TreeEntities = 'plantingArea';
 
 	/** Workspace context. */
-	const controller = getControllerContext()
+	const controller = getControllerContext();
 	const workspaceContext = getWorkspaceContext();
 
 	/** Stores errors of the tree fields. */
@@ -62,13 +62,17 @@
 						plantingAreaUpdateCommandHandler.execute(id, data, controller);
 					},
 					geometryUpdateHandler: (id, data) => {
-						geometryUpdateCommandHandler.execute(id, data, controller)
+						geometryUpdateCommandHandler.execute(id, data, controller);
 					},
 					locationUpdateHandler: (id, data) => {
-						locationUpdateCommandHandler.execute(id, data, controller)
+						locationUpdateCommandHandler.execute(id, data, controller);
 					},
 					locationHistoryExtendHandler: (id) => {
-						locationHistoryExtendCommandHandler.execute(id, workspaceContext.timelineSelection.focusUtc, controller)
+						locationHistoryExtendCommandHandler.execute(
+							id,
+							{date: workspaceContext.timelineSelection.focusUtc},
+							controller
+						);
 					}
 				}
 			);

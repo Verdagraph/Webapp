@@ -4,23 +4,27 @@
 
 	import { AppError, workspaceFields } from '@vdg-webapp/models';
 	import {
-		Button,
 		CoordinateInput,
-		Form,
 		GeometrySelect,
+		UnitAwareInput,
+	} from '../../..';
+import {
+		Button,
+				Form,
+		
 		Input,
 		Separator,
 		Textarea,
-		UnitAwareInput,
-		iconIds
-	} from '@vdg-webapp/ui';
+		} from '../../../../core';
+
+		import { iconIds } from '../../../../assets';
 
 	import { page } from '$app/state';
 	import { getSettingsContext } from '../../../../state';
 
 	import { getWorkspaceContext } from '../workspaceContext.svelte';
 
-	const settings = getSettingsContext()
+	const settings = getSettingsContext();
 	const workspaceContext = getWorkspaceContext();
 	const form = workspaceContext.plantingAreaCreateForm.form;
 	const handler = workspaceContext.plantingAreaCreateForm.handler;

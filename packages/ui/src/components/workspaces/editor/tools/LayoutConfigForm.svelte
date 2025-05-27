@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { FormInfoPopover, Select } from '@vdg-webapp/ui';
+	import { FormInfoPopover } from '$components';
+	import { Select } from '$core';
 
 	// import { UnitAwareInput } from '$components/units/';
 	import { getWorkspaceContext } from '../workspaceContext.svelte';

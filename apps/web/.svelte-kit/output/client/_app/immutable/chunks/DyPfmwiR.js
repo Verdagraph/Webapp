@@ -1,1 +1,0 @@
-import{Q as t,h as S,e as k,R as T,S as c}from"./DHe4-ApK.js";function h(r,i){return r===i||(r==null?void 0:r[c])===i}function A(r={},i,a,q){return t(()=>{var f,s;return S(()=>{f=s,s=[],k(()=>{r!==a(...s)&&(i(r,...s),f&&h(a(...f),r)&&i(null,...f))})}),()=>{T(()=>{s&&h(a(...s),r)&&i(null,...s)})}}),r}export{A as b};

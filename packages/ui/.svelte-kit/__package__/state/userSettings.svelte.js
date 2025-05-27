@@ -1,5 +1,5 @@
+import { getContext, setContext } from 'svelte';
 import { LocalStore } from '@vdg-webapp/ui';
-import { setContext, getContext } from 'svelte';
 const SETTINGS_CONTEXT_ID = 'userSettingsContext';
 function createSettingsContext() {
     const units = new LocalStore('unitSettings', {

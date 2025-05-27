@@ -248,14 +248,14 @@ export async function locationHistoryUpdate(data, ctx) {
         });
     }
 }
-export async function locationHistoryExtend(id, date, ctx) {
+export async function locationHistoryExtend(id, data, ctx) {
     const locationHistory = await ctx.triplit.fetchOne(ctx.triplit.query('locationHistories').Id(id).Include('locations'));
     if (!locationHistory) {
         throw new AppError('Location history does not exist.', {
             nonFormErrors: ['Failed to update object location.']
         });
     }
-    const nearestLocation = historySelectDay(locationHistory.locations, date) ||
+    const nearestLocation = historySelectDay(locationHistory.locations, data.date) ||
         locationHistory.locations[locationHistory.locations.length - 1] || { x: 0, y: 0 };
     await ctx.triplit.transact(async (transaction) => {
         const location = await transaction.insert('locations', {
@@ -263,7 +263,7 @@ export async function locationHistoryExtend(id, date, ctx) {
             workspaceId: nearestLocation.workspaceId,
             x: nearestLocation.x,
             y: nearestLocation.y,
-            date: date
+            date: data.date
         });
         await transaction.update('locationHistories', id, (locationHistory) => {
             locationHistory.locationIds.add(location.id);
