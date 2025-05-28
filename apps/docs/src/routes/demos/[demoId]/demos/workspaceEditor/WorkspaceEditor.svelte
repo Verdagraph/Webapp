@@ -3,7 +3,8 @@
 
 	import { gardenId, workspaceId } from './seed';
 
-	setWorkspaceContext(workspaceId);
+	const workspace = setWorkspaceContext(workspaceId);
+	console.log(workspace.paneSettings);
 </script>
 
 <WorkspaceEditor {gardenId} />

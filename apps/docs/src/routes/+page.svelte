@@ -99,7 +99,7 @@
 			</div>
 
 			<div class="mt-8 flex justify-between gap-4">
-				<Button.Root variant="default" href="/demo" class="w-full"
+				<Button.Root variant="default" href="/demos" class="w-full"
 					>Try the Demonstration</Button.Root
 				>
 				<Button.Root variant="default" href={env.APP_URL} class="w-full"

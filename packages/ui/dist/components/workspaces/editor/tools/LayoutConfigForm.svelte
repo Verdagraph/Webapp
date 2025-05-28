@@ -1,6 +1,5 @@
 <script lang="ts">
-
-	import { FormInfoPopover, } from '../../..';
+	import { FormInfoPopover } from '../../..';
 	import { Select } from '../../../../core';
 
 	// import { UnitAwareInput } from '../../../units';

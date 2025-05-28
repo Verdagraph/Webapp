@@ -7,8 +7,6 @@ async function getDocs() {
 
 	const paths = import.meta.glob('/src/docs/*.svx', { eager: true });
 
-	console.log(paths);
-
 	for (const path in paths) {
 		const file = paths[path];
 		const slug = path.split('/').at(-1)?.replace('.svx', '');

@@ -21,11 +21,10 @@
 	const demo = demos.find((demo) => demo.id === page.params.demoId);
 	if (!demo) {
 		console.error('This demo does not exist.');
-		goto('/demo');
+		goto('/demos');
 	}
 	const triplit = new TriplitClient({ schema, roles, autoConnect: false });
-	console.log('TRIPLIT');
-	console.log(triplit);
+
 	async function getClient() {
 		return { account: user.account, profile: user.profile };
 	}
@@ -42,14 +41,12 @@
 				//await tx.insert(collection, item);
 			}
 		});
-
-		onDestroy(() => {
-			if (controller.triplit) {
-				triplit.clear();
-			}
-		});
 	});
 </script>
+
+<svelte:head>
+	<title>Demo - Verdagraph</title>
+</svelte:head>
 
 {#if demo}
 	<demo.component />

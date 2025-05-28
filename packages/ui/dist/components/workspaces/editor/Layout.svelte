@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PlantingArea } from '@vdg-webapp/models';
+
 	import { Canvas, Gridlines, PlantingAreas, TransformControls } from '../..';
 
 	import CreatePlantingAreaContainer from './CreatePlantingAreaContainer.svelte';

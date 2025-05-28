@@ -3,8 +3,8 @@ import { getContext, setContext } from 'svelte';
 import { defaults, superForm } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { CONTROLLER_CONTEXT_ID, PlantingAreaCreateCommandSchema, plantingAreaCreate } from '@vdg-webapp/models';
-import { isMobile } from '../../../state';
 import { createSelectionManager, createTimelineSelection, getCanvasContext, resetCanvasContext, setCanvasContext } from '../..';
+import { isMobile } from '../../../state';
 import { createPaneSettings } from '../../../state';
 import createCommandHandler from '../../../state/commandHandler.svelte';
 import { workspaceToolbox } from './tools';
@@ -30,7 +30,7 @@ export function createWorkspaceContext(id) {
     /** Activated popout tools. */
     const toolbox = workspaceToolbox();
     /** Activated pane settings. */
-    const paneSettings = createPaneSettings('workspacePaneSettings', defaultTreeEnabled ? ['tree', 'layout'] : ['tree', 'layout'], defaultContentPaneDirection);
+    const paneSettings = createPaneSettings('workspacePaneSettings', defaultTreeEnabled ? ['tree', 'layout'] : ['layout'], defaultContentPaneDirection);
     /** Selected entities. */
     const selections = createSelectionManager(['plantingArea', 'environment']);
     /** Timeline. */

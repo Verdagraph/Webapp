@@ -10,7 +10,6 @@
 	let searchTerm = $state('');
 	let results = $derived.by(() => {
 		if (search === 'ready') {
-			console.log(searchPostsIndex(searchTerm));
 			return searchPostsIndex(searchTerm);
 		} else {
 			return [];
@@ -19,8 +18,7 @@
 
 	onMount(async () => {
 		const posts = await fetch('/search.json').then((res) => res.json());
-		console.log('posts:: ');
-		console.log(posts);
+
 		createPostsIndex(posts);
 		search = 'ready';
 	});
@@ -28,10 +26,12 @@
 
 <Dialog.Root>
 	<Dialog.Trigger>
-		<Button.Root variant="ghost" class="flex justify-between py-1">
-			<Icon icon={iconIds.searchIcon} />
-			<span>Search</span>
-		</Button.Root>
+		{#snippet child({ props })}
+			<Button.Root {...props} variant="ghost" class="flex justify-between py-1">
+				<Icon icon={iconIds.searchIcon} />
+				<span>Search</span>
+			</Button.Root>
+		{/snippet}
 	</Dialog.Trigger>
 	<Dialog.Content class="p-0">
 		<Input.Root class="rounded-b-none" bind:value={searchTerm} />

@@ -59,9 +59,6 @@
 		const totalWidth = maxX - minX;
 		const totalHeight = maxY - minY;
 
-		console.log(totalWidth);
-		console.log(totalHeight);
-
 		canvas.transform.scaleFactor = {
 			x: canvas.container.width / totalWidth - 0.3,
 			y: canvas.container.width / totalWidth - 0.3

@@ -9,8 +9,6 @@ export async function GET() {
 	const blogPaths = import.meta.glob('/src/blog/**/*.svx', { as: 'raw', eager: true });
 
 	const paths = { ...docsPaths, ...blogPaths };
-	console.log('pathst:');
-	console.log(paths);
 
 	const entries = Object.entries(paths)
 		.map(([url, content]) => {

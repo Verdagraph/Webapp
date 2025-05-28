@@ -51,7 +51,7 @@ export function createWorkspaceContext(id: string) {
 	/** Activated pane settings. */
 	const paneSettings = createPaneSettings<['tree', 'layout']>(
 		'workspacePaneSettings',
-		defaultTreeEnabled ? ['tree', 'layout'] : ['tree', 'layout'],
+		defaultTreeEnabled ? ['tree', 'layout'] : ['layout'],
 		defaultContentPaneDirection
 	);
 	/** Selected entities. */

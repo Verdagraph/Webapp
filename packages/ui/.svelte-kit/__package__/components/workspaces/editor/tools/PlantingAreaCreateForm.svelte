@@ -3,23 +3,11 @@
 	import { toast } from 'svelte-sonner';
 
 	import { AppError, workspaceFields } from '@vdg-webapp/models';
-	import {
-		CoordinateInput,
-		GeometrySelect,
-		UnitAwareInput,
-	} from '../../..';
-import {
-		Button,
-				Form,
-		
-		Input,
-		Separator,
-		Textarea,
-		} from '../../../../core';
-
-		import { iconIds } from '../../../../assets';
 
 	import { page } from '$app/state';
+	import { iconIds } from '../../../../assets';
+	import { CoordinateInput, GeometrySelect, UnitAwareInput } from '../../..';
+	import { Button, Form, Input, Separator, Textarea } from '../../../../core';
 	import { getSettingsContext } from '../../../../state';
 
 	import { getWorkspaceContext } from '../workspaceContext.svelte';

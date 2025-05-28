@@ -20,8 +20,8 @@ export const dictionary = {
 		"/": [3],
 		"/about": [4],
 		"/blog": [5],
-		"/demo": [6,[2]],
-		"/demo/[demoId]": [7,[2]],
+		"/demos": [6,[2]],
+		"/demos/[demoId]": [7,[2]],
 		"/docs": [~8],
 		"/docs/[slug]": [9],
 		"/support": [10]

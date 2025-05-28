@@ -20,7 +20,7 @@
 			label: 'Application',
 			links: [
 				{ label: 'Start the application', href: env.APP_URL },
-				{ label: 'View the Demonstration', href: '/demo' },
+				{ label: 'View the Demonstration', href: '/demos' },
 				/** TODO: Update once this href is known. */
 				{ label: 'Self-hosting Instructions', href: '/docs' }
 			]

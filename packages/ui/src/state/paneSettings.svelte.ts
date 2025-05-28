@@ -8,33 +8,33 @@ export function createPaneSettings<Panes extends string[]>(
 	initialDirection: Resizable.Direction
 ) {
 	type Pane = Panes[number];
-	type Settings = { enabled: Set<Pane>; direction: Resizable.Direction };
+	type Settings = { enabled: Pane[]; direction: Resizable.Direction };
 
 	const settings = localStore<Settings>(id, {
-		enabled: new Set(initialEnabled),
+		enabled: initialEnabled,
 		direction: initialDirection
 	});
 
 	function isEnabled(pane: Pane) {
-		return settings.value.enabled.has(pane);
+		return settings.value.enabled.includes(pane);
 	}
 
 	function enable(pane: Pane) {
-		if (!settings.value.enabled.has(pane)) {
-			settings.value.enabled.add(pane);
+		if (!settings.value.enabled.includes(pane)) {
+			settings.value.enabled.push(pane);
 		}
 	}
 
 	function disable(pane: Pane) {
-		if (settings.value.enabled.has(pane) && settings.value.enabled.size > 1) {
-			settings.value.enabled.delete(pane);
+		if (settings.value.enabled.includes(pane) && settings.value.enabled.length > 1) {
+			settings.value.enabled = settings.value.enabled.filter((item) => item !== pane);
 		}
 	}
 
 	function reset() {
-		settings.value.enabled.clear();
+		settings.value.enabled = [];
 		initialEnabled.forEach((pane) => {
-			settings.value.enabled.add(pane);
+			settings.value.enabled.push(pane);
 		});
 	}
 

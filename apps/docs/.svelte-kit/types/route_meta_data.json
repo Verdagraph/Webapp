@@ -12,14 +12,14 @@
 	"/blog": [
 		"src/routes/+layout.ts"
 	],
-	"/demo": [
-		"src/routes/demo/+layout.server.js",
+	"/demos": [
+		"src/routes/demos/+layout.server.js",
 		"src/routes/+layout.ts",
-		"src/routes/demo/+layout.server.js",
+		"src/routes/demos/+layout.server.js",
 		"src/routes/+layout.ts"
 	],
-	"/demo/[demoId]": [
-		"src/routes/demo/+layout.server.js",
+	"/demos/[demoId]": [
+		"src/routes/demos/+layout.server.js",
 		"src/routes/+layout.ts"
 	],
 	"/docs": [
