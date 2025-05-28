@@ -4,7 +4,7 @@
 	import { gardenId, workspaceId } from './seed';
 
 	const workspace = setWorkspaceContext(workspaceId);
-	console.log(workspace.paneSettings);
+	workspace.editing = true;
 </script>
 
 <WorkspaceEditor {gardenId} />

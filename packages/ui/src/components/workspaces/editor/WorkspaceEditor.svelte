@@ -49,8 +49,6 @@
 			initialized = true;
 		}
 	});
-
-	console.log(workspaceContext);
 </script>
 
 <div class="flex h-full w-full flex-col">

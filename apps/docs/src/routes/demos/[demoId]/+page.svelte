@@ -37,8 +37,10 @@
 	onMount(async () => {
 		const seedData = (demo as Demo).seed();
 		await triplit.transact(async (tx) => {
-			for (const [collection, item] of Object.entries(seedData)) {
-				//await tx.insert(collection, item);
+			for (const [collection, items] of Object.entries(seedData)) {
+				for (const item of items) {
+					await tx.insert(collection, item);
+				}
 			}
 		});
 	});
