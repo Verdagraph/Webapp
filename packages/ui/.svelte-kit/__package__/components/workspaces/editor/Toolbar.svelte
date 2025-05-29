@@ -7,7 +7,7 @@
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { getGardenContext } from '$state/gardenContext.svelte';
+	import { getGardenContext } from '../../../state/gardenContext.svelte';
 
 	import { getWorkspaceContext } from './workspaceContext.svelte';
 

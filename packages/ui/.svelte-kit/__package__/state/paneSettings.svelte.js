@@ -15,7 +15,7 @@ export function createPaneSettings(id, initialEnabled, initialDirection) {
     }
     function disable(pane) {
         if (settings.value.enabled.includes(pane) && settings.value.enabled.length > 1) {
-            settings.value.enabled = settings.value.enabled.filter(item => item !== pane);
+            settings.value.enabled = settings.value.enabled.filter((item) => item !== pane);
         }
     }
     function reset() {

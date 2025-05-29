@@ -6,13 +6,15 @@
 	import { getControllerContext } from '../../../state';
 
 	import Layout from './Layout.svelte';
+	import Toolbar from './Toolbar.svelte';
 	import Tree from './Tree';
 	import { getWorkspaceContext } from './workspaceContext.svelte';
 
 	type Props = {
 		gardenId: string;
+		includeWorkspacesMenu: boolean;
 	};
-	let { gardenId }: Props = $props();
+	let { gardenId, includeWorkspacesMenu = true }: Props = $props();
 
 	/** Contexts. */
 	const controller = getControllerContext();
@@ -49,10 +51,10 @@
 			initialized = true;
 		}
 	});
-
 </script>
 
 <div class="flex h-full w-full flex-col">
+	<Toolbar workspaces={workspacesInGarden} {plantingAreas} {includeWorkspacesMenu} />
 	<div class="h-full grow overflow-hidden">
 		{#if initialized}
 			<Resizable.PaneGroup direction={workspaceContext.paneSettings.direction}>

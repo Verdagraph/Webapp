@@ -16,10 +16,6 @@
 	const canvasContext = workspaceContext.layoutCanvasContext;
 	const canvasId = canvasContext.canvasId;
 	const plantingAreaLayerId = 'plantingAreas';
-
-	/**
-	 * TODO: Remove editable status if the planting area create form is active
-	 */
 </script>
 
 {#snippet overlay()}
