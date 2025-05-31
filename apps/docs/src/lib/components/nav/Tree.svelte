@@ -1,13 +1,25 @@
 <script lang="ts">
 	import { Tree } from 'melt/builders';
 
+	import { localStore } from '@vdg-webapp/ui';
+
 	import { page } from '$app/state';
 
 	import { navItems } from './links';
 
+	const expandedTreeItems = localStore('navigationExpanded', [
+		'app',
+		'project',
+		'docs',
+		'usage',
+		'tutorials'
+	]);
 	const tree = new Tree({
 		items: navItems,
-		expanded: ['app', 'project', 'docs']
+		expanded: expandedTreeItems.value
+	});
+	$effect(() => {
+		expandedTreeItems.value = [...tree.expanded];
 	});
 
 	/**

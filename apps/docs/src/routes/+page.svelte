@@ -90,15 +90,15 @@
 	<div class="mb-12 flex h-full w-full justify-center">
 		<div class="flex w-11/12 flex-col md:w-5/6 lg:w-3/4 2xl:w-1/2">
 			<div class="mt-12 flex w-full items-center justify-between">
-				<h1 class="text-left text-3xl font-bold">
+				<h1 class="text-left text-4xl font-extrabold">
 					Eco-modelling tools for collaboratively organized agriculture
 				</h1>
 				<div class="ml-8">
-					<VdgLogo size="8rem" />
+					<VdgLogo size="12rem" />
 				</div>
 			</div>
 
-			<div class="mt-8 flex justify-between gap-4">
+			<div class="mt-16 flex justify-between gap-4">
 				<Button.Root variant="default" href="/demos" class="w-full"
 					>Try the Demonstration</Button.Root
 				>

@@ -92,7 +92,7 @@ declare module '$env/static/public' {
  * console.log(env.DEPLOYMENT_SPECIFIC_VARIABLE);
  * ```
  * 
- * > In `dev`, `$env/dynamic` always includes environment variables from `.env`. In `prod`, this behavior will depend on your adapter.
+ * > In `dev`, `$env/dynamic` always includes environment variables from `.env`. In `prod`, this behaviour will depend on your adapter.
  */
 declare module '$env/dynamic/private' {
 	export const env: {

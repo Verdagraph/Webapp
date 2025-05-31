@@ -6,7 +6,7 @@
 	import { pushState } from '$app/navigation';
 	import Nav from '$components/nav/Nav.svelte';
 
-	import TableOfContents from './nav/ TableOfContents.svelte';
+	import TableOfContents from './nav/TableOfContents.svelte';
 	import Tree from './nav/Tree.svelte';
 
 	let { children } = $props();

@@ -106,7 +106,7 @@ In short, the goal of Verdagraph is to create tools which:
 - Minimize the knowledge and cognitive load required to plan, track, and automate agro-ecological systems at any scale.
 - Transfer the co-creation of ecological knowledge into digital models made freely accessible to contextualized application.
 - Facilitate the horizontal organization of human labour through collaborative systems.
-- Ultimately enhance our adaptive capacity towards a sustainable agriculture system by putting the means of agro-ecological production and innovation into the hands of everyone.
+- Enhance our adaptive capacity towards a sustainable agriculture system by putting the means of agro-ecological production and innovation into the hands of everyone.
 
 ## Source Code
 

@@ -1,13 +1,136 @@
 ---
 title: Concepts
 description: Summary of project concepts and terminology.
-updatedDate: '2025-4-16'
+updatedDate: '2025-5-29'
 categories:
   - general
 published: true
 ---
 
+This document contains conceptual descriptions of the components of the Verdagraph project. 
+These concepts are defined in more detail in the [design folder](https://github.com/Verdagraph/Webapp/tree/main/design) of the webapp repository.
 
-## WIP PLACEHOLDER
+## Terminology
 
-This document is a work in progress
+### Collaborative Editing
+
+When Verdagraph is described as supporting collaborative editing, that means that it can handle multiple different users editing the same piece of data at the same time with minimal conflict between them.
+Verdagraph is able to achieve this by building off of the [Triplit](https://www.triplit.dev/) database. Triplit achieves this through the use of Conflict-Free Replicated Data Types along with a synchronization engine.
+
+## Models
+
+This section contains descriptions of the conceputal entities which represent the behaviour of the software.
+
+### Gardens
+
+A garden is a space which connects together multiple users into a shared setting where most of the application functionality occurs. 
+One garden should be created per group of users who wish to collaborate on a set of shared agricultural space. 
+Generally, data is not transferred between gardens - they are intended to be self-contained spaces representing an agricultural operation.
+
+Gardens do not represent physical spaces - that is where [workspaces](#workspaces) come in.
+
+Gardens have a visibility and permission system which allows controlling access to data. When creating a garden, you can choose one of the following options for visiblity:
+
+- `hidden`: These gardens are only able to be viewed by users which are explicitly invited.
+- `unlisted`: These gardens may be viewed by anyone (including anonymous users), but will not be show up on any public-facing page or be searchable within the app.
+- `public`: These gardens may be viewed by anyone and may be findable through a public search option.
+
+When inviting users to a garden, they can be assigned one of the following roles:
+
+- `admin`: These users can do anything, with the exception of removing the garden's creator.
+- `editor`: These users can peform regular editing tasks in the graden but can't perform administrative tasks like changing the roles of other users in the garden or changing configuration.
+- `viewer`: These users have view-only access to the garden. If the garden is not `HIDDEN`, this is functionally equivalent to not being a member of the garden.
+
+### Workspaces
+
+A workspaces gives a physical context to entities within a garden, meaning that the location of entities within the model is given with respect to the origin of a workspace.
+
+A garden may have any number of workspaces. 
+For example, imagine that a garden is created to manage an operation that spans two main spaces that are physically seperated - one workspace may be created for each space, which makes it easier to seperate them when using the editing tools of the application. 
+
+Workspaces are not entirely bounded - entities may be moved between workspaces. 
+They simply allow organizing entities which do not share the same spatial context into different areas. 
+If entities are frequently moved between workspaces, it may be better to group them into one.
+
+#### Geometries
+
+A geometry describes the shape of an entity within a workspace. 
+Most entities may have multiple geometries, which represents the change of shape in an entity over time - for example, plant growth.
+
+A geometry has a type which desribes what attributes it uses to contruct its shape. 
+Currently, there exists four types of geometries:
+
+- `rectnagle`: Desribed by a length and a width.
+- `ellipse`: Described by a length diameter and a width diameter.
+- `polygon`: Described by a number of sides and a radius.
+- `lines`: Described by a number of coordinates which, when connected, form an open or closed shape.
+
+#### Locations
+
+A location describes the position of an entity within a workspace. 
+Most entities may have multiple locations, which represents the movement of an entity over time - for example, transplanting seedlings.
+
+#### Planting Areas
+
+A planting area represents an area within a workspace that plants are typically placed.
+They can serve as visual guides or as constraints that are forced when placing plants.
+
+### Environments
+
+An environment is a container for describing the environmental characteristics of areas within a garden, such as the frost dates, temperatures, or any other quality.
+Environmental attributes can be composed, allowing detailed modelling of micro-climates.
+For example, the garden's environment may set base characterstics, such as the frost dates, outside temperatures, and average solar intensity.
+A workspaces's environment may override the average solar intensity as it's a shady spot under trees.
+A planting areas's environment may override the real-time temperature of the workspace as it has a cold frame.
+
+Environments apply to a bounded contex, which may be one of four types:
+
+- `garden`: The environment applies to everything in the garden. There's a limit of one environment per `garden` type.
+- `workspace`: The environment applies to everything in a workspace. There's a limit of one environment per `workspace` type in each workspace.
+- `planting-area`: The environment applies to everything in a planting area. There's a limit of one environment per `plantingArea` type in each plantingArea.
+- `independent`: The environment applies to a set of locations and geometries throughout time. There's no limit.
+
+If an environments is defined within the physical space of another, it inherits its attributes by default.
+
+### Cultivars
+
+A cultivar is a container for attributes which describe a type of plant, such as lifespan behaviour, recommended timing, or any other quality.
+Cultivars can be grouped into collections.
+When applied to a garden, cultivar collections define the behaviour of each species of plant in the application.
+
+Cultivars can be composed, allowing specific varieties to inherit from generic species.
+Collectionc can be composed, allowing custom behaviour to inherit from base templates provided by the community.
+
+### Plants
+
+A plant represents an instance of one or more plants in the real world. 
+Plants get their behaviours from cultivars, and contain lifespan information, consisting of the following:
+
+- `origin`: How the plant was created. May be one of the following:
+  - `direct-seed`: A seed is sown directly into the location it will reach maturity in.
+  - `seed-to-transplant`: A seed is sown in one location and then transplanted into the location it will reach maturity in.
+  - `seedling-to-transplant`: A seedling is transplanted directly into the location it will reach maturity in.
+- `locations`: A set of locations representing the history of the plant.
+- `geometries`: A set of geometries representing the history of the plant.
+- `dates`: A set of dates representing the lifespan of the plant. Includes the following:
+  - `seed-date`: The date at which the plant is seeded.
+  - `germ-date`: The date at which the seed germinates.
+  - `expiry-date`: The date at which the plant is removed from the space.
+  - `dormancy-dates`: This is defined only for biennial or perennial plants. A set of dates which the plant became dormant until the following growthDate. For example, includes the dates a berry bush has stopped producing fruit and vegetation.
+  - `growth-dates`: This is defined only for biennial or perennial plants. A set of dates which the plant exited dormancy for the until the following dormancyDate. For example, includes the dates a berry bush has begun vegetative growth again.
+- `harvests`: A set of harvests from the plant. Harvests include the following:
+  - `date`: The date of the harvest.
+  - `mass`: The mass of the harvest.
+  - `quality`: The quality of the harvest. May be defective, passable, average, or exceptional.
+  - `units`: The number of units. This may differ in meaning depending on the plant. For example, for carrots, it could mean the number of roots while for lettuce, it could mean the number of leaves.
+
+Each plant contains two versions of lifespan information: the expected lifespan and the measured lifespan. 
+The expected lifespan is populated as the plant is created and modified in advance.
+As the plant exists, information about its behavior is recorded into the measured lifespan.
+Expected lifespan is modified to better maked predictions given the recorded behavior. 
+
+### Actions
+
+An action represents a task and a set of sub-tasks which track how to align the real world with the expected outcomes of the model.
+For example, when a plant is created an action is created and assigned to it. The action's tasks include seeding, weeding, transplanting, pruning, and harvesting.
+Actions and their sub-tasks may be assigned to users, allowing work to be tracked and organized.

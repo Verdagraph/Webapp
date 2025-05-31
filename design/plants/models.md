@@ -86,8 +86,8 @@ A variable number of harvests may be assigned to a plant. For plants which have 
 
 - date: The date of the harvest.
 - mass: The mass of the harvest, in kg.
+- quality: The quality of the harvest. May be defective, passable, average, or exceptional
 - units: The number of units. This may differ in meaning depending on the plant. For example, for carrots, it could mean the number of roots. For lettuce, it could mean the number of leaves.
-- quality: The quality of the harvest. May be low, medium, or high.
 
 # Plant
 

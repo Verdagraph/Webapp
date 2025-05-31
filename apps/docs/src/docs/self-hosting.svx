@@ -1,0 +1,15 @@
+---
+title: Self Hosing Instructions
+description: Instructions for replicating project deployment.
+updatedDate: '2025-5-29'
+categories:
+  - general
+published: true
+---
+
+
+Instructions for self-hosting do not yet exist as the application has not yet made it out of a development environment. However, you can expect self-hosting to use a typical docker-compose approach. The infrastructure required to run the project will likely be composed of:
+
+- A static file server to send the frontend application to clients.
+- A Node or other javascript runtime server hosting the [Triplit](https://www.triplit.dev/) database.
+- A Node or other javascript runtime server hosting an authentication provider and other utilities.

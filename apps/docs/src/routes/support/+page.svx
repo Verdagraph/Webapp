@@ -4,7 +4,7 @@
 	import MainContentContainer from '$components/MainContentContainer.svelte'
 	import env from '$lib/env';
 
-	const CURRENT_MONTHLY_EXPENSES_CAD = "$10.06";
+	const CURRENT_MONTHLY_EXPENSES = "CAD $10.06";
 </script>
 
 <svelte:head>
@@ -31,8 +31,8 @@ Donations are accepted through [Liberapay](https://liberapay.com/Verdagraph).
 The current monthy expenses of the project, including the fees to run the application, this website, and other infrastructure, is listed below.
 
 <div class="w-full border border-netural-6 rounded-lg flex justify-between px-4 py-2">
-	<span class="text-neutral-11">Monthly expenses (CAD):</span>
-	<span class="italic text-neutral-10">{CURRENT_MONTHLY_EXPENSES_CAD}</span>
+	<span class="text-neutral-11">Monthly expenses:</span>
+	<span class="italic text-neutral-10">{CURRENT_MONTHLY_EXPENSES}</span>
 </div>
 
 ## Feedback
@@ -52,9 +52,9 @@ You'll be able to contribute to Verdagraph if you
 want to build tools that empower food sovereignty through decentralized, 
 horizontal food systems, and are able to do any of the following:
  
-- Build cross platform Typescript applications. 
-- Build embedded IoT devices. 
-- Design user interfaces. 
+- Build Typescript applications. 
+- Build embedded IoT devices.
+- Design user interfaces.
 - Design graphics.
 - Translate between English and any other language.
 

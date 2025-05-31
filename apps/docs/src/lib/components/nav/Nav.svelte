@@ -1,12 +1,13 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { Button, Popover, Separator, iconIds } from '@vdg-webapp/ui';
+	import { Button, DropdownMenu, Popover, Separator, iconIds } from '@vdg-webapp/ui';
 
 	import env from '$lib/env';
 
 	import MobileNav from './MobileNav.svelte';
 	import Search from './Search.svelte';
+	import ThemeSwitcher from './ThemeSwitcher.svelte';
 
 	let navLinks = [
 		{
@@ -50,10 +51,13 @@ Primary navigation between the docs pages and app resources.
 
 			<ul class="hidden gap-4 md:flex md:gap-8 lg:gap-12">
 				{#each navLinks as link}
-					<li class="">
+					<li>
 						<Button.Root href={link.url} variant="ghost">{link.label}</Button.Root>
 					</li>
 				{/each}
+				<li>
+					<ThemeSwitcher showLabel={false} />
+				</li>
 			</ul>
 
 			<!-- 

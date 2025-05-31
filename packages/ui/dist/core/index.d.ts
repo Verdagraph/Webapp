@@ -9,7 +9,7 @@ export * as Command from './command';
 export * as Datepicker from './datepicker';
 export * as Dialog from './dialog';
 export * as Drawer from './drawer';
-export * as DropdownMenum from './dropdown-menu';
+export * as DropdownMenu from './dropdown-menu';
 export * as Form from './form';
 export * as Input from './input';
 export * as Menubar from './menubar';

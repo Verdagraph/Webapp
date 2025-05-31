@@ -3,6 +3,7 @@
 
 	import { ScrollArea, Sheet, iconIds } from '@vdg-webapp/ui';
 
+	import ThemeSwitcher from './ThemeSwitcher.svelte';
 	import Tree from './Tree.svelte';
 </script>
 
@@ -11,6 +12,7 @@
 		<Icon icon={iconIds.gardenDrawerIcon} width="2rem" />
 	</Sheet.Trigger>
 	<Sheet.Content>
+		<ThemeSwitcher showLabel={true} />
 		<ScrollArea.Root class="h-full">
 			<Tree />
 		</ScrollArea.Root>
