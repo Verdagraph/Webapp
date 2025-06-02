@@ -5,7 +5,8 @@ import seed from './seed';
 export const workspaceDemo: Demo = {
 	id: 'workspace-editor',
 	title: 'Workspace Editor',
-	description: '',
+	description:
+		'The workspace editor allows editing workspaces, planting areas, and environments.',
 	component: WorkspaceEditor,
 	seed: seed
 };

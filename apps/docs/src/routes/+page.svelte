@@ -107,9 +107,7 @@
 				>
 			</div>
 
-			<div
-				class="border-neutral-6 bg-neutral-2 mt-6 aspect-video w-full rounded-lg border shadow-md"
-			>
+			<div class="border-neutral-6 bg-neutral-2 mt-6 w-full shadow-md">
 				<LandingPageDemo />
 			</div>
 

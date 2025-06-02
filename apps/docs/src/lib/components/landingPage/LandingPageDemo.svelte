@@ -12,6 +12,8 @@
 			</Carousel.Item>
 		{/each}
 	</Carousel.Content>
-	<Carousel.Previous />
-	<Carousel.Next />
+	<!--
+		<Carousel.Previous />
+		<Carousel.Next />
+	-->
 </Carousel.Root>

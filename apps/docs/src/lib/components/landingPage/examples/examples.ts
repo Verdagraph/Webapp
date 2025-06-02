@@ -1,6 +1,6 @@
 import { type Component } from 'svelte';
 
-import WorkspaceGeometry from './WorkspaceGeometry.svelte';
+import { WorkspaceEditor } from './WorkspaceEditor';
 
 type LandingPageExample = {
 	name: string;
@@ -12,6 +12,6 @@ export const examples: LandingPageExample[] = [
 	{
 		name: 'Planting Areas',
 		description: 'Garden beds, areas, and any geometry can be flexibly represented.',
-		component: WorkspaceGeometry
+		component: WorkspaceEditor
 	}
 ];

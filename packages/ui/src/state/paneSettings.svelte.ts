@@ -42,6 +42,9 @@ export function createPaneSettings<Panes extends string[]>(
 		get direction() {
 			return settings.value.direction;
 		},
+		set direction(newVal) {
+			settings.value.direction = newVal;
+		},
 		isEnabled,
 		enable,
 		disable,

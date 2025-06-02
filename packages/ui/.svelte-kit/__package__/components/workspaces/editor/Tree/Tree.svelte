@@ -20,7 +20,7 @@
 			>Planting Areas
 		</Tabs.Trigger>
 	</Tabs.List>
-	<Tabs.Content value="plantingAreas" class="mt-0 overflow-hidden">
+	<Tabs.Content value="plantingAreas" class="mt-0 overflow-clip h-full">
 		<PlantingAreaTree {plantingAreas} {workspacesInGarden} />
 	</Tabs.Content>
 </Tabs.Root>

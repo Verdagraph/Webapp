@@ -58,7 +58,7 @@ declare function createVerdagraphContext(): {
     };
     /** Setters. */
     paneSettings: {
-        readonly direction: import("../../core/resizable").Direction;
+        direction: import("../../core/resizable").Direction;
         isEnabled: (pane: "tree" | "calendar" | "layout") => boolean;
         enable: (pane: "tree" | "calendar" | "layout") => void;
         disable: (pane: "tree" | "calendar" | "layout") => void;
@@ -147,7 +147,7 @@ export declare function setVerdagraphContext(): {
     };
     /** Setters. */
     paneSettings: {
-        readonly direction: import("../../core/resizable").Direction;
+        direction: import("../../core/resizable").Direction;
         isEnabled: (pane: "tree" | "calendar" | "layout") => boolean;
         enable: (pane: "tree" | "calendar" | "layout") => void;
         disable: (pane: "tree" | "calendar" | "layout") => void;
@@ -235,7 +235,7 @@ export declare function getVerdagraphContext(): {
     };
     /** Setters. */
     paneSettings: {
-        readonly direction: import("../../core/resizable").Direction;
+        direction: import("../../core/resizable").Direction;
         isEnabled: (pane: "tree" | "calendar" | "layout") => boolean;
         enable: (pane: "tree" | "calendar" | "layout") => void;
         disable: (pane: "tree" | "calendar" | "layout") => void;

@@ -39,6 +39,7 @@
 		await triplit.transact(async (tx) => {
 			for (const [collection, items] of Object.entries(seedData)) {
 				for (const item of items) {
+					// @ts-ignore
 					await tx.insert(collection, item);
 				}
 			}

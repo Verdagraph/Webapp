@@ -125,7 +125,7 @@ export declare function createWorkspaceContext(id: string): {
         isToolActive: (id: "translate" | "delete" | "layoutConfig" | "plantingAreaCreate" | "environmentCreate" | "expire") => boolean;
     };
     paneSettings: {
-        readonly direction: import("../../../core/resizable").Direction;
+        direction: import("../../../core/resizable").Direction;
         isEnabled: (pane: "tree" | "layout") => boolean;
         enable: (pane: "tree" | "layout") => void;
         disable: (pane: "tree" | "layout") => void;
@@ -307,7 +307,7 @@ export declare function setWorkspaceContext(id: string): {
         isToolActive: (id: "translate" | "delete" | "layoutConfig" | "plantingAreaCreate" | "environmentCreate" | "expire") => boolean;
     };
     paneSettings: {
-        readonly direction: import("../../../core/resizable").Direction;
+        direction: import("../../../core/resizable").Direction;
         isEnabled: (pane: "tree" | "layout") => boolean;
         enable: (pane: "tree" | "layout") => void;
         disable: (pane: "tree" | "layout") => void;
@@ -488,7 +488,7 @@ export declare function getWorkspaceContext(): {
         isToolActive: (id: "translate" | "delete" | "layoutConfig" | "plantingAreaCreate" | "environmentCreate" | "expire") => boolean;
     };
     paneSettings: {
-        readonly direction: import("../../../core/resizable").Direction;
+        direction: import("../../../core/resizable").Direction;
         isEnabled: (pane: "tree" | "layout") => boolean;
         enable: (pane: "tree" | "layout") => void;
         disable: (pane: "tree" | "layout") => void;

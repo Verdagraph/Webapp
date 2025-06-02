@@ -28,6 +28,9 @@ export function createPaneSettings(id, initialEnabled, initialDirection) {
         get direction() {
             return settings.value.direction;
         },
+        set direction(newVal) {
+            settings.value.direction = newVal;
+        },
         isEnabled,
         enable,
         disable,

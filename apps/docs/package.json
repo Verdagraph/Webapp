@@ -64,6 +64,7 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
+		"@sveltejs/enhanced-img": "^0.6.0",
 		"@triplit/client": "^1.0.33",
 		"@triplit/svelte": "^1.0.33",
 		"@vdg-webapp/models": "workspace:*",

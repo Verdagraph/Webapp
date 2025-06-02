@@ -60,7 +60,7 @@ Most entities may have multiple geometries, which represents the change of shape
 A geometry has a type which desribes what attributes it uses to contruct its shape. 
 Currently, there exists four types of geometries:
 
-- `rectnagle`: Desribed by a length and a width.
+- `rectangle`: Desribed by a length and a width.
 - `ellipse`: Described by a length diameter and a width diameter.
 - `polygon`: Described by a number of sides and a radius.
 - `lines`: Described by a number of coordinates which, when connected, form an open or closed shape.
@@ -87,7 +87,7 @@ Environments apply to a bounded contex, which may be one of four types:
 
 - `garden`: The environment applies to everything in the garden. There's a limit of one environment per `garden` type.
 - `workspace`: The environment applies to everything in a workspace. There's a limit of one environment per `workspace` type in each workspace.
-- `planting-area`: The environment applies to everything in a planting area. There's a limit of one environment per `plantingArea` type in each plantingArea.
+- `planting-area`: The environment applies to everything in a planting area. There's a limit of one environment per `planting-area` type in each plantingArea.
 - `independent`: The environment applies to a set of locations and geometries throughout time. There's no limit.
 
 If an environments is defined within the physical space of another, it inherits its attributes by default.
