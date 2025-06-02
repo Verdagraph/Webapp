@@ -1,6 +1,6 @@
 import Konva from 'konva';
 
-import { AppError } from '@vdg-webapp/models/src/errors';
+import { AppError } from '@vdg-webapp/models';
 
 /**
  * Context which stores the Konva stage, container div sizing,
@@ -11,7 +11,7 @@ import { AppError } from '@vdg-webapp/models/src/errors';
 export function createCanvasContainer(canvasId: string) {
 	/** Consts. */
 	const containerId = canvasId; /** ID of the container HTML element. */
-	const pixelsPerMeter = 100; /** The initial scale of rendering, pre-scaling. */
+	let pixelsPerMeter = $state(100); /** The initial scale of rendering, pre-scaling. */
 
 	/** Konva. */
 	let stage: Konva.Stage | null = null;
@@ -120,6 +120,9 @@ export function createCanvasContainer(canvasId: string) {
 		},
 		set height(newVal: number) {
 			height = newVal;
+		},
+		set pixelsPerMeter(newVal) {
+			pixelsPerMeter = newVal;
 		},
 
 		initialize,

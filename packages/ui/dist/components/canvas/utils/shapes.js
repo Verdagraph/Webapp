@@ -13,6 +13,7 @@ function getClosedOrUnclosedShape(canvas, geometry, forceLinesClosed = false, co
     const commonShapeConfig = {
         x: canvas.transform.canvasXPos(position?.x || 0),
         y: canvas.transform.canvasYPos(position?.y || 0),
+        strokeScaleEnabled: canvas.transform.strokeScale,
         ...config
     };
     switch (geometry.type) {

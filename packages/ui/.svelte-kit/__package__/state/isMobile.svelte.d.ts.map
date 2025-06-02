@@ -1,1 +1,1 @@
-{"version":3,"file":"isMobile.svelte.d.ts","sourceRoot":"","sources":["../../src/state/isMobile.svelte.ts"],"names":[],"mappings":"AAIA,eAAO,MAAM,QAAQ,QAAO,OAE3B,CAAC;AAEF,qBAAa,QAAQ;;;IAmBpB,IAAI,OAAO,YAEV;CACD"}
+{"version":3,"file":"isMobile.svelte.d.ts","sourceRoot":"","sources":["../../src/state/isMobile.svelte.ts"],"names":[],"mappings":"AAMA,eAAO,MAAM,QAAQ,QAAO,OAM3B,CAAC;AAEF,qBAAa,QAAQ;;;IAmBpB,IAAI,OAAO,YAEV;CACD"}

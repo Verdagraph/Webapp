@@ -1,2 +1,2 @@
-export * from './schema';
-export * from './commands';
+export * from './schema.js';
+export * from './commands.js';

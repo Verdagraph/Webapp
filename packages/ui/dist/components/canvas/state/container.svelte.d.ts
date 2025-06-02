@@ -8,7 +8,7 @@ import Konva from 'konva';
 export declare function createCanvasContainer(canvasId: string): {
     readonly containerId: string;
     readonly stage: import("konva/lib/Stage").Stage | null;
-    readonly pixelsPerMeter: number;
+    pixelsPerMeter: number;
     readonly initialized: boolean;
     width: number;
     height: number;

@@ -1,0 +1,1 @@
+{"version":3,"file":"schema.js","sourceRoot":"","sources":["../../../../src/cultivars/attributes/origin/schema.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,IAAI,CAAC,EAAE,MAAM,iBAAiB,CAAC;AAE9C,cAAc;AACd,MAAM,CAAC,MAAM,aAAa,GAAG,CAAC,CAAC,MAAM,CAAC;IACrC,cAAc,EAAE,CAAC,CAAC,QAAQ,CAAC,CAAC,CAAC,OAAO,EAAE,CAAC;CACvC,CAAC,CAAC"}

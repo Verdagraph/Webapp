@@ -1,4 +1,4 @@
-import { AppError } from '@vdg-webapp/models/src/errors.js';
+import { AppError } from '@vdg-webapp/models.js';
 
 import { goto } from '$app/navigation';
 import triplit from '$data/triplit';

@@ -14,6 +14,7 @@
 		"codegen": "rm -r ./src/lib/codegen/; orval --config ./orval.config.ts"
 	},
 	"devDependencies": {
+		"@fontsource/atkinson-hyperlegible": "^5.2.5",
 		"@iconify/svelte": "^4.2.0",
 		"@internationalized/date": "^3.7.0",
 		"@melt-ui/pp": "^0.3.2",
@@ -23,6 +24,7 @@
 		"@sveltejs/kit": "^2.19.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.4",
 		"@tailwindcss/container-queries": "^0.1.1",
+		"@tailwindcss/typography": "^0.5.16",
 		"@types/eslint": "^8.56.12",
 		"@types/node": "^20.17.24",
 		"@vdg-webapp/eslint-config": "workspace:*",
@@ -37,7 +39,8 @@
 		"formsnap": "2.0.0-next.1",
 		"globals": "^15.15.0",
 		"lucide-svelte": "^0.416.0",
-		"mode-watcher": "^0.4.1",
+		"mdsvex": "^0.12.6",
+		"mode-watcher": "^1.0.7",
 		"orval": "^6.31.0",
 		"paneforge": "1.0.0-next.1",
 		"postcss": "^8.5.3",
@@ -61,12 +64,18 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
+		"@sveltejs/adapter-cloudflare": "^7.0.3",
+		"@sveltejs/enhanced-img": "^0.6.0",
 		"@triplit/client": "^1.0.33",
 		"@triplit/svelte": "^1.0.33",
 		"@vdg-webapp/models": "workspace:*",
 		"@vdg-webapp/ui": "workspace:*",
 		"axios": "^1.8.2",
+		"canvas": "npm:@napi-rs/canvas@0.1.69",
+		"flexsearch": "^0.8.167",
+		"gray-matter": "^4.0.3",
 		"konva": "^9.3.18",
-		"melt": "^0.14.1"
+		"melt": "^0.14.1",
+		"remove-markdown": "^0.6.2"
 	}
 }

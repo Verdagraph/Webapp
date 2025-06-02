@@ -1,6 +1,6 @@
 /** Cotains constant links to external sites. */
 export declare const externalLinks: {
-    project: string;
+    repository: string;
     donation: string;
     discord: string;
 };

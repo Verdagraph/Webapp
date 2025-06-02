@@ -1,4 +1,4 @@
-import { AppError } from '@vdg-webapp/models/src/errors';
+import { AppError } from '@vdg-webapp/models';
 
 import { goto } from '$app/navigation';
 import { gardenQuery } from '$data/gardens/queries.js';

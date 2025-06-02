@@ -1,6 +1,6 @@
 import { type FieldErrors, type Geometry, type GeometryHistory, type GeometryUpdateCommand } from '@vdg-webapp/models';
 import { type Item } from '..';
-type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
+export type GeometryUpdateHandler = (id: string, data: GeometryUpdateCommand) => void;
 /**
  * Constructs an editable tree item for a geometry.
  * @param parentId The base ID of the parent tree item.
@@ -38,5 +38,4 @@ export declare function geometryHistoryTreeItem(baseId: string, value: {
     onGeometryHistoryExtend: () => void;
     fieldErrors: FieldErrors;
 }): Item;
-export {};
 //# sourceMappingURL=geometry.d.ts.map

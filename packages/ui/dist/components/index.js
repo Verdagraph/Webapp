@@ -6,4 +6,5 @@ export * from './selection';
 export * from './tabToolbox';
 export * from './timeline';
 export * from './units';
+export * from './verdagraph';
 export * from './workspaces';

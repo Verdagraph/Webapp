@@ -3,7 +3,7 @@ import type { Geometry, GeometryUpdateCommand } from '@vdg-webapp/models';
 type Props = {
     /** The ID of the canvas. */
     canvasId: string;
-    geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds'>;
+    geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>;
     /** A konva group already made that stores the geometry's shapes. */
     geometryGroup: Konva.Group;
     /** Colors to make the points. */

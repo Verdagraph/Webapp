@@ -1,4 +1,7 @@
 {
+	"compilerOptions": {
+		"types": ["vite/client"]
+	},
 	"extends": [
 		"@vdg-webapp/typescript-config/tsconfig.json",
 		"./.svelte-kit/tsconfig.json"

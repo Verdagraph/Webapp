@@ -30,6 +30,12 @@
 			],
 			"$utils/*": [
 				"../src/utils/*"
+			],
+			"$src": [
+				"../src"
+			],
+			"$src/*": [
+				"../src/*"
 			]
 		},
 		"rootDirs": [

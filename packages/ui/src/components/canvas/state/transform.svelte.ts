@@ -1,6 +1,6 @@
 import type { Vector2d } from 'konva/lib/types';
 
-import { AppError } from '@vdg-webapp/models/src/errors';
+import { AppError } from '@vdg-webapp/models';
 
 import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
@@ -31,9 +31,15 @@ const maxScaleFactor = 10;
 /**
  * Context which handles canvas positioning and scaling.
  * @param container The container context.
+ * @param draggable: The draggable Konva value.
+ * @param strokeScale: The default value for strokeScaleEnabled for shapes.
  * @returns The transform context.
  */
-export function createCanvasTransform(container: CanvasContainer) {
+export function createCanvasTransform(
+	container: CanvasContainer,
+	draggable: boolean,
+	strokeScale: boolean
+) {
 	/** Runes. */
 	let scaleFactor: Vector2d = $state({ x: 1, y: 1 });
 	let position: Vector2d = $state({ x: 0, y: 0 });
@@ -200,7 +206,7 @@ export function createCanvasTransform(container: CanvasContainer) {
 
 		position = initialPosition();
 		container.stage.position(position);
-		container.stage.draggable(true);
+		container.stage.draggable(draggable);
 
 		$effect(() => {
 			if (!container.stage) return;
@@ -230,6 +236,9 @@ export function createCanvasTransform(container: CanvasContainer) {
 		},
 		get position() {
 			return position;
+		},
+		get strokeScale() {
+			return strokeScale;
 		},
 		set config(newVal: TransformControlsState) {
 			config.value = newVal;

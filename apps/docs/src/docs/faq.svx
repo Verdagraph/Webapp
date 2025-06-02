@@ -1,0 +1,18 @@
+---
+title: Frequently Asked Questions
+description: Frequently Asked Questions
+updatedDate: '2025-5-29'
+categories:
+  - general
+published: true
+---
+
+## When will the application be ready for use?
+
+As this is currently still a hobby project with a somewhat large scope, it's not clear when the application will be functional enough to practically use. If you're interested in hearing about the first public release, join the newsletter found in the `Community` tab of the sidebar. 
+
+## Where can I access the application?
+
+The application is not currently accessible for public use as it's still in very early development.
+
+When it is available, you can access it at `app.verdagraph.org`, by navigating to the `Start the Application` button in the sidebar or the `App` button on the top navigation bar.

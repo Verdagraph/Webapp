@@ -8,6 +8,12 @@
 		"declarationMap": true,
 		"allowArbitraryExtensions": true
 	},
-	"include": ["dist", "./src/**/*.svelte", "./src/**/*.ts"],
+	"include": [
+		"dist",
+		"./src/**/*.svelte",
+		"./src/**/*.ts",
+		"src/state/controller.svelte.ts",
+		"src/state/controller.svelte.ts"
+	],
 	"exclude": ["node_modules", ".svelte-kit"]
 }

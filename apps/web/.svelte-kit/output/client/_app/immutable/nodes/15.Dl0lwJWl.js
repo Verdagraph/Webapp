@@ -1,1 +1,0 @@
-import"../chunks/Boh5s-Fb.js";import"../chunks/CR0Tndyg.js";import{$ as r}from"../chunks/BwwL9Z8J.js";import{h as t}from"../chunks/CklQGOQz.js";import{U as e}from"../chunks/D4UGYf9c.js";function c(o){t(m=>{r.title="Members - Verdagraph"}),e(o)}export{c as component};

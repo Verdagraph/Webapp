@@ -12,6 +12,9 @@ export * from './environments/index.js';
 export * from './plants/index.js';
 export * from './utils.js';
 export * from './errors.js';
+export * from './controller.js';
+export * from './permissions.js';
+export * from './utils/index.js';
 
 /**
  * Export Triplit schemas.

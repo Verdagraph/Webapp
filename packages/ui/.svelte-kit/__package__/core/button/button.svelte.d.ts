@@ -7,6 +7,7 @@ export declare const buttonVariants: import("tailwind-variants").TVReturnType<{
         destructive: string;
         outline: string;
         secondary: string;
+        accent: string;
         ghost: string;
         link: string;
     };
@@ -23,6 +24,7 @@ export declare const buttonVariants: import("tailwind-variants").TVReturnType<{
         destructive: string;
         outline: string;
         secondary: string;
+        accent: string;
         ghost: string;
         link: string;
     };
@@ -39,6 +41,7 @@ export declare const buttonVariants: import("tailwind-variants").TVReturnType<{
         destructive: string;
         outline: string;
         secondary: string;
+        accent: string;
         ghost: string;
         link: string;
     };
@@ -55,6 +58,7 @@ export declare const buttonVariants: import("tailwind-variants").TVReturnType<{
         destructive: string;
         outline: string;
         secondary: string;
+        accent: string;
         ghost: string;
         link: string;
     };
@@ -71,6 +75,7 @@ export declare const buttonVariants: import("tailwind-variants").TVReturnType<{
         destructive: string;
         outline: string;
         secondary: string;
+        accent: string;
         ghost: string;
         link: string;
     };
@@ -87,6 +92,7 @@ export declare const buttonVariants: import("tailwind-variants").TVReturnType<{
         destructive: string;
         outline: string;
         secondary: string;
+        accent: string;
         ghost: string;
         link: string;
     };
@@ -103,6 +109,7 @@ export declare const buttonVariants: import("tailwind-variants").TVReturnType<{
         destructive: string;
         outline: string;
         secondary: string;
+        accent: string;
         ghost: string;
         link: string;
     };
