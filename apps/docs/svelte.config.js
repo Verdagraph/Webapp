@@ -25,6 +25,9 @@ const config = {
 		alias: {
 			$lib: path.resolve('./src/lib'),
 			$components: path.resolve('./src/lib/components')
+		},
+		prerender: {
+			handleMissingId: 'warn'
 		}
 	}
 };
