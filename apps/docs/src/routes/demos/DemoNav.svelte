@@ -9,6 +9,10 @@
 	const selectedDemo = $derived(demos.find((demo) => demo.id === page.params.demoId));
 </script>
 
+<!--
+@component Navigation to switch between demos.
+-->
+
 <div
 	class="border-neutral-8 bg-neutral-3 flex h-10 items-center justify-start gap-4 border-b px-8 py-2"
 >

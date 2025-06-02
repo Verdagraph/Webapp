@@ -7,6 +7,9 @@
 	import Tree from './Tree.svelte';
 </script>
 
+<!--
+@component The collapsible navigation menu on small screens.
+-->
 <Sheet.Root>
 	<Sheet.Trigger>
 		<Icon icon={iconIds.gardenDrawerIcon} width="2rem" />

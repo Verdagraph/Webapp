@@ -9,9 +9,10 @@ export declare const CONTROLLER_CONTEXT_ID = "TriplitController";
  * @param getClient A function for returning an authenticated user.
  * @returns ControllerContext.
  */
-export declare function createController(triplit: TriplitClient, getClient: (triplit: TriplitClient) => Promise<User | null>): {
+export declare function createController(triplit: TriplitClient, getClient: (triplit: TriplitClient) => Promise<User | null>, disablePermissions?: boolean): {
     triplit: TriplitClient;
     getClient: (triplit: TriplitClient) => Promise<User | null>;
+    disablePermissions: boolean;
     getClientOrError: () => Promise<User>;
     requireRole: (gardenId: string, action: ActionType) => Promise<{
         client: User;

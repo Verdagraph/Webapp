@@ -14,7 +14,11 @@ type PreferredUnitSettings = {
 	volume: UnitSystem;
 };
 
+/**
+ * Holds persisted user settings.
+ */
 function createSettingsContext() {
+	/** Unit settings. */
 	const units = new LocalStore<PreferredUnitSettings>('unitSettings', {
 		distance: 'metric',
 		temperature: 'metric',

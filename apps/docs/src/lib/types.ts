@@ -1,6 +1,9 @@
 export type DocsCategories = 'general' | 'usage' | 'tutorials';
 export type BlogsCategories = 'announcements' | 'releases';
 
+/**
+ * An entry into the documentation pages.
+ */
 export type DocPage = {
 	title: string;
 	slug: string;
@@ -10,6 +13,9 @@ export type DocPage = {
 	published: boolean;
 };
 
+/**
+ * An entry into the blog pages.
+ */
 export type BlogPage = {
 	title: string;
 	slug: string;

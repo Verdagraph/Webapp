@@ -2,23 +2,12 @@ import { type BulkInsert } from '@triplit/client';
 
 import { schema } from '@vdg-webapp/models';
 
+import { addToDate } from '$lib/utils';
+
 import { user } from '../seed';
 
 const earlyDate = new Date(2025, 1, 1);
 const currentDay = new Date();
-
-function addToDate(
-	date: Date,
-	days: number = 0,
-	months: number = 0,
-	years: number = 0
-): Date {
-	const newDate = new Date(date); // Create a new date object to avoid mutating the original date
-	newDate.setDate(newDate.getDate() + days); // Add days
-	newDate.setMonth(newDate.getMonth() + months); // Add months
-	newDate.setFullYear(newDate.getFullYear() + years); // Add years
-	return newDate;
-}
 
 export const gardenId = 'garden';
 export const workspaceId = 'workspace';

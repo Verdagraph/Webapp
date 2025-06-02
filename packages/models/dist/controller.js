@@ -7,7 +7,7 @@ export const CONTROLLER_CONTEXT_ID = 'TriplitController';
  * @param getClient A function for returning an authenticated user.
  * @returns ControllerContext.
  */
-export function createController(triplit, getClient) {
+export function createController(triplit, getClient, disablePermissions = false) {
     const gardenQuery = triplit.query('gardens').Id('$query.id');
     /**
      * Fetches the client's Account and Profile objects.
@@ -55,8 +55,9 @@ export function createController(triplit, getClient) {
     return {
         triplit,
         getClient,
+        disablePermissions,
         getClientOrError,
-        requireRole
+        requireRole,
     };
 }
 //# sourceMappingURL=controller.js.map

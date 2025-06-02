@@ -44,6 +44,10 @@
 	}
 </script>
 
+<!--
+@component The main navigation tree
+-->
+
 {#snippet treeItems(items: (typeof tree)['children'], depth: number = 0)}
 	{#each items as item (item.id)}
 		<li
@@ -99,6 +103,6 @@
 	{/each}
 {/snippet}
 
-<ul class="w-[200px] list-none" {...tree.root}>
+<ul class="mb-12 w-[200px] list-none" {...tree.root}>
 	{@render treeItems(tree.children, 0)}
 </ul>

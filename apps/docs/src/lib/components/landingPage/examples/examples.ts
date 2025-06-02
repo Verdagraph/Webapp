@@ -2,6 +2,9 @@ import { type Component } from 'svelte';
 
 import { WorkspaceEditor } from './WorkspaceEditor';
 
+/**
+ * Describes one item in the carousel on the landing page.
+ */
 type LandingPageExample = {
 	name: string;
 	description: string;

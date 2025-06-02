@@ -107,9 +107,7 @@
 				>
 			</div>
 
-			<div class="border-neutral-6 bg-neutral-2 mt-6 w-full shadow-md">
-				<LandingPageDemo />
-			</div>
+			<LandingPageDemo />
 
 			<div class="mt-8 flex w-full flex-col gap-6">
 				<div class="flex items-center justify-between">

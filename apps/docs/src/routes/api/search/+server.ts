@@ -4,6 +4,10 @@ import removeMd from 'remove-markdown';
 
 export const prerender = true;
 
+/**
+ * Server function to retrieve all the docs and blogs pages
+ * and serve their content for search indexing.
+ */
 export async function GET() {
 	const docsPaths = import.meta.glob('/src/docs/**/*.svx', { as: 'raw', eager: true });
 	const blogPaths = import.meta.glob('/src/blog/**/*.svx', { as: 'raw', eager: true });

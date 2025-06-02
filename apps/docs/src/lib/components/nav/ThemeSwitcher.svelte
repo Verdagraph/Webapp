@@ -16,6 +16,9 @@
 	);
 </script>
 
+<!--
+@component The theme switcher button.
+-->
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger>
 		{#snippet child({ props })}

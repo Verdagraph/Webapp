@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { TriplitClient } from '@triplit/client';
-	import { onDestroy, onMount, setContext } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 
 	import {
 		CONTROLLER_CONTEXT_ID,
-		type ControllerContext,
 		createController,
 		roles,
 		schema
@@ -18,6 +17,7 @@
 	import { user } from './demos/seed';
 	import type { Demo } from './demos/types';
 
+	/** Find the demo that is active. */
 	const demo = demos.find((demo) => demo.id === page.params.demoId);
 	if (!demo) {
 		console.error('This demo does not exist.');
@@ -25,15 +25,17 @@
 	}
 	const triplit = new TriplitClient({ schema, roles, autoConnect: false });
 
+	/** Create a controller with a mock client retrieval function. */
 	async function getClient() {
 		return { account: user.account, profile: user.profile };
 	}
-	const controller = createController(triplit, getClient);
+	const controller = createController(triplit, getClient, true);
 
 	/** Set settings context and controller context. */
 	setContext(CONTROLLER_CONTEXT_ID, controller);
 	setSettingsContext();
 
+	/** Initialize the data according to the seed file. */
 	onMount(async () => {
 		const seedData = (demo as Demo).seed();
 		await triplit.transact(async (tx) => {

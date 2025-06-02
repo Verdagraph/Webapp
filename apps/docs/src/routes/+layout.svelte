@@ -5,8 +5,6 @@
 
 	import { Tooltip } from '@vdg-webapp/ui';
 
-	import Nav from '$components/nav/Nav.svelte';
-
 	import '../app.pcss';
 
 	let { children } = $props();

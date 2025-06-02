@@ -19,8 +19,7 @@
 </script>
 
 <!--
-@component
-Primary navigation between the docs pages and app resources.
+@component Top header.
 -->
 <header
 	class="border-neutral-6 sticky left-0 top-0 z-50 w-full border-b drop-shadow-md"

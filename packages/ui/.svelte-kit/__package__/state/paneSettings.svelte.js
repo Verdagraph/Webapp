@@ -1,5 +1,15 @@
 import { Resizable } from '../core';
 import { localStore } from './localStore.svelte';
+/**
+ * Stores context for a set of resizable panes:
+ * Which panes are enabled.
+ * Their direction.
+ *
+ * @param id The ID to use for local storage.
+ * @param initialEnabled The panes that are initially enabled.
+ * @param initialDirection The initial direction of the panes.
+ * @returns The pane settings.
+ */
 export function createPaneSettings(id, initialEnabled, initialDirection) {
     const settings = localStore(id, {
         enabled: initialEnabled,

@@ -3,7 +3,6 @@
 
 	import { Collapsible, ScrollArea } from '@vdg-webapp/ui';
 
-	import { pushState } from '$app/navigation';
 	import Nav from '$components/nav/Nav.svelte';
 
 	import TableOfContents from './nav/TableOfContents.svelte';
@@ -18,16 +17,13 @@
 		selector: '#content-container',
 		exclude: ['h1'],
 		activeType: 'all',
-		/**
-		 * Here we can optionally provide SvelteKit's `pushState` function.
-		 * This function preserve navigation state within the framework.
-		 */
-		//pushStateFn: pushState,
 		headingFilterFn: (heading) => !heading.hasAttribute('data-toc-ignore')
 	});
-
-	let hideHeading = false;
 </script>
+
+<!--
+@component Wraps the main content with the navigation menus.
+-->
 
 <div class="flex w-full flex-col">
 	<Nav />
@@ -37,7 +33,7 @@
 			<Tree />
 		</div>
 		<div>
-			<div class="sticky top-12 z-50">
+			<div class="sticky top-14 z-50">
 				<Collapsible.Root
 					class="bg-neutral-2 border-neutral-6 mb-4 flex w-full flex-col border px-8 py-4 md:hidden"
 				>

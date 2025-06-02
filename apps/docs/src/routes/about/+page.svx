@@ -112,7 +112,7 @@ In short, the goal of Verdagraph is to create tools which:
 
 You can find the source code for all Verdagraph projects at the [GitHub repository](https://github.com/Verdagraph).
 
-<Button.Root variant="outline" href="/support" class="w-full mt-12"
+<Button.Root variant="outline" href="/support" class="w-full mt-6"
     >Support the Project</Button.Root
 >
 

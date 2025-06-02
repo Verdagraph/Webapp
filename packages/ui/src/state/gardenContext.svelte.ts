@@ -6,6 +6,11 @@ import { type ActionType, requiredRole as getRequiredRole } from '@vdg-webapp/mo
 
 const gardenContextKey = 'gardenContext';
 
+/**
+ * Holds context for a garden,
+ * allowing UI elements to be rendered based on a user's
+ * level of permissions.
+ */
 export function createGardenContext(controller: ControllerContext) {
 	let id = $state('');
 	const clientQuery = $derived(
@@ -48,6 +53,10 @@ export function createGardenContext(controller: ControllerContext) {
 	 * @returns If true, the user is authorized.
 	 */
 	function authorize(action: ActionType): boolean {
+		if (controller.disablePermissions) {
+			return true;
+		}
+
 		/** False for a null garden or user role. */
 		if (id === null || role === null) {
 			return false;

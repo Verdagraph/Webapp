@@ -4,17 +4,21 @@ import { externalLinks } from '@vdg-webapp/ui';
 
 import env from '$lib/env';
 
+/**
+ * Type of each tree item in the main navigation tree.
+ */
 export type NavTreeItem = TreeItem & {
 	label: string;
 	url?: string;
-
 	children?: NavTreeItem[];
 };
 
 /**
- * The item ID should match the name of the file, if applicable.
+ * For items corresponding to a document in the `docs` directory,
+ * the item ID should match the name of the file.
  */
 export const navItems: NavTreeItem[] = [
+	/** Application. */
 	{
 		id: 'app',
 		label: 'Application',
@@ -23,6 +27,8 @@ export const navItems: NavTreeItem[] = [
 			{ id: 'appDemo', label: 'View the Demonstration', url: '/demos' }
 		]
 	},
+
+	/** Project. */
 	{
 		id: 'project',
 		label: 'Project',
@@ -37,6 +43,8 @@ export const navItems: NavTreeItem[] = [
 			{ id: 'source', label: 'Source Code', url: externalLinks.repository }
 		]
 	},
+
+	/** Community. */
 	{
 		id: 'community',
 		label: 'Community',
@@ -46,6 +54,8 @@ export const navItems: NavTreeItem[] = [
 			{ id: 'email', label: 'Email', url: 'mailto:contact@verdagraph.org' }
 		]
 	},
+
+	/** Documentation. */
 	{
 		id: 'docs',
 		label: 'Documentation',

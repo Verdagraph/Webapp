@@ -6,8 +6,13 @@
 
 	import { createPostsIndex, searchPostsIndex } from '$lib/search';
 
+	/** Status of the search functionality. */
 	let search: 'loading' | 'ready' = $state('loading');
+
+	/** The user's current entered search term. */
 	let searchTerm = $state('');
+
+	/** The results of the search. */
 	let results = $derived.by(() => {
 		if (search === 'ready') {
 			return searchPostsIndex(searchTerm);
@@ -16,14 +21,18 @@
 		}
 	});
 
+	/** Initialize the search. */
 	onMount(async () => {
-		const posts = await fetch('/search.json').then((res) => res.json());
+		const posts = await fetch('/api/search').then((res) => res.json());
 
 		createPostsIndex(posts);
 		search = 'ready';
 	});
 </script>
 
+<!--
+@component The search bar on the header.
+-->
 <Dialog.Root>
 	<Dialog.Trigger>
 		{#snippet child({ props })}

@@ -2,6 +2,10 @@ import { json } from '@sveltejs/kit';
 
 import type { DocPage } from '$lib/types.ts';
 
+/**
+ * @returns Returns the content of all the .svx pages contained
+ * within the `blog` folder.
+ */
 async function getDocs() {
 	let pages: DocPage[] = [];
 
@@ -28,6 +32,10 @@ async function getDocs() {
 	return pages;
 }
 
+/**
+ * Svelte server endpoint.
+ * @returns Returns all the blog pages in JSON.
+ */
 export async function GET() {
 	const pages = await getDocs();
 	return json(pages);

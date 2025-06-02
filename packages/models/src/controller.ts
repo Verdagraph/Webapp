@@ -23,7 +23,8 @@ export const CONTROLLER_CONTEXT_ID = 'TriplitController';
  */
 export function createController(
 	triplit: TriplitClient,
-	getClient: (triplit: TriplitClient) => Promise<User | null>
+	getClient: (triplit: TriplitClient) => Promise<User | null>,
+	disablePermissions: boolean = false
 ) {
 	const gardenQuery = triplit.query('gardens').Id('$query.id');
 	/**
@@ -84,6 +85,7 @@ export function createController(
 	return {
 		triplit,
 		getClient,
+		disablePermissions,
 		getClientOrError,
 		requireRole
 	};
