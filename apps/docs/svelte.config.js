@@ -27,7 +27,7 @@ const config = {
 			$components: path.resolve('./src/lib/components')
 		},
 		prerender: {
-			handleMissingId: 'warn'
+			handleMissingId: 'ignore'
 		}
 	}
 };
