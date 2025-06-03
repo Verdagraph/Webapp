@@ -17,10 +17,14 @@
 	],
 	"/blog": [
 		"src/routes/blog/+page.server.ts",
+		"src/routes/blog/+layout.server.js",
+		"src/routes/+layout.ts",
+		"src/routes/blog/+layout.server.js",
 		"src/routes/+layout.ts"
 	],
 	"/blog/[slug]": [
 		"src/routes/blog/[slug]/+page.ts",
+		"src/routes/blog/+layout.server.js",
 		"src/routes/+layout.ts"
 	],
 	"/demos": [

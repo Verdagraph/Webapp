@@ -1,0 +1,1 @@
+import"../chunks/CWj6FrbW.js";import{i as a}from"../chunks/D4tMsWHK.js";import{p,a as r}from"../chunks/C33ZBluP.js";import{g as e}from"../chunks/BuzpPzY2.js";function u(m,o){p(o,!1);const t="/demos/"+"workspace-editor";e(t),a(),r()}export{u as component};
