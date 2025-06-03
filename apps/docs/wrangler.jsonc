@@ -1,12 +1,12 @@
 {
 	"name": "verdagraph-docs",
 	"main": ".svelte-kit/cloudflare/_worker.js",
-	"assets": {
-		"binding": "ASSETS",
-		"directory": ".svelte-kit/cloudflare"
-	},
     "compatibility_flags": [
         "nodejs_compat"
     ],
-    "compatibility_date": "2024-09-23"
+	"compatibility_date": "2025-06-02",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	}
 }
