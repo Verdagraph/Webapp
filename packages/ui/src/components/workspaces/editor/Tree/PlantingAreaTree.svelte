@@ -110,7 +110,5 @@
 {#if plantingAreas.length === 0}
 	<span class="p-2 italic"> No planting areas. </span>
 {:else}
-	<ScrollArea.Root class="w-full px-2">
-		<EditableTree {editableTree} {fieldErrors} editing={workspaceContext.editing} />
-	</ScrollArea.Root>
+	<EditableTree {editableTree} {fieldErrors} editing={workspaceContext.editing} />
 {/if}

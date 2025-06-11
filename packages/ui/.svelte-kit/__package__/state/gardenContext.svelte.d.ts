@@ -1,5 +1,10 @@
 import { type ControllerContext } from '@vdg-webapp/models';
 import { type ActionType } from '@vdg-webapp/models';
+/**
+ * Holds context for a garden,
+ * allowing UI elements to be rendered based on a user's
+ * level of permissions.
+ */
 export declare function createGardenContext(controller: ControllerContext): {
     id: string;
     readonly role: any;

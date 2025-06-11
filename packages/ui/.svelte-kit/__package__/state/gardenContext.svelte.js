@@ -3,6 +3,11 @@ import { getContext, setContext } from 'svelte';
 import {} from '@vdg-webapp/models';
 import { requiredRole as getRequiredRole } from '@vdg-webapp/models';
 const gardenContextKey = 'gardenContext';
+/**
+ * Holds context for a garden,
+ * allowing UI elements to be rendered based on a user's
+ * level of permissions.
+ */
 export function createGardenContext(controller) {
     let id = $state('');
     const clientQuery = $derived(useQuery(controller.triplit, controller.triplit.query('accounts').Id('$session.accountId').Include('profile')));

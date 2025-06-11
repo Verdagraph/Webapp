@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PlantingArea, Workspace } from '@vdg-webapp/models';
 
-	import { Tabs } from '../../../../core';
+	import { Tabs, ScrollArea } from '../../../../core';
 
 	import PlantingAreaTree from './PlantingAreaTree.svelte';
 
@@ -20,7 +20,9 @@
 			>Planting Areas
 		</Tabs.Trigger>
 	</Tabs.List>
-	<Tabs.Content value="plantingAreas" class="mt-0 h-full overflow-clip">
-		<PlantingAreaTree {plantingAreas} {workspacesInGarden} />
+	<Tabs.Content value="plantingAreas">
+		<ScrollArea.Root class="w-full px-2">
+			<PlantingAreaTree {plantingAreas} {workspacesInGarden} />
+		</ScrollArea.Root>
 	</Tabs.Content>
 </Tabs.Root>

@@ -51,11 +51,14 @@
 			initialized = true;
 		}
 	});
+
 </script>
 
-<div class="flex h-full w-full flex-col">
-	<Toolbar workspaces={workspacesInGarden} {plantingAreas} {includeWorkspacesMenu} />
-	<div class="h-full grow overflow-hidden">
+<div class="flex h-full w-full flex-col relative">
+	<div class="absolute top-0 w-full h-8">
+		<Toolbar workspaces={workspacesInGarden} {plantingAreas} {includeWorkspacesMenu} />
+	</div>
+	<div class="absolute top-8 grow w-full bottom-24 overflow-hidden">
 		{#if initialized}
 			<Resizable.PaneGroup direction={workspaceContext.paneSettings.direction}>
 				{#if workspaceContext.paneSettings.isEnabled('layout')}
@@ -80,7 +83,9 @@
 			</Resizable.PaneGroup>
 		{/if}
 	</div>
-	<div class="bottom-0 h-24">
+	<div class="absolute bottom-0 w-full h-24">
 		<TimelineSelector selection={workspaceContext.timelineSelection} />
 	</div>
 </div>
+
+

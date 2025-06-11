@@ -27,16 +27,6 @@
 		"src/routes/blog/+layout.server.js",
 		"src/routes/+layout.ts"
 	],
-	"/demos": [
-		"src/routes/demos/+layout.server.js",
-		"src/routes/+layout.ts",
-		"src/routes/demos/+layout.server.js",
-		"src/routes/+layout.ts"
-	],
-	"/demos/[demoId]": [
-		"src/routes/demos/+layout.server.js",
-		"src/routes/+layout.ts"
-	],
 	"/docs": [
 		"src/routes/docs/+page.server.ts",
 		"src/routes/+layout.ts"

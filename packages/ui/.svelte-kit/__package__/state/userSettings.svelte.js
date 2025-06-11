@@ -1,7 +1,11 @@
 import { getContext, setContext } from 'svelte';
 import { LocalStore } from '@vdg-webapp/ui';
 const SETTINGS_CONTEXT_ID = 'userSettingsContext';
+/**
+ * Holds persisted user settings.
+ */
 function createSettingsContext() {
+    /** Unit settings. */
     const units = new LocalStore('unitSettings', {
         distance: 'metric',
         temperature: 'metric',

@@ -1,5 +1,8 @@
 export type UnitSystem = 'metric' | 'imperial';
 export type UnitAwareQuantity = 'distance' | 'temperature' | 'mass' | 'volume';
+/**
+ * Holds persisted user settings.
+ */
 declare function createSettingsContext(): {
     units: any;
 };
