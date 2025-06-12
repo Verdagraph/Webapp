@@ -10,6 +10,12 @@ const EnvSchema = z.object({
 		})
 		.url()
 		.default('http://localhost:5173'),
+	DEMO_URL: z
+		.string({
+			description: 'The base URL of the demonstration.'
+		})
+		.url()
+		.default('http://localhost:5175'),
 	NEWSLETTER_URL: z
 		.string({ description: 'The URL to the newsletter signup.' })
 		.url()

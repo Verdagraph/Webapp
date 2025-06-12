@@ -24,7 +24,7 @@ export const navItems: NavTreeItem[] = [
 		label: 'Application',
 		children: [
 			{ id: 'appStart', label: 'Start the Application', url: env.APP_URL },
-			{ id: 'appDemo', label: 'View the Demonstration', url: '/demos' }
+			{ id: 'appDemo', label: 'View the Demonstration', url: env.DEMO_URL }
 		]
 	},
 

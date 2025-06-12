@@ -53,9 +53,11 @@
 	});
 </script>
 
-<div class="flex h-full w-full flex-col">
-	<Toolbar workspaces={workspacesInGarden} {plantingAreas} {includeWorkspacesMenu} />
-	<div class="h-full grow overflow-hidden">
+<div class="relative flex h-full w-full flex-col">
+	<div class="absolute top-0 h-8 w-full">
+		<Toolbar workspaces={workspacesInGarden} {plantingAreas} {includeWorkspacesMenu} />
+	</div>
+	<div class="absolute bottom-24 top-8 w-full grow overflow-hidden">
 		{#if initialized}
 			<Resizable.PaneGroup direction={workspaceContext.paneSettings.direction}>
 				{#if workspaceContext.paneSettings.isEnabled('layout')}
@@ -80,7 +82,7 @@
 			</Resizable.PaneGroup>
 		{/if}
 	</div>
-	<div class="bottom-0 h-24">
+	<div class="absolute bottom-0 h-24 w-full">
 		<TimelineSelector selection={workspaceContext.timelineSelection} />
 	</div>
 </div>

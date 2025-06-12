@@ -1,7 +1,0 @@
-
-
-> docs@0.0.1 build /workspaces/Webapp/apps/docs
-> vite build
-
-[36mvite v5.4.19 [32mbuilding SSR bundle for production...[36m[39m
-[2K[1Gtransforming (1) [2m../../node_modules/.pnpm/@sveltejs+kit@2.20.8_@sveltejs+vite-plugin-svelte@4.0.4_svelte@5.28.2_vite@5.4.19_@type_ccf1bc9b54e9b057a5628d45d72f71d0/node_modules/@sveltejs/kit/src/runtime/server/index.js[22m[2K[1Gtransforming (6) [2msrc/routes/+layout.svelte[22m[2K[1Gtransforming (30) [2msrc/lib/components/MainContentContainer.svelte[22m

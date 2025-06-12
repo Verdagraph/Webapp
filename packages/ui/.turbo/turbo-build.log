@@ -1,5 +1,0 @@
-
-
-> @vdg-webapp/ui@0.0.0 build /workspaces/Webapp/packages/ui
-> svelte-kit sync && svelte-package --input=src
-
