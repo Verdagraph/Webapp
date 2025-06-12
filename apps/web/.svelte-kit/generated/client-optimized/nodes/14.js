@@ -1,1 +1,0 @@
-export { default as component } from "../../../../src/routes/gardens/[gardenId]/(garden)/edit/+page.svelte";
