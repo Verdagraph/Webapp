@@ -24,3 +24,4 @@ vite.config.ts.timestamp-*
 
 # Svelte
 .svelte-kit
+svelte-kit
