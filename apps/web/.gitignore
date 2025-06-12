@@ -21,3 +21,6 @@ vite.config.ts.timestamp-*
 
 # Turbo
 /.turbo
+
+# Svelte
+.svelte-kit

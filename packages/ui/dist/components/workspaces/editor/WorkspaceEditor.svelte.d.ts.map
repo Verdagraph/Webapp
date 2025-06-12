@@ -1,1 +1,0 @@
-{"version":3,"file":"WorkspaceEditor.svelte.d.ts","sourceRoot":"","sources":["../../../../src/components/workspaces/editor/WorkspaceEditor.svelte.ts"],"names":[],"mappings":"AAeC,KAAK,KAAK,GAAG;IACZ,QAAQ,EAAE,MAAM,CAAC;IACjB,qBAAqB,EAAE,OAAO,CAAC;CAC/B,CAAC;AA2FH,QAAA,MAAM,eAAe,2CAAwC,CAAC;AAC9D,KAAK,eAAe,GAAG,UAAU,CAAC,OAAO,eAAe,CAAC,CAAC;AAC1D,eAAe,eAAe,CAAC"}

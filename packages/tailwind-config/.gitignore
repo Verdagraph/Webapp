@@ -4,6 +4,7 @@ node_modules
 .output
 .vercel
 /build
+dist
 
 # OS
 .DS_Store
@@ -21,6 +22,3 @@ vite.config.ts.timestamp-*
 
 # Turbo
 /.turbo
-
-# Svelte
-.svelte-kit
