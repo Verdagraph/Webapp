@@ -1,10 +1,14 @@
 {
 	"/": [
 		"src/routes/+layout.ts",
-		"src/routes/+layout.ts"
+		"src/routes/+layout.server.js",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.js"
 	],
 	"/demos/[demoId]": [
 		"src/routes/+layout.ts",
-		"src/routes/+layout.ts"
+		"src/routes/+layout.server.js",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.server.js"
 	]
 }
