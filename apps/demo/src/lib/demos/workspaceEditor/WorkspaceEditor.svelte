@@ -12,7 +12,6 @@
 
 	const controller = getContext<ControllerContext>(CONTROLLER_CONTEXT_ID);
 	const workspace = setWorkspaceContext(workspaceId);
-	workspace.editing = true;
 	const garden = setGardenContext(controller);
 	garden.id = gardenId;
 </script>
