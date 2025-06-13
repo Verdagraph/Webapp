@@ -28,7 +28,7 @@
     <br />
     -->
     <br />
-    <a href="https://discord.gg/U8ps6YCc">Discord</a>
+    <a href="https://verdagraph.org">Documentation</a>
     <!-- 
     ·
     <a href="https://youtu.be/jGFHhRVdxRM">YouTube</a>
@@ -39,13 +39,22 @@
   </p>
 </div>
 
-See the [main project readme](https://github.com/Verdagraph) for background on this repository.
+See the [documentation](https://verdagraph.org) for background on this repository.
 
-Here's a screenshot from the application - this page serves to add and modify geometries which represent planting areas / garden beds. The timeline selector on the bottom is used to scrub through time, as the data model allows modelling a history of locations as opposed to a single location.
+This repository is a monorepo using [Turbo](https://turborepo.com/) on top of PNPM and contains the following components:
 
-![Demo Screenshot](https://github.com/Verdagraph/.github/blob/main/profile/graphics/demo.png)
+- `packages` This folder contains all reusable library code. It contains the following packages:
+  - `typescript-config`, `eslint-config`, `tailwind-config` Common configuration files.
+  - `models` Contains the database schemas, validation logic, and associated business logic for the domain models of the application.
+  - `ui` Contains all reusable components used across the other projects.
 
-This repository contains the frontend web application, blog site, backend server, and common database schemas of the Verdagraph web application.
+- `apps` This folder contains the following applications:
+  - `docs` The landing page and documentation site.
+  - `demo` A minimal version of the client application for demonstrating functionality.
+  - `web` The client application.
+  - `server` A backend process, used currently for authentication.
+
+- `design` This folder contains domain models & wireframes, and is used to plan features before implementation.
 
 The database in use is the [Triplit](https://www.triplit.dev/) project, which provides a full-stack database with built-in multi-client sync and real-time queries. The frontend is a statically built SvelteKit application. The backend is a Fastisy server.
 
