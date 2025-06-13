@@ -9,13 +9,13 @@ const EnvSchema = z.object({
 			description: 'The base URL of the application.'
 		})
 		.url()
-		.default('app.verdagraph.org'),
+		.default('https://app.verdagraph.org'),
 	DEMO_URL: z
 		.string({
 			description: 'The base URL of the demonstration.'
 		})
 		.url()
-		.default('demo.verdagraph.org'),
+		.default('https://demo.verdagraph.org'),
 	NEWSLETTER_URL: z
 		.string({ description: 'The URL to the newsletter signup.' })
 		.url()
