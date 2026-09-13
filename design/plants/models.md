@@ -46,6 +46,7 @@ classDiagram
     class DraftBucket {
         name: string
         creator: User
+        committed: boolean
         plants: set of Plant
     }
     class LocationHistory {
@@ -150,7 +151,11 @@ PlantGroups are simple collections of references to Plants which serve to group 
 
 # DraftBucket
 
-A DraftBucket groups the Plants that make up one unconfirmed plan, so several such plans can be built and compared before any of them are decided on. This is the persisted form of the Add Plants tool's "To Create" bucket described in the [Planner wireframes](../planner/wireframes.md#add-plants): a Plant belongs to at most one DraftBucket, and while it does, it's excluded from official reads of the garden's Plants (Action generation, yield totals, and similar), even though it's an ordinary Plant row and renders in the Layout, Tree, and Calendar like any other. Discarding a plan is an ordinary deletion of every Plant in its DraftBucket; accepting one is just deleting the DraftBucket itself, leaving its Plants in place as ordinary, non-draft Plants.
+A DraftBucket groups the Plants that make up one unconfirmed plan, so several such plans can be built and compared before any of them are decided on. This is the persisted form of the Add Plants tool's "To Create" bucket described in the [Planner wireframes](../planner/wireframes.md#add-plants): a Plant belongs to at most one DraftBucket, and while that bucket's `committed` is `false`, the Plant is excluded from official reads of the garden's Plants (Action generation, yield totals, and similar), even though it's an ordinary Plant row and renders in the Layout, Tree, and Calendar like any other. Discarding a plan deletes the DraftBucket and every Plant in it. Accepting one sets `committed` to `true` on the DraftBucket - a single-row write, not a change to any of its Plants - which is enough for official reads to stop excluding them; a Plant's `draftBucketId` is left in place afterward, preserving which plan it came from, rather than being cleared.
+
+## committed
+
+Whether this plan has been accepted. Starts `false`; set to `true` on commit and never reverts. Official reads exclude a Plant when its DraftBucket exists and `committed` is `false` - equivalently, a Plant counts as official once it has no DraftBucket, or its DraftBucket's `committed` is `true`.
 
 ## creator
 

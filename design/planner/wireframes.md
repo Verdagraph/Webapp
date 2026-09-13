@@ -183,7 +183,7 @@ The To Create bucket is not transient client state: it is backed by Triplit as a
 
 "Uncommitted" refers specifically to belonging to an open DraftBucket. It's unrelated to whether a Plant has recorded data: a Plant that isn't part of any DraftBucket is real, official garden state from the moment it's created, whether or not its `recordedLifespan` has been filled in (see [Calendar](#calendar) and [Layout](#layout) for how that's shown instead).
 
-Because a staged Plant is a real row, committing a DraftBucket is just deleting the bucket - its Plants don't change, they simply stop being excluded from official reads (Action generation, yield totals, and anything else that shouldn't see a plan still under consideration) the moment nothing references it as a draft anymore.
+Because a staged Plant is a real row, committing a DraftBucket is just setting its `committed` flag to `true` - a single-row write, not a change to any Plant - and that's enough for official reads (Action generation, yield totals, and anything else that shouldn't see a plan still under consideration) to stop excluding its Plants. A Plant's `draftBucketId` stays put afterward rather than being cleared, so which plan it came from remains visible. Discarding, by contrast, deletes the DraftBucket and every Plant in it.
 
 More than one DraftBucket may exist at once, one per plan under consideration, each with its own creator - useful for seeing what a collaborator is currently drafting, not just your own plans.
 

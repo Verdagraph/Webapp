@@ -126,12 +126,20 @@ export const plantSchema = S.Collections({
 			endDate: S.Date(),
 
 			/** The number of distinct plants which are managed together in this plant instance. */
-			quantity: S.Number({ default: 1 })
+			quantity: S.Number({ default: 1 }),
+
+			/**
+			 * The DraftBucket this plant is staged in, if any. While set to a bucket whose
+			 * `committed` is false, this plant is excluded from official reads of the
+			 * garden's plants (see DraftBucket).
+			 */
+			draftBucketId: S.String({ nullable: true, default: null })
 		}),
 		relationships: {
 			garden: S.RelationById('gardens', '$gardenId'),
 			expectedLifespan: S.RelationById('lifespans', '$expectedLifespanId'),
-			recordedLifespan: S.RelationById('lifespans', '$recordedLifespanId')
+			recordedLifespan: S.RelationById('lifespans', '$recordedLifespanId'),
+			draftBucket: S.RelationById('draftBuckets', '$draftBucketId')
 		},
 		permissions: {
 			anon: {
@@ -251,6 +259,80 @@ export const plantSchema = S.Collections({
 				}
 			}
 		}
+	},
+	/** Draft buckets. */
+	draftBuckets: {
+		schema: S.Schema({
+			id: S.Id(),
+
+			/** Garden the entity is located within - required for access control. */
+			gardenId: S.String(),
+
+			/** Name. */
+			name: S.String(),
+
+			/** The user who started this plan. Null if that profile has since been removed. */
+			creatorId: S.String({ nullable: true, default: null }),
+
+			/**
+			 * Whether this plan has been accepted. Starts false; once true, this bucket's
+			 * plants stop being excluded from official reads of the garden's plants.
+			 */
+			committed: S.Boolean({ default: false })
+		}),
+		relationships: {
+			garden: S.RelationById('gardens', '$gardenId'),
+			creator: S.RelationById('profiles', '$creatorId'),
+			plants: S.RelationMany('plants', { where: [['draftBucketId', '=', '$id']] })
+		},
+		permissions: {
+			anon: {
+				read: {
+					/** Allow anonymous reads if the garden is not hidden. */
+					filter: [['garden.visibility', '!=', 'HIDDEN']]
+				}
+			},
+			user: {
+				read: {
+					/** Allow reads if the garden is not hidden or the user is a member. */
+					filter: [
+						or([
+							['garden.visibility', '!=', 'HIDDEN'],
+							['garden.adminIds', 'has', '$role.profileId'],
+							['garden.editorIds', 'has', '$role.profileId'],
+							['garden.viewerIds', 'has', '$role.profileId']
+						])
+					]
+				},
+				insert: {
+					/** Allow new draft buckets to be created by admins and editors. */
+					filter: [
+						or([
+							['garden.adminIds', 'has', '$role.profileId'],
+							['garden.editorIds', 'has', '$role.profileId']
+						])
+					]
+				},
+				update: {
+					/** Restrict draft bucket updates to admins and editors. */
+					filter: [
+						or([
+							['garden.adminIds', 'has', '$role.profileId'],
+							['garden.editorIds', 'has', '$role.profileId']
+						])
+					]
+				},
+				delete: {
+					/** Restrict draft bucket deletes to admins and editors. */
+					filter: [
+						or([
+							['garden.adminIds', 'has', '$role.profileId'],
+							['garden.editorIds', 'has', '$role.profileId']
+						])
+					]
+				}
+			}
+		}
 	}
 });
 export type Origin = (typeof OriginEnumOptions)[number];
@@ -264,6 +346,7 @@ export type Plant = Entity<typeof plantSchema, 'plants'> & {
 	recordedLifespan: Lifespan | null;
 };
 export type PlantGroup = Entity<typeof plantSchema, 'plantGroups'>;
+export type DraftBucket = Entity<typeof plantSchema, 'draftBuckets'>;
 
 export const OriginEnumLabels: Record<Origin, string> = {
 	DIRECT_SEED: 'Direct Seed',

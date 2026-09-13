@@ -3,7 +3,14 @@ import { getContext, setContext } from 'svelte';
 import { defaults, superForm } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
-import { PlantsCreateCommandSchema, plantsCreate } from '@vdg-webapp/models';
+import {
+	type DraftBucket,
+	PlantsCreateCommandSchema,
+	draftBucketCommit,
+	draftBucketCreate,
+	draftBucketDiscard,
+	plantsCreate
+} from '@vdg-webapp/models';
 
 import {
 	type CanvasContext,
@@ -58,6 +65,52 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 		ctx.garden.role == 'ADMIN' || ctx.garden.role == 'EDITOR' ? true : false
 	);
 
+	/**
+	 * The draft bucket the Add Plants tool is currently staging plants into.
+	 * Lazily resolved: reuses whatever uncommitted bucket this user already
+	 * started in this garden (so it survives navigation/reload), or creates
+	 * one on first use.
+	 */
+	let draftBucket = $state<DraftBucket | null>(null);
+	async function ensureDraftBucket(): Promise<DraftBucket> {
+		if (draftBucket) {
+			return draftBucket;
+		}
+
+		const client = await ctx.controller.getClientOrError();
+		const existing = await ctx.controller.triplit.fetchOne(
+			ctx.controller.triplit
+				.query('draftBuckets')
+				.Where('gardenId', '=', ctx.garden.id)
+				.Where('creatorId', '=', client.profile.id)
+				.Where('committed', '=', false)
+		);
+		if (existing) {
+			draftBucket = existing;
+			return existing;
+		}
+
+		draftBucket = await draftBucketCreate(
+			{ gardenId: ctx.garden.id, name: 'Draft' },
+			ctx.controller
+		);
+		return draftBucket;
+	}
+	async function commitDraftBucket() {
+		if (!draftBucket) {
+			return;
+		}
+		await draftBucketCommit(draftBucket.id, ctx.controller);
+		draftBucket = null;
+	}
+	async function discardDraftBucket() {
+		if (!draftBucket) {
+			return;
+		}
+		await draftBucketDiscard(draftBucket.id, ctx.controller);
+		draftBucket = null;
+	}
+
 	/** Canvas context. */
 	setContext(
 		verdagraphLayoutCanvasContextId,
@@ -69,11 +122,7 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 	);
 
 	/** Forms. */
-	const plantsCreateHandler = createCommandHandler(plantsCreate, {
-		onSuccess: () => {
-			toolbox.deactivate('plantsCreate');
-		}
-	});
+	const plantsCreateHandler = createCommandHandler(plantsCreate);
 	const plantsCreateSuperform = superForm(defaults(zod(PlantsCreateCommandSchema)), {
 		SPA: true,
 		dataType: 'json',
@@ -105,6 +154,14 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 		plantsCreateForm: {
 			handler: plantsCreateHandler,
 			form: plantsCreateSuperform
+		},
+		draftBucket: {
+			get current() {
+				return draftBucket;
+			},
+			ensure: ensureDraftBucket,
+			commit: commitDraftBucket,
+			discard: discardDraftBucket
 		}
 	};
 }

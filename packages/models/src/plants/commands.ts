@@ -1,4 +1,4 @@
-import z, { string } from 'zod';
+import z from 'zod';
 
 import { commonFields } from '../commands.js';
 import { CultivarAttributesUpdateCommandSchema } from '../cultivars/attributes/index.js';
@@ -83,9 +83,19 @@ export const plantsCreateFormModeSchema = z
 export const PlantsCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	mode: plantsCreateFormModeSchema.default('SINGLE'),
-	plants: z.array(plantsCreateCommandSinglePlantSchema)
+	plants: z.array(plantsCreateCommandSinglePlantSchema),
+	draftBucketId: z.string()
 });
 export type PlantsCreateCommand = z.infer<typeof PlantsCreateCommandSchema>;
+
+/**
+ * Creates a draft bucket to stage plants into.
+ */
+export const DraftBucketCreateCommandSchema = z.object({
+	gardenId: z.string(),
+	name: commonFields.nameSchema
+});
+export type DraftBucketCreateCommand = z.infer<typeof DraftBucketCreateCommandSchema>;
 
 /**
  * Updates a plant.
