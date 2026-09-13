@@ -5,18 +5,13 @@
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import {
-		AppError,
-		plantFields,
-		plantsCreateCommandSinglePlantSchema
-	} from '@vdg-webapp/models';
+	import { AppError, plantsCreateCommandSinglePlantSchema } from '@vdg-webapp/models';
 
 	import { page } from '$app/state';
 	import { iconIds } from '$assets';
 	import { CoordinateInput, GeometrySelect, UnitAwareInput } from '$components';
 	import {
 		Button,
-		Checkbox,
 		Command,
 		Form,
 		Input,
@@ -117,23 +112,7 @@
 	</Form.Field>
 
 	<!-- Aggregate. -->
-	<Form.Field {form} name="plants[0].aggregate">
-		<Form.Control>
-			{#snippet children({ props })}
-				<div class="flex w-full items-center justify-between">
-					<Form.Label
-						description={plantFields.plantAggregateSchema.description}
-						optional={false}
-						class="justify-start gap-4">Aggregate</Form.Label
-					>
-					<Checkbox.Root {...props} bind:checked={$formData.plants[0].aggregate} />
-				</div>
-			{/snippet}
-		</Form.Control>
-		<!-- TODO: Add handler errors -->
-		<Form.FieldErrors />
-	</Form.Field>
-
+	<!-- Not yet a real field on PlantsCreateCommandSchema - re-add once it is. -->
 	<!-- Origin. -->
 	<!-- Locations. -->
 	<!-- Geometries. -->

@@ -21,7 +21,12 @@ const permissions = Object.freeze({
 	/** Plants. */
 	PlantsCreate: 'EDITOR',
 	PlantUpdate: 'EDITOR',
-	LifespanUpdate: 'EDITOR'
+	LifespanUpdate: 'EDITOR',
+
+	/** Draft buckets. */
+	DraftBucketCreate: 'EDITOR',
+	DraftBucketCommit: 'EDITOR',
+	DraftBucketDiscard: 'EDITOR'
 } satisfies Record<string, GardenRole>);
 export type ActionType = keyof typeof permissions;
 
