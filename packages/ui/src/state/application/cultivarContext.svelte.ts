@@ -48,13 +48,19 @@ export function createCultivarContext(
 	]);
 	/**
 	 * Fetched once collectionIds settle, rather than a second live useQuery
-	 * chained off the first: a useQuery whose own query depends on another
-	 * live query's results gets its subscription torn down and rebuilt every
-	 * time the upstream query's results tick, which can starve it before it
-	 * ever surfaces data. A plain fetch sidesteps that, at the cost of not
-	 * auto-updating if a Cultivar is added/removed elsewhere while this page
-	 * is open - an acceptable trade for now since nothing yet edits Cultivars
-	 * live alongside it (the Cultivar Collections editor doesn't exist yet).
+	 * chained off the first. Measured behavior of that chained version: its
+	 * live subscription is created once collectionIds has real values, settles
+	 * once with an empty result, and then never fires again even seconds
+	 * later - it's not repeated teardown/churn, it's a single subscription
+	 * that never recovers, most likely because it's established while the
+	 * seed data's own transact() is still inserting (collections land before
+	 * cultivars in that same transaction). Not confirmed whether this occurs
+	 * against a garden whose data is already committed before the page loads
+	 * (as opposed to this app's collections being seeded live on mount) - a
+	 * plain fetch is used here defensively either way. Costs not auto-updating
+	 * if a Cultivar is added/removed elsewhere while this page is open - an
+	 * acceptable trade for now since nothing yet edits Cultivars live
+	 * alongside it (the Cultivar Collections editor doesn't exist yet).
 	 */
 	let allCultivars: { name: string }[] = $state([]);
 	$effect(() => {
