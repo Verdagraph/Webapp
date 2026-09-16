@@ -69,9 +69,9 @@
 						role="combobox"
 						{...props}
 					>
-						{ctx.plants.plantsCultivarNames.find(
-							(name) => name === $formData.plants[0].cultivarName
-						) ?? 'Select a cultivar'}
+						{ctx.cultivars.cultivarNames.has($formData.plants[0].cultivarName)
+							? $formData.plants[0].cultivarName
+							: 'Select a cultivar'}
 						<Icon
 							icon={iconIds.caretUpDownIcon}
 							width="1.5rem"
@@ -88,7 +88,7 @@
 					<Command.Input autofocus placeholder="Search cultivars..." class="h-9" />
 					<Command.Empty>No cultivar found.</Command.Empty>
 					<Command.Group value="cultivarNames">
-						{#each ctx.plants.plantsCultivarNames as name}
+						{#each [...ctx.cultivars.cultivarNames] as name}
 							<Command.Item
 								value={name}
 								onSelect={() => {

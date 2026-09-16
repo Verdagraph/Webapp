@@ -7,13 +7,14 @@
 		plantsCreateFormModeSchema
 	} from '@vdg-webapp/models';
 
-	import { page } from '$app/state';
 	import { Form, Resizable, Select } from '$core';
+	import { getAppContext } from '$state/application';
 
 	import { getVerdagraphContext } from '../verdagraphContext.svelte';
 	import DraftBucketTree from './DraftBucketTree.svelte';
 	import PlantsCreateFormModeSingle from './PlantsCreateFormModeSingle.svelte';
 
+	const ctx = getAppContext();
 	const verdagraphContext = getVerdagraphContext();
 	const form = verdagraphContext.plantsCreateForm.form;
 	const handler = verdagraphContext.plantsCreateForm.handler;
@@ -25,7 +26,14 @@
 			throw new AppError('Error retrieving verdagraph context.');
 		}
 
-		$formData.gardenId = page.params.gardenId;
+		/**
+		 * Sourced from the garden context (not the route's gardenId param):
+		 * this component only ever mounts under packages/ui's own Verdagraph,
+		 * which sets ctx.garden.id directly - reading it here instead avoids
+		 * coupling to a specific route shape (e.g. apps/demo's /demos/[demoId]
+		 * has no gardenId param at all).
+		 */
+		$formData.gardenId = ctx.garden.id;
 	});
 
 	/**

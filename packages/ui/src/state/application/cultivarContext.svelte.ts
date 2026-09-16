@@ -46,36 +46,52 @@ export function createCultivarContext(
 		...gardenCollectionsIds,
 		...ancestorCollectionsIds
 	]);
-	const allCultivarsQuery = $derived(
-		useQuery(
-			controller.triplit,
-			controller.triplit
-				.query('cultivars')
-				.Where('collectionId', 'in', allCollectionIds)
-		)
-	);
-	const allCultivars = $derived(allCultivarsQuery.results ?? []);
+	/**
+	 * Fetched once collectionIds settle, rather than a second live useQuery
+	 * chained off the first: a useQuery whose own query depends on another
+	 * live query's results gets its subscription torn down and rebuilt every
+	 * time the upstream query's results tick, which can starve it before it
+	 * ever surfaces data. A plain fetch sidesteps that, at the cost of not
+	 * auto-updating if a Cultivar is added/removed elsewhere while this page
+	 * is open - an acceptable trade for now since nothing yet edits Cultivars
+	 * live alongside it (the Cultivar Collections editor doesn't exist yet).
+	 */
+	let allCultivars: { name: string }[] = $state([]);
+	$effect(() => {
+		const collectionIds = allCollectionIds;
+		if (collectionIds.length === 0) {
+			allCultivars = [];
+			return;
+		}
+
+		controller.triplit
+			.fetch(
+				controller.triplit.query('cultivars').Where('collectionId', 'in', collectionIds)
+			)
+			.then((results) => {
+				allCultivars = results;
+			});
+	});
 	const cultivarNames = $derived(
 		new Set(allCultivars.map((cultivar) => cultivar.name))
 	);
 
-	/** Collects all resolves cultivar objects in the garden. */
+	/** Collects all resolved cultivar objects in the garden. */
 	let cultivars: Set<Cultivar> = $state(new Set([]));
 	$effect(() => {
-		(async () => {
-			if (cultivarNames.size === 0) {
-				cultivars = new Set([]);
-			}
+		const names = cultivarNames;
+		if (names.size === 0) {
+			cultivars = new Set([]);
+			return;
+		}
 
-			const promises: Promise<Cultivar | null>[] = [];
-			cultivarNames.forEach((name) =>
-				promises.push(resolveCultivar(garden.id, name, controller))
+		Promise.all(
+			[...names].map((name) => resolveCultivar(garden.id, name, controller))
+		).then((results) => {
+			cultivars = new Set(
+				results.filter((cultivar): cultivar is Cultivar => cultivar !== null)
 			);
-
-			const results = await Promise.all(promises);
-
-			return new Set(results.filter((cultivar) => cultivar !== null));
-		})();
+		});
 	});
 
 	return {
