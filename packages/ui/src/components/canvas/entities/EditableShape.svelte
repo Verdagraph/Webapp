@@ -57,6 +57,7 @@
 		position,
 		geometry,
 		editable,
+		selected,
 		strokeColor,
 		fillColor,
 		nameTextFillColor,
@@ -163,7 +164,7 @@
 	let isDragging = $state(false);
 
 	function handlePointerDown(event: PointerEvent) {
-		if (!editable || !canvas.container.stageElement || !canvasPosition) return;
+		if (!editable || !selected || !canvas.container.stageElement || !canvasPosition) return;
 		event.stopPropagation();
 		dragOccurred = false;
 		isDragging = true;
@@ -180,7 +181,7 @@
 	}
 
 	function handlePointerMove(event: PointerEvent) {
-		if (!editable || !canvas.container.stageElement) return;
+		if (!editable || !selected || !canvas.container.stageElement) return;
 		if (!(event.currentTarget as Element).hasPointerCapture(event.pointerId)) return;
 		dragOccurred = true;
 		const pointerLocal = canvas.transform.localPixelPositionFromPointerEvent(
@@ -195,7 +196,7 @@
 	}
 
 	function handlePointerUp(event: PointerEvent) {
-		if (!editable) return;
+		if (!editable || !selected) return;
 		if (!(event.currentTarget as Element).hasPointerCapture(event.pointerId)) return;
 		(event.currentTarget as Element).releasePointerCapture(event.pointerId);
 		isDragging = false;
@@ -213,12 +214,12 @@
 	}
 
 	function handlePointerEnter() {
-		if (!editable || isDragging) return;
+		if (!editable || !selected || isDragging) return;
 		document.body.style.cursor = 'grab';
 	}
 
 	function handlePointerLeave() {
-		if (!editable || isDragging) return;
+		if (!editable || !selected || isDragging) return;
 		canvas.selectionGroup.setDocumentCursor();
 	}
 
@@ -254,7 +255,13 @@
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<g
 		transform={groupTransform}
-		style:cursor={editable ? (isDragging ? 'grabbing' : 'grab') : undefined}
+		style:cursor={editable
+			? selected
+				? isDragging
+					? 'grabbing'
+					: 'grab'
+				: 'pointer'
+			: undefined}
 		onpointerdown={handlePointerDown}
 		onpointermove={handlePointerMove}
 		onpointerup={handlePointerUp}
@@ -324,7 +331,7 @@
 			</text>
 		{/if}
 
-		{#if editable}
+		{#if editable && selected}
 			<EditableGeometryResizePoints
 				{canvasId}
 				geometry={effectiveGeometry}

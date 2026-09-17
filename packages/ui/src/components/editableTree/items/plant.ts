@@ -7,6 +7,7 @@ import {
 
 import {
 	type Item,
+	TreeDeleteButton,
 	TreeNumber,
 	TreeString,
 	fieldValid,
@@ -29,6 +30,7 @@ import {
 } from './observation';
 
 export type PlantUpdateHandler = (id: string, data: PlantUpdateCommand) => void;
+export type PlantDeleteHandler = (id: string) => void;
 
 export function plantTreeItem(
 	value: { plant: Plant; workspaces: { id: string; name: string }[] },
@@ -41,6 +43,15 @@ export function plantTreeItem(
 		geometryHistoryExtendHandler: GeometryHistoryExtendHandler;
 		observationUpdateHandler: ObservationUpdateHandler;
 		observationDeleteHandler: ObservationDeleteHandler;
+		/**
+		 * When provided, adds a "Delete" leaf to the plant's row - used by the
+		 * "To Create" draft tree, where a still-staged plant has no recorded
+		 * data/Actions/Tasks to protect, so a casual one-click delete is fine.
+		 * Omitted by the main Tree's Plants pane, where deleting a committed
+		 * Plant is the (unbuilt) Delete tool's job, with its own confirmation
+		 * and Action/Task cascade.
+		 */
+		plantDeleteHandler?: PlantDeleteHandler;
 		fieldErrors: FieldErrors;
 	}
 ): Item {
@@ -122,14 +133,30 @@ export function plantTreeItem(
 		}
 	);
 
+	const children: Item[] = [
+		cultivarNameItem,
+		quantityItem,
+		expectedLifespanItem,
+		recordedLifespanItem
+	];
+
+	if (ctx.plantDeleteHandler) {
+		const deleteHandler = ctx.plantDeleteHandler;
+		children.push({
+			id: toTreeId(baseId, 'delete'),
+			label: 'Delete',
+			description: 'Removes this plant.',
+			valueComponent: TreeDeleteButton,
+			value: undefined,
+			onChange: () => {
+				deleteHandler(value.plant.id);
+			}
+		});
+	}
+
 	return {
 		id: baseId,
 		label: value.plant.cultivarName,
-		children: [
-			cultivarNameItem,
-			quantityItem,
-			expectedLifespanItem,
-			recordedLifespanItem
-		]
+		children
 	};
 }

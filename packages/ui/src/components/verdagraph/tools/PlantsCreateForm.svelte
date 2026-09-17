@@ -82,7 +82,22 @@
 	 */
 	$effect(() => {
 		if (handler.isSuccess) {
-			seedFormForMode($formData.mode as PlantsCreateFormMode);
+			const mode = $formData.mode as PlantsCreateFormMode;
+			/**
+			 * Deferred: superforms applies its own just-validated form.data
+			 * back onto $formData as part of its post-onUpdate lifecycle,
+			 * asynchronously, independent of resetForm. That write can land
+			 * after this effect's own reseed if run synchronously here,
+			 * silently reverting it. Queuing past the current microtask
+			 * queue lets that settle first so this reseed is the last write.
+			 */
+			setTimeout(() => {
+				seedFormForMode(mode);
+				console.log('DEBUG deferred reseed ran, plants[0]=', JSON.stringify($formData.plants[0]));
+				setTimeout(() => {
+					console.log('DEBUG 1s later, plants[0]=', JSON.stringify($formData.plants[0]));
+				}, 1000);
+			}, 0);
 			/** Consume the success signal so this effect doesn't refire on its own reseed write. */
 			handler.reset();
 		}

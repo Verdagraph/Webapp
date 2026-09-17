@@ -127,6 +127,16 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 		SPA: true,
 		dataType: 'json',
 		validators: zod(PlantsCreateCommandSchema),
+		/**
+		 * PlantsCreateForm.svelte reseeds plants[0] itself once handler.isSuccess
+		 * flips true (after the async plantsCreate call actually resolves).
+		 * Superforms' own default post-submit reset runs synchronously right
+		 * after onUpdate returns, i.e. before that async resolution - racing
+		 * it wipes plants back to the schema default ([]) shortly after the
+		 * manual reseed runs, leaving the form with no plants[0] until
+		 * something else (e.g. a mode change) reseeds it again.
+		 */
+		resetForm: false,
 		onUpdate({ form }) {
 			if (form.valid) {
 				plantsCreateHandler.execute(form.data, ctx.controller);
