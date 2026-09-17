@@ -13,6 +13,7 @@
 	import { getVerdagraphContext } from '../verdagraphContext.svelte';
 	import DraftBucketTree from './DraftBucketTree.svelte';
 	import PlantsCreateFormModeSingle from './PlantsCreateFormModeSingle.svelte';
+	import { defaultSinglePlant } from './plantsCreateFormDefaults';
 
 	const ctx = getAppContext();
 	const verdagraphContext = getVerdagraphContext();
@@ -46,15 +47,7 @@
 	function seedFormForMode(mode: PlantsCreateFormMode) {
 		switch (mode) {
 			case 'SINGLE':
-				$formData.plants = [];
-				$formData.plants[0] = {
-					cultivarName: 'undefined',
-					origin: 'DIRECT_SEED',
-					aggregate: false,
-					locationHistory: { gardenId: '', locations: [] },
-					geometryHistory: { gardenId: '', geometries: [] },
-					cultivarOverride: {}
-				};
+				$formData.plants = [defaultSinglePlant()];
 				break;
 			case 'GROUP':
 				break;
@@ -73,34 +66,6 @@
 		}
 		seedFormForMode($formData.mode as PlantsCreateFormMode);
 		previousFormMode = $formData.mode;
-	});
-
-	/**
-	 * Reseed the form after each successful stamp, so the tool stays open and
-	 * ready for the next one instead of closing - all stamps in a session
-	 * accumulate into the same draft bucket.
-	 */
-	$effect(() => {
-		if (handler.isSuccess) {
-			const mode = $formData.mode as PlantsCreateFormMode;
-			/**
-			 * Deferred: superforms applies its own just-validated form.data
-			 * back onto $formData as part of its post-onUpdate lifecycle,
-			 * asynchronously, independent of resetForm. That write can land
-			 * after this effect's own reseed if run synchronously here,
-			 * silently reverting it. Queuing past the current microtask
-			 * queue lets that settle first so this reseed is the last write.
-			 */
-			setTimeout(() => {
-				seedFormForMode(mode);
-				console.log('DEBUG deferred reseed ran, plants[0]=', JSON.stringify($formData.plants[0]));
-				setTimeout(() => {
-					console.log('DEBUG 1s later, plants[0]=', JSON.stringify($formData.plants[0]));
-				}, 1000);
-			}, 0);
-			/** Consume the success signal so this effect doesn't refire on its own reseed write. */
-			handler.reset();
-		}
 	});
 
 	/* Defines the labels for the mode enum options. */

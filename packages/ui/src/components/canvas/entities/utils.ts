@@ -55,8 +55,8 @@ export function getGeometryResizePoints(
 ): Array<{ x: number; y: number }> {
 	switch (geometry.type) {
 		case 'RECTANGLE': {
-			const halfLength = geometry.rectangleLength / 2;
-			const halfWidth = geometry.rectangleWidth / 2;
+			const halfLength = (geometry.rectangleLength / 2) * geometry.scaleFactor;
+			const halfWidth = (geometry.rectangleWidth / 2) * geometry.scaleFactor;
 
 			return [
 				{ x: -halfLength, y: halfWidth },
@@ -71,12 +71,12 @@ export function getGeometryResizePoints(
 		}
 
 		case 'POLYGON': {
-			return [{ x: 0, y: geometry.polygonRadius }];
+			return [{ x: 0, y: geometry.polygonRadius * geometry.scaleFactor }];
 		}
 
 		case 'ELLIPSE': {
-			const radiusLength = geometry.ellipseLength / 2;
-			const radiusWidth = geometry.ellipseWidth / 2;
+			const radiusLength = (geometry.ellipseLength / 2) * geometry.scaleFactor;
+			const radiusWidth = (geometry.ellipseWidth / 2) * geometry.scaleFactor;
 
 			return [
 				{ x: 0, y: radiusWidth },
@@ -88,7 +88,10 @@ export function getGeometryResizePoints(
 
 		case 'LINES': {
 			return geometry.linesCoordinates.map((coordinate) => {
-				return { x: coordinate.x, y: coordinate.y };
+				return {
+					x: coordinate.x * geometry.scaleFactor,
+					y: coordinate.y * geometry.scaleFactor
+				};
 			});
 		}
 	}

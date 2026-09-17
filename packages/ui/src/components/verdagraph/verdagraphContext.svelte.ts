@@ -22,6 +22,7 @@ import { createPaneSettings, isMobile } from '$state';
 import { getAppContext } from '$state/application';
 import createCommandHandler from '$state/commandHandler.svelte';
 
+import { defaultSinglePlant } from './tools/plantsCreateFormDefaults';
 import { verdagraphToolbox } from './tools';
 
 const verdagraphContextId = 'verdagraphEditorContext';
@@ -128,18 +129,29 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 		dataType: 'json',
 		validators: zod(PlantsCreateCommandSchema),
 		/**
-		 * PlantsCreateForm.svelte reseeds plants[0] itself once handler.isSuccess
-		 * flips true (after the async plantsCreate call actually resolves).
-		 * Superforms' own default post-submit reset runs synchronously right
-		 * after onUpdate returns, i.e. before that async resolution - racing
-		 * it wipes plants back to the schema default ([]) shortly after the
-		 * manual reseed runs, leaving the form with no plants[0] until
-		 * something else (e.g. a mode change) reseeds it again.
+		 * Superforms pushes the just-validated form data back onto the store
+		 * itself (independent of resetForm) once onUpdate resolves, as part of
+		 * its own post-submit lifecycle - so reseeding plants[0] can't happen
+		 * inside/right after onUpdate without racing that. onUpdate is made
+		 * async and awaits the real plantsCreate call so that superforms' own
+		 * lifecycle (including that resync) only proceeds once it's actually
+		 * done; onUpdated fires strictly after that resync completes, making
+		 * it the reliable place to reseed - see Form_updateFromValidation in
+		 * sveltekit-superforms' client/superForm.js (rebind() runs, then
+		 * onUpdated handlers are called, never the other way around).
 		 */
 		resetForm: false,
-		onUpdate({ form }) {
+		async onUpdate({ form }) {
 			if (form.valid) {
-				plantsCreateHandler.execute(form.data, ctx.controller);
+				await plantsCreateHandler.execute(form.data, ctx.controller);
+			}
+		},
+		onUpdated({ form }) {
+			if (form.valid && plantsCreateHandler.isSuccess && form.data.mode === 'SINGLE') {
+				plantsCreateSuperform.form.update((data) => {
+					data.plants = [defaultSinglePlant()];
+					return data;
+				});
 			}
 		},
 		onChange() {

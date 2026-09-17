@@ -344,6 +344,7 @@ export type Lifespan = Entity<typeof plantSchema, 'lifespans'> & {
 export type Plant = Entity<typeof plantSchema, 'plants'> & {
 	expectedLifespan: Lifespan | null;
 	recordedLifespan: Lifespan | null;
+	draftBucket: DraftBucket | null;
 };
 export type PlantGroup = Entity<typeof plantSchema, 'plantGroups'>;
 export type DraftBucket = Entity<typeof plantSchema, 'draftBuckets'>;

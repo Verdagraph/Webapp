@@ -71,6 +71,19 @@
 	function handleResizePointDrag(index: number): GeometryUpdateCommand {
 		const newGeometry: GeometryUpdateCommand = {};
 		const point = displayedPositions[index];
+		/**
+		 * The resize points (getGeometryResizePoints) are positioned at the
+		 * geometry's scaleFactor-scaled extent, so they visually sit on the
+		 * shape's actual rendered edge at any life stage. But
+		 * rectangleLength/rectangleWidth/polygonRadius/ellipseLength/
+		 * ellipseWidth/linesCoordinates all store the *unscaled* base
+		 * dimension - scaleFactor is applied on top of them at render time
+		 * (getShapeAttributes, getGeometryHeight). So a value derived from
+		 * where the user dragged a point to has to be divided back out by
+		 * scaleFactor before being stored, or it'd double-apply the scale
+		 * every time this geometry is later rendered.
+		 */
+		const { scaleFactor } = geometry;
 
 		switch (geometry.type) {
 			case 'RECTANGLE': {
@@ -82,12 +95,12 @@
 					const newLength = Math.abs(point.x) * 2;
 					const newWidth = Math.abs(point.y) * 2;
 					newGeometry.rectangleLength = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newLength),
+						canvas.transform.modelDistance(newLength) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 
 					newGeometry.rectangleWidth = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newWidth),
+						canvas.transform.modelDistance(newWidth) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 
@@ -101,7 +114,7 @@
 					if (index === 1 || index === 5) {
 						const newWidth = Math.abs(point.y) * 2;
 						newGeometry.rectangleWidth = roundToDecimalPlaces(
-							canvas.transform.modelDistance(newWidth),
+							canvas.transform.modelDistance(newWidth) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						);
 
@@ -109,7 +122,7 @@
 					} else {
 						const newLength = Math.abs(point.x) * 2;
 						newGeometry.rectangleLength = roundToDecimalPlaces(
-							canvas.transform.modelDistance(newLength),
+							canvas.transform.modelDistance(newLength) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						);
 					}
@@ -125,7 +138,7 @@
 				 */
 				const newRadius = Math.abs(point.y);
 				newGeometry.polygonRadius = roundToDecimalPlaces(
-					canvas.transform.modelDistance(newRadius),
+					canvas.transform.modelDistance(newRadius) / scaleFactor,
 					ATTRIBUTE_DECIMALS
 				);
 				break;
@@ -142,13 +155,13 @@
 				if (index % 2 === 0) {
 					const newWidthDiameter = Math.abs(point.y) * 2;
 					newGeometry.ellipseWidth = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newWidthDiameter),
+						canvas.transform.modelDistance(newWidthDiameter) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 				} else {
 					const newLengthDiameter = Math.abs(point.x) * 2;
 					newGeometry.ellipseLength = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newLengthDiameter),
+						canvas.transform.modelDistance(newLengthDiameter) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 				}
@@ -163,11 +176,11 @@
 				newGeometry.linesCoordinates = displayedPositions.map((displayedPoint) => {
 					return {
 						x: roundToDecimalPlaces(
-							canvas.transform.modelXPos(displayedPoint.x),
+							canvas.transform.modelXPos(displayedPoint.x) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						),
 						y: roundToDecimalPlaces(
-							canvas.transform.modelYPos(displayedPoint.y),
+							canvas.transform.modelYPos(displayedPoint.y) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						)
 					};
