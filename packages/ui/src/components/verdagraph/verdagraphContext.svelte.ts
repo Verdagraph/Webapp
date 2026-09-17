@@ -1,3 +1,4 @@
+import { useQuery } from '@triplit/svelte';
 import { mode } from 'mode-watcher';
 import { getContext, setContext } from 'svelte';
 import { defaults, superForm } from 'sveltekit-superforms';
@@ -67,49 +68,117 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 	);
 
 	/**
-	 * The draft bucket the Add Plants tool is currently staging plants into.
-	 * Lazily resolved: reuses whatever uncommitted bucket this user already
-	 * started in this garden (so it survives navigation/reload), or creates
-	 * one on first use.
+	 * Every open (uncommitted) draft bucket in this garden - every plan
+	 * currently under consideration by any user, not just this one. Drives
+	 * both the Add Plants tool's bucket switcher and the Layout/Calendar
+	 * ghost-visibility toggle.
 	 */
-	let draftBucket = $state<DraftBucket | null>(null);
-	async function ensureDraftBucket(): Promise<DraftBucket> {
-		if (draftBucket) {
-			return draftBucket;
-		}
-
-		const client = await ctx.controller.getClientOrError();
-		const existing = await ctx.controller.triplit.fetchOne(
+	const openDraftBucketsQuery = $derived(
+		useQuery(
+			ctx.controller.triplit,
 			ctx.controller.triplit
 				.query('draftBuckets')
 				.Where('gardenId', '=', ctx.garden.id)
-				.Where('creatorId', '=', client.profile.id)
 				.Where('committed', '=', false)
-		);
-		if (existing) {
-			draftBucket = existing;
-			return existing;
+				.Include('creator')
+		)
+	);
+	const draftBucketsList = $derived(openDraftBucketsQuery.results ?? []);
+
+	/** The bucket the Add Plants tool is currently staging new stamps into. */
+	let activeDraftBucketId: string | null = $state(null);
+	const activeDraftBucket = $derived(
+		draftBucketsList.find((bucket) => bucket.id === activeDraftBucketId) ?? null
+	);
+
+	/**
+	 * Which buckets' plants should render as ghosts in Layout/Calendar,
+	 * besides the active bucket (which always renders regardless of this
+	 * set - you should never lose sight of what you're actively placing).
+	 * Seeded automatically the first time a bucket you created is seen, so
+	 * your own plans show by default; other users' plans need an explicit
+	 * opt-in, so their drafts don't clutter your view uninvited.
+	 */
+	let visibleDraftBucketIds = $state(new Set<string>());
+	const autoVisibilitySeenBucketIds = new Set<string>();
+	$effect(() => {
+		const myProfileId = ctx.client.profile?.id;
+		if (!myProfileId) {
+			return;
+		}
+		const next = new Set(visibleDraftBucketIds);
+		let changed = false;
+		for (const bucket of draftBucketsList) {
+			if (autoVisibilitySeenBucketIds.has(bucket.id)) {
+				continue;
+			}
+			autoVisibilitySeenBucketIds.add(bucket.id);
+			if (bucket.creatorId === myProfileId) {
+				next.add(bucket.id);
+				changed = true;
+			}
+		}
+		if (changed) {
+			visibleDraftBucketIds = next;
+		}
+	});
+
+	function isDraftBucketVisible(bucketId: string): boolean {
+		return bucketId === activeDraftBucketId || visibleDraftBucketIds.has(bucketId);
+	}
+	function toggleDraftBucketVisibility(bucketId: string) {
+		const next = new Set(visibleDraftBucketIds);
+		if (next.has(bucketId)) {
+			next.delete(bucketId);
+		} else {
+			next.add(bucketId);
+		}
+		visibleDraftBucketIds = next;
+	}
+
+	function setActiveDraftBucket(bucketId: string | null) {
+		activeDraftBucketId = bucketId;
+	}
+
+	/** Starts a brand new draft bucket and makes it active. */
+	async function createDraftBucket(name = 'Draft'): Promise<DraftBucket> {
+		const created = await draftBucketCreate({ gardenId: ctx.garden.id, name }, ctx.controller);
+		activeDraftBucketId = created.id;
+		return created;
+	}
+
+	/**
+	 * Ensures a bucket is active before staging a stamp: reuses this user's
+	 * own open bucket if one already exists and none is explicitly active
+	 * yet (so reopening the tool resumes where you left off), otherwise
+	 * starts a fresh one.
+	 */
+	async function ensureActiveDraftBucket(): Promise<DraftBucket> {
+		if (activeDraftBucket) {
+			return activeDraftBucket;
 		}
 
-		draftBucket = await draftBucketCreate(
-			{ gardenId: ctx.garden.id, name: 'Draft' },
-			ctx.controller
-		);
-		return draftBucket;
-	}
-	async function commitDraftBucket() {
-		if (!draftBucket) {
-			return;
+		const myProfileId = (await ctx.controller.getClientOrError()).profile.id;
+		const mine = draftBucketsList.find((bucket) => bucket.creatorId === myProfileId);
+		if (mine) {
+			activeDraftBucketId = mine.id;
+			return mine;
 		}
-		await draftBucketCommit(draftBucket.id, ctx.controller);
-		draftBucket = null;
+
+		return createDraftBucket();
 	}
-	async function discardDraftBucket() {
-		if (!draftBucket) {
-			return;
+
+	async function commitDraftBucket(bucketId: string) {
+		await draftBucketCommit(bucketId, ctx.controller);
+		if (activeDraftBucketId === bucketId) {
+			activeDraftBucketId = null;
 		}
-		await draftBucketDiscard(draftBucket.id, ctx.controller);
-		draftBucket = null;
+	}
+	async function discardDraftBucket(bucketId: string) {
+		await draftBucketDiscard(bucketId, ctx.controller);
+		if (activeDraftBucketId === bucketId) {
+			activeDraftBucketId = null;
+		}
 	}
 
 	/** Canvas context. */
@@ -177,13 +246,32 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 			handler: plantsCreateHandler,
 			form: plantsCreateSuperform
 		},
-		draftBucket: {
-			get current() {
-				return draftBucket;
+		draftBuckets: {
+			get list() {
+				return draftBucketsList;
 			},
-			ensure: ensureDraftBucket,
+			get active() {
+				return activeDraftBucket;
+			},
+			/**
+			 * The active bucket's id, set as soon as it's chosen (create/switch),
+			 * even before that bucket's own data has round-tripped through the
+			 * live list query. Distinguishing "an id is chosen" from "active is
+			 * resolved" matters: a consumer that treats a momentarily-null
+			 * `active` as "nothing chosen yet" would re-trigger ensureActive()
+			 * during that gap and stomp right back onto whatever bucket it
+			 * resumes, undoing a just-made switch/create.
+			 */
+			get activeId() {
+				return activeDraftBucketId;
+			},
+			setActive: setActiveDraftBucket,
+			ensureActive: ensureActiveDraftBucket,
+			createNew: createDraftBucket,
 			commit: commitDraftBucket,
-			discard: discardDraftBucket
+			discard: discardDraftBucket,
+			isVisible: isDraftBucketVisible,
+			toggleVisible: toggleDraftBucketVisibility
 		}
 	};
 }

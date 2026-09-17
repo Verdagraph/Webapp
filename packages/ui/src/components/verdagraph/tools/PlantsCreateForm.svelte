@@ -33,13 +33,21 @@
 	/**
 	 * The bucket this session's stamps are staged into. Resolved once on mount
 	 * (reusing an existing uncommitted bucket if this user already had one
-	 * going in this garden) and kept for as long as the tool stays open.
+	 * going in this garden, per ensureActiveDraftBucket) unless a specific
+	 * bucket is already active (e.g. switched to via the bucket picker).
+	 *
+	 * Keyed off activeId, not active: right after creating/switching to a
+	 * bucket, its id is set immediately but the bucket object itself may not
+	 * have round-tripped through the live list query yet, so `active` can be
+	 * momentarily null even though a real choice has already been made -
+	 * re-running ensureActive() during that gap would resume some other
+	 * bucket and undo the switch.
 	 */
 	$effect(() => {
-		if (!verdagraphContext.draftBucket.current) {
-			verdagraphContext.draftBucket.ensure();
-		} else {
-			$formData.draftBucketId = verdagraphContext.draftBucket.current.id;
+		if (!verdagraphContext.draftBuckets.activeId) {
+			verdagraphContext.draftBuckets.ensureActive();
+		} else if (verdagraphContext.draftBuckets.active) {
+			$formData.draftBucketId = verdagraphContext.draftBuckets.active.id;
 		}
 	});
 
@@ -132,7 +140,7 @@
 
 			<!-- Submit button -->
 			<Form.Button
-				disabled={!verdagraphContext.draftBucket.current}
+				disabled={!verdagraphContext.draftBuckets.active}
 				loading={handler.isLoading}
 				variant="default"
 				class="mt-4 w-full">Create</Form.Button
