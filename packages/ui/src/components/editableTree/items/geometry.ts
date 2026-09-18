@@ -65,20 +65,14 @@ export function geometryTreeItem(
 		valueComponent: TreeDate,
 		value: fromDate(value.geometry.date, getLocalTimeZone()),
 		onChange: (newData: DateValue) => {
+			const date = newData.toDate(getLocalTimeZone());
 			if (
-				!fieldValid(
-					dateId,
-					newData,
-					workspaceFields.geometryDateSchema,
-					ctx.fieldErrors
-				) ||
+				!fieldValid(dateId, date, workspaceFields.geometryDateSchema, ctx.fieldErrors) ||
 				!value.geometry
 			) {
 				return;
 			}
-			ctx.updateHandler(value.geometry.id, {
-				date: newData.toDate(getLocalTimeZone())
-			});
+			ctx.updateHandler(value.geometry.id, { date });
 		}
 	};
 	const typeItem: Item = {

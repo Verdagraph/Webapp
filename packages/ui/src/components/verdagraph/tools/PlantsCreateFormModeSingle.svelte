@@ -13,16 +13,8 @@
 
 	import { iconIds } from '$assets';
 	import { CoordinateInput, GeometrySelect, UnitAwareInput } from '$components';
-	import {
-		Button,
-		Command,
-		Form,
-		Input,
-		Popover,
-		Separator,
-		Textarea
-	} from '$core';
-	import { buttonVariants } from '$core/button/button.svelte';
+	import { Command, Form, Input, Popover, Separator, Textarea } from '$core';
+	import { Button, buttonVariants } from '$core/button/index.js';
 	import { getAppContext } from '$state/application';
 	import { cn } from '$utils';
 
@@ -63,12 +55,6 @@
 	$effect(() => {
 		const cultivarName = $formData.plants[0]?.cultivarName;
 		if (!cultivarName || !ctx.cultivars.cultivarNames.has(cultivarName)) {
-			/**
-			 * Cleared, not left as-is: a fresh stamp's cultivarName resets to
-			 * '' after each successful create, so the next selection - even
-			 * of the very same cultivar as the stamp before it - needs to be
-			 * treated as new rather than matching a stale previous value.
-			 */
 			previousSeededCultivarName = null;
 			return;
 		}
@@ -79,8 +65,14 @@
 		 * assigning geometryHistory would itself cause this effect (which
 		 * reads cultivarName off the same store) to run again - forever,
 		 * since the condition it reruns under never stops being true.
+		 * The geometries.length check re-opens the guard for a same-cultivar
+		 * reseed: cultivarName now persists across a successful Create (so
+		 * the next stamp starts pre-selected), but geometryHistory is still
+		 * cleared back to empty each time, and that fresh stamp still needs
+		 * its own starter geometry/position.
 		 */
-		if (cultivarName === previousSeededCultivarName) {
+		const alreadySeeded = ($formData.plants[0]?.geometryHistory?.geometries?.length ?? 0) > 0;
+		if (cultivarName === previousSeededCultivarName && alreadySeeded) {
 			return;
 		}
 		previousSeededCultivarName = cultivarName;
@@ -121,6 +113,18 @@
 			};
 		}
 	});
+
+	/**
+	 * Discards the current stamp's placement (carried forward from the last
+	 * Create, or dragged/resized by hand) and falls back to the cultivar's
+	 * default starter geometry centered in the viewport - the same seed the
+	 * very first stamp of a cultivar gets, since emptying both histories
+	 * here just re-opens the guard above.
+	 */
+	function resetPlacement() {
+		$formData.plants[0].geometryHistory = { gardenId: ctx.garden.id, geometries: [] };
+		$formData.plants[0].locationHistory = { gardenId: ctx.garden.id, locations: [] };
+	}
 </script>
 
 {#if plant}
@@ -180,6 +184,10 @@
 			</Popover.Content>
 		</Popover.Root>
 	</Form.Field>
+
+	<Button variant="outline" class="w-full" onclick={resetPlacement}>
+		Reset Placement
+	</Button>
 
 	<!-- Aggregate. -->
 	<!-- Not yet a real field on PlantsCreateCommandSchema - re-add once it is. -->

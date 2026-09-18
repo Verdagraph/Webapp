@@ -215,10 +215,38 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 				await plantsCreateHandler.execute(form.data, ctx.controller);
 			}
 		},
+		/**
+		 * Stamp-style continuation: the next stamp starts as a copy of the one
+		 * just submitted (same cultivar, same geometry, same location), so
+		 * placing a run of the same plant is drag-to-nudge rather than
+		 * re-pick/re-place/re-size from scratch every time. Only the dates
+		 * are refreshed to the current timeline focus, since the submitted
+		 * ones belong to the plant that just got created.
+		 */
 		onUpdated({ form }) {
 			if (form.valid && plantsCreateHandler.isSuccess && form.data.mode === 'SINGLE') {
+				const submitted = form.data.plants[0];
+				const focusedDay = timeline.focusUtc;
+				const carriedGeometry = submitted?.geometryHistory?.geometries[0];
+				const carriedLocation = submitted?.locationHistory?.locations[0];
 				plantsCreateSuperform.form.update((data) => {
-					data.plants = [defaultSinglePlant()];
+					data.plants = [
+						defaultSinglePlant({
+							cultivarName: submitted?.cultivarName,
+							geometryHistory: carriedGeometry
+								? {
+										gardenId: ctx.garden.id,
+										geometries: [{ ...carriedGeometry, date: focusedDay }]
+									}
+								: undefined,
+							locationHistory: carriedLocation
+								? {
+										gardenId: ctx.garden.id,
+										locations: [{ ...carriedLocation, date: focusedDay }]
+									}
+								: undefined
+						})
+					];
 					return data;
 				});
 			}

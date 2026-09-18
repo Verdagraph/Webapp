@@ -43,14 +43,6 @@ export function plantTreeItem(
 		geometryHistoryExtendHandler: GeometryHistoryExtendHandler;
 		observationUpdateHandler: ObservationUpdateHandler;
 		observationDeleteHandler: ObservationDeleteHandler;
-		/**
-		 * When provided, adds a "Delete" leaf to the plant's row - used by the
-		 * "To Create" draft tree, where a still-staged plant has no recorded
-		 * data/Actions/Tasks to protect, so a casual one-click delete is fine.
-		 * Omitted by the main Tree's Plants pane, where deleting a committed
-		 * Plant is the (unbuilt) Delete tool's job, with its own confirmation
-		 * and Action/Task cascade.
-		 */
 		plantDeleteHandler?: PlantDeleteHandler;
 		fieldErrors: FieldErrors;
 	}

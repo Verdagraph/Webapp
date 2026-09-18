@@ -71,18 +71,6 @@
 	function handleResizePointDrag(index: number): GeometryUpdateCommand {
 		const newGeometry: GeometryUpdateCommand = {};
 		const point = displayedPositions[index];
-		/**
-		 * The resize points (getGeometryResizePoints) are positioned at the
-		 * geometry's scaleFactor-scaled extent, so they visually sit on the
-		 * shape's actual rendered edge at any life stage. But
-		 * rectangleLength/rectangleWidth/polygonRadius/ellipseLength/
-		 * ellipseWidth/linesCoordinates all store the *unscaled* base
-		 * dimension - scaleFactor is applied on top of them at render time
-		 * (getShapeAttributes, getGeometryHeight). So a value derived from
-		 * where the user dragged a point to has to be divided back out by
-		 * scaleFactor before being stored, or it'd double-apply the scale
-		 * every time this geometry is later rendered.
-		 */
 		const { scaleFactor } = geometry;
 
 		switch (geometry.type) {

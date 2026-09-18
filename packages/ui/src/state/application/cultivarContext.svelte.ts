@@ -61,6 +61,9 @@ export function createCultivarContext(
 	 * if a Cultivar is added/removed elsewhere while this page is open - an
 	 * acceptable trade for now since nothing yet edits Cultivars live
 	 * alongside it (the Cultivar Collections editor doesn't exist yet).
+	 * TODO: re-evaluate with the Jazz migration - this whole plain-fetch
+	 * workaround is chasing a Triplit chained-useQuery quirk that may not
+	 * have an equivalent under Jazz's subscription model.
 	 */
 	let allCultivars: { name: string }[] = $state([]);
 	$effect(() => {

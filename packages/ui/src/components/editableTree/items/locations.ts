@@ -67,19 +67,11 @@ export function locationTreeItem(
 		valueComponent: TreeDate,
 		value: fromDate(value.location.date, getLocalTimeZone()),
 		onChange: (newData: DateValue) => {
-			if (
-				!fieldValid(
-					dateId,
-					newData,
-					workspaceFields.locationDateSchema,
-					ctx.fieldErrors
-				)
-			) {
+			const date = newData.toDate(getLocalTimeZone());
+			if (!fieldValid(dateId, date, workspaceFields.locationDateSchema, ctx.fieldErrors)) {
 				return;
 			}
-			ctx.updateHandler(value.location.id, {
-				date: newData.toDate(getLocalTimeZone())
-			});
+			ctx.updateHandler(value.location.id, { date });
 		}
 	};
 	const coordinateItem: Item = {
