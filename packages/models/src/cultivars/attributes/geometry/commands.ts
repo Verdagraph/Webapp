@@ -3,70 +3,63 @@ import { z } from 'zod';
 import { workspaceFields } from '../../../workspaces/index.js';
 
 /** Field specifications. */
-const peakSizeSchema = z.number().min(0, 'May not be negative.').describe(
-	"The size of the plant's geometry at its highest point in meters.\
-	For annuals, this is assumed to be between the first and last harvest.\
-	For perennials, this is assumed to be between the between the first and last harves\
-	and the exit and enter dormancy dates.\
-	For ellipses, this is assumed to be the diameter.\
-	For rectangles, this is assumed to be a width, forming a square.\
-	For polygons, this is assumed to be the radius, forming a square.\
-	For lines, this is assumed to be a width, forming a square."
-);
-const seedlingScaleFactorSchema = z
+const sizeDescription = (stage: string) =>
+	`The size of the plant's geometry at its ${stage} in meters. \
+	For ellipses, this is assumed to be the diameter. \
+	For rectangles, this is assumed to be a width, forming a square. \
+	For polygons, this is assumed to be the radius, forming a square. \
+	For lines, this is assumed to be a width, forming a square.`;
+
+const seedSizeSchema = z
 	.number()
 	.min(0, 'May not be negative.')
-	.describe('The scale factor applied to the peak size at the seedling stage.');
-const firstHarvestScaleFactorSchema = z
+	.describe(sizeDescription('seed stage, immediately after sowing'));
+const seedlingSizeSchema = z
 	.number()
 	.min(0, 'May not be negative.')
-	.describe(
-		'The scale factor applied to the peak size at the beginning harvest stage.'
-	);
-const lastHarvestScaleFactorSchema = z
+	.describe(sizeDescription('seedling stage'));
+const firstHarvestSizeSchema = z
 	.number()
 	.min(0, 'May not be negative.')
-	.describe(
-		'The scale factor applied to the peak size at the end of the harvest stage.'
-	);
-const expiryScaleFactorSchema = z
+	.describe(sizeDescription('first harvest'));
+const lastHarvestSizeSchema = z
 	.number()
 	.min(0, 'May not be negative.')
-	.describe('The scale factor applied to the peak size at the expiry point.');
-const exitDormancyScaleFactorSchema = z
+	.describe(sizeDescription('last harvest'));
+const expirySizeSchema = z
 	.number()
 	.min(0, 'May not be negative.')
-	.describe(
-		'The scale factor applied to the peak size of the perennial plant at the exit dormancy enter.'
-	);
-const enterDormancyScaleFactorSchema = z
+	.describe(sizeDescription('expiry point'));
+const exitDormancySizeSchema = z
 	.number()
 	.min(0, 'May not be negative.')
-	.describe(
-		'The scale factor applied to the peak size at the enter dormancy point stage.'
-	);
+	.describe(sizeDescription("exit from a perennial's dormant stage"));
+const enterDormancySizeSchema = z
+	.number()
+	.min(0, 'May not be negative.')
+	.describe(sizeDescription("entry into a perennial's dormant stage"));
 
 export const fields = {
-	peakSizeSchema,
-	seedlingScaleFactorSchema,
-	firstHarvestScaleFactorSchema,
-	lastHarvestScaleFactorSchema,
-	expiryScaleFactorSchema,
-	exitDormancyScaleFactorSchema,
-	enterDormancyScaleFactorSchema
+	seedSizeSchema,
+	seedlingSizeSchema,
+	firstHarvestSizeSchema,
+	lastHarvestSizeSchema,
+	expirySizeSchema,
+	exitDormancySizeSchema,
+	enterDormancySizeSchema
 };
 
 /** Update command. */
 export const ExpectedGeometryUpdateCommandSchema = z
 	.object({
 		geometryType: workspaceFields.geometryTypeSchema,
-		peakSize: peakSizeSchema,
-		seedlingScaleFactor: seedlingScaleFactorSchema,
-		firstHarvestScaleFactor: firstHarvestScaleFactorSchema,
-		lastHarvestScaleFactor: lastHarvestScaleFactorSchema,
-		expiryScaleFactor: expiryScaleFactorSchema,
-		exitDormancyScaleFactor: exitDormancyScaleFactorSchema,
-		enterDormancyScaleFactor: enterDormancyScaleFactorSchema
+		seedSize: seedSizeSchema,
+		seedlingSize: seedlingSizeSchema,
+		firstHarvestSize: firstHarvestSizeSchema,
+		lastHarvestSize: lastHarvestSizeSchema,
+		expirySize: expirySizeSchema,
+		exitDormancySize: exitDormancySizeSchema,
+		enterDormancySize: enterDormancySizeSchema
 	})
 	.describe(
 		'Determines the default geometric history when defining new instances of a cultivar.'

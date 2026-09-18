@@ -19,11 +19,16 @@ const firstToLastHarvestSchema = z.number().min(0, 'May not be negative.').descr
 	'The expected amount of days the first and last harvest of a plant. \
             For plants which only have one harvest, this value is zero.'
 );
+const lastHarvestToExpirySchema = z
+	.number()
+	.min(0, 'May not be negative.')
+	.describe('The expected amount of days from the last harvest of a plant to its expiry.');
 export const fields = {
 	sowToGermSchema,
 	germToTransplantSchema,
 	germToFirstHarvestSchema,
-	firstToLastHarvestSchema
+	firstToLastHarvestSchema,
+	lastHarvestToExpirySchema
 };
 
 /** Update command. */
@@ -32,7 +37,8 @@ export const AnnualLifecycleUpdateCommandSchema = z
 		sowToGerm: sowToGermSchema.optional(),
 		germToTransplant: germToTransplantSchema.optional(),
 		germToFirstHarvest: germToFirstHarvestSchema.optional(),
-		firstToLastHarvest: firstToLastHarvestSchema.optional()
+		firstToLastHarvest: firstToLastHarvestSchema.optional(),
+		lastHarvestToExpiry: lastHarvestToExpirySchema.optional()
 	})
 	.describe(
 		'The annual lifecycle defines the length of the stages of life for annual plants.'

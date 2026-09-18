@@ -101,6 +101,14 @@ export const workspaceSchema = S.Collections({
 			gardenId: S.String(),
 
 			/**
+			 * Optional label for this geometry - e.g. the lifecycle milestone it
+			 * represents ("Seed", "First Harvest") when generated automatically.
+			 * Not every geometry has one (manually-added entries can be left
+			 * unnamed).
+			 */
+			name: S.Optional(S.String()),
+
+			/**
 			 * Describes the type of the geometry.
 			 * Each geometry object may be of any type. The type determines
 			 * which of the attributes objects is used in the application.

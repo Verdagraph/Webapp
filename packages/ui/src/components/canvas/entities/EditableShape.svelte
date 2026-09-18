@@ -254,6 +254,7 @@
 	<!-- role is 'button' whenever tabindex is set; the linter can't statically resolve the conditional. -->
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<g
+		class="editable-shape-group"
 		transform={groupTransform}
 		style:cursor={editable
 			? selected
@@ -332,15 +333,37 @@
 		{/if}
 
 		{#if editable && selected}
-			<EditableGeometryResizePoints
-				{canvasId}
-				geometry={effectiveGeometry}
-				{strokeColor}
-				{fillColor}
-				shapePosition={canvasPosition}
-				rotation={effectiveGeometry.rotation}
-				{onTransform}
-			/>
+			<!--
+				Hidden by default, revealed only on hover/focus (see <style> below) -
+				permanently-visible handles looked cluttered, especially on the
+				always-selected stamp preview. `pointer-events: none` while hidden
+				also keeps the invisible circles from intercepting clicks.
+			-->
+			<g class="resize-points">
+				<EditableGeometryResizePoints
+					{canvasId}
+					geometry={effectiveGeometry}
+					{strokeColor}
+					{fillColor}
+					shapePosition={canvasPosition}
+					rotation={effectiveGeometry.rotation}
+					{onTransform}
+				/>
+			</g>
 		{/if}
 	</g>
 {/if}
+
+<style>
+	.resize-points {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.1s ease-out;
+	}
+
+	.editable-shape-group:hover .resize-points,
+	.editable-shape-group:focus-within .resize-points {
+		opacity: 1;
+		pointer-events: auto;
+	}
+</style>

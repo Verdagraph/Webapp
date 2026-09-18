@@ -6,14 +6,20 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
+		type AnnualLifecycleMilestone,
+		AnnualLifecycleMilestoneLabels,
 		AppError,
-		plantsCreateCommandSinglePlantSchema,
-		starterGeometryFromExpectedProfile
+		type GeometryCreateCommand,
+		type LocationCreateCommand,
+		addDays,
+		annualMilestonesForOrigin,
+		generateExpectedHistories,
+		plantsCreateCommandSinglePlantSchema
 	} from '@vdg-webapp/models';
 
 	import { iconIds } from '$assets';
 	import { CoordinateInput, GeometrySelect, UnitAwareInput } from '$components';
-	import { Command, Form, Input, Popover, Separator, Textarea } from '$core';
+	import { Command, Form, Input, Popover, Select, Separator, Textarea } from '$core';
 	import { Button, buttonVariants } from '$core/button/index.js';
 	import { getAppContext } from '$state/application';
 	import { cn } from '$utils';
@@ -42,84 +48,125 @@
 	const triggerId = useId();
 
 	/**
-	 * Seeds the preview's starter geometry/location once a real cultivar is
-	 * picked, so CreatePlantContainer (reading this same form data) has
-	 * something to render immediately. Size re-seeds every time the cultivar
-	 * changes, matching whichever Cultivar is now selected; position is only
-	 * seeded once (centered in the current Layout viewport) - re-seeding it
-	 * on every cultivar change would snap away a position the user already
-	 * dragged the preview to just because they changed their mind about
-	 * which cultivar this stamp is.
+	 * Which lifecycle stage the plant is at "today" (the currently focused
+	 * timeline day) - the rest of its expected history is computed backward/
+	 * forward from that pin. Kept in sync with the current Origin below,
+	 * since not every milestone is valid for every Origin.
 	 */
-	let previousSeededCultivarName: string | null = $state(null);
+	let anchorMilestoneOptions = $derived(
+		annualMilestonesForOrigin($formData.plants[0]?.origin ?? 'DIRECT_SEED')
+	);
+	let anchorMilestone: AnnualLifecycleMilestone = $state('SEED');
+	$effect(() => {
+		if (!anchorMilestoneOptions.includes(anchorMilestone)) {
+			anchorMilestone = anchorMilestoneOptions[0];
+		}
+	});
+
+	/**
+	 * Generates the preview's whole expected geometry history and its single
+	 * anchored location once a real cultivar is picked, so CreatePlantContainer
+	 * (reading this same form data) has something to render immediately.
+	 * Fully regenerates from the Cultivar's profile whenever the cultivar,
+	 * Origin, or anchor milestone changes - those change *what* the stamp
+	 * represents, so a fresh chain is correct. A focused-day change alone is
+	 * different: the anchor is pinned to the focused day, but the stamp's
+	 * shape hasn't changed, only *when* it's happening - so that case only
+	 * translates every existing date by the same delta, preserving every
+	 * other field (including a manually dragged/resized entry) exactly. The
+	 * existing coordinate is also preserved across a full regeneration so
+	 * switching anchor/cultivar doesn't snap away a position already dragged
+	 * into place; only "Reset Placement" below discards it.
+	 */
+	let previousStructuralKey: string | null = $state(null);
+	let previousFocusedDay: Date | null = $state(null);
 	$effect(() => {
 		const cultivarName = $formData.plants[0]?.cultivarName;
 		if (!cultivarName || !ctx.cultivars.cultivarNames.has(cultivarName)) {
-			previousSeededCultivarName = null;
+			previousStructuralKey = null;
+			previousFocusedDay = null;
 			return;
 		}
+
+		const origin = $formData.plants[0]?.origin ?? 'DIRECT_SEED';
+		const focusedDay = verdagraphContext.timeline.focusUtc;
 		/**
 		 * Without this guard, the write below re-triggers this same effect
 		 * indefinitely: $formData is a superforms store, which notifies on
 		 * any write to it regardless of which property changed, so
 		 * assigning geometryHistory would itself cause this effect (which
-		 * reads cultivarName off the same store) to run again - forever,
-		 * since the condition it reruns under never stops being true.
-		 * The geometries.length check re-opens the guard for a same-cultivar
-		 * reseed: cultivarName now persists across a successful Create (so
-		 * the next stamp starts pre-selected), but geometryHistory is still
-		 * cleared back to empty each time, and that fresh stamp still needs
-		 * its own starter geometry/position.
+		 * reads cultivarName/origin off the same store) to run again -
+		 * forever, since the condition it reruns under never stops being
+		 * true. The geometries.length check re-opens the guard whenever a
+		 * fresh stamp's history has been cleared (post-Create carry-forward
+		 * still counts as "already seeded" here, since it's non-empty).
 		 */
+		const structuralKey = `${cultivarName}|${origin}|${anchorMilestone}`;
 		const alreadySeeded = ($formData.plants[0]?.geometryHistory?.geometries?.length ?? 0) > 0;
-		if (cultivarName === previousSeededCultivarName && alreadySeeded) {
+
+		if (structuralKey === previousStructuralKey && alreadySeeded) {
+			if (previousFocusedDay && focusedDay.getTime() !== previousFocusedDay.getTime()) {
+				const deltaDays = Math.round(
+					(focusedDay.getTime() - previousFocusedDay.getTime()) / (24 * 60 * 60 * 1000)
+				);
+				if (deltaDays !== 0) {
+					const currentGeometries: GeometryCreateCommand[] =
+						$formData.plants[0]?.geometryHistory?.geometries ?? [];
+					const currentLocations: LocationCreateCommand[] =
+						$formData.plants[0]?.locationHistory?.locations ?? [];
+					$formData.plants[0].geometryHistory = {
+						gardenId: ctx.garden.id,
+						geometries: currentGeometries.map((geometry: GeometryCreateCommand) => ({
+							...geometry,
+							date: addDays(geometry.date, deltaDays)
+						}))
+					};
+					$formData.plants[0].locationHistory = {
+						gardenId: ctx.garden.id,
+						locations: currentLocations.map((location: LocationCreateCommand) => ({
+							...location,
+							date: addDays(location.date, deltaDays)
+						}))
+					};
+				}
+			}
+			previousFocusedDay = focusedDay;
 			return;
 		}
-		previousSeededCultivarName = cultivarName;
+		previousStructuralKey = structuralKey;
+		previousFocusedDay = focusedDay;
 
 		const cultivar = [...ctx.cultivars.cultivars].find((c) => c.name === cultivarName);
-		const focusedDay = verdagraphContext.timeline.focusUtc;
-
-		$formData.plants[0].geometryHistory = {
-			gardenId: ctx.garden.id,
-			geometries: [
-				starterGeometryFromExpectedProfile(
-					cultivar?.attributes?.expectedGeometry,
-					focusedDay
-				)
-			]
-		};
-
-		if ($formData.plants[0].locationHistory.locations.length === 0) {
-			const workspaceId = verdagraphContext.selections
-				.get('workspace')
-				.values()
-				.next().value;
-			if (!workspaceId) {
-				return;
-			}
-
-			const center = verdagraphContext.layoutCanvasContext.transform.viewportCenterModel();
-			$formData.plants[0].locationHistory = {
-				gardenId: ctx.garden.id,
-				locations: [
-					{
-						gardenId: ctx.garden.id,
-						workspaceId,
-						coordinate: center,
-						date: focusedDay
-					}
-				]
-			};
+		const workspaceId = verdagraphContext.selections.get('workspace').values().next().value;
+		if (!workspaceId) {
+			return;
 		}
+
+		const existingCoordinate = $formData.plants[0]?.locationHistory?.locations?.[0]?.coordinate;
+		const coordinate = existingCoordinate
+			? { x: existingCoordinate.x, y: existingCoordinate.y }
+			: verdagraphContext.layoutCanvasContext.transform.viewportCenterModel();
+
+		const { geometries, location } = generateExpectedHistories({
+			expectedGeometryProfile: cultivar?.attributes?.expectedGeometry,
+			annualLifecycleProfile: cultivar?.attributes?.annualLifeCycle,
+			origin,
+			anchorMilestone,
+			anchorDate: focusedDay,
+			gardenId: ctx.garden.id,
+			workspaceId,
+			coordinate
+		});
+
+		$formData.plants[0].geometryHistory = { gardenId: ctx.garden.id, geometries };
+		$formData.plants[0].locationHistory = { gardenId: ctx.garden.id, locations: [location] };
 	});
 
 	/**
 	 * Discards the current stamp's placement (carried forward from the last
 	 * Create, or dragged/resized by hand) and falls back to the cultivar's
-	 * default starter geometry centered in the viewport - the same seed the
-	 * very first stamp of a cultivar gets, since emptying both histories
-	 * here just re-opens the guard above.
+	 * generated default - the same seed the very first stamp of a cultivar
+	 * gets, since emptying both histories here just re-opens the guard above.
 	 */
 	function resetPlacement() {
 		$formData.plants[0].geometryHistory = { gardenId: ctx.garden.id, geometries: [] };
@@ -184,6 +231,34 @@
 			</Popover.Content>
 		</Popover.Root>
 	</Form.Field>
+
+	<div class="flex flex-col gap-1.5">
+		<span class="text-sm font-medium">Anchor</span>
+		<Select.Root
+			type="single"
+			items={anchorMilestoneOptions.map((milestone) => ({
+				value: milestone,
+				label: AnnualLifecycleMilestoneLabels[milestone]
+			}))}
+			value={anchorMilestone}
+			onValueChange={(value) => {
+				if (value) {
+					anchorMilestone = value as AnnualLifecycleMilestone;
+				}
+			}}
+		>
+			<Select.Trigger class="w-full">
+				<span>{AnnualLifecycleMilestoneLabels[anchorMilestone]}</span>
+			</Select.Trigger>
+			<Select.Content>
+				{#each anchorMilestoneOptions as milestone}
+					<Select.Item value={milestone} label={AnnualLifecycleMilestoneLabels[milestone]}>
+						{AnnualLifecycleMilestoneLabels[milestone]}
+					</Select.Item>
+				{/each}
+			</Select.Content>
+		</Select.Root>
+	</div>
 
 	<Button variant="outline" class="w-full" onclick={resetPlacement}>
 		Reset Placement

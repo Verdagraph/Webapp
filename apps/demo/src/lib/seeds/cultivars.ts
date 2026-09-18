@@ -27,7 +27,8 @@ export default function cultivarsSeed(): BulkInsert<typeof schema> {
 						sowToGerm: 10,
 						germToTransplant: 30,
 						germToFirstHarvest: 120,
-						firstToLastHarvest: 24
+						firstToLastHarvest: 24,
+						lastHarvestToExpiry: 14
 					},
 					color: {
 						baseColor: '#46A758',
@@ -45,11 +46,11 @@ export default function cultivarsSeed(): BulkInsert<typeof schema> {
 					},
 					expectedGeometry: {
 						geometryType: 'ELLIPSE',
-						peakSize: 0.45,
-						seedlingScaleFactor: 0.1,
-						firstHarvestScaleFactor: 0.9,
-						lastHarvestScaleFactor: 1,
-						expiryScaleFactor: 1
+						seedSize: 0.01,
+						seedlingSize: 0.045,
+						firstHarvestSize: 0.405,
+						lastHarvestSize: 0.45,
+						expirySize: 0.45
 					}
 				}
 			}

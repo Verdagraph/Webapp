@@ -2,6 +2,7 @@ import {
 	type FieldErrors,
 	type Plant,
 	type PlantUpdateCommand,
+	isDraftPlant,
 	plantFields
 } from '@vdg-webapp/models';
 
@@ -109,28 +110,31 @@ export function plantTreeItem(
 		}
 	);
 
-	const recordedLifespanItem = lifespanTreeItem(
-		toTreeId(baseId, 'recordedLifespan'),
-		'Recorded Lifespan',
-		{ lifespan: value.plant.recordedLifespan, workspaces: value.workspaces },
-		{
-			lifespanUpdateHandler: ctx.lifespanUpdateHandler,
-			geometryUpdateHandler: ctx.geometryUpdateHandler,
-			locationUpdateHandler: ctx.locationUpdateHandler,
-			locationHistoryExtendHandler: ctx.locationHistoryExtendHandler,
-			geometryHistoryExtendHandler: ctx.geometryHistoryExtendHandler,
-			observationUpdateHandler: ctx.observationUpdateHandler,
-			observationDeleteHandler: ctx.observationDeleteHandler,
-			fieldErrors: ctx.fieldErrors
-		}
-	);
+	const children: Item[] = [cultivarNameItem, quantityItem, expectedLifespanItem];
 
-	const children: Item[] = [
-		cultivarNameItem,
-		quantityItem,
-		expectedLifespanItem,
-		recordedLifespanItem
-	];
+	/**
+	 * A still-staged (draft) plant has no recorded observations/history yet -
+	 * Recorded Lifespan only makes sense once it's actually been planted, so
+	 * it doesn't appear here until the plant is committed.
+	 */
+	if (!isDraftPlant(value.plant)) {
+		const recordedLifespanItem = lifespanTreeItem(
+			toTreeId(baseId, 'recordedLifespan'),
+			'Recorded Lifespan',
+			{ lifespan: value.plant.recordedLifespan, workspaces: value.workspaces },
+			{
+				lifespanUpdateHandler: ctx.lifespanUpdateHandler,
+				geometryUpdateHandler: ctx.geometryUpdateHandler,
+				locationUpdateHandler: ctx.locationUpdateHandler,
+				locationHistoryExtendHandler: ctx.locationHistoryExtendHandler,
+				geometryHistoryExtendHandler: ctx.geometryHistoryExtendHandler,
+				observationUpdateHandler: ctx.observationUpdateHandler,
+				observationDeleteHandler: ctx.observationDeleteHandler,
+				fieldErrors: ctx.fieldErrors
+			}
+		);
+		children.push(recordedLifespanItem);
+	}
 
 	if (ctx.plantDeleteHandler) {
 		const deleteHandler = ctx.plantDeleteHandler;

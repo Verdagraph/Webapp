@@ -5,5 +5,6 @@ export const AnnualLifeCycleProfile = S.Record({
 	sowToGerm: S.Optional(S.Number()),
 	germToTransplant: S.Optional(S.Number()),
 	germToFirstHarvest: S.Optional(S.Number()),
-	firstToLastHarvest: S.Optional(S.Number())
+	firstToLastHarvest: S.Optional(S.Number()),
+	lastHarvestToExpiry: S.Optional(S.Number())
 });

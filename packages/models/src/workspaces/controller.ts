@@ -48,6 +48,7 @@ export async function geometryCreate(
 
 	const geometry: Omit<Geometry, 'id' | 'linesCoordinates'> = {
 		gardenId: gardenId,
+		name: data.name,
 		type: data.type,
 		date: data.date,
 		scaleFactor: data.scaleFactor,
@@ -140,6 +141,9 @@ export async function geometryUpdate(
 		}
 
 		await transaction.update('geometries', geometry.id, (geometry) => {
+			if (data.name) {
+				geometry.name = data.name;
+			}
 			if (data.type) {
 				geometry.type = data.type;
 			}
@@ -199,9 +203,14 @@ export async function geometryHistoryExtend(
 
 	const latestGeometry =
 		geometryHistory.geometries[geometryHistory.geometries.length - 1];
-	latestGeometry.date = date;
+	const nextGeometry: GeometryCreateCommand = {
+		...latestGeometry,
+		/** Triplit resolves S.Optional as `| null`; GeometryCreateCommand's name is `| undefined`. */
+		name: latestGeometry.name ?? undefined,
+		date
+	};
 	await ctx.triplit.transact(async (transaction) => {
-		await geometryCreate(geometryHistory.gardenId, latestGeometry, transaction);
+		await geometryCreate(geometryHistory.gardenId, nextGeometry, transaction);
 	});
 }
 

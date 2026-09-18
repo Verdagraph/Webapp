@@ -8,7 +8,5 @@ export * from './controller.js';
  * that would collide if all exported at once. Export just what's actually
  * needed elsewhere.
  */
-export {
-	type ExpectedGeometryProfileLike,
-	starterGeometryFromExpectedProfile
-} from './attributes/geometry/index.js';
+export { type ExpectedGeometryProfileLike } from './attributes/geometry/index.js';
+export { type AnnualLifeCycleProfileLike } from './attributes/annualLifeCycle/index.js';

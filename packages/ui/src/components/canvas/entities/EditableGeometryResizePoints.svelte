@@ -32,8 +32,15 @@
 		$props();
 
 	const ATTRIBUTE_DECIMALS = 2;
-	const RESIZE_POINT_RADIUS_PX = 6;
-	const RESIZE_POINT_STROKE_WIDTH_PX = 3;
+	/**
+	 * Handle radius is a fraction of the shape's own half-extent rather than
+	 * a fixed pixel size, clamped so it stays clickable on a tiny (e.g.
+	 * seed-stage) shape and doesn't balloon on a huge one - a fixed radius
+	 * looked comically oversized wrapping a shape barely bigger than it.
+	 */
+	const RESIZE_POINT_RADIUS_SCALE = 0.18;
+	const RESIZE_POINT_RADIUS_MIN_PX = 3;
+	const RESIZE_POINT_RADIUS_MAX_PX = 6;
 
 	/** Retrieve canvas. */
 	const canvas = getContext<CanvasContext>(canvasId);
@@ -44,6 +51,19 @@
 			x: canvas.transform.canvasXPos(point.x),
 			y: canvas.transform.canvasYPos(point.y)
 		}))
+	);
+
+	const resizePointRadius = $derived(
+		Math.min(
+			RESIZE_POINT_RADIUS_MAX_PX,
+			Math.max(
+				RESIZE_POINT_RADIUS_MIN_PX,
+				committedPositions.reduce(
+					(maxExtent, point) => Math.max(maxExtent, Math.hypot(point.x, point.y)),
+					0
+				) * RESIZE_POINT_RADIUS_SCALE
+			)
+		)
 	);
 
 	/**
@@ -302,8 +322,8 @@
 	<circle
 		cx={point.x}
 		cy={point.y}
-		r={RESIZE_POINT_RADIUS_PX}
-		stroke-width={RESIZE_POINT_STROKE_WIDTH_PX}
+		r={resizePointRadius}
+		stroke-width={resizePointRadius / 2}
 		stroke={strokeColor}
 		fill={fillColor}
 		style:cursor={getGeometryResizePointCursor(geometry, index)}
