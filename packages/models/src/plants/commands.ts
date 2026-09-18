@@ -33,7 +33,7 @@ const lifespanDatesSchema = z.object({
 });
 
 /** Plants. */
-const plantCultivarNameSchema = z.string();
+const plantCultivarNameSchema = z.string().min(1, 'Select a cultivar.');
 const plantCultivarAttributesSchema = CultivarAttributesUpdateCommandSchema;
 const plantQuantitySchema = z
 	.number()
@@ -63,7 +63,7 @@ export type PlantsCreateFormMode = (typeof PlantsCreateFormModeOptions)[number];
  * Adds a plant to the model.
  */
 export const plantsCreateCommandSinglePlantSchema = z.object({
-	cultivarName: plantCultivarNameSchema.default('undefined'),
+	cultivarName: plantCultivarNameSchema.default(''),
 	origin: lifespanOriginSchema.default('DIRECT_SEED'),
 	locationHistory: LocationHistoryCreateCommandSchema.default({
 		gardenId: '',

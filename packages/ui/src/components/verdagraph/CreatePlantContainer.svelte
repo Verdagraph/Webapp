@@ -57,46 +57,79 @@
 		return { x: location.coordinate.x, y: location.coordinate.y };
 	});
 
+	/**
+	 * `location`/`geometry` above are live references obtained via
+	 * `historySelect(..., true)` into the objects actually sitting inside
+	 * the form store - but mutating them directly (`location.coordinate = ...`)
+	 * only mutates the plain JS object, it never calls the store's own
+	 * `.set()`/`.update()`. Superforms relies on that notification (e.g. to
+	 * resync its `dataType: 'json'` hidden-input snapshot used at submit
+	 * time), so a direct mutation is invisible to it even though reading
+	 * `$formData` back immediately afterwards appears to reflect the change.
+	 * Routing the same mutation through `formData.update(...)` re-derives
+	 * the reference from the fresh store value and ensures the store
+	 * actually notifies, so the change survives submission.
+	 */
 	function onTranslate(newPos: Position) {
-		if (!location) {
-			return;
-		}
-
-		location.coordinate = {
-			x: canvas.transform.modelXPos(newPos.x),
-			y: canvas.transform.modelYPos(newPos.y)
-		};
+		formData.update(($form) => {
+			const plant = $form.plants[plantIdx];
+			if (!plant?.locationHistory) {
+				return $form;
+			}
+			const loc = historySelect(
+				plant.locationHistory.locations,
+				verdagraphContext.timeline.focusUtc,
+				true
+			);
+			if (!loc) {
+				return $form;
+			}
+			loc.coordinate = {
+				x: canvas.transform.modelXPos(newPos.x),
+				y: canvas.transform.modelYPos(newPos.y)
+			};
+			return $form;
+		});
 	}
 
 	function onTransform(newGeometry: GeometryUpdateCommand) {
-		if (!geometry) {
-			return;
-		}
-
-		if (newGeometry.rectangleLength) {
-			geometry.rectangleLength = newGeometry.rectangleLength;
-		}
-		if (newGeometry.rectangleWidth) {
-			geometry.rectangleWidth = newGeometry.rectangleWidth;
-		}
-		if (newGeometry.polygonNumSides) {
-			geometry.polygonNumSides = newGeometry.polygonNumSides;
-		}
-		if (newGeometry.polygonRadius) {
-			geometry.polygonRadius = newGeometry.polygonRadius;
-		}
-		if (newGeometry.ellipseLength) {
-			geometry.ellipseLength = newGeometry.ellipseLength;
-		}
-		if (newGeometry.ellipseWidth) {
-			geometry.ellipseWidth = newGeometry.ellipseWidth;
-		}
-
-		if (newGeometry.linesCoordinates) {
-			if (newGeometry.linesCoordinates) {
-				geometry.linesCoordinates = newGeometry.linesCoordinates;
+		formData.update(($form) => {
+			const plant = $form.plants[plantIdx];
+			if (!plant?.geometryHistory) {
+				return $form;
 			}
-		}
+			const geom = historySelect(
+				plant.geometryHistory.geometries,
+				verdagraphContext.timeline.focusUtc,
+				true
+			);
+			if (!geom) {
+				return $form;
+			}
+
+			if (newGeometry.rectangleLength) {
+				geom.rectangleLength = newGeometry.rectangleLength;
+			}
+			if (newGeometry.rectangleWidth) {
+				geom.rectangleWidth = newGeometry.rectangleWidth;
+			}
+			if (newGeometry.polygonNumSides) {
+				geom.polygonNumSides = newGeometry.polygonNumSides;
+			}
+			if (newGeometry.polygonRadius) {
+				geom.polygonRadius = newGeometry.polygonRadius;
+			}
+			if (newGeometry.ellipseLength) {
+				geom.ellipseLength = newGeometry.ellipseLength;
+			}
+			if (newGeometry.ellipseWidth) {
+				geom.ellipseWidth = newGeometry.ellipseWidth;
+			}
+			if (newGeometry.linesCoordinates) {
+				geom.linesCoordinates = newGeometry.linesCoordinates;
+			}
+			return $form;
+		});
 	}
 </script>
 

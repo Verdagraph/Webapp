@@ -5,9 +5,12 @@
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	import { AppError, plantsCreateCommandSinglePlantSchema } from '@vdg-webapp/models';
+	import {
+		AppError,
+		plantsCreateCommandSinglePlantSchema,
+		starterGeometryFromExpectedProfile
+	} from '@vdg-webapp/models';
 
-	import { page } from '$app/state';
 	import { iconIds } from '$assets';
 	import { CoordinateInput, GeometrySelect, UnitAwareInput } from '$components';
 	import {
@@ -46,10 +49,77 @@
 	}
 	const triggerId = useId();
 
-	/** Initialize geometry history when cultivar changes. */
+	/**
+	 * Seeds the preview's starter geometry/location once a real cultivar is
+	 * picked, so CreatePlantContainer (reading this same form data) has
+	 * something to render immediately. Size re-seeds every time the cultivar
+	 * changes, matching whichever Cultivar is now selected; position is only
+	 * seeded once (centered in the current Layout viewport) - re-seeding it
+	 * on every cultivar change would snap away a position the user already
+	 * dragged the preview to just because they changed their mind about
+	 * which cultivar this stamp is.
+	 */
+	let previousSeededCultivarName: string | null = $state(null);
 	$effect(() => {
-		/** Get cultivar object from cultivar name. */
-		/** Get default geometry history from cultivar object. */
+		const cultivarName = $formData.plants[0]?.cultivarName;
+		if (!cultivarName || !ctx.cultivars.cultivarNames.has(cultivarName)) {
+			/**
+			 * Cleared, not left as-is: a fresh stamp's cultivarName resets to
+			 * '' after each successful create, so the next selection - even
+			 * of the very same cultivar as the stamp before it - needs to be
+			 * treated as new rather than matching a stale previous value.
+			 */
+			previousSeededCultivarName = null;
+			return;
+		}
+		/**
+		 * Without this guard, the write below re-triggers this same effect
+		 * indefinitely: $formData is a superforms store, which notifies on
+		 * any write to it regardless of which property changed, so
+		 * assigning geometryHistory would itself cause this effect (which
+		 * reads cultivarName off the same store) to run again - forever,
+		 * since the condition it reruns under never stops being true.
+		 */
+		if (cultivarName === previousSeededCultivarName) {
+			return;
+		}
+		previousSeededCultivarName = cultivarName;
+
+		const cultivar = [...ctx.cultivars.cultivars].find((c) => c.name === cultivarName);
+		const focusedDay = verdagraphContext.timeline.focusUtc;
+
+		$formData.plants[0].geometryHistory = {
+			gardenId: ctx.garden.id,
+			geometries: [
+				starterGeometryFromExpectedProfile(
+					cultivar?.attributes?.expectedGeometry,
+					focusedDay
+				)
+			]
+		};
+
+		if ($formData.plants[0].locationHistory.locations.length === 0) {
+			const workspaceId = verdagraphContext.selections
+				.get('workspace')
+				.values()
+				.next().value;
+			if (!workspaceId) {
+				return;
+			}
+
+			const center = verdagraphContext.layoutCanvasContext.transform.viewportCenterModel();
+			$formData.plants[0].locationHistory = {
+				gardenId: ctx.garden.id,
+				locations: [
+					{
+						gardenId: ctx.garden.id,
+						workspaceId,
+						coordinate: center,
+						date: focusedDay
+					}
+				]
+			};
+		}
 	});
 </script>
 
