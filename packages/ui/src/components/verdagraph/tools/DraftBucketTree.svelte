@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { useQuery } from '@triplit/svelte';
-
 	import { EditableTree } from '$components';
 	import { Button } from '$core/button/index.js';
 	import { ScrollArea, Select } from '$core';
@@ -42,42 +40,15 @@
 		}
 	}
 
-	const plantsQuery = $derived(
-		draftBucketId
-			? useQuery(
-					ctx.controller.triplit,
-					ctx.controller.triplit
-						.query('plants')
-						.Where('draftBucketId', '=', draftBucketId)
-						.Include('expectedLifespan', (rel) =>
-							rel('expectedLifespan')
-								.Include('geometryHistory', (rel) =>
-									rel('geometryHistory').Include('geometries', (rel) =>
-										rel('geometries').Include('linesCoordinates')
-									)
-								)
-								.Include('locationHistory', (rel) =>
-									rel('locationHistory').Include('locations')
-								)
-								.Include('observations')
-						)
-						.Include('recordedLifespan', (rel) =>
-							rel('recordedLifespan')
-								.Include('geometryHistory', (rel) =>
-									rel('geometryHistory').Include('geometries', (rel) =>
-										rel('geometries').Include('linesCoordinates')
-									)
-								)
-								.Include('locationHistory', (rel) =>
-									rel('locationHistory').Include('locations')
-								)
-								.Include('observations')
-						)
-						.Include('draftBucket')
-				)
-			: null
+	/**
+	 * Filters the garden's whole-plants query (plantsContext.svelte.ts, the
+	 * one canonical query - already includes everything this tree needs)
+	 * down to the active bucket's plants, rather than firing a second,
+	 * near-identical query with its own copy of the same relation includes.
+	 */
+	const plants = $derived(
+		draftBucketId ? ctx.plants.plants.filter((plant) => plant.draftBucketId === draftBucketId) : []
 	);
-	const plants = $derived(plantsQuery?.results ?? []);
 	const workspaces = $derived(ctx.workspaces.workspaces);
 
 	const controller = createPlantTreeController({

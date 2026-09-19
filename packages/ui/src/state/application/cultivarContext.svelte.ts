@@ -47,40 +47,31 @@ export function createCultivarContext(
 		...ancestorCollectionsIds
 	]);
 	/**
-	 * Fetched once collectionIds settle, rather than a second live useQuery
-	 * chained off the first. Measured behavior of that chained version: its
-	 * live subscription is created once collectionIds has real values, settles
-	 * once with an empty result, and then never fires again even seconds
-	 * later - it's not repeated teardown/churn, it's a single subscription
-	 * that never recovers, most likely because it's established while the
-	 * seed data's own transact() is still inserting (collections land before
-	 * cultivars in that same transaction). Not confirmed whether this occurs
-	 * against a garden whose data is already committed before the page loads
-	 * (as opposed to this app's collections being seeded live on mount) - a
-	 * plain fetch is used here defensively either way. Costs not auto-updating
-	 * if a Cultivar is added/removed elsewhere while this page is open - an
-	 * acceptable trade for now since nothing yet edits Cultivars live
-	 * alongside it (the Cultivar Collections editor doesn't exist yet).
-	 * TODO: re-evaluate with the Jazz migration - this whole plain-fetch
-	 * workaround is chasing a Triplit chained-useQuery quirk that may not
-	 * have an equivalent under Jazz's subscription model.
+	 * A second live query chained off the first (collectionIds only settle
+	 * once gardenCollectionsQuery resolves). Confirmed via direct
+	 * instrumentation this used to settle once with an empty result and never
+	 * recover when collectionIds went from empty to populated while the
+	 * page's own seed-data transact() was still inserting concurrently
+	 * (collections land before cultivars in that same transaction) - a plain
+	 * fetch() was used defensively instead. Re-tested after fixing the demo
+	 * to fully commit its seed data before mounting anything that queries it
+	 * (apps/demo's [demoId]/+page.svelte) - with that race removed, this
+	 * chained useQuery is reliable (5/5 runs), matching how a real garden's
+	 * data is always already-committed by the time any page queries it.
+	 * Confirmed the demo-mount race was the actual cause, not a general
+	 * Triplit chained-query limitation, so the live query is worth having
+	 * back (it now updates if a Cultivar is added/removed elsewhere while
+	 * this page is open, which the plain-fetch version never did).
 	 */
-	let allCultivars: { name: string }[] = $state([]);
-	$effect(() => {
-		const collectionIds = allCollectionIds;
-		if (collectionIds.length === 0) {
-			allCultivars = [];
-			return;
-		}
-
-		controller.triplit
-			.fetch(
-				controller.triplit.query('cultivars').Where('collectionId', 'in', collectionIds)
-			)
-			.then((results) => {
-				allCultivars = results;
-			});
-	});
+	const allCultivarsQuery = $derived(
+		useQuery(
+			controller.triplit,
+			controller.triplit.query('cultivars').Where('collectionId', 'in', allCollectionIds)
+		)
+	);
+	const allCultivars = $derived(
+		allCollectionIds.length === 0 ? [] : (allCultivarsQuery.results ?? [])
+	);
 	const cultivarNames = $derived(
 		new Set(allCultivars.map((cultivar) => cultivar.name))
 	);

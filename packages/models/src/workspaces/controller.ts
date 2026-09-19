@@ -203,12 +203,7 @@ export async function geometryHistoryExtend(
 
 	const latestGeometry =
 		geometryHistory.geometries[geometryHistory.geometries.length - 1];
-	const nextGeometry: GeometryCreateCommand = {
-		...latestGeometry,
-		/** Triplit resolves S.Optional as `| null`; GeometryCreateCommand's name is `| undefined`. */
-		name: latestGeometry.name ?? undefined,
-		date
-	};
+	const nextGeometry: GeometryCreateCommand = { ...latestGeometry, date };
 	await ctx.triplit.transact(async (transaction) => {
 		await geometryCreate(geometryHistory.gardenId, nextGeometry, transaction);
 	});

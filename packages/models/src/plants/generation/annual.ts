@@ -1,22 +1,19 @@
-import {
-	type AnnualLifeCycleProfileLike,
-	type ExpectedGeometryProfileLike
-} from '../cultivars/index.js';
+import { type Cultivar } from '../../cultivars/index.js';
 import {
 	type GeometryCreateCommand,
 	GeometryCreateCommandSchema,
-	type GeometryType,
 	type LocationCreateCommand,
 	type Position
-} from '../workspaces/index.js';
-import { type Origin } from './schema.js';
+} from '../../workspaces/index.js';
+import { type Origin } from '../schema.js';
+import { addDays, deriveGeometry, dimensionOverridesForSize } from './common.js';
 
 /**
  * Named "Annual" deliberately: this chain models the single linear
  * seed-to-expiry lifecycle. A perennial's dormancy cycling is a different,
  * recurring, calendar-date-driven shape - it needs its own type when that
- * work happens, rather than extending this enum and implying the linear
- * chain already covers it.
+ * work happens (see perennial.ts), rather than extending this enum and
+ * implying the linear chain already covers it.
  */
 export const AnnualLifecycleMilestoneOptions = [
 	'SEED',
@@ -60,8 +57,23 @@ export function annualMilestonesForOrigin(origin: Origin): AnnualLifecycleMilest
  * both measured from germination, so anchoring every milestone to that same
  * reference point keeps a transplant's germination-to-first-harvest span
  * intact no matter when in that span the transplant happens.
+ *
+ * SEEDLING_TO_TRANSPLANT (bought/started as a seedling, never tracked as a
+ * seed in this garden) never reads GERMINATION's `0` - it's computed here
+ * regardless since this function doesn't know which origin is calling it,
+ * but `annualMilestonesForOrigin` never includes GERMINATION for that
+ * origin, so it's simply unused, not a source of wrong dates. What DOES
+ * matter for that origin: TRANSPLANT's offset is `germToTransplant`, and
+ * FIRST_HARVEST's offset is `germToFirstHarvest` - the gap between them
+ * (`germToFirstHarvest - germToTransplant`) is what actually determines how
+ * long after transplant the first harvest lands. Both fields need real
+ * values on the Cultivar for that gap to be meaningful; a missing one
+ * defaults to 0 like every other duration here, which won't crash but will
+ * silently produce a shorter-than-intended (or, if germToTransplant is the
+ * one missing, equal-to-germToFirstHarvest) span rather than an error - a
+ * Cultivar meant to be used as SEEDLING_TO_TRANSPLANT should have both set.
  */
-function daysFromGermination(lifeCycle: AnnualLifeCycleProfileLike | null | undefined) {
+function daysFromGermination(lifeCycle: Cultivar['attributes']['annualLifeCycle']) {
 	const sowToGerm = lifeCycle?.sowToGerm ?? 0;
 	const germToTransplant = lifeCycle?.germToTransplant ?? 0;
 	const germToFirstHarvest = lifeCycle?.germToFirstHarvest ?? 0;
@@ -79,21 +91,23 @@ function daysFromGermination(lifeCycle: AnnualLifeCycleProfileLike | null | unde
 	return byMilestone;
 }
 
-export function addDays(date: Date, days: number): Date {
-	const result = new Date(date);
-	result.setDate(result.getDate() + days);
-	return result;
-}
-
-/** The ExpectedGeometryProfile size field a milestone is sized from. */
+/**
+ * The ExpectedGeometryProfile size field a milestone is sized from. Seed and
+ * Germination both read `seedSize` - Germination is just-emerged, still
+ * seed-scale, not yet the more-grown "ready for transplant" size that
+ * `seedlingSize` represents. `seedlingSize` is reserved for Transplant,
+ * which is the only milestone it applies to; a DIRECT_SEED plant (which
+ * never has a Transplant milestone) never reads `seedlingSize` at all -
+ * that's intentional, not a gap, since it has no equivalent moment.
+ */
 function sizeForMilestone(
-	profile: ExpectedGeometryProfileLike | null | undefined,
+	profile: Cultivar['attributes']['expectedGeometry'],
 	milestone: AnnualLifecycleMilestone
 ): number | null | undefined {
 	switch (milestone) {
 		case 'SEED':
-			return profile?.seedSize;
 		case 'GERMINATION':
+			return profile?.seedSize;
 		case 'TRANSPLANT':
 			return profile?.seedlingSize;
 		case 'FIRST_HARVEST':
@@ -103,35 +117,6 @@ function sizeForMilestone(
 		case 'EXPIRY':
 			return profile?.expirySize;
 	}
-}
-
-/** Applies a size (meters) to whichever dimension(s) a geometry type uses. */
-function sizeOverrides(
-	geometryType: GeometryType,
-	size: number
-): Partial<GeometryCreateCommand> {
-	switch (geometryType) {
-		case 'ELLIPSE':
-			return { ellipseLength: size, ellipseWidth: size };
-		case 'RECTANGLE':
-			return { rectangleLength: size, rectangleWidth: size };
-		case 'POLYGON':
-			return { polygonRadius: size };
-		case 'LINES':
-			return {};
-	}
-}
-
-/**
- * Derives the next history entry from the previous one, overriding only
- * what actually changes between milestones (date, size) - avoids every
- * caller having to hand-retype every other field just to move one forward.
- */
-function deriveGeometry(
-	previous: GeometryCreateCommand,
-	overrides: Partial<GeometryCreateCommand>
-): GeometryCreateCommand {
-	return { ...previous, scaleFactor: 1, ...overrides };
 }
 
 /**
@@ -144,8 +129,8 @@ function deriveGeometry(
  * always assuming today is the seed date.
  */
 export function generateExpectedHistories(params: {
-	expectedGeometryProfile: ExpectedGeometryProfileLike | null | undefined;
-	annualLifecycleProfile: AnnualLifeCycleProfileLike | null | undefined;
+	expectedGeometryProfile: Cultivar['attributes']['expectedGeometry'];
+	annualLifecycleProfile: Cultivar['attributes']['annualLifeCycle'];
 	origin: Origin;
 	anchorMilestone: AnnualLifecycleMilestone;
 	anchorDate: Date;
@@ -165,7 +150,7 @@ export function generateExpectedHistories(params: {
 		const overrides: Partial<GeometryCreateCommand> = {
 			name: AnnualLifecycleMilestoneLabels[milestone],
 			date,
-			...sizeOverrides(geometryType, size)
+			...dimensionOverridesForSize(geometryType, size)
 		};
 
 		const previous = geometries[geometries.length - 1];
@@ -179,12 +164,38 @@ export function generateExpectedHistories(params: {
 		);
 	}
 
-	const location: LocationCreateCommand = {
+	const location = generateAnnualLocation(params);
+
+	return { geometries, location };
+}
+
+/**
+ * A single location entry, dated at the anchor. This is the one piece of
+ * `generateExpectedHistories` that's deliberately behind the milestone
+ * chain: a real transplant-origin plant lives in TWO places (a seed/nursery
+ * workspace, then a different final workspace), but placing it today only
+ * ever captures one.
+ *
+ * Planned extension (not built yet - tracked as a follow-up task): give this
+ * function an optional second `{ workspaceId, coordinate }` for the
+ * transplant destination. When present and `origin` has a TRANSPLANT
+ * milestone, return two entries instead of one - the seed placement dated
+ * at the SEED milestone, the transplant placement dated at the TRANSPLANT
+ * milestone - instead of collapsing the whole plant onto whichever single
+ * spot the anchor happens to land on. Pulled out as its own function now,
+ * ahead of actually needing it, so that change is additive here rather than
+ * a rewrite of `generateExpectedHistories` itself.
+ */
+function generateAnnualLocation(params: {
+	anchorDate: Date;
+	gardenId: string;
+	workspaceId: string;
+	coordinate: Position;
+}): LocationCreateCommand {
+	return {
 		gardenId: params.gardenId,
 		workspaceId: params.workspaceId,
 		coordinate: params.coordinate,
 		date: params.anchorDate
 	};
-
-	return { geometries, location };
 }

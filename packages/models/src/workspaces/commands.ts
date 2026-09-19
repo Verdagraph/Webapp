@@ -194,7 +194,7 @@ export type LocationUpdateCommand = z.infer<typeof LocationUpdateCommandSchema>;
  * Create a new geometry.
  */
 export const GeometryCreateCommandSchema = z.object({
-	name: geometryNameSchema.optional(),
+	name: geometryNameSchema.nullable().optional(),
 	type: geometryTypeSchema.default('RECTANGLE'),
 	date: geometryDateSchema,
 	scaleFactor: geometryScaleFactorSchema.default(1),
@@ -218,7 +218,7 @@ export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
  * Update a geometry.
  */
 export const GeometryUpdateCommandSchema = z.object({
-	name: geometryNameSchema.optional(),
+	name: geometryNameSchema.nullable().optional(),
 	type: geometryTypeSchema.optional(),
 	date: geometryDateSchema.optional(),
 	scaleFactor: geometryScaleFactorSchema.optional(),
