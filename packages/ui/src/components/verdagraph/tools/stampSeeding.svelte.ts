@@ -84,7 +84,7 @@ export function createStampSeeding(plantIndex: number) {
 	}
 
 	function regenerateStamp(cultivarName: string, origin: Origin) {
-		const cultivar = [...ctx.cultivars.cultivars].find((c) => c.name === cultivarName);
+		const cultivar = ctx.cultivars.getCultivar(cultivarName);
 		const workspaceId = resolveWorkspaceId();
 		if (!workspaceId) {
 			return;

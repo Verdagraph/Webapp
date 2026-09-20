@@ -67,23 +67,36 @@ export function createCultivarContext(
 		new Set(allCultivars.map((cultivar) => cultivar.name))
 	);
 
-	/** Collects all resolved cultivar objects in the garden. */
-	let cultivars: Set<Cultivar> = $state(new Set([]));
+	/** Collects all resolved cultivar objects in the garden, keyed by name for O(1) lookup via getCultivar. */
+	let cultivarsByName: Map<string, Cultivar> = $state(new Map());
 	$effect(() => {
 		const names = cultivarNames;
 		if (names.size === 0) {
-			cultivars = new Set([]);
+			cultivarsByName = new Map();
 			return;
 		}
 
 		Promise.all(
-			[...names].map((name) => resolveCultivar(garden.id, name, controller))
-		).then((results) => {
-			cultivars = new Set(
-				results.filter((cultivar): cultivar is Cultivar => cultivar !== null)
+			[...names].map(
+				async (name) => [name, await resolveCultivar(garden.id, name, controller)] as const
+			)
+		).then((entries) => {
+			cultivarsByName = new Map(
+				entries.filter((entry): entry is [string, Cultivar] => entry[1] !== null)
 			);
 		});
 	});
+	const cultivars = $derived(new Set(cultivarsByName.values()));
+
+	/**
+	 * Looks up a resolved Cultivar by name - centralized here (rather than
+	 * every caller doing `[...cultivars].find(...)` itself) so the lookup
+	 * can be O(1) via the underlying map instead of an O(n) scan repeated at
+	 * every call site.
+	 */
+	function getCultivar(name: string): Cultivar | null {
+		return cultivarsByName.get(name) ?? null;
+	}
 
 	return {
 		get cultivarNames() {
@@ -91,7 +104,8 @@ export function createCultivarContext(
 		},
 		get cultivars() {
 			return cultivars;
-		}
+		},
+		getCultivar
 	};
 }
 export type CultivarContext = ReturnType<typeof createCultivarContext>;
