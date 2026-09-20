@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { defaults, superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input } from '@vdg-webapp/ui';
+	import { Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { userRequestPasswordReset } from '$data/users/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
@@ -20,22 +17,12 @@
 			succeeded = true;
 		}
 	});
-	const form = superForm(defaults(zod(userRequestPasswordReset.schema)), {
-		SPA: true,
-		validators: zod(userRequestPasswordReset.schema),
-		onUpdate({ form }) {
-			if (form.valid) {
-				formHandler.execute(form.data);
-			}
-		},
-		onChange() {
-			formHandler.reset();
-		}
+	const form = createForm(userRequestPasswordReset.schema, {
+		onSubmit: (data) => formHandler.execute(data)
 	});
-	const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" autocomplete="off" use:enhance>
+<form onsubmit={form.submit} oninput={() => formHandler.reset()}>
 	<!-- Email address -->
 	<Form.Field {form} name="email">
 		<Form.Control>
@@ -47,7 +34,7 @@
 					{...props}
 					type="email"
 					placeholder="email@example.com"
-					bind:value={$formData.email}
+					bind:value={form.data.email}
 				/>
 			{/snippet}
 		</Form.Control>

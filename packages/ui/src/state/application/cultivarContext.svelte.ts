@@ -57,7 +57,9 @@ export function createCultivarContext(
 	const allCultivarsQuery = $derived(
 		useQuery(
 			controller.triplit,
-			controller.triplit.query('cultivars').Where('collectionId', 'in', allCollectionIds)
+			controller.triplit
+				.query('cultivars')
+				.Where('collectionId', 'in', allCollectionIds)
 		)
 	);
 	const allCultivars = $derived(
@@ -78,7 +80,8 @@ export function createCultivarContext(
 
 		Promise.all(
 			[...names].map(
-				async (name) => [name, await resolveCultivar(garden.id, name, controller)] as const
+				async (name) =>
+					[name, await resolveCultivar(garden.id, name, controller)] as const
 			)
 		).then((entries) => {
 			cultivarsByName = new Map(

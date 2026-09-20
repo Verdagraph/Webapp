@@ -198,7 +198,9 @@ export function getGeometryResizePointCursor(
 					? rectangleResizeAngles[index]
 					: ellipseResizeAngles[index];
 			const effectiveAngle = foldAngleToHalfTurn(canonicalAngle + geometry.rotation);
-			const nearestKeywordAngle = foldAngleToHalfTurn(Math.round(effectiveAngle / 45) * 45);
+			const nearestKeywordAngle = foldAngleToHalfTurn(
+				Math.round(effectiveAngle / 45) * 45
+			);
 			return buildArrowCursor(
 				resizeArrowPath,
 				effectiveAngle,
@@ -208,7 +210,9 @@ export function getGeometryResizePointCursor(
 		case 'POLYGON': {
 			/** The only point is constrained to vertical movement (see handlePointerMove's axis constraints). */
 			const effectiveAngle = foldAngleToHalfTurn(90 + geometry.rotation);
-			const nearestKeywordAngle = foldAngleToHalfTurn(Math.round(effectiveAngle / 45) * 45);
+			const nearestKeywordAngle = foldAngleToHalfTurn(
+				Math.round(effectiveAngle / 45) * 45
+			);
 			return buildArrowCursor(
 				resizeArrowPath,
 				effectiveAngle,

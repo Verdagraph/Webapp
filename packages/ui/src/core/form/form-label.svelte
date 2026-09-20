@@ -1,15 +1,12 @@
 <script lang="ts">
-	import type { WithoutChild } from 'bits-ui';
-	import * as FormPrimitive from 'formsnap';
+	import { Label as LabelPrimitive, type WithoutChild } from 'bits-ui';
 
 	import { Label } from '$core/label/index.js';
 	import { cn } from '$utils';
 
 	import FormInfoPopover from './form-info-popover.svelte';
+	import { getControlContext } from './formContext';
 
-	/**
-	 * Verdagraph - Adds a description and optional marker.
-	 */
 	let {
 		ref = $bindable(null),
 		children,
@@ -17,28 +14,33 @@
 		description,
 		optional = false,
 		...restProps
-	}: WithoutChild<FormPrimitive.LabelProps> & {
+	}: WithoutChild<LabelPrimitive.RootProps> & {
 		description?: string;
 		optional?: boolean;
 	} = $props();
+
+	const control = getControlContext();
 </script>
 
-<FormPrimitive.Label {...restProps} bind:ref>
-	{#snippet child({ props })}
-		<Label {...props} class={cn('flex items-center justify-between', className)}>
-			<div
-				class=" decoration-destructive-8 underline-offset-4 data-[fs-error]:underline data-[fs-error]:decoration-wavy"
-			>
-				{@render children?.()}
-			</div>
-			<div class="flex items-center">
-				{#if !optional}
-					<span class="translate-y-[2px]">*</span>
-				{/if}
-				{#if description}
-					<FormInfoPopover {description} />
-				{/if}
-			</div>
-		</Label>
-	{/snippet}
-</FormPrimitive.Label>
+<Label
+	bind:ref
+	for={control.id}
+	data-fs-label=""
+	data-fs-error={control.field.errors.length ? '' : undefined}
+	class={cn('flex items-center justify-between', className)}
+	{...restProps}
+>
+	<div
+		class="decoration-destructive-8 underline-offset-4 data-[fs-error]:underline data-[fs-error]:decoration-wavy"
+	>
+		{@render children?.()}
+	</div>
+	<div class="flex items-center">
+		{#if !optional}
+			<span class="translate-y-[2px]">*</span>
+		{/if}
+		{#if description}
+			<FormInfoPopover {description} />
+		{/if}
+	</div>
+</Label>

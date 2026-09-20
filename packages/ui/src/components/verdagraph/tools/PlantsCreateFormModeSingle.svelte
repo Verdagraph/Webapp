@@ -6,9 +6,9 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
+		type AnnualLifecycleMilestone,
 		AnnualLifecycleMilestoneLabels,
 		AppError,
-		type AnnualLifecycleMilestone,
 		type Origin,
 		OriginEnumLabels,
 		OriginEnumOptions,
@@ -29,9 +29,8 @@
 	const verdagraphContext = getVerdagraphContext();
 	const form = verdagraphContext.plantsCreateForm.form;
 	const handler = verdagraphContext.plantsCreateForm.handler;
-	const { form: formData, enhance } = form;
 
-	let plant = $derived($formData.plants[0] || null);
+	let plant = $derived(form.data.plants[0] || null);
 
 	let cultivarNameComboboxOpen = $state(false);
 
@@ -61,13 +60,13 @@
 						class={cn(
 							buttonVariants({ variant: 'outline' }),
 							'w-full justify-between',
-							!$formData.plants[0].cultivarName && 'text-neutral-11'
+							!form.data.plants[0].cultivarName && 'text-neutral-11'
 						)}
 						role="combobox"
 						{...props}
 					>
-						{ctx.cultivars.cultivarNames.has($formData.plants[0].cultivarName)
-							? $formData.plants[0].cultivarName
+						{ctx.cultivars.cultivarNames.has(form.data.plants[0].cultivarName)
+							? form.data.plants[0].cultivarName
 							: 'Select a cultivar'}
 						<Icon
 							icon={iconIds.caretUpDownIcon}
@@ -75,7 +74,7 @@
 							class="ml-2 size-4 shrink-0 opacity-50"
 						/>
 					</Popover.Trigger>
-					<input hidden value={$formData.plants[0].cultivarName} name={props.name} />
+					<input hidden value={form.data.plants[0].cultivarName} name={props.name} />
 				{/snippet}
 			</Form.Control>
 			<!-- TODO: Add handler errors -->
@@ -89,7 +88,7 @@
 							<Command.Item
 								value={name}
 								onSelect={() => {
-									$formData.plants[0].cultivarName = name;
+									form.data.plants[0].cultivarName = name;
 									closeAndFocusTrigger(triggerId);
 								}}
 							>
@@ -97,7 +96,7 @@
 								<Icon
 									icon={iconIds.checkmarkIconUnfilled}
 									width="1.5rem"
-									class="ml-auto {name !== $formData.plants[0].cultivarName &&
+									class="ml-auto {name !== form.data.plants[0].cultivarName &&
 										'text-transparent'}"
 								/>
 							</Command.Item>
@@ -116,15 +115,15 @@
 				value: origin,
 				label: OriginEnumLabels[origin]
 			}))}
-			value={$formData.plants[0].origin}
+			value={form.data.plants[0].origin}
 			onValueChange={(value) => {
 				if (value) {
-					$formData.plants[0].origin = value as Origin;
+					form.data.plants[0].origin = value as Origin;
 				}
 			}}
 		>
 			<Select.Trigger class="w-full">
-				<span>{OriginEnumLabels[$formData.plants[0].origin]}</span>
+				<span>{OriginEnumLabels[form.data.plants[0].origin]}</span>
 			</Select.Trigger>
 			<Select.Content>
 				{#each OriginEnumOptions as origin}
@@ -156,7 +155,10 @@
 			</Select.Trigger>
 			<Select.Content>
 				{#each stamp.anchorMilestoneOptions as milestone}
-					<Select.Item value={milestone} label={AnnualLifecycleMilestoneLabels[milestone]}>
+					<Select.Item
+						value={milestone}
+						label={AnnualLifecycleMilestoneLabels[milestone]}
+					>
 						{AnnualLifecycleMilestoneLabels[milestone]}
 					</Select.Item>
 				{/each}

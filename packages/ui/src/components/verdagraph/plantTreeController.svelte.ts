@@ -48,8 +48,10 @@ export function createPlantTreeController(options: {
 	const lifespanUpdateCommandHandler = createCommandHandler(lifespanUpdate);
 	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
 	const locationUpdateCommandHandler = createCommandHandler(locationUpdate);
-	const locationHistoryExtendCommandHandler = createCommandHandler(locationHistoryExtend);
-	const geometryHistoryExtendCommandHandler = createCommandHandler(geometryHistoryExtend);
+	const locationHistoryExtendCommandHandler =
+		createCommandHandler(locationHistoryExtend);
+	const geometryHistoryExtendCommandHandler =
+		createCommandHandler(geometryHistoryExtend);
 	const observationUpdateCommandHandler = createCommandHandler(observationUpdate);
 	const observationDeleteCommandHandler = createCommandHandler(observationDelete);
 

@@ -1,5 +1,3 @@
-import { get } from 'svelte/store';
-
 import {
 	type AnnualLifecycleMilestone,
 	type GeometryCreateCommand,
@@ -31,23 +29,14 @@ import { getVerdagraphContext } from '../verdagraphContext.svelte';
  *   every existing date is shifted by the same delta instead
  *   (`translateStamp`), preserving every other field, including a manual
  *   drag/resize, exactly.
- *
- * This is a plain `.svelte.ts` module, not a component, so the `$store`
- * auto-subscription sugar (`$formData`) only works inside `.svelte` files -
- * unavailable here. Reads go through a `$state` mirror kept in sync via an
- * explicit `.subscribe()`; writes go through `.update()`, since a direct
- * mutation on a value read out of the store doesn't notify its subscribers.
  */
 export function createStampSeeding(plantIndex: number) {
 	const ctx = getAppContext();
 	const verdagraphContext = getVerdagraphContext();
-	const { form: formData } = verdagraphContext.plantsCreateForm.form;
-
-	let formDataValue = $state(get(formData));
-	$effect(() => formData.subscribe((value) => (formDataValue = value)));
+	const form = verdagraphContext.plantsCreateForm.form;
 
 	function currentPlant() {
-		return formDataValue.plants[plantIndex];
+		return form.data.plants[plantIndex];
 	}
 
 	/**
@@ -80,7 +69,9 @@ export function createStampSeeding(plantIndex: number) {
 	/** The existing dragged/generated coordinate if there is one, else the viewport center - so regenerating never snaps away a position already placed. */
 	function resolveCoordinate(): Position {
 		const existing = currentPlant()?.locationHistory?.locations?.[0]?.coordinate;
-		return existing ?? verdagraphContext.layoutCanvasContext.transform.viewportCenterModel();
+		return (
+			existing ?? verdagraphContext.layoutCanvasContext.transform.viewportCenterModel()
+		);
 	}
 
 	function regenerateStamp(cultivarName: string, origin: Origin) {
@@ -101,38 +92,31 @@ export function createStampSeeding(plantIndex: number) {
 			coordinate: resolveCoordinate()
 		});
 
-		formData.update((data) => {
-			data.plants[plantIndex].geometryHistory = { gardenId: ctx.garden.id, geometries };
-			data.plants[plantIndex].locationHistory = {
-				gardenId: ctx.garden.id,
-				locations: [location]
-			};
-			return data;
-		});
+		const plant = form.data.plants[plantIndex];
+		plant.geometryHistory = { gardenId: ctx.garden.id, geometries };
+		plant.locationHistory = { gardenId: ctx.garden.id, locations: [location] };
 	}
 
 	function translateStamp(deltaDays: number) {
-		formData.update((data) => {
-			const plant = data.plants[plantIndex];
-			const geometries: GeometryCreateCommand[] = plant?.geometryHistory?.geometries ?? [];
-			const locations: LocationCreateCommand[] = plant?.locationHistory?.locations ?? [];
+		const plant = form.data.plants[plantIndex];
+		const geometries: GeometryCreateCommand[] =
+			plant?.geometryHistory?.geometries ?? [];
+		const locations: LocationCreateCommand[] = plant?.locationHistory?.locations ?? [];
 
-			plant.geometryHistory = {
-				gardenId: ctx.garden.id,
-				geometries: geometries.map((geometry) => ({
-					...geometry,
-					date: addDays(geometry.date, deltaDays)
-				}))
-			};
-			plant.locationHistory = {
-				gardenId: ctx.garden.id,
-				locations: locations.map((location) => ({
-					...location,
-					date: addDays(location.date, deltaDays)
-				}))
-			};
-			return data;
-		});
+		plant.geometryHistory = {
+			gardenId: ctx.garden.id,
+			geometries: geometries.map((geometry) => ({
+				...geometry,
+				date: addDays(geometry.date, deltaDays)
+			}))
+		};
+		plant.locationHistory = {
+			gardenId: ctx.garden.id,
+			locations: locations.map((location) => ({
+				...location,
+				date: addDays(location.date, deltaDays)
+			}))
+		};
 	}
 
 	let previousStructuralKey: string | null = $state(null);
@@ -148,23 +132,25 @@ export function createStampSeeding(plantIndex: number) {
 		const origin = currentPlant()?.origin ?? 'DIRECT_SEED';
 		const focusedDay = verdagraphContext.timeline.focusUtc;
 		const structuralKey = `${cultivarName}|${origin}|${anchorMilestone}`;
-		const alreadySeeded = (currentPlant()?.geometryHistory?.geometries?.length ?? 0) > 0;
+		const alreadySeeded =
+			(currentPlant()?.geometryHistory?.geometries?.length ?? 0) > 0;
 
 		/**
-		 * Without this guard, regenerateStamp/translateStamp writing to the
-		 * form store below re-triggers this same effect indefinitely: it's a
-		 * superforms store, which notifies on any write regardless of which
-		 * property changed, so this effect (which reads cultivarName/origin
-		 * off that same store via formDataValue) would run again - forever,
-		 * since the condition it reruns under never stops being true. The
-		 * `alreadySeeded` half of the guard re-opens it whenever a fresh
-		 * stamp's history has been cleared (post-Create carry-forward still
-		 * counts as "already seeded" here, since it's non-empty).
+		 * This effect reads geometryHistory.geometries.length (via
+		 * alreadySeeded) to tell whether the current stamp still needs
+		 * seeding - and regenerateStamp/translateStamp both write
+		 * geometryHistory. That's a genuine, direct dependency (not an
+		 * artifact of coarse-grained store notifications), so without this
+		 * guard the write below would re-trigger this same effect
+		 * indefinitely. The `alreadySeeded` half re-opens it whenever a
+		 * fresh stamp's history has been cleared (post-Create carry-forward
+		 * still counts as "already seeded" here, since it's non-empty).
 		 */
 		const structureUnchanged = structuralKey === previousStructuralKey && alreadySeeded;
 		if (structureUnchanged) {
 			const dayChanged =
-				previousFocusedDay !== null && focusedDay.getTime() !== previousFocusedDay.getTime();
+				previousFocusedDay !== null &&
+				focusedDay.getTime() !== previousFocusedDay.getTime();
 			if (dayChanged && previousFocusedDay !== null) {
 				const deltaDays = daysBetween(previousFocusedDay, focusedDay);
 				if (deltaDays !== 0) {
@@ -187,11 +173,9 @@ export function createStampSeeding(plantIndex: number) {
 	 * guard above, so the next effect run regenerates from scratch.
 	 */
 	function resetPlacement() {
-		formData.update((data) => {
-			data.plants[plantIndex].geometryHistory = { gardenId: ctx.garden.id, geometries: [] };
-			data.plants[plantIndex].locationHistory = { gardenId: ctx.garden.id, locations: [] };
-			return data;
-		});
+		const plant = form.data.plants[plantIndex];
+		plant.geometryHistory = { gardenId: ctx.garden.id, geometries: [] };
+		plant.locationHistory = { gardenId: ctx.garden.id, locations: [] };
 	}
 
 	return {

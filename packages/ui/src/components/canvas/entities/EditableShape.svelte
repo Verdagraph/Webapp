@@ -146,7 +146,9 @@
 	const labelPosition = $derived({
 		x: canvas.transform.canvasXPos(labelTranslate.x),
 		y:
-			canvas.transform.canvasYPos(getGeometryHeight(effectiveGeometry) + labelTranslate.y) -
+			canvas.transform.canvasYPos(
+				getGeometryHeight(effectiveGeometry) + labelTranslate.y
+			) -
 			measuredTextHeight -
 			LABEL_OFFSET_PX
 	});
@@ -164,7 +166,8 @@
 	let isDragging = $state(false);
 
 	function handlePointerDown(event: PointerEvent) {
-		if (!editable || !selected || !canvas.container.stageElement || !canvasPosition) return;
+		if (!editable || !selected || !canvas.container.stageElement || !canvasPosition)
+			return;
 		event.stopPropagation();
 		dragOccurred = false;
 		isDragging = true;
@@ -340,7 +343,7 @@
 				also keeps the invisible circles from intercepting clicks.
 			-->
 			<g
-				class="pointer-events-none opacity-0 transition-opacity duration-100 ease-out group-hover/shape:pointer-events-auto group-hover/shape:opacity-100 group-focus-within/shape:pointer-events-auto group-focus-within/shape:opacity-100"
+				class="pointer-events-none opacity-0 transition-opacity duration-100 ease-out group-focus-within/shape:pointer-events-auto group-focus-within/shape:opacity-100 group-hover/shape:pointer-events-auto group-hover/shape:opacity-100"
 			>
 				<EditableGeometryResizePoints
 					{canvasId}

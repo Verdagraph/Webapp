@@ -118,7 +118,9 @@ export async function draftBucketCreate(
  * to stop excluding them.
  */
 export async function draftBucketCommit(id: string, ctx: ControllerContext) {
-	const draftBucket = await ctx.triplit.fetchOne(ctx.triplit.query('draftBuckets').Id(id));
+	const draftBucket = await ctx.triplit.fetchOne(
+		ctx.triplit.query('draftBuckets').Id(id)
+	);
 	if (!draftBucket) {
 		throw new AppError('Draft bucket does not exist.', {
 			nonFormErrors: ['Failed to commit draft bucket.']
@@ -134,7 +136,9 @@ export async function draftBucketCommit(id: string, ctx: ControllerContext) {
 
 /** Discards a draft bucket's plan, deleting it along with every plant staged in it. */
 export async function draftBucketDiscard(id: string, ctx: ControllerContext) {
-	const draftBucket = await ctx.triplit.fetchOne(ctx.triplit.query('draftBuckets').Id(id));
+	const draftBucket = await ctx.triplit.fetchOne(
+		ctx.triplit.query('draftBuckets').Id(id)
+	);
 	if (!draftBucket) {
 		throw new AppError('Draft bucket does not exist.', {
 			nonFormErrors: ['Failed to discard draft bucket.']

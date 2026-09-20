@@ -19,7 +19,6 @@
 	const verdagraphContext = getVerdagraphContext();
 	const form = verdagraphContext.plantsCreateForm.form;
 	const handler = verdagraphContext.plantsCreateForm.handler;
-	const { form: formData, enhance } = form;
 
 	$effect(() => {
 		if (!verdagraphContext) {
@@ -27,7 +26,7 @@
 			throw new AppError('Error retrieving verdagraph context.');
 		}
 
-		$formData.gardenId = ctx.garden.id;
+		form.data.gardenId = ctx.garden.id;
 	});
 
 	/**
@@ -47,7 +46,7 @@
 		if (!verdagraphContext.draftBuckets.activeId) {
 			verdagraphContext.draftBuckets.ensureActive();
 		} else if (verdagraphContext.draftBuckets.active) {
-			$formData.draftBucketId = verdagraphContext.draftBuckets.active.id;
+			form.data.draftBucketId = verdagraphContext.draftBuckets.active.id;
 		}
 	});
 
@@ -55,7 +54,7 @@
 	function seedFormForMode(mode: PlantsCreateFormMode) {
 		switch (mode) {
 			case 'SINGLE':
-				$formData.plants = [defaultSinglePlant()];
+				form.data.plants = [defaultSinglePlant()];
 				break;
 			case 'GROUP':
 				break;
@@ -69,11 +68,11 @@
 	/** Reseed the form when the mode changes. */
 	let previousFormMode = $state('None');
 	$effect(() => {
-		if ($formData.mode === previousFormMode) {
+		if (form.data.mode === previousFormMode) {
 			return;
 		}
-		seedFormForMode($formData.mode as PlantsCreateFormMode);
-		previousFormMode = $formData.mode;
+		seedFormForMode(form.data.mode as PlantsCreateFormMode);
+		previousFormMode = form.data.mode;
 	});
 
 	/* Defines the labels for the mode enum options. */
@@ -87,7 +86,7 @@
 		{ value: 'COMBINED', label: 'Combined' }
 	];
 	const modeSelectTrigger = $derived(
-		modeOptions.find((option) => option.value === $formData.mode) ?? {
+		modeOptions.find((option) => option.value === form.data.mode) ?? {
 			label: 'Select a mode',
 			icon: null
 		}
@@ -96,7 +95,12 @@
 
 <Resizable.PaneGroup direction="vertical">
 	<Resizable.Pane defaultSize={65} minSize={20}>
-		<form method="POST" autocomplete="off" use:enhance class="mx-4 mt-4 mb-8">
+		<form
+			onsubmit={form.submit}
+			oninput={() => handler.reset()}
+			autocomplete="off"
+			class="mx-4 mb-8 mt-4"
+		>
 			<!-- Form mode -->
 			<Form.Field {form} name="mode">
 				<Form.Control>
@@ -109,7 +113,7 @@
 							{...props}
 							type="single"
 							items={modeOptions}
-							bind:value={$formData.mode}
+							bind:value={form.data.mode}
 						>
 							<Select.Trigger>
 								<div class="item-center flex">
@@ -134,9 +138,9 @@
 				<Form.FieldErrors handlerErrors={handler.errors?.fieldErrors?.mode} />
 			</Form.Field>
 
-			{#if $formData.mode === 'SINGLE'}
+			{#if form.data.mode === 'SINGLE'}
 				<PlantsCreateFormModeSingle></PlantsCreateFormModeSingle>
-			{:else if $formData.mode === 'GROUP'}{:else if $formData.mode === 'PATTERN'}{:else if $formData.mode === 'COMBINED'}{/if}
+			{:else if form.data.mode === 'GROUP'}{:else if form.data.mode === 'PATTERN'}{:else if form.data.mode === 'COMBINED'}{/if}
 
 			<!-- Submit button -->
 			<Form.Button

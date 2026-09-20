@@ -16,7 +16,6 @@
 	const workspaceEditor = getWorkspaceEditorContext();
 	const form = workspaceEditor.plantingAreaCreateForm.form;
 	const handler = workspaceEditor.plantingAreaCreateForm.handler;
-	const { form: formData, enhance } = form;
 
 	$effect(() => {
 		if (!workspaceEditor.id) {
@@ -24,16 +23,21 @@
 			throw new AppError('Error retrieving workspace context.');
 		}
 
-		$formData.gardenId = ctx.garden.id;
-		$formData.workspaceId = workspaceEditor.id;
-		$formData.location.gardenId = ctx.garden.id;
-		$formData.location.workspaceId = workspaceEditor.id;
-		$formData.geometry.date = workspaceEditor.timelineSelection.focusUtc;
-		$formData.location.date = workspaceEditor.timelineSelection.focusUtc;
+		form.data.gardenId = ctx.garden.id;
+		form.data.workspaceId = workspaceEditor.id;
+		form.data.location.gardenId = ctx.garden.id;
+		form.data.location.workspaceId = workspaceEditor.id;
+		form.data.geometry.date = workspaceEditor.timelineSelection.focusUtc;
+		form.data.location.date = workspaceEditor.timelineSelection.focusUtc;
 	});
 </script>
 
-<form method="POST" autocomplete="off" use:enhance class="mx-4 mt-4 mb-8">
+<form
+	onsubmit={form.submit}
+	oninput={() => handler.reset()}
+	autocomplete="off"
+	class="mx-4 mb-8 mt-4"
+>
 	<!-- Name. -->
 	<Form.Field {form} name="name">
 		<Form.Control>
@@ -46,7 +50,7 @@
 					{...props}
 					type="text"
 					placeholder="Big Bed"
-					bind:value={$formData.name}
+					bind:value={form.data.name}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -61,7 +65,7 @@
 					description={workspaceFields.plantingAreaDescriptionSchema.description}
 					optional={true}>Description</Form.Label
 				>
-				<Textarea.Root {...props} bind:value={$formData.description} />
+				<Textarea.Root {...props} bind:value={form.data.description} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={handler.fieldErrors?.description} />
@@ -78,8 +82,8 @@
 				<CoordinateInput
 					{...props}
 					initialUnitSystem={ctx.settings.units['distance']}
-					bind:x={$formData.location.coordinate.x}
-					bind:y={$formData.location.coordinate.y}
+					bind:x={form.data.location.coordinate.x}
+					bind:y={form.data.location.coordinate.y}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -102,7 +106,7 @@
 						description={workspaceFields.geometryTypeSchema.description}
 						optional={false}>Type</Form.Label
 					>
-					<GeometrySelect {...props} bind:value={$formData.geometry.type} />
+					<GeometrySelect {...props} bind:value={form.data.geometry.type} />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors handlerErrors={handler.fieldErrors?.['geometry.type']} />
@@ -119,7 +123,7 @@
 					<Input.Root
 						{...props}
 						type="number"
-						bind:value={$formData.geometry.rotation}
+						bind:value={form.data.geometry.rotation}
 					/>
 				{/snippet}
 			</Form.Control>
@@ -127,7 +131,7 @@
 		</Form.Field>
 
 		<!-- RECTANGLE GEOMETRY. -->
-		{#if $formData.geometry.type === 'RECTANGLE'}
+		{#if form.data.geometry.type === 'RECTANGLE'}
 			<!-- Length. -->
 			<Form.Field {form} name="geometry.rectangleLength">
 				<Form.Control>
@@ -141,7 +145,7 @@
 							min={0}
 							quantityType="distance"
 							initialUnitSystem={ctx.settings.units['distance']}
-							bind:value={$formData.geometry.rectangleLength}
+							bind:value={form.data.geometry.rectangleLength}
 						/>
 					{/snippet}
 				</Form.Control>
@@ -163,7 +167,7 @@
 							min={0}
 							quantityType="distance"
 							initialUnitSystem={ctx.settings.units['distance']}
-							bind:value={$formData.geometry.rectangleWidth}
+							bind:value={form.data.geometry.rectangleWidth}
 						/>
 					{/snippet}
 				</Form.Control>
@@ -173,7 +177,7 @@
 			</Form.Field>
 
 			<!-- POLYGON GEOMETRY. -->
-		{:else if $formData.geometry.type === 'POLYGON'}
+		{:else if form.data.geometry.type === 'POLYGON'}
 			<!-- Side count. -->
 			<Form.Field {form} name="geometry.polygonNumSides">
 				<Form.Control>
@@ -186,7 +190,7 @@
 							{...props}
 							type="number"
 							min={3}
-							bind:value={$formData.geometry.polygonNumSides}
+							bind:value={form.data.geometry.polygonNumSides}
 						/>
 					{/snippet}
 				</Form.Control>
@@ -208,7 +212,7 @@
 							min={0}
 							quantityType="distance"
 							initialUnitSystem={ctx.settings.units['distance']}
-							bind:value={$formData.geometry.polygonRadius}
+							bind:value={form.data.geometry.polygonRadius}
 						/>
 					{/snippet}
 				</Form.Control>
@@ -218,7 +222,7 @@
 			</Form.Field>
 
 			<!-- ELLIPSE GEOMETRY. -->
-		{:else if $formData.geometry.type === 'ELLIPSE'}
+		{:else if form.data.geometry.type === 'ELLIPSE'}
 			<!-- Length diameter. -->
 			<Form.Field {form} name="geometry.ellipseLength">
 				<Form.Control>
@@ -232,7 +236,7 @@
 							min={0}
 							quantityType="distance"
 							initialUnitSystem={ctx.settings.units['distance']}
-							bind:value={$formData.geometry.ellipseLength}
+							bind:value={form.data.geometry.ellipseLength}
 						/>
 					{/snippet}
 				</Form.Control>
@@ -254,7 +258,7 @@
 							min={0}
 							quantityType="distance"
 							initialUnitSystem={ctx.settings.units['distance']}
-							bind:value={$formData.geometry.ellipseWidth}
+							bind:value={form.data.geometry.ellipseWidth}
 						/>
 					{/snippet}
 				</Form.Control>
@@ -264,10 +268,10 @@
 			</Form.Field>
 
 			<!-- LINES GEOMETRY. -->
-		{:else if $formData.geometry.type === 'LINES'}
+		{:else if form.data.geometry.type === 'LINES'}
 			<!-- Coordinate. -->
 			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-			{#each $formData.geometry.linesCoordinates as _, index}
+			{#each form.data.geometry.linesCoordinates as _, index}
 				<Form.Field {form} name={`geometry.linesCoordinates[${index}]`}>
 					<Form.Control>
 						{#snippet children({ props })}
@@ -278,8 +282,8 @@
 							<CoordinateInput
 								{...props}
 								initialUnitSystem={ctx.settings.units['distance']}
-								bind:x={$formData.geometry.linesCoordinates[index].x}
-								bind:y={$formData.geometry.linesCoordinates[index].y}
+								bind:x={form.data.geometry.linesCoordinates[index].x}
+								bind:y={form.data.geometry.linesCoordinates[index].y}
 							/>
 						{/snippet}
 					</Form.Control>
@@ -292,8 +296,8 @@
 			<!-- Coordinate add button. -->
 			<Button.Root
 				onclick={() => {
-					$formData.geometry.linesCoordinates = [
-						...$formData.geometry.linesCoordinates,
+					form.data.geometry.linesCoordinates = [
+						...form.data.geometry.linesCoordinates,
 						{ x: 0, y: 0 }
 					];
 				}}
@@ -328,7 +332,7 @@
 						min={0}
 						quantityType="distance"
 						initialUnitSystem={ctx.settings.units['distance']}
-						bind:value={$formData.depth}
+						bind:value={form.data.depth}
 					/>
 				{/snippet}
 			</Form.Control>

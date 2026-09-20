@@ -19,9 +19,9 @@
 	/** Contexts.*/
 	const verdagraphContext = getVerdagraphContext();
 	const canvas = verdagraphContext.layoutCanvasContext;
-	const { form: formData } = verdagraphContext.plantsCreateForm.form;
+	const form = verdagraphContext.plantsCreateForm.form;
 
-	let plant = $derived($formData.plants[plantIdx]);
+	let plant = $derived(form.data.plants[plantIdx]);
 	let location = $derived.by(() => {
 		if (!plant || !plant.locationHistory) {
 			return null;
@@ -60,76 +60,64 @@
 	/**
 	 * `location`/`geometry` above are live references obtained via
 	 * `historySelect(..., true)` into the objects actually sitting inside
-	 * the form store - but mutating them directly (`location.coordinate = ...`)
-	 * only mutates the plain JS object, it never calls the store's own
-	 * `.set()`/`.update()`. Superforms relies on that notification (e.g. to
-	 * resync its `dataType: 'json'` hidden-input snapshot used at submit
-	 * time), so a direct mutation is invisible to it even though reading
-	 * `$formData` back immediately afterwards appears to reflect the change.
-	 * Routing the same mutation through `formData.update(...)` re-derives
-	 * the reference from the fresh store value and ensures the store
-	 * actually notifies, so the change survives submission.
+	 * `form.data` - since that's a Svelte 5 `$state` proxy (deeply reactive,
+	 * unlike a superforms store), mutating a property directly on them here
+	 * is itself the correct way to trigger reactivity and persist the change.
 	 */
 	function onTranslate(newPos: Position) {
-		formData.update(($form) => {
-			const plant = $form.plants[plantIdx];
-			if (!plant?.locationHistory) {
-				return $form;
-			}
-			const loc = historySelect(
-				plant.locationHistory.locations,
-				verdagraphContext.timeline.focusUtc,
-				true
-			);
-			if (!loc) {
-				return $form;
-			}
-			loc.coordinate = {
-				x: canvas.transform.modelXPos(newPos.x),
-				y: canvas.transform.modelYPos(newPos.y)
-			};
-			return $form;
-		});
+		const plant = form.data.plants[plantIdx];
+		if (!plant?.locationHistory) {
+			return;
+		}
+		const loc = historySelect(
+			plant.locationHistory.locations,
+			verdagraphContext.timeline.focusUtc,
+			true
+		);
+		if (!loc) {
+			return;
+		}
+		loc.coordinate = {
+			x: canvas.transform.modelXPos(newPos.x),
+			y: canvas.transform.modelYPos(newPos.y)
+		};
 	}
 
 	function onTransform(newGeometry: GeometryUpdateCommand) {
-		formData.update(($form) => {
-			const plant = $form.plants[plantIdx];
-			if (!plant?.geometryHistory) {
-				return $form;
-			}
-			const geom = historySelect(
-				plant.geometryHistory.geometries,
-				verdagraphContext.timeline.focusUtc,
-				true
-			);
-			if (!geom) {
-				return $form;
-			}
+		const plant = form.data.plants[plantIdx];
+		if (!plant?.geometryHistory) {
+			return;
+		}
+		const geom = historySelect(
+			plant.geometryHistory.geometries,
+			verdagraphContext.timeline.focusUtc,
+			true
+		);
+		if (!geom) {
+			return;
+		}
 
-			if (newGeometry.rectangleLength) {
-				geom.rectangleLength = newGeometry.rectangleLength;
-			}
-			if (newGeometry.rectangleWidth) {
-				geom.rectangleWidth = newGeometry.rectangleWidth;
-			}
-			if (newGeometry.polygonNumSides) {
-				geom.polygonNumSides = newGeometry.polygonNumSides;
-			}
-			if (newGeometry.polygonRadius) {
-				geom.polygonRadius = newGeometry.polygonRadius;
-			}
-			if (newGeometry.ellipseLength) {
-				geom.ellipseLength = newGeometry.ellipseLength;
-			}
-			if (newGeometry.ellipseWidth) {
-				geom.ellipseWidth = newGeometry.ellipseWidth;
-			}
-			if (newGeometry.linesCoordinates) {
-				geom.linesCoordinates = newGeometry.linesCoordinates;
-			}
-			return $form;
-		});
+		if (newGeometry.rectangleLength) {
+			geom.rectangleLength = newGeometry.rectangleLength;
+		}
+		if (newGeometry.rectangleWidth) {
+			geom.rectangleWidth = newGeometry.rectangleWidth;
+		}
+		if (newGeometry.polygonNumSides) {
+			geom.polygonNumSides = newGeometry.polygonNumSides;
+		}
+		if (newGeometry.polygonRadius) {
+			geom.polygonRadius = newGeometry.polygonRadius;
+		}
+		if (newGeometry.ellipseLength) {
+			geom.ellipseLength = newGeometry.ellipseLength;
+		}
+		if (newGeometry.ellipseWidth) {
+			geom.ellipseWidth = newGeometry.ellipseWidth;
+		}
+		if (newGeometry.linesCoordinates) {
+			geom.linesCoordinates = newGeometry.linesCoordinates;
+		}
 	}
 </script>
 

@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { defaults, superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input } from '@vdg-webapp/ui';
+	import { Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
 	import { userLogin } from '$data/users/auth';
@@ -14,23 +11,12 @@
 			goto('/');
 		}
 	});
-	const form = superForm(defaults(zod(userLogin.schema)), {
-		SPA: true,
-		resetForm: false,
-		validators: zod(userLogin.schema),
-		onUpdate({ form }) {
-			if (form.valid) {
-				formHandler.execute(form.data);
-			}
-		},
-		onChange() {
-			formHandler.reset();
-		}
+	const form = createForm(userLogin.schema, {
+		onSubmit: (data) => formHandler.execute(data)
 	});
-	const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" use:enhance>
+<form onsubmit={form.submit} oninput={() => formHandler.reset()}>
 	<!-- Email address -->
 	<Form.Field {form} name="email">
 		<Form.Control>
@@ -40,7 +26,7 @@
 					{...props}
 					type="email"
 					placeholder="email@example.com"
-					bind:value={$formData.email}
+					bind:value={form.data.email}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -54,7 +40,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>Password</Form.Label
 				>
-				<Input.Root {...props} type="password" bind:value={$formData.password} />
+				<Input.Root {...props} type="password" bind:value={form.data.password} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password} />
