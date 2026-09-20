@@ -32,8 +32,15 @@
 		$props();
 
 	const ATTRIBUTE_DECIMALS = 2;
-	const RESIZE_POINT_RADIUS_PX = 6;
-	const RESIZE_POINT_STROKE_WIDTH_PX = 3;
+	/**
+	 * Handle radius is a fraction of the shape's own half-extent rather than
+	 * a fixed pixel size, clamped so it stays clickable on a tiny (e.g.
+	 * seed-stage) shape and doesn't balloon on a huge one - a fixed radius
+	 * looked comically oversized wrapping a shape barely bigger than it.
+	 */
+	const RESIZE_POINT_RADIUS_SCALE = 0.18;
+	const RESIZE_POINT_RADIUS_MIN_PX = 3;
+	const RESIZE_POINT_RADIUS_MAX_PX = 6;
 
 	/** Retrieve canvas. */
 	const canvas = getContext<CanvasContext>(canvasId);
@@ -44,6 +51,19 @@
 			x: canvas.transform.canvasXPos(point.x),
 			y: canvas.transform.canvasYPos(point.y)
 		}))
+	);
+
+	const resizePointRadius = $derived(
+		Math.min(
+			RESIZE_POINT_RADIUS_MAX_PX,
+			Math.max(
+				RESIZE_POINT_RADIUS_MIN_PX,
+				committedPositions.reduce(
+					(maxExtent, point) => Math.max(maxExtent, Math.hypot(point.x, point.y)),
+					0
+				) * RESIZE_POINT_RADIUS_SCALE
+			)
+		)
 	);
 
 	/**
@@ -71,6 +91,7 @@
 	function handleResizePointDrag(index: number): GeometryUpdateCommand {
 		const newGeometry: GeometryUpdateCommand = {};
 		const point = displayedPositions[index];
+		const { scaleFactor } = geometry;
 
 		switch (geometry.type) {
 			case 'RECTANGLE': {
@@ -82,12 +103,12 @@
 					const newLength = Math.abs(point.x) * 2;
 					const newWidth = Math.abs(point.y) * 2;
 					newGeometry.rectangleLength = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newLength),
+						canvas.transform.modelDistance(newLength) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 
 					newGeometry.rectangleWidth = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newWidth),
+						canvas.transform.modelDistance(newWidth) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 
@@ -101,7 +122,7 @@
 					if (index === 1 || index === 5) {
 						const newWidth = Math.abs(point.y) * 2;
 						newGeometry.rectangleWidth = roundToDecimalPlaces(
-							canvas.transform.modelDistance(newWidth),
+							canvas.transform.modelDistance(newWidth) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						);
 
@@ -109,7 +130,7 @@
 					} else {
 						const newLength = Math.abs(point.x) * 2;
 						newGeometry.rectangleLength = roundToDecimalPlaces(
-							canvas.transform.modelDistance(newLength),
+							canvas.transform.modelDistance(newLength) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						);
 					}
@@ -125,7 +146,7 @@
 				 */
 				const newRadius = Math.abs(point.y);
 				newGeometry.polygonRadius = roundToDecimalPlaces(
-					canvas.transform.modelDistance(newRadius),
+					canvas.transform.modelDistance(newRadius) / scaleFactor,
 					ATTRIBUTE_DECIMALS
 				);
 				break;
@@ -142,13 +163,13 @@
 				if (index % 2 === 0) {
 					const newWidthDiameter = Math.abs(point.y) * 2;
 					newGeometry.ellipseWidth = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newWidthDiameter),
+						canvas.transform.modelDistance(newWidthDiameter) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 				} else {
 					const newLengthDiameter = Math.abs(point.x) * 2;
 					newGeometry.ellipseLength = roundToDecimalPlaces(
-						canvas.transform.modelDistance(newLengthDiameter),
+						canvas.transform.modelDistance(newLengthDiameter) / scaleFactor,
 						ATTRIBUTE_DECIMALS
 					);
 				}
@@ -163,11 +184,11 @@
 				newGeometry.linesCoordinates = displayedPositions.map((displayedPoint) => {
 					return {
 						x: roundToDecimalPlaces(
-							canvas.transform.modelXPos(displayedPoint.x),
+							canvas.transform.modelXPos(displayedPoint.x) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						),
 						y: roundToDecimalPlaces(
-							canvas.transform.modelYPos(displayedPoint.y),
+							canvas.transform.modelYPos(displayedPoint.y) / scaleFactor,
 							ATTRIBUTE_DECIMALS
 						)
 					};
@@ -301,8 +322,8 @@
 	<circle
 		cx={point.x}
 		cy={point.y}
-		r={RESIZE_POINT_RADIUS_PX}
-		stroke-width={RESIZE_POINT_STROKE_WIDTH_PX}
+		r={resizePointRadius}
+		stroke-width={resizePointRadius / 2}
 		stroke={strokeColor}
 		fill={fillColor}
 		style:cursor={getGeometryResizePointCursor(geometry, index)}

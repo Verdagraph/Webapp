@@ -46,37 +46,57 @@ export function createCultivarContext(
 		...gardenCollectionsIds,
 		...ancestorCollectionsIds
 	]);
+	/**
+	 * A second live query chained off the first (collectionIds only settle
+	 * once gardenCollectionsQuery resolves). This assumes collections are
+	 * already committed by the time it queries them, same as a real garden -
+	 * see apps/demo's [demoId]/+page.svelte, which seeds the demo the same
+	 * way for exactly this reason.
+	 * TODO: reinvestigate with the Jazz migration.
+	 */
 	const allCultivarsQuery = $derived(
 		useQuery(
 			controller.triplit,
-			controller.triplit
-				.query('cultivars')
-				.Where('collectionId', 'in', allCollectionIds)
+			controller.triplit.query('cultivars').Where('collectionId', 'in', allCollectionIds)
 		)
 	);
-	const allCultivars = $derived(allCultivarsQuery.results ?? []);
+	const allCultivars = $derived(
+		allCollectionIds.length === 0 ? [] : (allCultivarsQuery.results ?? [])
+	);
 	const cultivarNames = $derived(
 		new Set(allCultivars.map((cultivar) => cultivar.name))
 	);
 
-	/** Collects all resolves cultivar objects in the garden. */
-	let cultivars: Set<Cultivar> = $state(new Set([]));
+	/** Collects all resolved cultivar objects in the garden, keyed by name for O(1) lookup via getCultivar. */
+	let cultivarsByName: Map<string, Cultivar> = $state(new Map());
 	$effect(() => {
-		(async () => {
-			if (cultivarNames.size === 0) {
-				cultivars = new Set([]);
-			}
+		const names = cultivarNames;
+		if (names.size === 0) {
+			cultivarsByName = new Map();
+			return;
+		}
 
-			const promises: Promise<Cultivar | null>[] = [];
-			cultivarNames.forEach((name) =>
-				promises.push(resolveCultivar(garden.id, name, controller))
+		Promise.all(
+			[...names].map(
+				async (name) => [name, await resolveCultivar(garden.id, name, controller)] as const
+			)
+		).then((entries) => {
+			cultivarsByName = new Map(
+				entries.filter((entry): entry is [string, Cultivar] => entry[1] !== null)
 			);
-
-			const results = await Promise.all(promises);
-
-			return new Set(results.filter((cultivar) => cultivar !== null));
-		})();
+		});
 	});
+	const cultivars = $derived(new Set(cultivarsByName.values()));
+
+	/**
+	 * Looks up a resolved Cultivar by name - centralized here (rather than
+	 * every caller doing `[...cultivars].find(...)` itself) so the lookup
+	 * can be O(1) via the underlying map instead of an O(n) scan repeated at
+	 * every call site.
+	 */
+	function getCultivar(name: string): Cultivar | null {
+		return cultivarsByName.get(name) ?? null;
+	}
 
 	return {
 		get cultivarNames() {
@@ -84,7 +104,8 @@ export function createCultivarContext(
 		},
 		get cultivars() {
 			return cultivars;
-		}
+		},
+		getCultivar
 	};
 }
 export type CultivarContext = ReturnType<typeof createCultivarContext>;

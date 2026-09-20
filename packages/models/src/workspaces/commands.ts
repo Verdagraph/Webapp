@@ -45,6 +45,11 @@ const coordinateSchema = z
 	.describe('A position relative to the origin of a workspace or a geometry.');
 const locationDateSchema = z.date().describe('The date at which the location applies.');
 
+const geometryNameSchema = z
+	.string()
+	.describe(
+		'Optional label for the geometry, e.g. the lifecycle milestone it represents ("Seed", "First Harvest") when generated automatically.'
+	);
 const geometryTypeSchema = z
 	.enum(GeometryTypeEnumOptions)
 	.describe(
@@ -118,6 +123,7 @@ export const workspaceFields = {
 	coordinateYSchema,
 	coordinateSchema,
 	locationDateSchema,
+	geometryNameSchema,
 	geometryTypeSchema,
 	geometryDateSchema,
 	geometryScaleFactorSchema,
@@ -188,6 +194,7 @@ export type LocationUpdateCommand = z.infer<typeof LocationUpdateCommandSchema>;
  * Create a new geometry.
  */
 export const GeometryCreateCommandSchema = z.object({
+	name: geometryNameSchema.nullable().optional(),
 	type: geometryTypeSchema.default('RECTANGLE'),
 	date: geometryDateSchema,
 	scaleFactor: geometryScaleFactorSchema.default(1),
@@ -211,6 +218,7 @@ export type GeometryCreateCommand = z.infer<typeof GeometryCreateCommandSchema>;
  * Update a geometry.
  */
 export const GeometryUpdateCommandSchema = z.object({
+	name: geometryNameSchema.nullable().optional(),
 	type: geometryTypeSchema.optional(),
 	date: geometryDateSchema.optional(),
 	scaleFactor: geometryScaleFactorSchema.optional(),

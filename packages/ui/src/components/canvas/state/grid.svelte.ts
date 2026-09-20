@@ -6,7 +6,6 @@ import { localStore } from '$state/localStore.svelte';
 import { getColor } from '$utils';
 
 import { type CanvasContainer } from './container.svelte';
-import { type CanvasTransform } from './transform.svelte';
 
 export type GridManagerConfig = {
 	metersPerBackgroundGridline: number;
@@ -18,14 +17,8 @@ type GridManagerPersistedState = {
 	metersPerBackgroundGridline: number;
 };
 
-/** A single gridline to render, in local (pre-pan-zoom) canvas pixels. */
-export type Gridline = {
-	/** Unique and stable across pan/zoom, so `{#each}` doesn't thrash DOM nodes. */
-	key: string;
-	x1: number;
-	y1: number;
-	x2: number;
-	y2: number;
+/** The line styling for one grid tile - see Gridlines.svelte, which renders these as an SVG <pattern>. */
+export type GridlineStyle = {
 	color: string;
 	strokeWidth: number;
 };
@@ -40,20 +33,7 @@ function roundUpToStep(number: number, step: number): number {
 	return Math.round(number / step) * step;
 }
 
-/**
- * Rounds the number down to the nearest multiple of step.
- * @param number The number to round.
- * @param step The step to round to a multiple of.
- * @returns The rounded number.
- */
-function roundDownToStep(number: number, step: number): number {
-	return Math.floor(number / step) * step;
-}
-
-export function createCanvasGridManager(
-	container: CanvasContainer,
-	transform: CanvasTransform
-) {
+export function createCanvasGridManager(container: CanvasContainer) {
 	/** Runes. */
 	const config = localStore<GridManagerPersistedState>('layoutGridState', {
 		snapToGrid: true,
@@ -65,101 +45,27 @@ export function createCanvasGridManager(
 	);
 
 	/**
-	 * The gridlines currently within the viewable area, recomputed
-	 * reactively whenever the pan/zoom transform, container size, or
-	 * gridline spacing changes.
+	 * Line styling only, not positions - Gridlines.svelte renders the grid as
+	 * a single tiled SVG <pattern> rather than a JS-generated array of
+	 * `<line>` elements, living inside the same outer <g> shapes ride on, so
+	 * pan/zoom moves and scales it for free. Only mode changes (light/dark)
+	 * need to recompute these colors.
 	 */
-	const visibleGridlines: Gridline[] = $derived.by(() => {
-		if (!container.initialized) {
-			return [];
-		}
-
-		/**
-		 * Calculate the coordinate range viewable in the canvas currently,
-		 * considering the canvas dimensions, position, and scaling.
-		 */
-		const viewableStartPosition: Position = {
-			x: -transform.position.x / transform.scaleFactor.x,
-			y: -transform.position.y / transform.scaleFactor.y
-		};
-		const viewableEndPosition: Position = {
-			x: viewableStartPosition.x + container.width / transform.scaleFactor.x,
-			y: viewableStartPosition.y + container.height / transform.scaleFactor.y
-		};
-
-		/**
-		 * Calculate the starting and ending positions of the gridlines, such that it is outside of the viewable area
-		 * and is a multiple of the spaces between gridlines, such that the gridlines stay at the same position
-		 * across renders.
-		 */
-		const startPosition: Position = {
-			x: roundDownToStep(viewableStartPosition.x, pixelsPerBackgroundGridline),
-			y: roundDownToStep(viewableStartPosition.y, pixelsPerBackgroundGridline)
-		};
-		const endPosition: Position = {
-			x: roundUpToStep(
-				viewableEndPosition.x + pixelsPerBackgroundGridline,
-				pixelsPerBackgroundGridline
-			),
-			y: roundUpToStep(
-				viewableEndPosition.y + pixelsPerBackgroundGridline,
-				pixelsPerBackgroundGridline
-			)
-		};
-
-		/**
-		 * Calculate the minimum number of grid segments to fully cover the viewable area.
-		 */
-		const numSegments = {
-			x: Math.round((endPosition.y - startPosition.y) / pixelsPerBackgroundGridline),
-			y: Math.round((endPosition.x - startPosition.x) / pixelsPerBackgroundGridline)
-		};
-
-		const gap = { x: pixelsPerBackgroundGridline, y: pixelsPerBackgroundGridline };
-
-		const gridlines: Gridline[] = [];
-
-		/** Horizontal gridlines. */
-		for (let i = 0; i <= numSegments.x; i++) {
-			const yPosition = startPosition.y + gap.x * i;
-			let color = getColor('neutral', 3, mode.current);
-			let strokeWidth = 1;
-			if (yPosition == 0) {
-				color = getColor('neutral', 4, mode.current);
-				strokeWidth = 2;
-			}
-			gridlines.push({
-				key: `h-${yPosition}`,
-				x1: startPosition.x,
-				y1: yPosition,
-				x2: endPosition.x,
-				y2: yPosition,
-				color,
-				strokeWidth
-			});
-		}
-
-		/** Vertical gridlines. */
-		for (let i = 0; i <= numSegments.y; i++) {
-			const xPosition = startPosition.x + gap.y * i;
-			let color = getColor('neutral', 2, mode.current);
-			let strokeWidth = 1;
-			if (xPosition == 0) {
-				color = getColor('neutral', 3, mode.current);
-				strokeWidth = 2;
-			}
-			gridlines.push({
-				key: `v-${xPosition}`,
-				x1: xPosition,
-				y1: startPosition.y,
-				x2: xPosition,
-				y2: endPosition.y,
-				color,
-				strokeWidth
-			});
-		}
-
-		return gridlines;
+	const horizontalLine: GridlineStyle = $derived({
+		color: getColor('neutral', 3, mode.current),
+		strokeWidth: 1
+	});
+	const verticalLine: GridlineStyle = $derived({
+		color: getColor('neutral', 2, mode.current),
+		strokeWidth: 1
+	});
+	const horizontalOriginLine: GridlineStyle = $derived({
+		color: getColor('neutral', 4, mode.current),
+		strokeWidth: 2
+	});
+	const verticalOriginLine: GridlineStyle = $derived({
+		color: getColor('neutral', 3, mode.current),
+		strokeWidth: 2
 	});
 
 	/** Functions. */
@@ -193,8 +99,20 @@ export function createCanvasGridManager(
 		set config(newVal) {
 			config.value = newVal;
 		},
-		get visibleGridlines() {
-			return visibleGridlines;
+		get pixelsPerBackgroundGridline() {
+			return pixelsPerBackgroundGridline;
+		},
+		get horizontalLine() {
+			return horizontalLine;
+		},
+		get verticalLine() {
+			return verticalLine;
+		},
+		get horizontalOriginLine() {
+			return horizontalOriginLine;
+		},
+		get verticalOriginLine() {
+			return verticalOriginLine;
 		},
 		snapToGrid
 	};

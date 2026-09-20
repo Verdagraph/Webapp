@@ -2,11 +2,13 @@ import {
 	type FieldErrors,
 	type Plant,
 	type PlantUpdateCommand,
+	isDraftPlant,
 	plantFields
 } from '@vdg-webapp/models';
 
 import {
 	type Item,
+	TreeDeleteButton,
 	TreeNumber,
 	TreeString,
 	fieldValid,
@@ -29,6 +31,7 @@ import {
 } from './observation';
 
 export type PlantUpdateHandler = (id: string, data: PlantUpdateCommand) => void;
+export type PlantDeleteHandler = (id: string) => void;
 
 export function plantTreeItem(
 	value: { plant: Plant; workspaces: { id: string; name: string }[] },
@@ -41,6 +44,7 @@ export function plantTreeItem(
 		geometryHistoryExtendHandler: GeometryHistoryExtendHandler;
 		observationUpdateHandler: ObservationUpdateHandler;
 		observationDeleteHandler: ObservationDeleteHandler;
+		plantDeleteHandler?: PlantDeleteHandler;
 		fieldErrors: FieldErrors;
 	}
 ): Item {
@@ -106,30 +110,49 @@ export function plantTreeItem(
 		}
 	);
 
-	const recordedLifespanItem = lifespanTreeItem(
-		toTreeId(baseId, 'recordedLifespan'),
-		'Recorded Lifespan',
-		{ lifespan: value.plant.recordedLifespan, workspaces: value.workspaces },
-		{
-			lifespanUpdateHandler: ctx.lifespanUpdateHandler,
-			geometryUpdateHandler: ctx.geometryUpdateHandler,
-			locationUpdateHandler: ctx.locationUpdateHandler,
-			locationHistoryExtendHandler: ctx.locationHistoryExtendHandler,
-			geometryHistoryExtendHandler: ctx.geometryHistoryExtendHandler,
-			observationUpdateHandler: ctx.observationUpdateHandler,
-			observationDeleteHandler: ctx.observationDeleteHandler,
-			fieldErrors: ctx.fieldErrors
-		}
-	);
+	const children: Item[] = [cultivarNameItem, quantityItem, expectedLifespanItem];
+
+	/**
+	 * A still-staged (draft) plant has no recorded observations/history yet -
+	 * Recorded Lifespan only makes sense once it's actually been planted, so
+	 * it doesn't appear here until the plant is committed.
+	 */
+	if (!isDraftPlant(value.plant)) {
+		const recordedLifespanItem = lifespanTreeItem(
+			toTreeId(baseId, 'recordedLifespan'),
+			'Recorded Lifespan',
+			{ lifespan: value.plant.recordedLifespan, workspaces: value.workspaces },
+			{
+				lifespanUpdateHandler: ctx.lifespanUpdateHandler,
+				geometryUpdateHandler: ctx.geometryUpdateHandler,
+				locationUpdateHandler: ctx.locationUpdateHandler,
+				locationHistoryExtendHandler: ctx.locationHistoryExtendHandler,
+				geometryHistoryExtendHandler: ctx.geometryHistoryExtendHandler,
+				observationUpdateHandler: ctx.observationUpdateHandler,
+				observationDeleteHandler: ctx.observationDeleteHandler,
+				fieldErrors: ctx.fieldErrors
+			}
+		);
+		children.push(recordedLifespanItem);
+	}
+
+	if (ctx.plantDeleteHandler) {
+		const deleteHandler = ctx.plantDeleteHandler;
+		children.push({
+			id: toTreeId(baseId, 'delete'),
+			label: 'Delete',
+			description: 'Removes this plant.',
+			valueComponent: TreeDeleteButton,
+			value: undefined,
+			onChange: () => {
+				deleteHandler(value.plant.id);
+			}
+		});
+	}
 
 	return {
 		id: baseId,
 		label: value.plant.cultivarName,
-		children: [
-			cultivarNameItem,
-			quantityItem,
-			expectedLifespanItem,
-			recordedLifespanItem
-		]
+		children
 	};
 }

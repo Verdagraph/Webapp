@@ -1,4 +1,4 @@
-import z, { string } from 'zod';
+import z from 'zod';
 
 import { commonFields } from '../commands.js';
 import { CultivarAttributesUpdateCommandSchema } from '../cultivars/attributes/index.js';
@@ -33,7 +33,7 @@ const lifespanDatesSchema = z.object({
 });
 
 /** Plants. */
-const plantCultivarNameSchema = z.string();
+const plantCultivarNameSchema = z.string().min(1, 'Select a cultivar.');
 const plantCultivarAttributesSchema = CultivarAttributesUpdateCommandSchema;
 const plantQuantitySchema = z
 	.number()
@@ -63,7 +63,7 @@ export type PlantsCreateFormMode = (typeof PlantsCreateFormModeOptions)[number];
  * Adds a plant to the model.
  */
 export const plantsCreateCommandSinglePlantSchema = z.object({
-	cultivarName: plantCultivarNameSchema.default('undefined'),
+	cultivarName: plantCultivarNameSchema.default(''),
 	origin: lifespanOriginSchema.default('DIRECT_SEED'),
 	locationHistory: LocationHistoryCreateCommandSchema.default({
 		gardenId: '',
@@ -83,9 +83,19 @@ export const plantsCreateFormModeSchema = z
 export const PlantsCreateCommandSchema = z.object({
 	gardenId: z.string(),
 	mode: plantsCreateFormModeSchema.default('SINGLE'),
-	plants: z.array(plantsCreateCommandSinglePlantSchema)
+	plants: z.array(plantsCreateCommandSinglePlantSchema),
+	draftBucketId: z.string()
 });
 export type PlantsCreateCommand = z.infer<typeof PlantsCreateCommandSchema>;
+
+/**
+ * Creates a draft bucket to stage plants into.
+ */
+export const DraftBucketCreateCommandSchema = z.object({
+	gardenId: z.string(),
+	name: commonFields.nameSchema
+});
+export type DraftBucketCreateCommand = z.infer<typeof DraftBucketCreateCommandSchema>;
 
 /**
  * Updates a plant.

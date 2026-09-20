@@ -139,6 +139,23 @@ export function createCanvasTransform(container: CanvasContainer, draggable: boo
 	}
 
 	/**
+	 * The model-space (meters) point at the center of the currently-visible
+	 * viewport, accounting for the current pan/zoom - used to seed a sane
+	 * starting position for a freshly-placed plant, rather than defaulting
+	 * to the model origin (0,0), which may be far outside whatever's
+	 * actually on screen. Mirrors `localPixelPositionFromPointerEvent`'s
+	 * inversion, starting from the container's own screen-space center
+	 * instead of a pointer event's position.
+	 */
+	function viewportCenterModel(): Position {
+		const screenCenter = { x: container.width / 2, y: container.height / 2 };
+		return {
+			x: modelXPos((screenCenter.x - position.x) / scaleFactor.x),
+			y: modelYPos((screenCenter.y - position.y) / scaleFactor.y)
+		};
+	}
+
+	/**
 	 *  Reset the transformations to the initial state.
 	 */
 	function reset() {
@@ -245,6 +262,7 @@ export function createCanvasTransform(container: CanvasContainer, draggable: boo
 		canvasDistance,
 		modelDistance,
 		localPixelPositionFromPointerEvent,
+		viewportCenterModel,
 		translate,
 		addScale,
 		reset,

@@ -20,6 +20,7 @@ import {
 	TreeDistance,
 	TreeGeometryType,
 	TreeNumber,
+	TreeString,
 	fieldValid,
 	toTreeId
 } from '..';
@@ -52,12 +53,29 @@ export function geometryTreeItem(
 		};
 	}
 
+	const nameId = toTreeId(itemId, 'name');
 	const typeId = toTreeId(itemId, 'type');
 	const dateId = toTreeId(itemId, 'date');
 	const scaleFactorId = toTreeId(itemId, 'scaleFactor');
 	const rotationId = toTreeId(itemId, 'rotation');
 	const deleteId = toTreeId(itemId, 'delete');
 
+	const nameItem: Item = {
+		id: nameId,
+		label: 'Name',
+		description: workspaceFields.geometryNameSchema.description,
+		valueComponent: TreeString,
+		value: value.geometry.name ?? '',
+		onChange: (newData: string) => {
+			if (
+				!fieldValid(nameId, newData, workspaceFields.geometryNameSchema, ctx.fieldErrors) ||
+				!value.geometry
+			) {
+				return;
+			}
+			ctx.updateHandler(value.geometry.id, { name: newData });
+		}
+	};
 	const dateItem: Item = {
 		id: dateId,
 		label: 'Date',
@@ -65,20 +83,14 @@ export function geometryTreeItem(
 		valueComponent: TreeDate,
 		value: fromDate(value.geometry.date, getLocalTimeZone()),
 		onChange: (newData: DateValue) => {
+			const date = newData.toDate(getLocalTimeZone());
 			if (
-				!fieldValid(
-					dateId,
-					newData,
-					workspaceFields.geometryDateSchema,
-					ctx.fieldErrors
-				) ||
+				!fieldValid(dateId, date, workspaceFields.geometryDateSchema, ctx.fieldErrors) ||
 				!value.geometry
 			) {
 				return;
 			}
-			ctx.updateHandler(value.geometry.id, {
-				date: newData.toDate(getLocalTimeZone())
-			});
+			ctx.updateHandler(value.geometry.id, { date });
 		}
 	};
 	const typeItem: Item = {
@@ -462,21 +474,21 @@ export function geometryTreeItem(
 	let children: Item[] = [];
 
 	if (options.includeDate) {
-		children = [dateItem, typeItem, scaleFactorItem, rotationItem, ...attributesItems];
+		children = [nameItem, dateItem, typeItem, scaleFactorItem, rotationItem, ...attributesItems];
 	} else {
-		children = [typeItem, scaleFactorItem, rotationItem, ...attributesItems];
+		children = [nameItem, typeItem, scaleFactorItem, rotationItem, ...attributesItems];
 	}
 
 	if (options.includeDelete) {
 		children.push(deleteItem);
 	}
 
-	const geometryLabel = options.includeIndex
+	const defaultGeometryLabel = options.includeIndex
 		? `Geometry ${value.index + 1}`
 		: 'Geometry';
 	return {
 		id: itemId,
-		label: geometryLabel,
+		label: value.geometry.name || defaultGeometryLabel,
 		children: children
 	};
 }

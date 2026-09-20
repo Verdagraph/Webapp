@@ -76,13 +76,19 @@ export function getShapeAttributes(
 ): ShapeAttributes {
 	switch (geometry.type) {
 		case 'RECTANGLE': {
-			const width = canvas.transform.canvasDistance(geometry.rectangleLength);
-			const height = canvas.transform.canvasDistance(geometry.rectangleWidth);
+			const width = canvas.transform.canvasDistance(
+				geometry.rectangleLength * geometry.scaleFactor
+			);
+			const height = canvas.transform.canvasDistance(
+				geometry.rectangleWidth * geometry.scaleFactor
+			);
 			return { type: 'RECTANGLE', x: -width / 2, y: -height / 2, width, height };
 		}
 
 		case 'POLYGON': {
-			const radius = canvas.transform.canvasDistance(geometry.polygonRadius);
+			const radius = canvas.transform.canvasDistance(
+				geometry.polygonRadius * geometry.scaleFactor
+			);
 			return {
 				type: 'POLYGON',
 				points: getRegularPolygonPoints(geometry.polygonNumSides, radius)
@@ -92,8 +98,12 @@ export function getShapeAttributes(
 		case 'ELLIPSE':
 			return {
 				type: 'ELLIPSE',
-				rx: canvas.transform.canvasDistance(geometry.ellipseLength / 2),
-				ry: canvas.transform.canvasDistance(geometry.ellipseWidth / 2)
+				rx: canvas.transform.canvasDistance(
+					(geometry.ellipseLength / 2) * geometry.scaleFactor
+				),
+				ry: canvas.transform.canvasDistance(
+					(geometry.ellipseWidth / 2) * geometry.scaleFactor
+				)
 			};
 
 		case 'LINES': {
@@ -101,7 +111,7 @@ export function getShapeAttributes(
 			const points = geometry.linesCoordinates
 				.map(
 					(coordinate) =>
-						`${canvas.transform.canvasXPos(coordinate.x)},${canvas.transform.canvasYPos(coordinate.y)}`
+						`${canvas.transform.canvasXPos(coordinate.x * geometry.scaleFactor)},${canvas.transform.canvasYPos(coordinate.y * geometry.scaleFactor)}`
 				)
 				.join(' ');
 			return { type: 'LINES', closed, points };

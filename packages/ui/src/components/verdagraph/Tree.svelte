@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CultivarPlantingWindow } from '@vdg-webapp/models';
+	import { type CultivarPlantingWindow, isDraftPlant } from '@vdg-webapp/models';
 
 	import { ScrollArea, Tabs } from '$core';
 	import { getAppContext } from '$state';
@@ -13,8 +13,14 @@
 	const ctx = getAppContext();
 	const verdagraphContext = getVerdagraphContext();
 
-	/** Data injection. */
-	const plants = $derived(ctx.plants.plants);
+	/**
+	 * Excludes drafted (still-staged, uncommitted) plants - they're already
+	 * shown and editable in the Add Plants tool's own "To Create" tree, so
+	 * showing them here too would just be a confusing duplicate. Layout and
+	 * Calendar keep showing them (as ghosts, once that's built) since seeing
+	 * a plan overlaid on the rest of the garden is the point there.
+	 */
+	const plants = $derived(ctx.plants.plants.filter((plant) => !isDraftPlant(plant)));
 	const workspaces = $derived(
 		ctx.workspaces.workspaces.map((w) => ({ id: w.id, name: w.name }))
 	);

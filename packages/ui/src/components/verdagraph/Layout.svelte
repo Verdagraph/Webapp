@@ -47,10 +47,16 @@
 	</PlantingAreas>
 
 	<PlantsContainer {canvasId} {plantLayerId}>
-		<CreatePlantsContainer {workspaceId}></CreatePlantsContainer>
-
 		{#each plants as plant}
 			<EditablePlantContainer {plant} />
 		{/each}
+
+		<!--
+			Rendered last (SVG has no z-index - later elements paint on top and
+			win pointer hit-testing) so the live stamp preview stays draggable
+			even when it starts perfectly overlapping the plant just committed
+			from the previous stamp.
+		-->
+		<CreatePlantsContainer {workspaceId}></CreatePlantsContainer>
 	</PlantsContainer>
 </Canvas>

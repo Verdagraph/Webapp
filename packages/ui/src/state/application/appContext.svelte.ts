@@ -53,6 +53,7 @@ export function createAppContext(
 
 	return {
 		controller,
+		client,
 		settings,
 		timeline,
 		garden,

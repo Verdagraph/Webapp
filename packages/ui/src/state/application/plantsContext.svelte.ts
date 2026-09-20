@@ -47,6 +47,7 @@ export function createPlantsContext(
 						)
 						.Include('observations')
 				)
+				.Include('draftBucket')
 		)
 	);
 	const plants = $derived(plantsQuery.results ?? []);

@@ -35,7 +35,13 @@
 	);
 	ctx.garden.id = garden.id;
 
-	/** Initialize the data according to the seed file. */
+	/**
+	 * Initialize the data according to the seed file, fully committed BEFORE
+	 * the demo component (and the queries it fires on mount) render - matches
+	 * a real garden's data, which is always already-committed by the time any
+	 * page queries it, unlike inserting live while children are mounting.
+	 */
+	let seeded = $state(false);
 	onMount(async () => {
 		const seedData = (demo as Demo).seed();
 		await triplit.transact(async (tx) => {
@@ -46,6 +52,7 @@
 				}
 			}
 		});
+		seeded = true;
 	});
 </script>
 
@@ -53,6 +60,6 @@
 	<title>Demo - Verdagraph</title>
 </svelte:head>
 
-{#if demo}
+{#if demo && seeded}
 	<demo.component />
 {/if}

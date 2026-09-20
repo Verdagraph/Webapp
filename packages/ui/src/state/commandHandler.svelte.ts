@@ -48,7 +48,7 @@ export function createCommandHandler<TParams extends unknown[], TResult = unknow
 		reset();
 		isLoading = true;
 
-		asyncFn(...params)
+		return asyncFn(...params)
 			.then((executionResult: TResult) => {
 				isSuccess = true;
 				result = executionResult;

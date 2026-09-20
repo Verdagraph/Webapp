@@ -1,9 +1,5 @@
 import { mode } from 'mode-watcher';
 import { getContext, setContext } from 'svelte';
-import { defaults, superForm } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-
-import { PlantsCreateCommandSchema, plantsCreate } from '@vdg-webapp/models';
 
 import {
 	type CanvasContext,
@@ -13,8 +9,9 @@ import {
 import { createTimelineSelection } from '$components';
 import { createPaneSettings, isMobile } from '$state';
 import { getAppContext } from '$state/application';
-import createCommandHandler from '$state/commandHandler.svelte';
 
+import { createDraftBucketsState } from './draftBucketsState.svelte';
+import { createPlantsCreateFormState } from './plantsCreateFormState.svelte';
 import { verdagraphToolbox } from './tools';
 
 const verdagraphContextId = 'verdagraphEditorContext';
@@ -34,9 +31,6 @@ export type VerdagraphContextParams = {
 	defaultSelectedWorkspaceId: string;
 };
 
-/**
- * Holds context for the verdagraph.
- */
 export function createVerdagraphContext(params: VerdagraphContextParams) {
 	/** Controller reference. */
 	const ctx = getAppContext();
@@ -69,24 +63,12 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 	);
 
 	/** Forms. */
-	const plantsCreateHandler = createCommandHandler(plantsCreate, {
-		onSuccess: () => {
-			toolbox.deactivate('plantsCreate');
-		}
-	});
-	const plantsCreateSuperform = superForm(defaults(zod(PlantsCreateCommandSchema)), {
-		SPA: true,
-		dataType: 'json',
-		validators: zod(PlantsCreateCommandSchema),
-		onUpdate({ form }) {
-			if (form.valid) {
-				plantsCreateHandler.execute(form.data, ctx.controller);
-			}
-		},
-		onChange() {
-			plantsCreateHandler.reset();
-		}
-	});
+	const plantsCreateForm = createPlantsCreateFormState(ctx, () => timeline.focusUtc);
+
+	/** Draft buckets. */
+	const draftBuckets = createDraftBucketsState(ctx, ctx.garden.id, () =>
+		plantsCreateForm.resetActiveStamp()
+	);
 
 	return {
 		/* Getters. */
@@ -102,10 +84,8 @@ export function createVerdagraphContext(params: VerdagraphContextParams) {
 		timeline,
 		selections,
 		toolbox,
-		plantsCreateForm: {
-			handler: plantsCreateHandler,
-			form: plantsCreateSuperform
-		}
+		plantsCreateForm,
+		draftBuckets
 	};
 }
 export type VerdagraphContext = ReturnType<typeof createVerdagraphContext>;

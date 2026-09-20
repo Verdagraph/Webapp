@@ -37,7 +37,7 @@ export function createCanvasContext(
 	const container = createCanvasContainer(canvasId);
 	const transform = createCanvasTransform(container, options.draggable ?? true);
 	const selectionGroup = createSelectionGroup();
-	const gridManager = createCanvasGridManager(container, transform);
+	const gridManager = createCanvasGridManager(container);
 
 	/**
 	 * Initialize sub-contexts.
