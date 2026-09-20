@@ -1,7 +1,5 @@
 import { mode } from 'mode-watcher';
 import { getContext, setContext } from 'svelte';
-import { defaults, superForm } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
 
 import {
 	PlantingAreaCreateCommandSchema,
@@ -18,6 +16,7 @@ import {
 import { getAppContext, isMobile } from '$state';
 import { createPaneSettings } from '$state';
 import createCommandHandler from '$state/commandHandler.svelte';
+import { createForm } from '$state/form';
 
 import { workspaceToolbox } from './tools';
 
@@ -63,22 +62,9 @@ export function createWorkspaceEditorContext(defaultId: string) {
 			toolbox.deactivate('plantingAreaCreate');
 		}
 	});
-	const plantingAreaCreateSuperform = superForm(
-		defaults(zod(PlantingAreaCreateCommandSchema)),
-		{
-			SPA: true,
-			dataType: 'json',
-			validators: zod(PlantingAreaCreateCommandSchema),
-			onUpdate({ form }) {
-				if (form.valid) {
-					plantingAreaCreateHandler.execute(form.data, ctx.controller);
-				}
-			},
-			onChange() {
-				plantingAreaCreateHandler.reset();
-			}
-		}
-	);
+	const plantingAreaCreateForm = createForm(PlantingAreaCreateCommandSchema, {
+		onSubmit: (data) => plantingAreaCreateHandler.execute(data, ctx.controller)
+	});
 
 	/**
 	 * Resets the context to a null state.
@@ -86,7 +72,7 @@ export function createWorkspaceEditorContext(defaultId: string) {
 	function reset() {
 		editing = false;
 		selections.resetAll();
-		plantingAreaCreateSuperform.reset();
+		plantingAreaCreateForm.reset();
 		canvas = resetCanvasContext('workspaceLayoutCanvas', id, mode);
 	}
 
@@ -116,7 +102,7 @@ export function createWorkspaceEditorContext(defaultId: string) {
 		selections,
 		plantingAreaCreateForm: {
 			handler: plantingAreaCreateHandler,
-			form: plantingAreaCreateSuperform
+			form: plantingAreaCreateForm
 		},
 		reset
 	};

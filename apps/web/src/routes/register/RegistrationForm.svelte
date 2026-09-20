@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { defaults, superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-
+	import { createForm, Form, Input } from '@vdg-webapp/ui';
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input } from '@vdg-webapp/ui';
 
 	import { userCreate } from '$data/users/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
@@ -23,23 +20,15 @@
 			succeeded = true;
 		}
 	});
-	const form = superForm(defaults(zod(userCreate.schema)), {
-		SPA: true,
-		validators: zod(userCreate.schema),
-		onUpdate({ form }) {
-			if (form.valid) {
-				registeredEmail = form.data.email;
-				formHandler.execute(form.data);
-			}
-		},
-		onChange() {
-			formHandler.reset();
+	const form = createForm(userCreate.schema, {
+		onSubmit: (data) => {
+			registeredEmail = data.email;
+			return formHandler.execute(data);
 		}
 	});
-	const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" autocomplete="off" use:enhance>
+<form onsubmit={form.submit} oninput={() => formHandler.reset()}>
 	<!-- Username -->
 	<Form.Field {form} name="username">
 		<Form.Control>
@@ -51,7 +40,7 @@
 					{...props}
 					type="text"
 					placeholder="username"
-					bind:value={$formData.username}
+					bind:value={form.data.username}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -67,7 +56,7 @@
 					{...props}
 					type="email"
 					placeholder="email@example.com"
-					bind:value={$formData.email}
+					bind:value={form.data.email}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -81,7 +70,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>Password</Form.Label
 				>
-				<Input.Root {...props} type="password" bind:value={$formData.password1} />
+				<Input.Root {...props} type="password" bind:value={form.data.password1} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
@@ -94,7 +83,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>Confirm Password</Form.Label
 				>
-				<Input.Root {...props} type="password" bind:value={$formData.password2} />
+				<Input.Root {...props} type="password" bind:value={form.data.password2} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password2} />

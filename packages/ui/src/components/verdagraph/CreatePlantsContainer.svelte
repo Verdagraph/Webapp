@@ -14,7 +14,7 @@
 	/** Contexts.*/
 	const verdagraphContext = getVerdagraphContext();
 	const canvas = verdagraphContext.layoutCanvasContext;
-	const { form: formData } = verdagraphContext.plantsCreateForm.form;
+	const form = verdagraphContext.plantsCreateForm.form;
 </script>
 
 <!--
@@ -25,6 +25,6 @@ plants creation form.
 Should only render this component if the plants
 creation tool is active.
 -->
-{#if $formData.mode === 'SINGLE'}
+{#if form.data.mode === 'SINGLE'}
 	<CreatePlantContainer {workspaceId} plantIdx={0} />
-{:else if $formData.mode === 'GROUP'}{:else if $formData.mode === 'PATTERN'}{:else if $formData.mode === 'COMBINED'}{/if}
+{:else if form.data.mode === 'GROUP'}{:else if form.data.mode === 'PATTERN'}{:else if form.data.mode === 'COMBINED'}{/if}

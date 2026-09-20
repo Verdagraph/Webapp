@@ -1,38 +1,32 @@
 <script lang="ts">
-	import { defaults, superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-
-	import { workspaceFields, workspaceCreate } from '@vdg-webapp/models';
-	import { Form, Input, Textarea } from '@vdg-webapp/ui';
+	import {
+		WorkspaceCreateCommandSchema,
+		workspaceCreate,
+		workspaceFields
+	} from '@vdg-webapp/models';
+	import { createForm, Form, Input, Textarea } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { workspaceCreate } from '$data/workspaces/commands';
+	import controller from '$data/controller';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
-	let formHandler = createCommandHandler(workspaceCreate.mutation, {
-		onSuccess: (workspace) => {
-			const workspaceHref = `/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
-			goto(workspaceHref);
-		}
-	});
-	const form = superForm(defaults(zod(workspaceCreate.schema)), {
-		SPA: true,
-		resetForm: false,
-		validators: zod(workspaceCreate.schema),
-		onUpdate({ form }) {
-			if (form.valid) {
-				formHandler.execute(form.data);
+	let formHandler = createCommandHandler(
+		(data: Parameters<typeof workspaceCreate>[0]) => workspaceCreate(data, controller),
+		{
+			onSuccess: (workspace) => {
+				const workspaceHref = `/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
+				goto(workspaceHref);
 			}
-		},
-		onChange() {
-			formHandler.reset();
 		}
+	);
+	const form = createForm(WorkspaceCreateCommandSchema, {
+		initialValues: { gardenId: page.params.gardenId },
+		onSubmit: (data) => formHandler.execute(data)
 	});
-	const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" use:enhance>
+<form onsubmit={form.submit} oninput={() => formHandler.reset()}>
 	<!-- Name. -->
 	<Form.Field {form} name="name">
 		<Form.Control>
@@ -45,7 +39,7 @@
 					{...props}
 					type="text"
 					placeholder="Backyard"
-					bind:value={$formData.name}
+					bind:value={form.data.name}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -60,7 +54,7 @@
 					description={workspaceFields.workspaceDescriptionSchema.description}
 					optional={true}>Description</Form.Label
 				>
-				<Textarea.Root {...props} bind:value={$formData.description} />
+				<Textarea.Root {...props} bind:value={form.data.description} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.description} />

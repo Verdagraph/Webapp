@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { defaults, superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-
+	import { createForm, Form, Input } from '@vdg-webapp/ui';
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input } from '@vdg-webapp/ui';
 
 	import { page } from '$app/state';
 	import { userConfirmPasswordReset } from '$data/users/commands';
@@ -20,28 +17,16 @@
 			succeeded = true;
 		}
 	});
-	const initialData = {
-		userId: page.params.userId,
-		token: page.params.confirmationToken,
-		password1: '',
-		password2: ''
-	};
-	const form = superForm(defaults(initialData, zod(userConfirmPasswordReset.schema)), {
-		SPA: true,
-		validators: zod(userConfirmPasswordReset.schema),
-		onUpdate({ form }) {
-			if (form.valid) {
-				formHandler.execute(form.data);
-			}
+	const form = createForm(userConfirmPasswordReset.schema, {
+		initialValues: {
+			userId: page.params.userId,
+			token: page.params.confirmationToken
 		},
-		onChange() {
-			formHandler.reset();
-		}
+		onSubmit: (data) => formHandler.execute(data)
 	});
-	const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" autocomplete="off" use:enhance>
+<form onsubmit={form.submit} oninput={() => formHandler.reset()}>
 	<!-- New Password1 -->
 	<Form.Field {form} name="password1">
 		<Form.Control>
@@ -49,7 +34,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>New Password</Form.Label
 				>
-				<Input.Root {...props} type="password" bind:value={$formData.password1} />
+				<Input.Root {...props} type="password" bind:value={form.data.password1} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password1} />
@@ -62,7 +47,7 @@
 				<Form.Label description={userFields.passwordSchema.description}
 					>Confirm Password</Form.Label
 				>
-				<Input.Root {...props} type="password" bind:value={$formData.password2} />
+				<Input.Root {...props} type="password" bind:value={form.data.password2} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={formHandler.fieldErrors?.password2} />

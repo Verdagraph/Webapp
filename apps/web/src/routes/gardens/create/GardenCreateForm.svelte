@@ -1,13 +1,16 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { defaults, superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
 
-	import { type GardenVisibility, gardenFields } from '@vdg-webapp/models';
-	import { Button, Form, Input, Select, Textarea, iconIds } from '@vdg-webapp/ui';
+	import {
+		GardenCreateCommandSchema,
+		type GardenVisibility,
+		gardenCreate,
+		gardenFields
+	} from '@vdg-webapp/models';
+	import { Button, Form, Input, Select, Textarea, createForm, iconIds } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
-	import { gardenCreate } from '$data/gardens/commands';
+	import controller from '$data/controller';
 	import { generateGardenId } from '$data/gardens/utils';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
@@ -32,41 +35,34 @@
 		}
 	];
 	const visibilitySelectTrigger = $derived(
-		visibilityOptions.find((option) => option.value === $formData.visibility) ?? {
+		visibilityOptions.find((option) => option.value === form.data.visibility) ?? {
 			label: 'Select a type',
 			icon: null
 		}
 	);
 
 	/** Garden creation form. */
-	let gardenCreateHandler = createCommandHandler(gardenCreate.mutation, {
-		onSuccess: (data) => {
-			goto('/gardens/' + data.id);
-		}
-	});
-	const form = superForm(defaults(zod(gardenCreate.schema)), {
-		SPA: true,
-		validators: zod(gardenCreate.schema),
-		onUpdate({ form }) {
-			if (form.valid) {
-				gardenCreateHandler.execute(form.data);
+	let gardenCreateHandler = createCommandHandler(
+		(data: Parameters<typeof gardenCreate>[0]) => gardenCreate(data, controller),
+		{
+			onSuccess: (data) => {
+				goto('/gardens/' + data.id);
 			}
-		},
-		onChange() {
-			gardenCreateHandler.reset();
 		}
+	);
+	const form = createForm(GardenCreateCommandSchema, {
+		onSubmit: (data) => gardenCreateHandler.execute(data)
 	});
-	const { form: formData, enhance } = form;
 
 	/** Garden ID generation handler. */
 	let gardenIdGenerationHandler = createCommandHandler(generateGardenId, {
 		onSuccess: (generatedId) => {
-			$formData.id = generatedId;
+			form.data.id = generatedId;
 		}
 	});
 </script>
 
-<form method="POST" use:enhance>
+<form onsubmit={form.submit} oninput={() => gardenCreateHandler.reset()}>
 	<!-- Garden ID -->
 	<Form.Field {form} name="id">
 		<Form.Control>
@@ -81,7 +77,7 @@
 						type="text"
 						placeholder="lettuce123"
 						class="rounded-r-none"
-						bind:value={$formData.id}
+						bind:value={form.data.id}
 					/>
 					<Button.Root
 						variant="outline"
@@ -118,7 +114,7 @@
 					{...props}
 					type="text"
 					placeholder="Gardens of Adonis"
-					bind:value={$formData.name}
+					bind:value={form.data.name}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -137,7 +133,7 @@
 					{...props}
 					type="single"
 					items={visibilityOptions}
-					bind:value={$formData.visibility}
+					bind:value={form.data.visibility}
 				>
 					<Select.Trigger>
 						<div class="item-center flex">
@@ -177,7 +173,7 @@
 					description={gardenFields.gardenDescriptionSchema.description}
 					optional={true}>Description</Form.Label
 				>
-				<Textarea.Root {...props} bind:value={$formData.description} />
+				<Textarea.Root {...props} bind:value={form.data.description} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors
@@ -190,13 +186,13 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={gardenCreate.schema.shape.adminInvites.description}
+					description={GardenCreateCommandSchema.shape.adminInvites.description}
 					optional={true}>Admin Invites</Form.Label
 				>
 				<GardenCreateFormUserTagsInput
 					{...props}
-					bind:tagsInput={$formData.adminInvites}
-					maxTags={gardenCreate.schema.shape.adminInvites._def.innerType._def.maxLength
+					bind:tagsInput={form.data.adminInvites}
+					maxTags={GardenCreateCommandSchema.shape.adminInvites._def.innerType._def.maxLength
 						?.value}
 				/>
 			{/snippet}
@@ -212,13 +208,13 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={gardenCreate.schema.shape.editorInvites.description}
+					description={GardenCreateCommandSchema.shape.editorInvites.description}
 					optional={true}>Editor Invites</Form.Label
 				>
 				<GardenCreateFormUserTagsInput
 					{...props}
-					bind:tagsInput={$formData.editorInvites}
-					maxTags={gardenCreate.schema.shape.editorInvites._def.innerType._def.maxLength
+					bind:tagsInput={form.data.editorInvites}
+					maxTags={GardenCreateCommandSchema.shape.editorInvites._def.innerType._def.maxLength
 						?.value}
 				/>
 			{/snippet}
@@ -236,13 +232,13 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label
-					description={gardenCreate.schema.shape.viewerInvites.description}
+					description={GardenCreateCommandSchema.shape.viewerInvites.description}
 					optional={true}>Viewer Invites</Form.Label
 				>
 				<GardenCreateFormUserTagsInput
 					{...props}
-					bind:tagsInput={$formData.viewerInvites}
-					maxTags={gardenCreate.schema.shape.viewerInvites._def.innerType._def.maxLength
+					bind:tagsInput={form.data.viewerInvites}
+					maxTags={GardenCreateCommandSchema.shape.viewerInvites._def.innerType._def.maxLength
 						?.value}
 				/>
 			{/snippet}
