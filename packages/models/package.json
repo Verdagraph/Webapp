@@ -29,6 +29,7 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
-		"@triplit/client": "^1.0.33"
+		"@triplit/client": "^1.0.33",
+		"jazz-tools": "2.0.0-alpha.55"
 	}
 }
