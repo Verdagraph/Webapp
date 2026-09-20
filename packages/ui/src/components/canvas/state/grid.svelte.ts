@@ -47,14 +47,9 @@ export function createCanvasGridManager(container: CanvasContainer) {
 	/**
 	 * Line styling only, not positions - Gridlines.svelte renders the grid as
 	 * a single tiled SVG <pattern> rather than a JS-generated array of
-	 * `<line>` elements. Living inside the same outer `<g>` shapes ride on,
-	 * pan/zoom moves and scales the pattern for free (the browser handles
-	 * the tiling), the same way shapes never recompute anything during a
-	 * pan - unlike the previous per-viewport line generation, which was the
-	 * only thing reactively reading the raw pan position and rebuilt every
-	 * visible line's geometry on every single pointermove tick, the actual
-	 * cause of panning feeling sluggish. Only mode changes (light/dark)
-	 * still need to recompute these colors, which is rare and cheap.
+	 * `<line>` elements, living inside the same outer <g> shapes ride on, so
+	 * pan/zoom moves and scales it for free. Only mode changes (light/dark)
+	 * need to recompute these colors.
 	 */
 	const horizontalLine: GridlineStyle = $derived({
 		color: getColor('neutral', 3, mode.current),

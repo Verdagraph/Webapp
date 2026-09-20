@@ -8,14 +8,13 @@ import {
 	type Position,
 	addDays,
 	annualMilestonesForOrigin,
+	daysBetween,
 	generateExpectedHistories
 } from '@vdg-webapp/models';
 
 import { getAppContext } from '$state/application';
 
 import { getVerdagraphContext } from '../verdagraphContext.svelte';
-
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /**
  * Keeps one stamp slot's (`plants[plantIndex]`) expected geometry history
@@ -34,12 +33,10 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
  *   drag/resize, exactly.
  *
  * This is a plain `.svelte.ts` module, not a component, so the `$store`
- * auto-subscription sugar (`$formData`) isn't available here - it only
- * works inside `.svelte` files. Reads go through a `$state` mirror kept in
- * sync via an explicit `.subscribe()`; writes go through `.update()` (the
- * same pattern `verdagraphContext.svelte.ts` and, after this session's
- * earlier fix, `CreatePlantContainer.svelte` already use - a direct mutation
- * on a value read out of the store doesn't notify its subscribers).
+ * auto-subscription sugar (`$formData`) only works inside `.svelte` files -
+ * unavailable here. Reads go through a `$state` mirror kept in sync via an
+ * explicit `.subscribe()`; writes go through `.update()`, since a direct
+ * mutation on a value read out of the store doesn't notify its subscribers.
  */
 export function createStampSeeding(plantIndex: number) {
 	const ctx = getAppContext();
@@ -169,9 +166,7 @@ export function createStampSeeding(plantIndex: number) {
 			const dayChanged =
 				previousFocusedDay !== null && focusedDay.getTime() !== previousFocusedDay.getTime();
 			if (dayChanged && previousFocusedDay !== null) {
-				const deltaDays = Math.round(
-					(focusedDay.getTime() - previousFocusedDay.getTime()) / MS_PER_DAY
-				);
+				const deltaDays = daysBetween(previousFocusedDay, focusedDay);
 				if (deltaDays !== 0) {
 					translateStamp(deltaDays);
 				}

@@ -1,9 +1,16 @@
 import { type GeometryCreateCommand, type GeometryType } from '../../workspaces/index.js';
 
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
 export function addDays(date: Date, days: number): Date {
 	const result = new Date(date);
 	result.setDate(result.getDate() + days);
 	return result;
+}
+
+/** Whole days between two dates, rounded to the nearest day. */
+export function daysBetween(from: Date, to: Date): number {
+	return Math.round((to.getTime() - from.getTime()) / MS_PER_DAY);
 }
 
 /**

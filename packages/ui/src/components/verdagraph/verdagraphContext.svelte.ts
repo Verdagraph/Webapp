@@ -31,16 +31,6 @@ export type VerdagraphContextParams = {
 	defaultSelectedWorkspaceId: string;
 };
 
-/**
- * Holds context for the verdagraph. Two of its sub-domains - the DraftBucket
- * lifecycle and the Add Plants superform - live in their own files
- * (draftBucketsState.svelte.ts, plantsCreateFormState.svelte.ts) since both
- * are self-contained and were on track to keep growing here (ghost
- * visibility UI, Group/Pattern form modes, etc.) on top of everything else
- * this context already owns. The two are wired together via a callback
- * (`onActiveBucketEnded`) rather than a direct reference, so neither file
- * needs to import the other.
- */
 export function createVerdagraphContext(params: VerdagraphContextParams) {
 	/** Controller reference. */
 	const ctx = getAppContext();

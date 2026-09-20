@@ -9,6 +9,9 @@
 		AnnualLifecycleMilestoneLabels,
 		AppError,
 		type AnnualLifecycleMilestone,
+		type Origin,
+		OriginEnumLabels,
+		OriginEnumOptions,
 		plantsCreateCommandSinglePlantSchema
 	} from '@vdg-webapp/models';
 
@@ -106,6 +109,34 @@
 	</Form.Field>
 
 	<div class="flex flex-col gap-1.5">
+		<span class="text-sm font-medium">Origin</span>
+		<Select.Root
+			type="single"
+			items={OriginEnumOptions.map((origin) => ({
+				value: origin,
+				label: OriginEnumLabels[origin]
+			}))}
+			value={$formData.plants[0].origin}
+			onValueChange={(value) => {
+				if (value) {
+					$formData.plants[0].origin = value as Origin;
+				}
+			}}
+		>
+			<Select.Trigger class="w-full">
+				<span>{OriginEnumLabels[$formData.plants[0].origin]}</span>
+			</Select.Trigger>
+			<Select.Content>
+				{#each OriginEnumOptions as origin}
+					<Select.Item value={origin} label={OriginEnumLabels[origin]}>
+						{OriginEnumLabels[origin]}
+					</Select.Item>
+				{/each}
+			</Select.Content>
+		</Select.Root>
+	</div>
+
+	<div class="flex flex-col gap-1.5">
 		<span class="text-sm font-medium">Anchor</span>
 		<Select.Root
 			type="single"
@@ -139,7 +170,6 @@
 
 	<!-- Aggregate. -->
 	<!-- Not yet a real field on PlantsCreateCommandSchema - re-add once it is. -->
-	<!-- Origin. -->
 	<!-- Locations. -->
 	<!-- Geometries. -->
 	<!-- Cultivar Attributes. -->

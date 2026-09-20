@@ -14,11 +14,7 @@ import { defaultSinglePlant } from './tools/plantsCreateFormDefaults';
  * to a blank stamp on request (used when a DraftBucket the active stamp
  * belonged to gets committed/discarded - see draftBucketsState.svelte.ts's
  * `onActiveBucketEnded` callback, which verdagraphContext.svelte.ts wires to
- * `resetActiveStamp` below). Split out of verdagraphContext.svelte.ts for
- * the same reason draftBucketsState.svelte.ts was: this is one of two
- * self-contained sub-domains that was on track to keep growing inside a
- * single already-large file, most notably once Group/Pattern modes need
- * their own form-handling additions.
+ * `resetActiveStamp` below).
  */
 export function createPlantsCreateFormState(ctx: AppContext, getFocusUtc: () => Date) {
 	const plantsCreateHandler = createCommandHandler(plantsCreate);
@@ -62,6 +58,7 @@ export function createPlantsCreateFormState(ctx: AppContext, getFocusUtc: () => 
 					data.plants = [
 						defaultSinglePlant({
 							cultivarName: submitted?.cultivarName,
+							origin: submitted?.origin,
 							geometryHistory: carriedGeometry
 								? {
 										gardenId: ctx.garden.id,

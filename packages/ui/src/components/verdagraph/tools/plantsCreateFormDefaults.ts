@@ -15,12 +15,13 @@ type SinglePlant = PlantsCreateCommand['plants'][number];
  */
 export function defaultSinglePlant(carryForward?: {
 	cultivarName?: string;
+	origin?: SinglePlant['origin'];
 	geometryHistory?: SinglePlant['geometryHistory'];
 	locationHistory?: SinglePlant['locationHistory'];
 }): SinglePlant {
 	return {
 		cultivarName: carryForward?.cultivarName ?? '',
-		origin: 'DIRECT_SEED',
+		origin: carryForward?.origin ?? 'DIRECT_SEED',
 		locationHistory: carryForward?.locationHistory ?? { gardenId: '', locations: [] },
 		geometryHistory: carryForward?.geometryHistory ?? { gardenId: '', geometries: [] },
 		cultivarOverride: {},

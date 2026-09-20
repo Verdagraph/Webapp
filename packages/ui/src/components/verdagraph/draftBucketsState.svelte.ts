@@ -12,10 +12,7 @@ import { type AppContext } from '$state/application';
 /**
  * Owns the lifecycle of a garden's open DraftBuckets: the live list, which
  * one the Add Plants tool is actively staging into, and per-bucket ghost
- * visibility in Layout/Calendar. Split out of verdagraphContext.svelte.ts
- * (which was on track to keep absorbing every DraftBucket-related addition -
- * ghost visibility UI, ghost styling, etc. - on top of everything else it
- * already owns) so this sub-domain has room to grow on its own.
+ * visibility in Layout/Calendar.
  *
  * `onActiveBucketEnded` is a callback rather than a direct reference to the
  * plants-create form, so this file doesn't need to know that form exists -

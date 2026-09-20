@@ -48,20 +48,11 @@ export function createCultivarContext(
 	]);
 	/**
 	 * A second live query chained off the first (collectionIds only settle
-	 * once gardenCollectionsQuery resolves). Confirmed via direct
-	 * instrumentation this used to settle once with an empty result and never
-	 * recover when collectionIds went from empty to populated while the
-	 * page's own seed-data transact() was still inserting concurrently
-	 * (collections land before cultivars in that same transaction) - a plain
-	 * fetch() was used defensively instead. Re-tested after fixing the demo
-	 * to fully commit its seed data before mounting anything that queries it
-	 * (apps/demo's [demoId]/+page.svelte) - with that race removed, this
-	 * chained useQuery is reliable (5/5 runs), matching how a real garden's
-	 * data is always already-committed by the time any page queries it.
-	 * Confirmed the demo-mount race was the actual cause, not a general
-	 * Triplit chained-query limitation, so the live query is worth having
-	 * back (it now updates if a Cultivar is added/removed elsewhere while
-	 * this page is open, which the plain-fetch version never did).
+	 * once gardenCollectionsQuery resolves). This assumes collections are
+	 * already committed by the time it queries them, same as a real garden -
+	 * see apps/demo's [demoId]/+page.svelte, which seeds the demo the same
+	 * way for exactly this reason.
+	 * TODO: reinvestigate with the Jazz migration.
 	 */
 	const allCultivarsQuery = $derived(
 		useQuery(
