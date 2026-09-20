@@ -28,8 +28,15 @@
 			transformOver: boolean
 		) => void;
 	};
-	let { canvasId, geometry, shapePosition, rotation, strokeColor, fillColor, onTransform }: Props =
-		$props();
+	let {
+		canvasId,
+		geometry,
+		shapePosition,
+		rotation,
+		strokeColor,
+		fillColor,
+		onTransform
+	}: Props = $props();
 
 	const ATTRIBUTE_DECIMALS = 2;
 	/**
@@ -315,7 +322,6 @@
 			canvas.selectionGroup.setDocumentCursor();
 		}
 	}
-
 </script>
 
 {#each displayedPositions as point, index (index)}

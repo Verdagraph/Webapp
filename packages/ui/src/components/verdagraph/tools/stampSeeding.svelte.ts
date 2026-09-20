@@ -69,7 +69,9 @@ export function createStampSeeding(plantIndex: number) {
 	/** The existing dragged/generated coordinate if there is one, else the viewport center - so regenerating never snaps away a position already placed. */
 	function resolveCoordinate(): Position {
 		const existing = currentPlant()?.locationHistory?.locations?.[0]?.coordinate;
-		return existing ?? verdagraphContext.layoutCanvasContext.transform.viewportCenterModel();
+		return (
+			existing ?? verdagraphContext.layoutCanvasContext.transform.viewportCenterModel()
+		);
 	}
 
 	function regenerateStamp(cultivarName: string, origin: Origin) {
@@ -97,7 +99,8 @@ export function createStampSeeding(plantIndex: number) {
 
 	function translateStamp(deltaDays: number) {
 		const plant = form.data.plants[plantIndex];
-		const geometries: GeometryCreateCommand[] = plant?.geometryHistory?.geometries ?? [];
+		const geometries: GeometryCreateCommand[] =
+			plant?.geometryHistory?.geometries ?? [];
 		const locations: LocationCreateCommand[] = plant?.locationHistory?.locations ?? [];
 
 		plant.geometryHistory = {
@@ -129,7 +132,8 @@ export function createStampSeeding(plantIndex: number) {
 		const origin = currentPlant()?.origin ?? 'DIRECT_SEED';
 		const focusedDay = verdagraphContext.timeline.focusUtc;
 		const structuralKey = `${cultivarName}|${origin}|${anchorMilestone}`;
-		const alreadySeeded = (currentPlant()?.geometryHistory?.geometries?.length ?? 0) > 0;
+		const alreadySeeded =
+			(currentPlant()?.geometryHistory?.geometries?.length ?? 0) > 0;
 
 		/**
 		 * This effect reads geometryHistory.geometries.length (via
@@ -145,7 +149,8 @@ export function createStampSeeding(plantIndex: number) {
 		const structureUnchanged = structuralKey === previousStructuralKey && alreadySeeded;
 		if (structureUnchanged) {
 			const dayChanged =
-				previousFocusedDay !== null && focusedDay.getTime() !== previousFocusedDay.getTime();
+				previousFocusedDay !== null &&
+				focusedDay.getTime() !== previousFocusedDay.getTime();
 			if (dayChanged && previousFocusedDay !== null) {
 				const deltaDays = daysBetween(previousFocusedDay, focusedDay);
 				if (deltaDays !== 0) {

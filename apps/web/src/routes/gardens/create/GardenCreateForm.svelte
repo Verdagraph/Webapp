@@ -7,7 +7,15 @@
 		gardenCreate,
 		gardenFields
 	} from '@vdg-webapp/models';
-	import { Button, Form, Input, Select, Textarea, createForm, iconIds } from '@vdg-webapp/ui';
+	import {
+		Button,
+		Form,
+		Input,
+		Select,
+		Textarea,
+		createForm,
+		iconIds
+	} from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
 	import controller from '$data/controller';
@@ -192,8 +200,8 @@
 				<GardenCreateFormUserTagsInput
 					{...props}
 					bind:tagsInput={form.data.adminInvites}
-					maxTags={GardenCreateCommandSchema.shape.adminInvites._def.innerType._def.maxLength
-						?.value}
+					maxTags={GardenCreateCommandSchema.shape.adminInvites._def.innerType._def
+						.maxLength?.value}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -214,8 +222,8 @@
 				<GardenCreateFormUserTagsInput
 					{...props}
 					bind:tagsInput={form.data.editorInvites}
-					maxTags={GardenCreateCommandSchema.shape.editorInvites._def.innerType._def.maxLength
-						?.value}
+					maxTags={GardenCreateCommandSchema.shape.editorInvites._def.innerType._def
+						.maxLength?.value}
 				/>
 			{/snippet}
 		</Form.Control>
@@ -238,8 +246,8 @@
 				<GardenCreateFormUserTagsInput
 					{...props}
 					bind:tagsInput={form.data.viewerInvites}
-					maxTags={GardenCreateCommandSchema.shape.viewerInvites._def.innerType._def.maxLength
-						?.value}
+					maxTags={GardenCreateCommandSchema.shape.viewerInvites._def.innerType._def
+						.maxLength?.value}
 				/>
 			{/snippet}
 		</Form.Control>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { EditableTree } from '$components';
-	import { Button } from '$core/button/index.js';
 	import { ScrollArea, Select } from '$core';
+	import { Button } from '$core/button/index.js';
 	import { getAppContext } from '$state';
 
 	import { createPlantTreeController } from '../plantTreeController.svelte';
@@ -47,7 +47,9 @@
 	 * near-identical query with its own copy of the same relation includes.
 	 */
 	const plants = $derived(
-		draftBucketId ? ctx.plants.plants.filter((plant) => plant.draftBucketId === draftBucketId) : []
+		draftBucketId
+			? ctx.plants.plants.filter((plant) => plant.draftBucketId === draftBucketId)
+			: []
 	);
 	const workspaces = $derived(ctx.workspaces.workspaces);
 
@@ -64,7 +66,10 @@
 	<div class="border-b p-2">
 		<Select.Root
 			type="single"
-			items={[...bucketOptions, { value: NEW_DRAFT_BUCKET_VALUE, label: '+ New draft' }]}
+			items={[
+				...bucketOptions,
+				{ value: NEW_DRAFT_BUCKET_VALUE, label: '+ New draft' }
+			]}
 			value={draftBucketId}
 			onValueChange={handleBucketSwitcherChange}
 		>
@@ -75,10 +80,13 @@
 				<Select.Group>
 					<Select.GroupHeading>Open drafts</Select.GroupHeading>
 					{#each bucketOptions as option}
-						<Select.Item value={option.value} label={option.label}>{option.label}</Select.Item>
+						<Select.Item value={option.value} label={option.label}
+							>{option.label}</Select.Item
+						>
 					{/each}
 				</Select.Group>
-				<Select.Item value={NEW_DRAFT_BUCKET_VALUE} label="+ New draft">+ New draft</Select.Item
+				<Select.Item value={NEW_DRAFT_BUCKET_VALUE} label="+ New draft"
+					>+ New draft</Select.Item
 				>
 			</Select.Content>
 		</Select.Root>
@@ -101,12 +109,14 @@
 			<Button
 				variant="default"
 				class="flex-1"
-				onclick={() => verdagraphContext.draftBuckets.commit(draftBucketId)}>Commit</Button
+				onclick={() => verdagraphContext.draftBuckets.commit(draftBucketId)}
+				>Commit</Button
 			>
 			<Button
 				variant="destructive"
 				class="flex-1"
-				onclick={() => verdagraphContext.draftBuckets.discard(draftBucketId)}>Discard</Button
+				onclick={() => verdagraphContext.draftBuckets.discard(draftBucketId)}
+				>Discard</Button
 			>
 		</div>
 	{/if}

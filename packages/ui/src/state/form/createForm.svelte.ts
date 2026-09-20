@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-import { type DeepPartial, deriveInitialValues, zodIssuesToFieldErrors } from './zodIntrospection';
+import {
+	type DeepPartial,
+	deriveInitialValues,
+	zodIssuesToFieldErrors
+} from './zodIntrospection';
 
 export type FormOptions<T> = {
 	/** Merged over the schema-derived defaults on creation and on a bare `reset()`.
@@ -30,7 +34,9 @@ export function createForm<Schema extends z.ZodTypeAny, T = z.infer<Schema>>(
 	schema: Schema,
 	options?: FormOptions<T>
 ) {
-	let data = $state<T>(deriveInitialValues(schema, options?.initialValues as DeepPartial<z.infer<Schema>>));
+	let data = $state<T>(
+		deriveInitialValues(schema, options?.initialValues as DeepPartial<z.infer<Schema>>)
+	);
 	let errors = $state<Record<string, string[]>>({});
 	let isSubmitting = $state(false);
 
@@ -84,8 +90,9 @@ export function createForm<Schema extends z.ZodTypeAny, T = z.infer<Schema>>(
 	};
 }
 
-export type FormState<Schema extends z.ZodTypeAny = z.ZodTypeAny, T = z.infer<Schema>> = ReturnType<
-	typeof createForm<Schema, T>
->;
+export type FormState<
+	Schema extends z.ZodTypeAny = z.ZodTypeAny,
+	T = z.infer<Schema>
+> = ReturnType<typeof createForm<Schema, T>>;
 
 export default createForm;

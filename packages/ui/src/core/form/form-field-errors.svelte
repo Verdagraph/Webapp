@@ -21,9 +21,7 @@
 		ref?: HTMLDivElement | null;
 		errorClasses?: string | undefined | null;
 		handlerErrors?: Array<string>;
-		children?: Snippet<
-			[{ errors: string[]; errorProps: Record<string, unknown> }]
-		>;
+		children?: Snippet<[{ errors: string[]; errorProps: Record<string, unknown> }]>;
 	} = $props();
 
 	const field = getFieldContext();

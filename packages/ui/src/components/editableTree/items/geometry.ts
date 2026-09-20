@@ -68,7 +68,12 @@ export function geometryTreeItem(
 		value: value.geometry.name ?? '',
 		onChange: (newData: string) => {
 			if (
-				!fieldValid(nameId, newData, workspaceFields.geometryNameSchema, ctx.fieldErrors) ||
+				!fieldValid(
+					nameId,
+					newData,
+					workspaceFields.geometryNameSchema,
+					ctx.fieldErrors
+				) ||
 				!value.geometry
 			) {
 				return;
@@ -85,7 +90,12 @@ export function geometryTreeItem(
 		onChange: (newData: DateValue) => {
 			const date = newData.toDate(getLocalTimeZone());
 			if (
-				!fieldValid(dateId, date, workspaceFields.geometryDateSchema, ctx.fieldErrors) ||
+				!fieldValid(
+					dateId,
+					date,
+					workspaceFields.geometryDateSchema,
+					ctx.fieldErrors
+				) ||
 				!value.geometry
 			) {
 				return;
@@ -474,7 +484,14 @@ export function geometryTreeItem(
 	let children: Item[] = [];
 
 	if (options.includeDate) {
-		children = [nameItem, dateItem, typeItem, scaleFactorItem, rotationItem, ...attributesItems];
+		children = [
+			nameItem,
+			dateItem,
+			typeItem,
+			scaleFactorItem,
+			rotationItem,
+			...attributesItems
+		];
 	} else {
 		children = [nameItem, typeItem, scaleFactorItem, rotationItem, ...attributesItems];
 	}

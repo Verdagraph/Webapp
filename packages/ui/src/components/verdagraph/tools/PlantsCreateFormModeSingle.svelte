@@ -6,9 +6,9 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
+		type AnnualLifecycleMilestone,
 		AnnualLifecycleMilestoneLabels,
 		AppError,
-		type AnnualLifecycleMilestone,
 		type Origin,
 		OriginEnumLabels,
 		OriginEnumOptions,
@@ -155,7 +155,10 @@
 			</Select.Trigger>
 			<Select.Content>
 				{#each stamp.anchorMilestoneOptions as milestone}
-					<Select.Item value={milestone} label={AnnualLifecycleMilestoneLabels[milestone]}>
+					<Select.Item
+						value={milestone}
+						label={AnnualLifecycleMilestoneLabels[milestone]}
+					>
 						{AnnualLifecycleMilestoneLabels[milestone]}
 					</Select.Item>
 				{/each}

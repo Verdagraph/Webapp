@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
-	import { type Geometry, type GeometryUpdateCommand, type Position } from '@vdg-webapp/models';
+	import {
+		type Geometry,
+		type GeometryUpdateCommand,
+		type Position
+	} from '@vdg-webapp/models';
 
 	import { getColor } from '$utils';
 

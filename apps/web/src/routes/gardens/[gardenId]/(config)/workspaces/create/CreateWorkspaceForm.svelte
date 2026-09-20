@@ -4,7 +4,7 @@
 		workspaceCreate,
 		workspaceFields
 	} from '@vdg-webapp/models';
-	import { createForm, Form, Input, Textarea } from '@vdg-webapp/ui';
+	import { Form, Input, Textarea, createForm } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';

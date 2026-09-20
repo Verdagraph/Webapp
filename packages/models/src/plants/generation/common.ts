@@ -1,4 +1,7 @@
-import { type GeometryCreateCommand, type GeometryType } from '../../workspaces/index.js';
+import {
+	type GeometryCreateCommand,
+	type GeometryType
+} from '../../workspaces/index.js';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createForm, Form, Input } from '@vdg-webapp/ui';
 	import { userFields } from '@vdg-webapp/models';
+	import { Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { page } from '$app/state';
 	import { userConfirmPasswordReset } from '$data/users/commands';

@@ -36,7 +36,7 @@
 	onsubmit={form.submit}
 	oninput={() => handler.reset()}
 	autocomplete="off"
-	class="mx-4 mt-4 mb-8"
+	class="mx-4 mb-8 mt-4"
 >
 	<!-- Name. -->
 	<Form.Field {form} name="name">

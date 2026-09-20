@@ -77,10 +77,10 @@
 	</div>
 
 	<!-- Separator -->
-	<div class="bg-neutral-7 mt-1 mb-2 h-[1px] w-full rounded-sm"></div>
+	<div class="bg-neutral-7 mb-2 mt-1 h-[1px] w-full rounded-sm"></div>
 
 	<!-- Content -->
-	<div class="pt-1 pb-2">
+	<div class="pb-2 pt-1">
 		{@render content(observation)}
 	</div>
 
@@ -100,7 +100,7 @@
 	/>
 
 	<!-- Date translate buttons -->
-	<div class="my-2 flex w-full justify-around pt-3 pb-2">
+	<div class="my-2 flex w-full justify-around pb-2 pt-3">
 		<div class="flex w-full justify-around">
 			{@render button(
 				'Move observation to the past by 1 week',

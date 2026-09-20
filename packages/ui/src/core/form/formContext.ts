@@ -21,7 +21,11 @@ type FormLike = {
  * live `getForm`/`getName` callbacks passed in, so this stays reactive to
  * prop changes even though the returned object is only created once.
  */
-export function setFieldContext(id: string, getForm: () => FormLike, getName: () => string) {
+export function setFieldContext(
+	id: string,
+	getForm: () => FormLike,
+	getName: () => string
+) {
 	const field = {
 		id,
 		get name() {

@@ -25,14 +25,15 @@ export const AnnualLifecycleMilestoneOptions = [
 ] as const;
 export type AnnualLifecycleMilestone = (typeof AnnualLifecycleMilestoneOptions)[number];
 
-export const AnnualLifecycleMilestoneLabels: Record<AnnualLifecycleMilestone, string> = {
-	SEED: 'Seed',
-	GERMINATION: 'Germination',
-	TRANSPLANT: 'Transplant',
-	FIRST_HARVEST: 'First Harvest',
-	LAST_HARVEST: 'Last Harvest',
-	EXPIRY: 'Expiry'
-};
+export const AnnualLifecycleMilestoneLabels: Record<AnnualLifecycleMilestone, string> =
+	{
+		SEED: 'Seed',
+		GERMINATION: 'Germination',
+		TRANSPLANT: 'Transplant',
+		FIRST_HARVEST: 'First Harvest',
+		LAST_HARVEST: 'Last Harvest',
+		EXPIRY: 'Expiry'
+	};
 
 /**
  * Which milestones exist for a given Origin, in chain order. Transplant

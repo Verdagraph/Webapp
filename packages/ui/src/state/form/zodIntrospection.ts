@@ -98,7 +98,9 @@ export function deriveInitialValues<Schema extends z.ZodTypeAny>(
 	overrides?: DeepPartial<z.infer<Schema>>
 ): z.infer<Schema> {
 	const base = deriveNode(unwrapEffects(schema));
-	return (overrides === undefined ? base : mergeDeep(base, overrides)) as z.infer<Schema>;
+	return (
+		overrides === undefined ? base : mergeDeep(base, overrides)
+	) as z.infer<Schema>;
 }
 
 /** Walks `schema` along a dot/bracket path to the zod node describing that field. */

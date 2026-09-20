@@ -68,7 +68,9 @@ export function locationTreeItem(
 		value: fromDate(value.location.date, getLocalTimeZone()),
 		onChange: (newData: DateValue) => {
 			const date = newData.toDate(getLocalTimeZone());
-			if (!fieldValid(dateId, date, workspaceFields.locationDateSchema, ctx.fieldErrors)) {
+			if (
+				!fieldValid(dateId, date, workspaceFields.locationDateSchema, ctx.fieldErrors)
+			) {
 				return;
 			}
 			ctx.updateHandler(value.location.id, { date });

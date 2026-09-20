@@ -52,7 +52,7 @@
 		{#each thumbs as index}
 			<Slider.Thumb
 				{index}
-				class="focus-visible:ring-neutal-11 bg-neutral-11 h-1/3 w-1 cursor-pointer self-start rounded-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-98"
+				class="focus-visible:ring-neutal-11 bg-neutral-11 active:scale-98 h-1/3 w-1 cursor-pointer self-start rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 			/>
 		{/each}
 

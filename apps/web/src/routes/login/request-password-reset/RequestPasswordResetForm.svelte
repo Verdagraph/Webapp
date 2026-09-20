@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createForm, Form, Input } from '@vdg-webapp/ui';
 	import { userFields } from '@vdg-webapp/models';
+	import { Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { userRequestPasswordReset } from '$data/users/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
