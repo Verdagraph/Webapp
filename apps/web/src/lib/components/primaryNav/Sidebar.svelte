@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { Button } from 'bits-ui';
 
-	import { ClientAvatarIcon, Separator, VdgLogo } from '@vdg-webapp/ui';
-
-	import gardenContext from '$state/gardenContext.svelte';
+	import { ClientAvatarIcon, Separator, VdgLogo, getAppContext } from '@vdg-webapp/ui';
 
 	import Tab from './Tab.svelte';
 	import type { PrimaryTabSpec } from './tabs.svelte';
@@ -15,6 +13,8 @@
 		profileTab: PrimaryTabSpec;
 	};
 	let { gardensTab, gardenTabs, bottomTabs, profileTab }: Props = $props();
+
+	const ctx = getAppContext();
 </script>
 
 {#snippet clientProfileIcon()}
@@ -40,7 +40,7 @@ Large screens sidebar.
 		<!-- Gardens tab. -->
 		<Tab spec={gardensTab} side="right" iconSize="2rem" />
 
-		{#if gardenContext.id}
+		{#if ctx.garden.id}
 			<Separator.Root class="bg-neutral-6" />
 
 			<!-- Garden specific links. -->

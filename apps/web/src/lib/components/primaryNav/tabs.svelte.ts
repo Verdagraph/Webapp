@@ -197,7 +197,7 @@ export const getResourcesTab = (): PrimaryTabSpec => {
 			},
 			{
 				label: 'Project',
-				url: externalLinks.project,
+				url: externalLinks.repository,
 				iconId: iconIds.resourcesProjectIcon
 			},
 			{

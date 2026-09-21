@@ -3,6 +3,7 @@
 	import type { Snippet } from 'svelte';
 
 	import type { Garden } from '@vdg-webapp/models';
+	import { getAppContext } from '@vdg-webapp/ui';
 
 	import {
 		adminGardensQuery,
@@ -12,7 +13,6 @@
 		viewerGardensQuery
 	} from '$data/gardens/queries';
 	import triplit from '$data/triplit';
-	import gardenContext from '$state/gardenContext.svelte';
 
 	import PrimaryNav from './PrimaryNav.svelte';
 	import {
@@ -28,9 +28,11 @@
 	};
 	let { children }: Props = $props();
 
+	const ctx = getAppContext();
+
 	/* Queries */
 	let activeGarden = $derived(
-		useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }))
+		useQuery(triplit, gardenQuery.Vars({ id: ctx.garden.id }))
 	);
 	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
 	let adminGardens = useQuery(triplit, adminGardensQuery);

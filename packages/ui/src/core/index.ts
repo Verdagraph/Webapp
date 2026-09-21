@@ -11,6 +11,7 @@ export * as Dialog from './dialog';
 export * as Drawer from './drawer';
 export * as DropdownMenu from './dropdown-menu';
 export * as Form from './form';
+export type { ControlProps } from './form/formContext';
 export * as Input from './input';
 export * as Menubar from './menubar';
 export * as Popover from './popover';
