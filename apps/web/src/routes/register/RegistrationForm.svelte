@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input, createForm } from '@vdg-webapp/ui';
+	import { type ControlProps, Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { userCreate } from '$data/users/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
@@ -32,7 +32,7 @@
 	<!-- Username -->
 	<Form.Field {form} name="username">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.usernameSchema.description}
 					>Username</Form.Label
 				>
@@ -50,7 +50,7 @@
 	<!-- Email address -->
 	<Form.Field {form} name="email">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.emailSchema.description}>Email</Form.Label>
 				<Input.Root
 					{...props}
@@ -66,7 +66,7 @@
 	<!-- Password1 -->
 	<Form.Field {form} name="password1">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.passwordSchema.description}
 					>Password</Form.Label
 				>
@@ -79,7 +79,7 @@
 	<!-- Password2 -->
 	<Form.Field {form} name="password2">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.passwordSchema.description}
 					>Confirm Password</Form.Label
 				>

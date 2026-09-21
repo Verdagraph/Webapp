@@ -9,17 +9,19 @@
 	import { userConfirmEmailConfirmation } from '$data/users/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
-	/* Initialize the mutation on page load with url parameter. */
-	const confirmationToken = page.params.confirmationToken;
-
 	let formHandler = createCommandHandler(userConfirmEmailConfirmation.mutation, {
 		onSuccess: () => {
 			goto('/login');
 		}
 	});
-	formHandler.execute({
-		token: confirmationToken
-	} satisfies UserConfirmEmailConfirmationCommand);
+
+	/* Initialize the mutation on page load with url parameter. */
+	const confirmationToken = page.params.confirmationToken;
+	if (confirmationToken) {
+		formHandler.execute({
+			token: confirmationToken
+		} satisfies UserConfirmEmailConfirmationCommand);
+	}
 </script>
 
 <svelte:head>

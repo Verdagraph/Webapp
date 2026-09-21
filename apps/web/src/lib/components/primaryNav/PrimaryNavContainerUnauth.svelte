@@ -2,9 +2,10 @@
 	import { useQuery } from '@triplit/svelte';
 	import type { Snippet } from 'svelte';
 
+	import { getAppContext } from '@vdg-webapp/ui';
+
 	import { gardenQuery } from '$data/gardens/queries';
 	import triplit from '$data/triplit';
-	import gardenContext from '$state/gardenContext.svelte';
 
 	import PrimaryNav from './PrimaryNav.svelte';
 	import {
@@ -20,8 +21,10 @@
 	};
 	let { children }: Props = $props();
 
+	const ctx = getAppContext();
+
 	/* Queries */
-	let activeGarden = useQuery(triplit, gardenQuery.Vars({ id: gardenContext.id }));
+	let activeGarden = useQuery(triplit, gardenQuery.Vars({ id: ctx.garden.id }));
 
 	/** Retrieve the tabs. */
 	let gardensTab = getGardensAnonTab();

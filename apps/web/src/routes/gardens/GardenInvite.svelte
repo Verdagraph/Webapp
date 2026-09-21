@@ -2,12 +2,10 @@
 	import Icon from '@iconify/svelte';
 	import { useQuery } from '@triplit/svelte';
 
+	import { gardenMembershipAccept, gardenMembershipDelete } from '@vdg-webapp/models';
 	import { Button, Separator, iconIds } from '@vdg-webapp/ui';
 
-	import {
-		gardenMembershipAccept,
-		gardenMembershipDelete
-	} from '$data/gardens/commands';
+	import controller from '$data/controller';
 	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
 	import triplit from '$data/triplit';
 	import { userProfilesQuery } from '$data/users/queries';
@@ -25,10 +23,12 @@
 
 	/** Mutations. */
 	const gardenMembershipAcceptHandler = createCommandHandler(
-		gardenMembershipAccept.mutation
+		(data: Parameters<typeof gardenMembershipAccept>[0]) =>
+			gardenMembershipAccept(data, controller)
 	);
 	const gardenMembershipDeleteHandler = createCommandHandler(
-		gardenMembershipDelete.mutation
+		(data: Parameters<typeof gardenMembershipDelete>[0]) =>
+			gardenMembershipDelete(data, controller)
 	);
 </script>
 

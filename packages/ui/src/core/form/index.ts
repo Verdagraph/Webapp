@@ -7,6 +7,8 @@ import FormInfoPopover from './form-info-popover.svelte';
 import Label from './form-label.svelte';
 import NonFieldErrors from './form-non-field-errors.svelte';
 
+export type { ControlProps } from './formContext';
+
 export {
 	Field,
 	Control,

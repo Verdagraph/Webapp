@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input, createForm } from '@vdg-webapp/ui';
+	import { type ControlProps, Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { page } from '$app/state';
 	import { userConfirmPasswordReset } from '$data/users/commands';
@@ -30,7 +30,7 @@
 	<!-- New Password1 -->
 	<Form.Field {form} name="password1">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.passwordSchema.description}
 					>New Password</Form.Label
 				>
@@ -43,7 +43,7 @@
 	<!-- New Password2 -->
 	<Form.Field {form} name="password2">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.passwordSchema.description}
 					>Confirm Password</Form.Label
 				>

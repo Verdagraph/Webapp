@@ -4,7 +4,7 @@
 		workspaceCreate,
 		workspaceFields
 	} from '@vdg-webapp/models';
-	import { Form, Input, Textarea, createForm } from '@vdg-webapp/ui';
+	import { type ControlProps, Form, Input, Textarea, createForm } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
@@ -30,7 +30,7 @@
 	<!-- Name. -->
 	<Form.Field {form} name="name">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={workspaceFields.workspaceNameSchema.description}
 					optional={false}>Name</Form.Label
@@ -49,7 +49,7 @@
 	<!-- Description. -->
 	<Form.Field {form} name="description">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={workspaceFields.workspaceDescriptionSchema.description}
 					optional={true}>Description</Form.Label

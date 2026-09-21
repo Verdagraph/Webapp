@@ -1,19 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	import type { Workspace } from '@vdg-webapp/models';
 	import { Button, ScrollArea, WorkspaceThumbnail } from '@vdg-webapp/ui';
-
-	import { getWorkspaceContext } from './activeWorkspace.svelte';
-
-	const workspaceContext = getWorkspaceContext();
-
-	onMount(() => {
-		/** CLear the active workspace. */
-		if (workspaceContext.id) {
-			workspaceContext.reset();
-		}
-	});
 
 	/** TODO: Replace with query. */
 	let workspaces: Workspace[] = [

@@ -1,25 +1,19 @@
 <script lang="ts">
 	import { ModeWatcher } from 'mode-watcher';
-	import { mode as modeWatcher } from 'mode-watcher';
 	import 'tailwindcss/tailwind.css';
 
-	import { Toaster, Tooltip } from '@vdg-webapp/ui';
+	import { Toaster, Tooltip, setAppContext } from '@vdg-webapp/ui';
 
 	import PrimaryNav from '$components/primaryNav';
-	import { userLogin } from '$data/users/auth';
-	import mode from '$state/theme.svelte';
+	import triplit from '$data/triplit';
+	import { getClient, userLogin } from '$data/users/auth';
 
 	import '../app.pcss';
 
 	let { children } = $props();
 
-	/**
-	 * Track ModeWatcher's value into a svelte 5 rune.
-	 * TODO: Remove once ModeWatcher is updated to svelte 5.
-	 */
-	modeWatcher.subscribe((value) => {
-		mode.value = value;
-	});
+	/** Application context: controller, client, garden/workspace/plant contexts, etc. */
+	setAppContext({ triplit, getClient });
 
 	/**
 	 * For development purposes, automatically log the user in.
