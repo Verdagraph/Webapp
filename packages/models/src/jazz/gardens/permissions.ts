@@ -12,7 +12,7 @@ export function constructGardenPermissions(app: JazzApp) {
 	});
 }
 
-function constructGardensPolicy({ policy, session }: GardenPolicyContext) {
+export function constructGardensPolicy({ policy, session }: GardenPolicyContext) {
 	policy.gardens.allowRead.where(
 		anyOf([
 			{ visibility: { ne: 'HIDDEN' } },
@@ -26,7 +26,10 @@ function constructGardensPolicy({ policy, session }: GardenPolicyContext) {
 	policy.gardens.allowDelete.never();
 }
 
-function constructGardenMembershipsPolicy({ policy, session }: GardenPolicyContext) {
+export function constructGardenMembershipsPolicy({
+	policy,
+	session
+}: GardenPolicyContext) {
 	/** Readable by garden members, writable by admins only. */
 	const isGardenAdmin = (membership: { gardenId: RowRefValue }) =>
 		policy.gardens.exists.where({

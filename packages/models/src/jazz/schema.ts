@@ -1,7 +1,9 @@
 import { schema as s } from 'jazz-tools';
 
 import { gardenSchema } from './gardens/schema.js';
+import { observationSchema } from './observations/schema.js';
 import { usersStub } from './users.js';
+import { workspaceSchema } from './workspaces/schema.js';
 
 /**
  * `usersStub` is a placeholder; real auth/user data stays on Triplit for
@@ -9,7 +11,9 @@ import { usersStub } from './users.js';
  */
 const appSchema = {
 	...usersStub,
-	...gardenSchema
+	...gardenSchema,
+	...observationSchema,
+	...workspaceSchema
 };
 
 export type JazzSchema = s.Schema<typeof appSchema>;

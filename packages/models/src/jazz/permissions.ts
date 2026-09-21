@@ -1,4 +1,16 @@
-import { constructGardenPermissions } from './gardens/permissions.js';
-import { app } from './schema.js';
+import { schema as s } from 'jazz-tools';
 
-export const permissions = constructGardenPermissions(app);
+import {
+	constructGardenMembershipsPolicy,
+	constructGardensPolicy
+} from './gardens/permissions.js';
+import { constructObservationsPolicy } from './observations/permissions.js';
+import { app } from './schema.js';
+import { constructWorkspacesPolicy } from './workspaces/permissions.js';
+
+export const permissions = s.definePermissions(app, (ctx) => {
+	constructGardensPolicy(ctx);
+	constructGardenMembershipsPolicy(ctx);
+	constructObservationsPolicy(ctx);
+	constructWorkspacesPolicy(ctx);
+});
