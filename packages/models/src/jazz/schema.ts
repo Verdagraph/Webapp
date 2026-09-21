@@ -4,9 +4,8 @@ import { gardenSchema } from './gardens/schema.js';
 import { usersStub } from './users.js';
 
 /**
- * Validation-spike app schema: gardens domain only.
- * `usersStub` is a placeholder; real auth/user data stays on Triplit for now
- * (see the migration plan for why Better Auth integration is out of scope).
+ * `usersStub` is a placeholder; real auth/user data stays on Triplit for
+ * now (Better Auth integration is out of scope for this migration).
  */
 const appSchema = {
 	...usersStub,

@@ -1,7 +1,7 @@
 /**
- * Standalone verification script for the Jazz v2 spike — not part of the
- * package build/exports, not a maintained test suite. Kept as reproducible
- * evidence for the findings in SPIKE_NOTES.md; run manually, not in CI.
+ * Standalone verification script, not part of the package build/exports
+ * and not a maintained test suite. Kept as reproducible evidence for the
+ * findings in SPIKE_NOTES.md; run manually, not in CI.
  * Usage: from packages/models, `npx tsc -p .` then `node spike-verify.ts`.
  */
 import { createPolicyTestApp } from 'jazz-tools/testing';

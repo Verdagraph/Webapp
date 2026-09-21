@@ -1,8 +1,7 @@
 /**
- * Jazz v2 validation spike — gardens domain only.
- * This tree is fully parallel to the existing Triplit-backed exports at
- * `packages/models/src/index.ts`; nothing here is wired into the app yet.
- * See SPIKE_NOTES.md in this directory.
+ * Jazz-backed domain models, replacing the Triplit-backed exports at
+ * `packages/models/src/index.ts` one domain at a time during the
+ * migration.
  */
 export * from './gardens/index.js';
 export * from './users.js';

@@ -25,3 +25,6 @@ vite.config.ts.timestamp-*
 
 # Jazz local dev server storage
 /jazz-data
+
+# Triplit CLI build cache
+/triplit/seeds/.temp

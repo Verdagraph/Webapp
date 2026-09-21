@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-# Starts a local, persistent Jazz v2 sync server for the gardens spike and
-# deploys its schema/permissions to it. Dev-only: app id, admin secret, and
-# JWT secret are all hardcoded local values, matching how the Triplit `dev`
-# script already hardcodes TRIPLIT_JWT_SECRET=secret for local dev.
-# See packages/models/src/jazz/SPIKE_NOTES.md.
+# Starts a local, persistent Jazz sync server and deploys its schema and
+# permissions to it. Dev-only: app id, admin secret, and JWT secret are
+# all hardcoded local values, matching how the Triplit `dev` script
+# already hardcodes TRIPLIT_JWT_SECRET=secret for local dev.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

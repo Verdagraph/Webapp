@@ -57,6 +57,9 @@ importers:
       axios:
         specifier: ^1.9.0
         version: 1.13.2
+      jazz-tools:
+        specifier: 2.0.0-alpha.55
+        version: 2.0.0-alpha.55(patch_hash=36957aaf3ce4373696297d372fc632f73e222e81dd822d37eb27ada839f2bdbe)(svelte@5.34.0)
       melt:
         specifier: ^0.14.1
         version: 0.14.1(@floating-ui/dom@1.7.1)(svelte@5.34.0)

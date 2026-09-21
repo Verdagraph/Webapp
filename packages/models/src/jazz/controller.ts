@@ -44,7 +44,7 @@ export function createController(params: ControllerContextParams) {
 	/**
 	 * Given a garden and an action, retrieve the client
 	 * and throw an error if the client does not have at least that role.
-	 * @param gardenSlug The garden's user-facing slug (not its Jazz row id — see SPIKE_NOTES.md).
+	 * @param gardenSlug The garden's user-facing slug (not its Jazz row id).
 	 * @param action The action to authorize for.
 	 * @returns The client and garden objects.
 	 */

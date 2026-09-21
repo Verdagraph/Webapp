@@ -13,7 +13,7 @@ const ACCESS_TOKEN_EXPIRY_S = 15 * 60;
  * enough here), but required for the same token to also authenticate to the
  * Jazz sync server, which needs `sub`/`iss` to derive a session at all and
  * requires `--jwt-issuer`/`--jwt-audience` to be configured whenever a
- * static JWT public key is used. See packages/models/src/jazz/SPIKE_NOTES.md.
+ * static JWT public key is used.
  */
 const ACCESS_TOKEN_ISSUER = 'verdagraph';
 const ACCESS_TOKEN_AUDIENCE = 'jazz';

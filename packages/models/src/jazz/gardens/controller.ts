@@ -17,8 +17,7 @@ import { isProfileMember } from './utils.js';
  * Given a list of usernames, constructs an array of matching user IDs
  * that are not already members in the given garden.
  *
- * NOTE: queries the `users` stub table (see `../users.ts`), not real auth
- * data — this is a spike-only placeholder, see the migration plan.
+ * Queries the `users` stub table (see `../users.ts`), not real user data.
  */
 async function getNewMembershipIdsFromUsernames(
 	usernames: string[] | undefined,
@@ -36,8 +35,8 @@ async function getNewMembershipIdsFromUsernames(
 }
 
 /**
- * Resolves a garden's user-facing slug to the garden row (whose Jazz row id
- * is a separate, auto-generated UUID — see SPIKE_NOTES.md).
+ * Resolves a garden's user-facing slug to the garden row (the row id is a
+ * separate, auto-generated UUID).
  */
 async function getGardenBySlugOrError(
 	gardenSlug: string,
@@ -82,12 +81,11 @@ export async function gardenCreate(
 
 	/**
 	 * Insert the garden first and wait for the server to durably accept it
-	 * before inserting any memberships. Memberships' insert policy checks
-	 * `exists` against the garden row — if the garden insert and the first
-	 * membership insert are staged in the *same* transaction, the server
-	 * rejects the membership insert because the garden isn't yet visible to
-	 * the policy engine within that transaction (confirmed via
-	 * `probe5`/`probe6` while building this spike — see SPIKE_NOTES.md).
+	 * before inserting any memberships. A membership's insert policy checks
+	 * `exists` against the garden row: if the garden insert and the first
+	 * membership insert are staged in the same transaction, the server
+	 * rejects the membership insert because the garden is not yet visible
+	 * to the policy engine within that transaction.
 	 */
 	const gardenWrite = ctx.db.insert(ctx.jazz.gardens, {
 		slug: data.id,
@@ -101,8 +99,10 @@ export async function gardenCreate(
 	});
 	const garden = await gardenWrite.wait({ tier: 'edge' });
 
-	/** Add all memberships in one transaction — safe together, since they only
-	 * depend on the now-durable garden, not on each other. */
+	/**
+	 * Add all memberships in one transaction. Safe together since they only
+	 * depend on the now-durable garden, not on each other.
+	 */
 	await ctx.db.transaction(async (tx) => {
 		/** Add creator membership. */
 		tx.insert(ctx.jazz.gardenMemberships, {

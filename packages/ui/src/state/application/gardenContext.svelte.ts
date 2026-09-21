@@ -12,11 +12,10 @@ import { jazzApp } from '@vdg-webapp/models/jazz';
  * allowing UI elements to be rendered based on a user's
  * level of permissions.
  *
- * Jazz v2 validation spike: reads through Jazz instead of Triplit. `id` is
- * the garden's user-facing slug (not its Jazz row id — see
- * packages/models/src/jazz/SPIKE_NOTES.md). Identity for role checks comes
- * from the Jazz session (`session.user.account`, a Jazz-native account
- * UUID), not the Triplit `ClientContext` the rest of the app still uses.
+ * `id` is the garden's user-facing slug, not its Jazz row id. Identity for
+ * role checks comes from the Jazz session (`session.user.account`, a
+ * Jazz-native account UUID), not the Triplit `ClientContext` other
+ * contexts still use.
  */
 export function createGardenContext() {
 	let id = $state('');
