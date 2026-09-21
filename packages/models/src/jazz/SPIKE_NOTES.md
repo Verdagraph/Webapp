@@ -13,7 +13,7 @@ decisions here should be reviewed by the user before any wider rollout.
 **Naming/layout is spike-only, not the intended final shape.** The `Jazz`
 prefix on types (`JazzGarden`, `JazzGardenMembership`, `JazzUser`, `JazzApp`,
 `JazzDb`) and the whole `src/jazz/` subtree exist only so this port can live
-*alongside* the Triplit-backed code without name collisions during
+_alongside_ the Triplit-backed code without name collisions during
 validation. In an actual migration (Jazz replacing Triplit, not sitting
 next to it), these become the real names — `Garden`, `GardenMembership`,
 etc. — living directly in `gardens/schema.ts` and friends, the same way the
@@ -41,7 +41,71 @@ Triplit versions do today; no separate `jazz/` nesting or prefix needed.
   can read it). Verified with 8/8 checks passing in `spike-verify.ts` (a
   standalone script at the package root using `jazz-tools/testing`'s
   `createPolicyTestApp` — run manually, not part of the build/CI).
-- Not yet done: any `apps/web`/`apps/server` UI or auth wiring.
+- **The real JWT auth bridge is done and verified against production code**,
+  not just a probe — see "Headline finding #4" below. `apps/web`/UI wiring
+  is next, not yet started.
+
+## Headline finding #4: the existing JWT auth bridges to Jazz cleanly — verified with a real login
+
+Traced Jazz's external-JWT verification (`jose`'s `compactVerify`/`importJWK`
+in `jazz-tools/backend`, not just the `.d.ts` files) to settle whether the
+app's existing HS256 shared-secret auth (`apps/server`, Argon2 + JWT, see
+`apps/server/src/users/auth/tokens.ts`) could work with Jazz at all, per the
+plan's recommendation to reuse it instead of adopting Better Auth.
+
+**It works, end to end, verified against a real `/users/login` call — not
+just a hand-crafted token.** Concretely:
+
+1. **HS256 shared secrets work.** `--jwt-public-key` accepts a JWK; passing
+   `{ kty: "oct", k: base64url(secret) }` (the JWK form of an HMAC secret)
+   verifies our existing `ACCESS_TOKEN_SECRET`-signed tokens correctly. No
+   asymmetric keypair or JWKS endpoint needed, contrary to what the flag
+   names alone suggest.
+2. **`sub`/`iss`/`aud` claims are required**, and the CLI mandates
+   `--jwt-issuer`/`--jwt-audience` whenever `--jwt-public-key` is set (even
+   though the underlying library only *enforces* issuer/audience matching if
+   those options are actually configured). Our tokens had none of the three.
+   **Fixed**: `apps/server/src/users/auth/tokens.ts`'s `encodeAccessToken`
+   now sets `subject: accountId`, `issuer: 'verdagraph'`,
+   `audience: 'jazz'` via `jsonwebtoken`'s sign options — additive, doesn't
+   change `decodeAccessToken`'s existing verification (which doesn't check
+   audience/issuer) or break anything reading the token elsewhere.
+3. **`session.user.account` — what `gardens/permissions.ts` already checks —
+   gets populated correctly for external JWT sessions**, via Jazz's own
+   account-admission/registry mechanism: calling
+   `session.loginOrRegisterJWT(token)` (client-side; the equivalent on a
+   backend is `JazzClient.forRequest(request, { account: "login-or-register" })`)
+   auto-provisions a stable Jazz-native account UUID for a given
+   `(iss, sub)` identity pair on first use, and returns the same UUID on
+   every subsequent login — **confirmed identical across separate process
+   runs with the same token**. No change needed to `gardens/permissions.ts`
+   or the ref-array schema decision from finding #3 — they already worked
+   against this correctly once the token had `sub`/`iss`.
+4. **The full loop was verified with real production code**, not synthetic
+   sessions: called `POST /users/login` on the actual running `apps/server`
+   with real seeded credentials (`test@Verdagraph.com` / `password` from
+   `packages/models/triplit/seeds/seed.ts`), took the real returned access
+   token, fed it through `createJazzSession(...).loginOrRegisterJWT(token)`
+   against a real local Jazz server, and confirmed: a garden with that
+   user's real Jazz account UUID in `adminIds` could be updated by them: a
+   garden *without* it there was correctly denied
+   (`permission_denied: Write rejected by server authorization`).
+
+**Open question, not yet resolved: how does inviting *another* user to a
+garden work?** `gardenCreate`/`gardenMembershipCreate` currently resolve
+invites by username against the `users` stub table to get a `profileId`,
+then put that directly in `adminIds`/`editorIds`/`viewerIds`. But the value
+those arrays actually need is the invitee's **Jazz account UUID** — which
+only exists once *that user* has completed a Jazz login at least once (the
+UUID is assigned by Jazz's account registry on first `loginOrRegisterJWT`/
+`forRequest`, not computed by us). Whether that assignment is a pure
+deterministic function of `(issuer, subject)` we could replicate ourselves
+ahead of time (there's a `readAccountAssignment` client helper in
+`jazz-tools`'s `accounts/registry-client` that suggests a registry *lookup*
+is the sanctioned path, not a local hash) is unconfirmed. Needs
+investigation before invite flows can be ported — not blocking for a
+single-user demo of the UI wiring, but blocking for real multi-user
+membership flows.
 
 ## Headline finding #1: garden IDs cannot stay as user-supplied slugs — resolved
 
@@ -167,8 +231,8 @@ each function's destructured `{ policy, session }` parameter.
 This also let a shared cross-table check get extracted into a helper —
 **correcting** `MIGRATION_NOTES.md`'s old finding that a shared helper
 "does not work because TypeScript cannot narrow the row type through the
-helper boundary." Re-tested against `alpha.55`: it works fine, *as long as
-the helper's row parameter is typed as `{ <field>: RowRefValue }`*
+helper boundary." Re-tested against `alpha.55`: it works fine, _as long as
+the helper's row parameter is typed as `{ <field>: RowRefValue }`_
 (`RowRefValue`, exported from `jazz-tools`) rather than left inferred or
 typed `unknown`:
 
@@ -185,7 +249,7 @@ policy.gardenMemberships.allowDelete.where(isGardenAdmin);
 ```
 
 The old branch's helper attempt was actually a different, narrower pattern
-(a function capturing an *outer* `gardenId` string and returning a closure
+(a function capturing an _outer_ `gardenId` string and returning a closure
 over an untyped row parameter) — this dedicated `RowRefValue` typing wasn't
 tried. Verified behavior-identical against the same 8/8 `spike-verify.ts`
 checks after the refactor.
@@ -246,17 +310,29 @@ branch's notes used.
 
 ## How to reproduce locally
 
+**Use a pinned version** (`jazz-tools@2.0.0-alpha.55`, matching
+`package.json`), not `@alpha` — that tag moved to `alpha.56` mid-spike and
+an unpinned `npx jazz-tools@alpha ...` silently installs whatever's newest,
+which can drift from what's actually committed.
+
 ```bash
 # one-time: mint a local app id (no network call)
-npx jazz-tools@alpha create app --name jazz-spike-gardens
+npx jazz-tools@2.0.0-alpha.55 create app --name jazz-spike-gardens
 
-# start a local in-memory sync server
-JAZZ_ADMIN_SECRET=dev-secret npx jazz-tools@alpha server <appId> \
+# start a local in-memory sync server (no external JWT auth)
+npx jazz-tools@2.0.0-alpha.55 server <appId> \
   --port 1626 --in-memory --admin-secret dev-secret --allow-local-first-auth
 
+# ...or, to test the real JWT bridge (finding #4): validate the app's
+# ACCESS_TOKEN_SECRET as a JWK, and require the iss/aud it now sets
+npx jazz-tools@2.0.0-alpha.55 server <appId> \
+  --port 1626 --in-memory --admin-secret dev-secret \
+  --jwt-public-key '{"kty":"oct","k":"<base64url(ACCESS_TOKEN_SECRET)>"}' \
+  --jwt-issuer verdagraph --jwt-audience jazz
+
 # from packages/models, validate + deploy the schema/permissions
-npx jazz-tools@alpha validate --schema-dir src/jazz
-npx jazz-tools@alpha deploy <appId> --schema-dir src/jazz \
+npx jazz-tools@2.0.0-alpha.55 validate --schema-dir src/jazz
+npx jazz-tools@2.0.0-alpha.55 deploy <appId> --schema-dir src/jazz \
   --server-url http://localhost:1626 --admin-secret dev-secret
 ```
 

@@ -7,6 +7,17 @@ const ACCESS_HEADER_KEY = 'Authorization';
 const REFRESH_COOKIE_KEY = 'refresh';
 const ACCESS_TOKEN_EXPIRY_S = 15 * 60;
 
+/**
+ * Standard `iss`/`aud` claims on access tokens.
+ * Not used by this server's own `decodeAccessToken` (signature + expiry is
+ * enough here), but required for the same token to also authenticate to the
+ * Jazz sync server, which needs `sub`/`iss` to derive a session at all and
+ * requires `--jwt-issuer`/`--jwt-audience` to be configured whenever a
+ * static JWT public key is used. See packages/models/src/jazz/SPIKE_NOTES.md.
+ */
+const ACCESS_TOKEN_ISSUER = 'verdagraph';
+const ACCESS_TOKEN_AUDIENCE = 'jazz';
+
 /** The payload information carried by access tokens. */
 type AccessTokenPayload = {
 	/** The type of role the user has access to. */
@@ -54,7 +65,12 @@ export const encodeAccessToken = (
 		jwt.sign(
 			payload,
 			env.ACCESS_TOKEN_SECRET,
-			{ expiresIn: ACCESS_TOKEN_EXPIRY_S },
+			{
+				expiresIn: ACCESS_TOKEN_EXPIRY_S,
+				subject: accountId,
+				issuer: ACCESS_TOKEN_ISSUER,
+				audience: ACCESS_TOKEN_AUDIENCE
+			},
 			(error, token) => {
 				if (error || !token) {
 					reject(new InternalFailureException());
