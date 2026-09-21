@@ -7,8 +7,8 @@
 import { createPolicyTestApp } from 'jazz-tools/testing';
 
 import { createController } from './dist/jazz/controller.js';
-import { constructGardenPermissions } from './dist/jazz/gardens/permissions.js';
 import { gardenCreate } from './dist/jazz/gardens/controller.js';
+import { constructGardenPermissions } from './dist/jazz/gardens/permissions.js';
 import { jazzApp } from './dist/jazz/schema.js';
 
 const ADMIN_ID = 'e92bbea9-7a9f-4c25-aa14-066ce643955c';
@@ -165,11 +165,15 @@ async function main() {
 
 	console.log('\n--- Test: non-member cannot read a HIDDEN garden ---');
 	const strangerDb = testApp.as(makeSession(STRANGER_ID));
-	const strangerReadResult = await strangerDb.one(jazzApp.gardens.where({ id: created.id }));
+	const strangerReadResult = await strangerDb.one(
+		jazzApp.gardens.where({ id: created.id })
+	);
 	ok('stranger got no result for a HIDDEN garden', strangerReadResult == null);
 
 	console.log('\n--- Test: viewer (a member) CAN read the HIDDEN garden ---');
-	const viewerReadResult = await viewerDb.one(jazzApp.gardens.where({ id: created.id }));
+	const viewerReadResult = await viewerDb.one(
+		jazzApp.gardens.where({ id: created.id })
+	);
 	ok('viewer member could read the HIDDEN garden', viewerReadResult != null);
 
 	await testApp.shutdown();

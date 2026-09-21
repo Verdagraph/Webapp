@@ -10,6 +10,15 @@ minimal `users` stub table for membership lookups. Triplit is untouched —
 nothing in this tree is wired into `apps/web`/`apps/server` yet. All design
 decisions here should be reviewed by the user before any wider rollout.
 
+**Naming/layout is spike-only, not the intended final shape.** The `Jazz`
+prefix on types (`JazzGarden`, `JazzGardenMembership`, `JazzUser`, `JazzApp`,
+`JazzDb`) and the whole `src/jazz/` subtree exist only so this port can live
+*alongside* the Triplit-backed code without name collisions during
+validation. In an actual migration (Jazz replacing Triplit, not sitting
+next to it), these become the real names — `Garden`, `GardenMembership`,
+etc. — living directly in `gardens/schema.ts` and friends, the same way the
+Triplit versions do today; no separate `jazz/` nesting or prefix needed.
+
 ---
 
 ## Status: schema + permissions + controller port complete; runtime-verified end-to-end
@@ -75,7 +84,7 @@ compile/deploy). The original port staged the garden insert and the
 creator's membership insert in one `db.transaction(...)` call — this
 **looked like it succeeded** (`await ctx.db.transaction(...)` resolved with
 no error) but the garden was never actually there afterward. The local
-transaction result only tells you the write was accepted *locally*; you
+transaction result only tells you the write was accepted _locally_; you
 have to explicitly `await result.wait({ tier: "edge" })` (documented in
 `MIGRATION_NOTES.md`'s "transaction API" section) to get the server's real
 verdict — and once awaited, it surfaced a genuine rejection:
@@ -89,14 +98,14 @@ Root cause, isolated with a series of throwaway probes (not kept — see
 history if needed): `gardenMemberships.allowInsert`'s policy checks
 `policy.gardens.exists.where({ id: membership.gardenId, adminIds: {
 contains: session.user.account } })`. When the referenced `gardens` row was
-inserted earlier in the *same* transaction, the policy engine does not see
+inserted earlier in the _same_ transaction, the policy engine does not see
 it as existing yet — so the dependent membership insert is denied. This
 reproduced consistently regardless of whether the transaction was driven
 directly (`db.transaction`) or through the ported controller.
 
 **Fix confirmed working:** insert the garden alone first, explicitly
 `await write.wait({ tier: "edge" })` to get durable confirmation, and only
-*then* insert the (now-safe-to-batch-together) memberships in their own
+_then_ insert the (now-safe-to-batch-together) memberships in their own
 transaction. Membership inserts don't have this problem with each other —
 they all depend on the same already-durable garden, not on one another.
 `gardenCreate` now does this two-phase insert; see `gardens/controller.ts`.
@@ -144,6 +153,42 @@ branch's actual use case, since that `id` must be a UUID (see the headline
 finding above). The old branch's `as any` cast would have hidden this same
 UUID constraint, not worked around it; it was never actually run against a
 live server to find out. See `packages/models/src/jazz/gardens/controller.ts`.
+
+## Permissions file structure: one function per table, and a corrected old gotcha
+
+`gardens/permissions.ts` is now split into one policy-builder function per
+table (`constructGardensPolicy`, `constructGardenMembershipsPolicy`),
+composed by the exported `constructGardenPermissions(app)`. This is the
+convention to follow as domains grow — one function per table/model within
+a domain's `permissions.ts`, not one large function for the whole domain.
+`PolicyContext<JazzApp>` (exported from `jazz-tools`) is the type to give
+each function's destructured `{ policy, session }` parameter.
+
+This also let a shared cross-table check get extracted into a helper —
+**correcting** `MIGRATION_NOTES.md`'s old finding that a shared helper
+"does not work because TypeScript cannot narrow the row type through the
+helper boundary." Re-tested against `alpha.55`: it works fine, *as long as
+the helper's row parameter is typed as `{ <field>: RowRefValue }`*
+(`RowRefValue`, exported from `jazz-tools`) rather than left inferred or
+typed `unknown`:
+
+```ts
+const isGardenAdmin = (membership: { gardenId: RowRefValue }) =>
+	policy.gardens.exists.where({
+		id: membership.gardenId,
+		adminIds: { contains: session.user.account }
+	});
+
+policy.gardenMemberships.allowInsert.where(isGardenAdmin);
+policy.gardenMemberships.allowUpdate.where(isGardenAdmin);
+policy.gardenMemberships.allowDelete.where(isGardenAdmin);
+```
+
+The old branch's helper attempt was actually a different, narrower pattern
+(a function capturing an *outer* `gardenId` string and returning a closure
+over an untyped row parameter) — this dedicated `RowRefValue` typing wasn't
+tried. Verified behavior-identical against the same 8/8 `spike-verify.ts`
+checks after the refactor.
 
 ## Headline finding #3: `contains` against a session ref requires a ref-array column
 
