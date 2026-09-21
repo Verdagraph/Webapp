@@ -79,6 +79,7 @@
 	"dependencies": {
 		"@triplit/client": "^1.0.43",
 		"@triplit/svelte": "^1.0.43",
+		"jazz-tools": "2.0.0-alpha.55",
 		"@vdg-webapp/models": "workspace:*",
 		"melt": "^0.44.0"
 	}

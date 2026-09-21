@@ -22,3 +22,6 @@ vite.config.ts.timestamp-*
 
 # Turbo
 /.turbo
+
+# Jazz local dev server storage
+/jazz-data

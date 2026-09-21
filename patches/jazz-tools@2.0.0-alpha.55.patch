@@ -1,0 +1,30 @@
+diff --git a/dist/runtime/native-runtime/browser-shared-worker-connection.js b/dist/runtime/native-runtime/browser-shared-worker-connection.js
+index f1c53de251a413bcb04ac6465949d266f50fdb38..18cea1846034dc961a8b3ea5b41770457b64ca92 100644
+--- a/dist/runtime/native-runtime/browser-shared-worker-connection.js
++++ b/dist/runtime/native-runtime/browser-shared-worker-connection.js
+@@ -69,10 +69,10 @@ export class SharedBrowserForegroundNodeLease {
+         }
+         const createWorker = runtimeSources?.brokerWorkerUrl || runtimeSources?.baseUrl || runtimeSources?.wasmVersion
+             ? (name) => new SharedWorker(resolveBrowserWorkerUrl(runtimeSources), { type: "module", name })
+-            : (name) => new SharedWorker(new URL("../../worker/jazz-broker-worker.js", import.meta.url), {
++            : ((workerUrl) => (name) => new SharedWorker(workerUrl, {
+                 type: "module",
+                 name,
+-            });
++            }))(new URL("../../worker/jazz-broker-worker.js", import.meta.url));
+         // A named SharedWorker constructor can still attach to a realm after that
+         // realm has acknowledged termination but before the browser has finished
+         // destroying it. Probe before sending an allocation request so a realm
+@@ -363,10 +363,10 @@ export class SharedBrowserWorkerConnection {
+                 type: "module",
+                 name,
+             })
+-            : (name) => new SharedWorker(new URL("../../worker/jazz-broker-worker.js", import.meta.url), {
++            : ((workerUrl) => (name) => new SharedWorker(workerUrl, {
+                 type: "module",
+                 name,
+-            });
++            }))(new URL("../../worker/jazz-broker-worker.js", import.meta.url));
+         // Retain admission failures as state rather than leaving a process-wide
+         // bootstrap promise rejected. The manager converts this state back into
+         // the caller's `all()`/`wait()` rejection at its operation boundary; a

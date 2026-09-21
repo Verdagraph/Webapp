@@ -6,9 +6,12 @@ branch's gardens-domain port, re-verified against current `jazz-tools`
 (`2.0.0-alpha.55` at time of writing; the old branch used `alpha.42`).
 
 Scope: `gardens` domain only (schema, permissions, controller), plus a
-minimal `users` stub table for membership lookups. Triplit is untouched —
-nothing in this tree is wired into `apps/web`/`apps/server` yet. All design
-decisions here should be reviewed by the user before any wider rollout.
+minimal `users` stub table for membership lookups. Triplit is untouched and
+still fully live — `apps/web`'s `gardenContext.svelte.ts` now reads through
+Jazz instead (see "Headline finding #5"), but every other domain
+(cultivars, plants, workspaces, observations, planner) is still 100%
+Triplit. All design decisions here should be reviewed by the user before
+any wider rollout.
 
 **Naming/layout is spike-only, not the intended final shape.** The `Jazz`
 prefix on types (`JazzGarden`, `JazzGardenMembership`, `JazzUser`, `JazzApp`,
@@ -42,8 +45,15 @@ Triplit versions do today; no separate `jazz/` nesting or prefix needed.
   standalone script at the package root using `jazz-tools/testing`'s
   `createPolicyTestApp` — run manually, not part of the build/CI).
 - **The real JWT auth bridge is done and verified against production code**,
-  not just a probe — see "Headline finding #4" below. `apps/web`/UI wiring
-  is next, not yet started.
+  not just a probe — see "Headline finding #4" below.
+- **`apps/web` now runs against Jazz in a real browser, end to end**:
+  `gardenContext.svelte.ts` (packages/ui, the shared context every garden
+  route reads) is swapped to Jazz; `<JazzProvider>` wraps the app using the
+  same JWT that drives Triplit; the app renders with zero console errors
+  after a real login. Required fixing two real Vite-dev-server
+  incompatibilities in `jazz-tools`'s browser runtime — see "Headline
+  finding #5". Triplit itself is untouched and still driving everything
+  else in the app.
 
 ## Headline finding #4: the existing JWT auth bridges to Jazz cleanly — verified with a real login
 
@@ -63,7 +73,7 @@ just a hand-crafted token.** Concretely:
    names alone suggest.
 2. **`sub`/`iss`/`aud` claims are required**, and the CLI mandates
    `--jwt-issuer`/`--jwt-audience` whenever `--jwt-public-key` is set (even
-   though the underlying library only *enforces* issuer/audience matching if
+   though the underlying library only _enforces_ issuer/audience matching if
    those options are actually configured). Our tokens had none of the three.
    **Fixed**: `apps/server/src/users/auth/tokens.ts`'s `encodeAccessToken`
    now sets `subject: accountId`, `issuer: 'verdagraph'`,
@@ -88,24 +98,102 @@ just a hand-crafted token.** Concretely:
    token, fed it through `createJazzSession(...).loginOrRegisterJWT(token)`
    against a real local Jazz server, and confirmed: a garden with that
    user's real Jazz account UUID in `adminIds` could be updated by them: a
-   garden *without* it there was correctly denied
+   garden _without_ it there was correctly denied
    (`permission_denied: Write rejected by server authorization`).
 
-**Open question, not yet resolved: how does inviting *another* user to a
+**Open question, not yet resolved: how does inviting _another_ user to a
 garden work?** `gardenCreate`/`gardenMembershipCreate` currently resolve
 invites by username against the `users` stub table to get a `profileId`,
 then put that directly in `adminIds`/`editorIds`/`viewerIds`. But the value
 those arrays actually need is the invitee's **Jazz account UUID** — which
-only exists once *that user* has completed a Jazz login at least once (the
+only exists once _that user_ has completed a Jazz login at least once (the
 UUID is assigned by Jazz's account registry on first `loginOrRegisterJWT`/
 `forRequest`, not computed by us). Whether that assignment is a pure
 deterministic function of `(issuer, subject)` we could replicate ourselves
 ahead of time (there's a `readAccountAssignment` client helper in
-`jazz-tools`'s `accounts/registry-client` that suggests a registry *lookup*
+`jazz-tools`'s `accounts/registry-client` that suggests a registry _lookup_
 is the sanctioned path, not a local hash) is unconfirmed. Needs
 investigation before invite flows can be ported — not blocking for a
 single-user demo of the UI wiring, but blocking for real multi-user
 membership flows.
+
+## Headline finding #5: two real Vite-dev-server bugs in `jazz-tools`'s browser runtime — found, patched, verified in a real browser
+
+Wiring `gardenContext.svelte.ts` (`packages/ui`) to Jazz and loading it in
+an actual browser (Playwright against the real dev stack, not a probe
+script) hit two separate, genuine incompatibilities between `jazz-tools`
+alpha's browser runtime and Vite's dev server. Both needed fixes before the
+app would render past a loading/error screen; neither is a Jazz _logic_
+bug — the underlying schema/permissions/controller work (findings #1–#4)
+needed zero changes.
+
+**Bug A — a ternary breaks Vite's static worker-options parsing.**
+`jazz-tools` picks between two `new SharedWorker(...)` call sites with a
+ternary, and the fallback branch's options object (`{ type: "module", name
+}`) includes a free variable (`name`), which Vite's `vite:worker-import-meta-url`
+plugin can't statically evaluate — it throws `"Vite is unable to parse the
+worker options as the value is not static"` at dev-server request time (a
+hard 500, not a warning). Symptom: the whole page fails to load with a
+`Failed to fetch dynamically imported module` error, before Jazz even gets
+involved.
+
+**Bug B — fixing Bug A naively breaks the worker's own URL resolution.**
+Vite's suggested fix (`/* @vite-ignore */` in the options) works, but
+_inside the options object_, not before the `new URL(...)` call — the
+comment has to land in the substring Vite extracts between the URL argument
+and the closing paren (`getWorkerType` in Vite's source literally slices
+that range and regex-tests it). Get the placement right and Vite stops
+throwing, but it _also_ stops doing its normal `new Worker(new URL(...))`
+dev-URL rewriting for that call, so the worker script 404s in the browser
+at runtown from an unresolvable relative path — meaning `/* @vite-ignore */`
+alone trades a hard crash for a silent, harder-to-diagnose failure
+(`Shared browser runtime did not issue a foreground node lease` after a
+~10s timeout, with the actual cause invisible in the main page's console
+since it happens inside a `SharedWorker`).
+
+**Fix, confirmed working end-to-end:**
+
+1. Patch (`pnpm patch jazz-tools`, see `patches/jazz-tools@2.0.0-alpha.55.patch`):
+   hoist the `new URL("../../worker/jazz-broker-worker.js", import.meta.url)`
+   computation _out of_ the `new SharedWorker(...)` call, into an IIFE
+   parameter, so it's no longer an inline argument Vite's plugin tries to
+   specially parse at all:
+   ```js
+   : ((workerUrl) => (name) => new SharedWorker(workerUrl, {
+       type: "module",
+       name,
+     }))(new URL("../../worker/jazz-broker-worker.js", import.meta.url));
+   ```
+2. `apps/web/vite.config.ts`: add `jazzPlugin({ server: false })` from
+   `jazz-tools/dev/vite` (handles `jazz-wasm` resolution/aliasing), **and**
+   manually add `optimizeDeps.exclude: ['jazz-tools', 'jazz-tools/svelte',
+'jazz-wasm']`. The plugin alone isn't enough — without also excluding
+   `jazz-tools`/`jazz-tools/svelte`, Vite's dep pre-bundler relocates the
+   module into `.vite/deps/`, which breaks the _same_ `import.meta.url`-relative
+   worker path in a different way (a 404 for
+   `/node_modules/worker/jazz-broker-worker.js` — a flattened, wrong path).
+   Excluding `jazz-tools` alone (without also excluding `jazz-wasm`) trades
+   that for a WASM-loading 404 instead (`jazz-wasm`'s glue code has the
+   opposite expectation — that it's found _in_ `.vite/deps/`). All three
+   excludes together is what actually worked.
+
+**Verified**: after both fixes, `apps/web` (via `pnpm --filter web dev`)
+loads `/gardens/[gardenId]` in a real headless-Chromium session with **zero
+console errors**, a real `POST /apps/<id>/accounts/login-or-register`
+request fires against the real local Jazz server using the real JWT from a
+real `/users/login` call, and the app renders through to actual page
+content (not stuck on Jazz's loading/error screen). This is the strongest
+signal yet that the whole stack (schema → permissions → controller → auth
+→ browser client) holds together, not just each piece in isolation.
+
+**Not investigated:** whether this is dev-server-only (a production Vite
+build might not hit the same static-analysis path at all, since Rollup's
+worker handling differs from Vite dev's per-request transform), or whether
+other bundlers (webpack, Turbopack) would hit an equivalent issue. Worth
+checking if this migration proceeds toward `apps/web` actually shipping on
+Jazz, since patching a third-party package via `pnpm patch` is a
+maintenance liability that should be reported upstream, not treated as a
+long-term fix.
 
 ## Headline finding #1: garden IDs cannot stay as user-supplied slugs — resolved
 
@@ -306,7 +394,16 @@ branch's notes used.
 - `cultivars`, `environments`, `observations`, `plants`, `workspaces` — not
   ported in this pass. `gardenCreate`'s default-workspace/default-environment
   inserts (present in the old branch) were dropped for the same reason.
-- Any `apps/web` or `apps/server` wiring, and removing/touching Triplit.
+- `apps/web` wiring is now **partially done** (see finding #5) —
+  `gardenContext.svelte.ts` only. Every other Triplit-backed context
+  (`cultivarContext`, `plantsContext`, `workspacesContext`, etc.),
+  `apps/server`, and removing/touching Triplit itself are still untouched.
+- Real multi-user membership/invite flows — see the open question at the
+  end of finding #4 (resolving an invited user's Jazz account UUID).
+- Any manual UI testing beyond confirming the page loads without errors —
+  no garden was created through Jazz and viewed through the actual UI (the
+  `/gardens/[gardenId]` route content itself is a pre-existing "Under
+  Construction" placeholder, unrelated to Jazz).
 
 ## How to reproduce locally
 

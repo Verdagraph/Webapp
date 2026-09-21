@@ -8,6 +8,11 @@ overrides:
   canvas: npm:@napi-rs/canvas@0.1.69
   svelte: 5.34.0
 
+patchedDependencies:
+  jazz-tools@2.0.0-alpha.55:
+    hash: 36957aaf3ce4373696297d372fc632f73e222e81dd822d37eb27ada839f2bdbe
+    path: patches/jazz-tools@2.0.0-alpha.55.patch
+
 importers:
 
   .:
@@ -478,6 +483,9 @@ importers:
       axios:
         specifier: ^1.8.2
         version: 1.13.2
+      jazz-tools:
+        specifier: 2.0.0-alpha.55
+        version: 2.0.0-alpha.55(patch_hash=36957aaf3ce4373696297d372fc632f73e222e81dd822d37eb27ada839f2bdbe)(svelte@5.34.0)
       melt:
         specifier: ^0.14.1
         version: 0.14.1(@floating-ui/dom@1.7.1)(svelte@5.34.0)
@@ -646,7 +654,7 @@ importers:
         version: 1.0.50(typescript@5.9.3)(uuidv7@1.1.0)
       jazz-tools:
         specifier: 2.0.0-alpha.55
-        version: 2.0.0-alpha.55(svelte@5.34.0)
+        version: 2.0.0-alpha.55(patch_hash=36957aaf3ce4373696297d372fc632f73e222e81dd822d37eb27ada839f2bdbe)(svelte@5.34.0)
     devDependencies:
       '@internationalized/date':
         specifier: ^3.7.0
@@ -732,6 +740,9 @@ importers:
       '@vdg-webapp/models':
         specifier: workspace:*
         version: link:../models
+      jazz-tools:
+        specifier: 2.0.0-alpha.55
+        version: 2.0.0-alpha.55(patch_hash=36957aaf3ce4373696297d372fc632f73e222e81dd822d37eb27ada839f2bdbe)(svelte@5.34.0)
       melt:
         specifier: ^0.44.0
         version: 0.44.0(@floating-ui/dom@1.7.1)(svelte@5.34.0)
@@ -10381,7 +10392,7 @@ snapshots:
       '@garden-co/jazz-napi-win32-x64-msvc': 2.0.0-alpha.55
     optional: true
 
-  jazz-tools@2.0.0-alpha.55(svelte@5.34.0):
+  jazz-tools@2.0.0-alpha.55(patch_hash=36957aaf3ce4373696297d372fc632f73e222e81dd822d37eb27ada839f2bdbe)(svelte@5.34.0):
     dependencies:
       '@noble/hashes': 2.0.1
       '@opentelemetry/api': 1.9.1

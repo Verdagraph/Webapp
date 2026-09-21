@@ -40,7 +40,7 @@ export function createAppContext(
 	const client = setContext('client', createClientContext(controller, clientParams));
 	const settings = setContext('settings', createSettingsContext());
 	const timeline = setContext('timeline', createTimelineContext());
-	const garden = setContext('garden', createGardenContext(controller, client));
+	const garden = setContext('garden', createGardenContext());
 	const cultivars = setContext('cultivars', createCultivarContext(controller, garden));
 	const workspaces = setContext(
 		'workspaces',

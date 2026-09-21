@@ -1,34 +1,41 @@
-import { useQuery } from '@triplit/svelte';
+import { QuerySubscriptionOne, getSession } from 'jazz-tools/svelte';
 
-import { type ControllerContext, type GardenRole } from '@vdg-webapp/models';
-import { type ActionType, requiredRole as getRequiredRole } from '@vdg-webapp/models';
-
-import { type ClientContext } from './client.svelte';
+import {
+	type ActionType,
+	type GardenRole,
+	requiredRole as getRequiredRole
+} from '@vdg-webapp/models';
+import { jazzApp } from '@vdg-webapp/models/jazz';
 
 /**
  * Holds context for a garden,
  * allowing UI elements to be rendered based on a user's
  * level of permissions.
+ *
+ * Jazz v2 validation spike: reads through Jazz instead of Triplit. `id` is
+ * the garden's user-facing slug (not its Jazz row id — see
+ * packages/models/src/jazz/SPIKE_NOTES.md). Identity for role checks comes
+ * from the Jazz session (`session.user.account`, a Jazz-native account
+ * UUID), not the Triplit `ClientContext` the rest of the app still uses.
  */
-export function createGardenContext(
-	controller: ControllerContext,
-	client: ClientContext
-) {
+export function createGardenContext() {
 	let id = $state('');
-	const gardenQuery = $derived(
-		useQuery(controller.triplit, controller.triplit.query('gardens').Id(id))
+	const session = getSession();
+	const gardenQuery = new QuerySubscriptionOne(() =>
+		id ? jazzApp.gardens.where({ slug: id }) : undefined
 	);
-	const garden = $derived(gardenQuery.results ? gardenQuery.results[0] : null);
+	const garden = $derived(gardenQuery.current ?? null);
 	const role: GardenRole | null = $derived.by(() => {
-		if (!client.profile || !garden) {
+		const accountId = session.current?.user.account;
+		if (!accountId || !garden) {
 			return null;
 		}
 
-		if (garden.adminIds.has(client.profile.id)) {
+		if (garden.adminIds.includes(accountId)) {
 			return 'ADMIN';
-		} else if (garden.editorIds.has(client.profile.id)) {
+		} else if (garden.editorIds.includes(accountId)) {
 			return 'EDITOR';
-		} else if (garden.viewerIds.has(client.profile.id)) {
+		} else if (garden.viewerIds.includes(accountId)) {
 			return 'VIEWER';
 		}
 
