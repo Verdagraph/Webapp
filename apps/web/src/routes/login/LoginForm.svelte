@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input, createForm } from '@vdg-webapp/ui';
+	import { type ControlProps, Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
 	import { userLogin } from '$data/users/auth';
@@ -20,7 +20,7 @@
 	<!-- Email address -->
 	<Form.Field {form} name="email">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.emailSchema.description}>Email</Form.Label>
 				<Input.Root
 					{...props}
@@ -36,7 +36,7 @@
 	<!-- Password -->
 	<Form.Field {form} name="password">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.passwordSchema.description}
 					>Password</Form.Label
 				>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { userFields } from '@vdg-webapp/models';
-	import { Form, Input, createForm } from '@vdg-webapp/ui';
+	import { type ControlProps, Form, Input, createForm } from '@vdg-webapp/ui';
 
 	import { userRequestEmailConfirmation } from '$data/users/commands';
 	import createCommandHandler from '$state/commandHandler.svelte';
@@ -32,7 +32,7 @@
 	<!-- Email address -->
 	<Form.Field {form} name="email">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label description={userFields.emailSchema.description}>Email</Form.Label>
 				<Input.Root
 					{...props}

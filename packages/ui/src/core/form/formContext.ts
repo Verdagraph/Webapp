@@ -74,3 +74,6 @@ export type ControlContext = ReturnType<typeof setControlContext>;
 export function getControlContext(): ControlContext {
 	return getContext(CONTROL_CTX);
 }
+
+/** DOM attributes for a control element, as passed to a `Form.Control` `children` snippet. */
+export type ControlProps = ControlContext['props'];

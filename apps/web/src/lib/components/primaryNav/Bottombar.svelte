@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { ClientAvatarIcon } from '@vdg-webapp/ui';
-
-	import gardenContext from '$state/gardenContext.svelte';
+	import { ClientAvatarIcon, getAppContext } from '@vdg-webapp/ui';
 
 	import BottombarGardenDrawer from './BottombarGardenDrawer.svelte';
 	import Tab from './Tab.svelte';
@@ -15,6 +13,8 @@
 		profileTab: PrimaryTabSpec;
 	};
 	let { gardensTab, gardenTabs, traitsTab, resourcesTab, profileTab }: Props = $props();
+
+	const ctx = getAppContext();
 </script>
 
 {#snippet clientProfileIcon()}
@@ -37,7 +37,7 @@ Small screens bottom bar.
 		<Tab spec={resourcesTab} side="top" flipped={true} iconSize="3rem" />
 		<Tab spec={traitsTab} side="top" flipped={true} iconSize="3rem" />
 		<Tab spec={gardensTab} side="top" flipped={true} iconSize="3rem" />
-		{#if gardenContext.id}
+		{#if ctx.garden.id}
 			<BottombarGardenDrawer {gardenTabs} />
 		{/if}
 	</ul>

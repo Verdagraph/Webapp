@@ -9,6 +9,7 @@
 	} from '@vdg-webapp/models';
 	import {
 		Button,
+		type ControlProps,
 		Form,
 		Input,
 		Select,
@@ -74,7 +75,7 @@
 	<!-- Garden ID -->
 	<Form.Field {form} name="id">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={gardenFields.gardenDescriptionSchema.description}
 					optional={false}>ID</Form.Label
@@ -113,7 +114,7 @@
 	<!-- Garden name -->
 	<Form.Field {form} name="name">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={gardenFields.gardenNameSchema.description}
 					optional={false}>Name</Form.Label
@@ -132,7 +133,7 @@
 	<!-- Garden visibility -->
 	<Form.Field {form} name="visibility">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={gardenFields.gardenVisibilitySchema.description}
 					optional={false}>Visibility</Form.Label
@@ -176,7 +177,7 @@
 	<!-- Garden description -->
 	<Form.Field {form} name="description">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={gardenFields.gardenDescriptionSchema.description}
 					optional={true}>Description</Form.Label
@@ -192,7 +193,7 @@
 	<!-- Admins to invite -->
 	<Form.Field {form} name="adminInvites">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={GardenCreateCommandSchema.shape.adminInvites.description}
 					optional={true}>Admin Invites</Form.Label
@@ -214,7 +215,7 @@
 	<!-- Editors to invite -->
 	<Form.Field {form} name="editorInvites">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={GardenCreateCommandSchema.shape.editorInvites.description}
 					optional={true}>Editor Invites</Form.Label
@@ -238,7 +239,7 @@
 	<!-- Viewers to invite -->
 	<Form.Field {form} name="viewerInvites">
 		<Form.Control>
-			{#snippet children({ props })}
+			{#snippet children({ props }: { props: ControlProps })}
 				<Form.Label
 					description={GardenCreateCommandSchema.shape.viewerInvites.description}
 					optional={true}>Viewer Invites</Form.Label
