@@ -1,4 +1,5 @@
 import { AppError } from '../../errors.js';
+import { slugify } from '../../utils/index.js';
 import {
 	type GeometryCreateCommand,
 	type GeometryHistoryUpdateCommand,
@@ -11,10 +12,13 @@ import {
 	type WorkspaceCreateCommand,
 	type WorkspaceUpdateCommand
 } from '../../workspaces/commands.js';
-import { slugify } from '../../utils/index.js';
 import { historySelectDay } from '../../workspaces/utils.js';
 import { type ControllerContext } from '../controller.js';
-import { type JazzGeometry, type JazzLocationHistory, type JazzWorkspace } from './schema.js';
+import {
+	type JazzGeometry,
+	type JazzLocationHistory,
+	type JazzWorkspace
+} from './schema.js';
 
 /** Helpers. */
 
@@ -158,8 +162,13 @@ export async function geometryUpdate(
 }
 
 /** Returns the geometries belonging to a geometry history, sorted by date. */
-async function geometryHistoryGeometries(geometryIds: string[], ctx: ControllerContext) {
-	const geometries = await ctx.db.all(ctx.jazz.geometries.where({ id: { in: geometryIds } }));
+async function geometryHistoryGeometries(
+	geometryIds: string[],
+	ctx: ControllerContext
+) {
+	const geometries = await ctx.db.all(
+		ctx.jazz.geometries.where({ id: { in: geometryIds } })
+	);
 	return [...geometries].sort(
 		(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
 	);
@@ -269,7 +278,9 @@ export async function locationUpdate(
 
 /** Returns the locations belonging to a location history, sorted by date. */
 async function locationHistoryLocations(locationIds: string[], ctx: ControllerContext) {
-	const locations = await ctx.db.all(ctx.jazz.locations.where({ id: { in: locationIds } }));
+	const locations = await ctx.db.all(
+		ctx.jazz.locations.where({ id: { in: locationIds } })
+	);
 	return [...locations].sort(
 		(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
 	);
@@ -334,13 +345,15 @@ export async function locationHistoryExtend(
 			nonFormErrors: ['Failed to update object location.']
 		});
 	}
-	const sortedLocations = await locationHistoryLocations(locationHistory.locationIds, ctx);
+	const sortedLocations = await locationHistoryLocations(
+		locationHistory.locationIds,
+		ctx
+	);
 
-	const nearestLocation =
-		historySelectDay(
-			sortedLocations.map((location) => ({ ...location, date: new Date(location.date) })),
-			data.date
-		) ??
+	const nearestLocation = historySelectDay(
+		sortedLocations.map((location) => ({ ...location, date: new Date(location.date) })),
+		data.date
+	) ??
 		sortedLocations[sortedLocations.length - 1] ?? {
 			x: 0,
 			y: 0,
@@ -423,7 +436,9 @@ export async function plantingAreaCreate(
 ) {
 	const { garden } = await ctx.requireRole(data.gardenId, 'PlantingAreaCreate');
 
-	const workspace = await ctx.db.one(ctx.jazz.workspaces.where({ id: data.workspaceId }));
+	const workspace = await ctx.db.one(
+		ctx.jazz.workspaces.where({ id: data.workspaceId })
+	);
 	if (workspace == null) {
 		throw new AppError(`Failed to retrieve workspace ${data.workspaceId}`, {
 			nonFormErrors: ['Failed to retrieve workspace.']

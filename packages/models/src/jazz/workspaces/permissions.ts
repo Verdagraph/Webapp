@@ -1,7 +1,11 @@
 import { type PolicyContext, schema as s } from 'jazz-tools';
 
-import { gardenAdminOnly, gardenAdminOrEditor, gardenReadable } from '../shared/gardenScopedPolicies.js';
 import type { JazzApp } from '../schema.js';
+import {
+	gardenAdminOnly,
+	gardenAdminOrEditor,
+	gardenReadable
+} from '../shared/gardenScopedPolicies.js';
 
 type WorkspacePolicyContext = PolicyContext<JazzApp>;
 

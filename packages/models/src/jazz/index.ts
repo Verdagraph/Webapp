@@ -3,6 +3,7 @@
  * `packages/models/src/index.ts` one domain at a time during the
  * migration.
  */
+export * from './environments/index.js';
 export * from './gardens/index.js';
 export * from './observations/index.js';
 export * from './users.js';
