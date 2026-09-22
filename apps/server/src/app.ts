@@ -12,7 +12,7 @@ import {
 	registerRouters
 } from './plugins/index.js';
 
-export const buildApp = () => {
+export const buildApp = async () => {
 	const app = Fastify({ logger: true });
 
 	/** Basic middlewares. */
@@ -20,7 +20,7 @@ export const buildApp = () => {
 	registerCookies(app);
 
 	/** Dependency injection. */
-	registerDiContainer(app);
+	await registerDiContainer(app);
 
 	/** Error handling. */
 	registerErrorHandler(app);
@@ -42,7 +42,7 @@ export const buildApp = () => {
 };
 
 const startServer = async () => {
-	const app = buildApp();
+	const app = await buildApp();
 	try {
 		await app.listen({ port: env.APP_PORT, host: env.APP_HOST });
 	} catch (err) {

@@ -1,5 +1,6 @@
 import { schema as s } from 'jazz-tools';
 
+import { constructUsersCredentialPolicy } from './credentials/permissions.js';
 import {
 	constructCultivarCollectionsPolicy,
 	constructCultivarsPolicy
@@ -23,4 +24,5 @@ export const permissions = s.definePermissions(app, (ctx) => {
 	constructCultivarCollectionsPolicy(ctx);
 	constructCultivarsPolicy(ctx);
 	constructPlantsPolicy(ctx);
+	constructUsersCredentialPolicy(ctx);
 });

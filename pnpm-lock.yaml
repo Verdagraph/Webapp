@@ -431,6 +431,9 @@ importers:
       handlebars:
         specifier: ^4.7.8
         version: 4.7.8
+      jazz-tools:
+        specifier: 2.0.0-alpha.55
+        version: 2.0.0-alpha.55(patch_hash=36957aaf3ce4373696297d372fc632f73e222e81dd822d37eb27ada839f2bdbe)(svelte@5.34.0)
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.3

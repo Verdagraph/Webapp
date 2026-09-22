@@ -439,19 +439,127 @@ handle multi-hop cases the qualified `exists.where(...)` syntax doesn't -
 not investigated due to time, denormalization was faster to confirm
 working.
 
+## Headline finding #7: no public API bypasses row policy - credentials use a claims-gated service JWT instead
+
+Once `gardens`/`observations`/`workspaces`/`environments`/`cultivars`/
+`plants` were ported, the next piece was `apps/server`'s Triplit-backed
+`accounts`/`profiles` (password hashes, email verification tokens,
+password reset tokens) - the most security-sensitive data in the app.
+
+**Investigated adopting Better Auth first**, since `jazz-tools` ships a
+first-party `./better-auth-adapter` (`jazzAdapter`, `buildJazzSchema*`)
+implying credentials are meant to live in Jazz. Confirmed the old
+branch's "chicken-and-egg" schema-generation blocker is real but only
+blocks the `@better-auth/cli generate` codegen path - Better Auth's own
+docs support hand-writing the four core tables (`user`, `session`,
+`account`, `verification`) directly, sidestepping the CLI entirely.
+**Decided against it anyway**: `jazzAdapter`'s `db: () => Db` parameter
+still just calls plain `Db` methods with no bypass mechanism, so Better
+Auth would sit on top of the exact same problem, not solve it - and it's
+a sizeable new dependency, layered on an adapter package that's
+presumably far less exercised than `jazz-tools` core (which has already
+produced three real bugs this session). Deferred as a planned step
+before public release, not ruled out.
+
+**Looked for a way to bypass row policy entirely as a trusted backend
+process.** `JazzContext.asBackend()` (keyed off `backendSecret`/
+`adminSecret`) does exist and does what you'd expect, but it is not part
+of `jazz-tools`'s public API surface: `jazz-tools/backend`'s exported
+index only re-exports `createJazzSession`, whose own `JazzSessionConfig`
+type explicitly `Omit`s `backendSecret`/`adminSecret` from what callers
+can even pass in. The bypass class is real but reserved for
+`jazz-tools`'s own dev/testing tooling (`jazz-tools/dev`,
+`jazz-tools/testing`) - a deep relative import of it is blocked outright
+by Node's package `exports` map (`does not provide an export named
+'createJazzContext'`), and relying on an unexported internal for
+production credential access isn't something worth betting on getting
+credentials right on an alpha library.
+
+**What does work, and is fully public API**: policy rules can check
+arbitrary JWT claims, not just `session.user`/`session.authMode`.
+`policyClaimsFromJwtPayload` (read directly from
+`jazz-tools`'s compiled `runtime/client-session.js`) projects every
+top-level JWT claim outside a small reserved set (`sub`, `exp`, `nbf`,
+`iat`, `iss`, `aud`, `jti`) into `session.claims`, for both external and
+local-first sessions - and this happens only *after* `jose`'s
+`compactVerify`/`importJWK` validates the JWT's signature, so a claim
+can only ever reach policy evaluation inside a JWT actually signed by
+the server's own key.
+
+The DSL syntax is unforgiving in the same "typechecks, real server
+rejects it" way as findings #3/#6, but for a different reason (a genuine
+DSL restriction, not a compiler gap):
+- `session.where({ role: 'service' })` compiles and deploys, but is
+  silently *wrong* - the server error names the real problem:
+  `session.role` isn't a recognized session field; raw claims must go
+  through `session.claims["name"]`.
+- `session.where({ claims: { role: 'service' } })` (nested object) is
+  rejected outright: `"Nested object claim syntax is not supported; use
+  dotted path keys instead."`
+- The only form that works: `session.where({ 'claims.role': 'service' })`
+  - a single dotted string key.
+
+**Verified end-to-end against a real server** (not the ephemeral test
+harness - a throwaway `jazz-tools server` process with the same
+`--jwt-public-key`/`--jwt-issuer`/`--jwt-audience` static-secret config
+`scripts/jazz-dev.sh` uses, plus real HS256 JWTs signed the same way
+`apps/server` signs them): a JWT with `role: service` gets full
+read/write on a table whose policy is `session.where({'claims.role':
+'service'})` on every action; an ordinary JWT (valid signature, no
+`role` claim) is denied both read (`null`) and insert (rejected write);
+a JWT claiming `role: service` with a **bad signature** gets a 401
+before any claim is ever evaluated, confirming the security boundary is
+the cryptographic check, not the policy layer.
+
+**Design landed on**: `packages/models/src/jazz/credentials/` holds
+`accountProfiles`/`accounts` (ported field-for-field from Triplit's
+`profiles`/`accounts`, with `unverifiedEmail: {address, token}`
+flattened into two plain columns - Jazz has no nested-record column
+type, and flattening also avoids ever needing a qualified dot-path query
+on this table). Every action on both tables is gated by
+`session.where({'claims.role': 'service'})` - no end-user session, ever,
+under any identity. `apps/server` mints a second, internal JWT for
+itself (`encodeServiceToken` in `users/auth/tokens.ts`, same signing key/
+issuer/audience already bridged to Jazz, plus the `role: service`
+claim), used only to log in a long-lived `Db` held for the process
+lifetime (mirroring exactly how the old Triplit client was a DI-
+registered singleton) - never sent to a client. `UserRepository`'s
+internals were rewritten against this `Db`; its public method
+signatures are unchanged, so none of `apps/server/src/users/commands/*`
+needed to change at all.
+
+Distinct from the `users` table in `jazz/users.ts`, which mirrors public
+profile data keyed by a **Jazz-native** account UUID (assigned by Jazz's
+own registry on first login) - the credentials tables use their own
+server-generated id from signup onward, because signup necessarily
+happens *before* anyone has completed a Jazz login. The two id spaces
+are intentionally different and never reconciled; `getClient`-style
+"resolve my Jazz session into a public profile row" wiring (not yet
+built anywhere in the app for any domain) is where that reconciliation
+will eventually need to happen.
+
+**Another real "typechecks, doesn't do what you'd guess" gap, found by
+testing**: on `db.update(table, id, data)`, an `.optional()` column with
+key present but value `undefined` is **not** cleared - `undefined` means
+"no change," identical to omitting the key. Clearing an optional column
+requires an explicit `null` (confirmed by `dsl.d.ts`'s own comment,
+"Explicit null on nullable columns is preserved," then verified: a first
+pass at `verifyEmail()` used `unverifiedEmailAddress: undefined` to
+clear the pending email and silently left the stale value in place -
+switching to `unverifiedEmailAddress: null` fixed it). Every other
+domain ported so far only ever *sets* optional fields, never clears one,
+which is why this hadn't come up before.
+
 ## Deliberately out of scope for this spike (per the plan)
 
-- Better Auth integration - the old branch's own finding (schema-generation
-  chicken-and-egg blocker) is taken at face value and not re-investigated
-  here. `packages/models/src/jazz/users.ts` is a placeholder stub table
-  only used for membership-invite lookups within this spike.
-- `cultivars`, `environments`, `observations`, `plants`, `workspaces` - not
-  ported in this pass. `gardenCreate`'s default-workspace/default-environment
-  inserts (present in the old branch) were dropped for the same reason.
 - `apps/web` wiring is now **partially done** (see finding #5) -
   `gardenContext.svelte.ts` only. Every other Triplit-backed context
-  (`cultivarContext`, `plantsContext`, `workspacesContext`, etc.),
-  `apps/server`, and removing/touching Triplit itself are still untouched.
+  (`cultivarContext`, `plantsContext`, `workspacesContext`, etc.) and
+  `apps/server`'s non-credential routes are still untouched. `planner`
+  needs no port at all - it's pure computation with no persisted tables
+  on the Triplit side either.
+- Better Auth - investigated in depth (finding #7) and deliberately
+  deferred rather than ruled out; a planned step before public release.
 - Real multi-user membership/invite flows - see the open question at the
   end of finding #4 (resolving an invited user's Jazz account UUID).
 - Any manual UI testing beyond confirming the page loads without errors -

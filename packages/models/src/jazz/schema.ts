@@ -1,5 +1,6 @@
 import { schema as s } from 'jazz-tools';
 
+import { usersCredentialSchema } from './credentials/schema.js';
 import { cultivarSchema } from './cultivars/schema.js';
 import { environmentSchema } from './environments/schema.js';
 import { gardenSchema } from './gardens/schema.js';
@@ -8,12 +9,9 @@ import { plantSchema } from './plants/schema.js';
 import { usersStub } from './users.js';
 import { workspaceSchema } from './workspaces/schema.js';
 
-/**
- * `usersStub` is a placeholder; real auth/user data stays on Triplit for
- * now (Better Auth integration is out of scope for this migration).
- */
 const appSchema = {
 	...usersStub,
+	...usersCredentialSchema,
 	...gardenSchema,
 	...observationSchema,
 	...workspaceSchema,
