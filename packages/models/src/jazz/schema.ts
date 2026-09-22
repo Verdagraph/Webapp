@@ -4,6 +4,7 @@ import { cultivarSchema } from './cultivars/schema.js';
 import { environmentSchema } from './environments/schema.js';
 import { gardenSchema } from './gardens/schema.js';
 import { observationSchema } from './observations/schema.js';
+import { plantSchema } from './plants/schema.js';
 import { usersStub } from './users.js';
 import { workspaceSchema } from './workspaces/schema.js';
 
@@ -17,7 +18,8 @@ const appSchema = {
 	...observationSchema,
 	...workspaceSchema,
 	...environmentSchema,
-	...cultivarSchema
+	...cultivarSchema,
+	...plantSchema
 };
 
 export type JazzSchema = s.Schema<typeof appSchema>;

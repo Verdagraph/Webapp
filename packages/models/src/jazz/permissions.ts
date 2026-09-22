@@ -10,6 +10,7 @@ import {
 	constructGardensPolicy
 } from './gardens/permissions.js';
 import { constructObservationsPolicy } from './observations/permissions.js';
+import { constructPlantsPolicy } from './plants/permissions.js';
 import { app } from './schema.js';
 import { constructWorkspacesPolicy } from './workspaces/permissions.js';
 
@@ -21,4 +22,5 @@ export const permissions = s.definePermissions(app, (ctx) => {
 	constructEnvironmentsPolicy(ctx);
 	constructCultivarCollectionsPolicy(ctx);
 	constructCultivarsPolicy(ctx);
+	constructPlantsPolicy(ctx);
 });

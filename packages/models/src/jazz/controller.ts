@@ -74,12 +74,47 @@ export function createController(params: ControllerContextParams) {
 		return { client, garden };
 	}
 
+	/**
+	 * Same as requireRole, but keyed by the garden's Jazz row id rather than
+	 * its user-facing slug. Needed when the garden id is already known from a
+	 * fetched row (e.g. a plant's gardenId ref) rather than from a route.
+	 * @param gardenId The garden's Jazz row id.
+	 * @param action The action to authorize for.
+	 * @returns The client and garden objects.
+	 */
+	async function requireRoleForGardenId(
+		gardenId: string,
+		action: ActionType
+	): Promise<{
+		client: JazzUser;
+		garden: JazzGarden;
+	}> {
+		const client = await getClientOrError();
+
+		const garden = await params.db.one(params.jazz.gardens.where({ id: gardenId }));
+		if (garden == null) {
+			throw new AppError('Garden key does not exist.', {
+				nonFormErrors: ['Garden key does not exist.']
+			});
+		}
+
+		const role = requiredRole(action);
+		if (!isUserAuthorized(garden, client.profile.id, role)) {
+			throw new AppError(`Requires ${role} access.`, {
+				nonFormErrors: [`This action requires the ${role} role.`]
+			});
+		}
+
+		return { client, garden };
+	}
+
 	return {
 		db: params.db,
 		jazz: params.jazz,
 		getClient: params.getClient,
 		getClientOrError,
-		requireRole
+		requireRole,
+		requireRoleForGardenId
 	};
 }
 export type ControllerContext = ReturnType<typeof createController>;

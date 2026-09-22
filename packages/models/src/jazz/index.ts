@@ -7,6 +7,7 @@ export * from './cultivars/index.js';
 export * from './environments/index.js';
 export * from './gardens/index.js';
 export * from './observations/index.js';
+export * from './plants/index.js';
 export * from './users.js';
 export * from './schema.js';
 export * from './controller.js';

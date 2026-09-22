@@ -28,7 +28,7 @@ import {
  * depends on the (pre-existing) garden, not on the coordinates inserted
  * here.
  */
-function geometryCreate(
+export function geometryCreate(
 	gardenId: string,
 	data: GeometryCreateCommand,
 	ctx: ControllerContext,
