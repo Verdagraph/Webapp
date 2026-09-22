@@ -1,6 +1,6 @@
 import env from 'env.js';
 import * as fs from 'fs';
-import * as handlebars from 'handlebars';
+import handlebars from 'handlebars';
 import * as nodemailer from 'nodemailer';
 import type { Transporter as NodemailerTransporter } from 'nodemailer';
 import * as path from 'path';

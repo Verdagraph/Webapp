@@ -1,8 +1,8 @@
 import { InternalFailureException } from 'common/errors.js';
 import { type Db } from 'jazz-tools/backend';
 
-import { jazzApp } from '@vdg-webapp/models/jazz';
 import { type User, type UserAccount, type UserProfile } from '@vdg-webapp/models';
+import { jazzApp } from '@vdg-webapp/models/jazz';
 
 /** Maps a Jazz accounts row to the shape callers expect. */
 function toUserAccount(row: NonNullable<Awaited<ReturnType<Db['one']>>>): UserAccount {
@@ -192,7 +192,9 @@ export class UserRepository {
 				unverifiedEmailAddress: email
 			});
 		} else {
-			this.jazzCredentialsDb.update(jazzApp.accounts, accountId, { verifiedEmail: email });
+			this.jazzCredentialsDb.update(jazzApp.accounts, accountId, {
+				verifiedEmail: email
+			});
 		}
 	};
 
