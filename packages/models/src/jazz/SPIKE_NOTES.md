@@ -385,6 +385,60 @@ before treating this as settled for a wider rollout - flagging this
 explicitly per the same "confirm before relying on it" discipline the old
 branch's notes used.
 
+## Headline finding #6: qualified 2-hop `exists.where(...)` compiles client-side but fails server-side
+
+Found while porting cultivars, which needs "is the owning garden's admin"
+checks two hops away (`cultivars -> cultivarCollections -> gardens`), not
+one hop like every other domain so far.
+
+Jazz's permissions DSL does support qualified dot-path columns inside a
+`where(...)` object, e.g. `policy.cultivarCollections.exists.where({ id:
+cultivar.collectionId, 'gardens.adminIds': { contains: session.user.account
+} })`, to reach a field on a table one hop beyond the one `.exists` is
+called on. It requires the qualifier to be the **target table's name**, not
+the FK column name (`'gardens.adminIds'`, not `'gardenId.adminIds'`), and
+throws locally if the relation is ambiguous (more than one ref column from
+the source table to the qualified table).
+
+**This typechecks, passes local `validate`, and even compiles without
+throwing in-process** (confirmed directly with `s.definePermissions(...)`
+in a standalone script) - but the deployed server rejects it:
+
+```
+Permissions publish failed: 400 Bad Request - {"error":"permissions schema
+is not supported by the server shell: $.cultivars.policies.select.using:
+converted read policy is invalid: UnknownColumn { table: \"cultivarCollections\",
+column: \"adminIds\" }","code":"bad_request"}
+```
+
+The server-side policy compiler doesn't correctly carry the qualifier
+through when it's nested inside an `exists.where(...)` call (as opposed to
+a table's own top-level `allowRead.where(...)`) - it looks for `adminIds`
+on the wrong table. This is a third distinct "compiles locally, rejected
+by the server" gap in this alpha (alongside finding #3's ref-array
+requirement) - deploying against a real server remains the only way to
+catch these; local `validate` and TypeScript both miss them.
+
+**Fix applied:** denormalize the two-hops-away field to be one hop
+instead. `cultivars` gained its own `gardenId` ref (mirroring its
+collection's `gardenId`), so the admin check goes `cultivars -> gardens`
+directly - the same single-hop pattern that already works everywhere
+else. See `packages/models/src/jazz/cultivars/schema.ts` and
+`permissions.ts`. The `collection.userId` check for personally-owned
+collections didn't need this (it's a direct field one hop away, not
+qualified), so it was left as a plain `exists.where(...)` on
+`cultivarCollections`.
+
+**Practical implication:** any domain whose ownership/visibility check is
+naturally more than one relation away from the row being protected will
+need the same treatment (denormalize the relevant ref onto the row
+itself) until this is fixed upstream or a different pattern is confirmed
+to work. Worth checking whether `AllowedToContext`'s `readReferencing`/
+`insertReferencing`/etc. (seen in the type declarations, not tried here)
+handle multi-hop cases the qualified `exists.where(...)` syntax doesn't -
+not investigated due to time, denormalization was faster to confirm
+working.
+
 ## Deliberately out of scope for this spike (per the plan)
 
 - Better Auth integration - the old branch's own finding (schema-generation
