@@ -1,16 +1,21 @@
 import { type TableRow, schema as s } from 'jazz-tools';
+import { type z } from 'zod';
 
+import { type CultivarAttributesUpdateCommandSchema } from '../../cultivars/attributes/index.js';
 import { CultivarCollectionVisibilityEnumOptions } from '../../cultivars/schema.js';
 
 export { CultivarCollectionVisibilityEnumOptions };
 
 /**
- * Untyped for now: the 5 nested attribute profiles (annualLifeCycle, color,
- * frostDatePlantingWindows, expectedGeometry, origin) aren't ported to Jazz
- * yet, and nothing currently reads through this field's typed shape (the
- * Triplit controller only ever passes it through as opaque data).
+ * `s.json(CultivarAttributesUpdateCommandSchema)` would type this at the
+ * schema level too, but jazz-tools's json() overload requires a Standard
+ * Schema feature (`~standard.jsonSchema`) this project's zod version
+ * doesn't implement - typed here instead via a TableRow override, the same
+ * pattern used for JazzEnvironment.
  */
-export type JazzCultivarAttributes = Record<string, unknown>;
+export type JazzCultivarAttributes = z.infer<
+	typeof CultivarAttributesUpdateCommandSchema
+>;
 
 export const cultivarSchema = {
 	/** Collection schema. */
@@ -21,8 +26,16 @@ export const cultivarSchema = {
 		slug: s.string(),
 		/** Visibility of the collection. */
 		visibility: s.enum(...CultivarCollectionVisibilityEnumOptions),
-		/** If defined, the collection is owned by a user. */
-		userId: s.ref('users').optional(),
+		/**
+		 * If non-empty, the collection is owned by a user (always exactly
+		 * one - an array rather than a single optional ref so the
+		 * ownership check can use `contains`, matching the garden-admin
+		 * check it's combined with via anyOf(): an alpha bug rejects
+		 * combining a `contains` condition with a non-`contains` condition
+		 * in the same anyOf/OR group (see SPIKE_NOTES.md) - keeping both
+		 * sides as `contains` checks avoids it.
+		 */
+		ownerIds: s.array(s.ref('users')).default([]),
 		/** If defined, the collection is owned by a garden. Overrides user ownership. */
 		gardenId: s.ref('gardens').optional(),
 		/** Optional priority flag used to decide between collections in a garden. */
@@ -61,8 +74,14 @@ export const cultivarSchema = {
 		description: s.string().default(''),
 		/** Optional parent cultivar to derive attributes from. */
 		parentId: s.ref('cultivars').optional(),
-		/** Attributes which define this cultivar. Untyped, see JazzCultivarAttributes. */
-		attributes: s.json().optional(),
+		/**
+		 * Attributes which define this cultivar. Untyped at the schema
+		 * level, see JazzCultivarAttributes. `.default({})` rather than
+		 * `.optional()`: an alpha bug rejects any explicit value written to
+		 * an `.optional()` json column (see SPIKE_NOTES.md) - `.default({})`
+		 * writes and reads correctly.
+		 */
+		attributes: s.json().default({}),
 		/**
 		 * Needed to pick the newest of several same-named cultivars in
 		 * `resolveCultivarName`; Jazz's built-in `$createdAt` provenance
@@ -77,4 +96,9 @@ export type JazzCultivarCollection = TableRow<
 	typeof cultivarSchema,
 	'cultivarCollections'
 >;
-export type JazzCultivar = TableRow<typeof cultivarSchema, 'cultivars'>;
+export type JazzCultivar = Omit<
+	TableRow<typeof cultivarSchema, 'cultivars'>,
+	'attributes'
+> & {
+	attributes?: JazzCultivarAttributes;
+};

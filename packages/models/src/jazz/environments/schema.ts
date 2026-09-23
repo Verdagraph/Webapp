@@ -42,8 +42,13 @@ export const environmentSchema = {
 		 * area in a workspace.
 		 */
 		inherit: s.boolean().default(true),
-		/** Untyped: see JazzEnvironmentAttributes for the intended shape. */
-		attributes: s.json().optional()
+		/**
+		 * Untyped: see JazzEnvironmentAttributes for the intended shape.
+		 * `.default({})` rather than `.optional()`: an alpha bug rejects any
+		 * explicit value written to an `.optional()` json column (see
+		 * SPIKE_NOTES.md) - `.default({})` writes and reads correctly.
+		 */
+		attributes: s.json().default({})
 	})
 };
 export type JazzEnvironment = Omit<

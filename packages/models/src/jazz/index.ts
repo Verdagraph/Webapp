@@ -13,4 +13,5 @@ export * from './users.js';
 export * from './schema.js';
 export * from './permissions.js';
 export * from './controller.js';
+export * from './dataController.js';
 export * from './workspaces/index.js';

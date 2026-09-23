@@ -16,14 +16,21 @@ export function constructCultivarPermissions(app: JazzApp) {
  * which case garden admins own it). Unlike most domains, ownership here
  * is not "any garden member", so this doesn't reuse the shared
  * garden-scoped policy helpers.
+ *
+ * Every anyOf() below keeps its branches consistently either all
+ * `contains`-based or all non-`contains`-based, nesting a sub-anyOf where
+ * both shapes are genuinely needed together: an alpha bug rejects
+ * combining a `contains` condition with a non-`contains` condition in the
+ * same anyOf/OR group (see SPIKE_NOTES.md) - nesting isolates each shape
+ * into its own group.
  */
 export function constructCultivarCollectionsPolicy({
 	policy,
 	session
 }: CultivarPolicyContext) {
-	const isOwner = (collection: { userId: RowRefValue; gardenId: RowRefValue }) =>
+	const isOwner = (collection: { ownerIds: RowRefValue; gardenId: RowRefValue }) =>
 		anyOf([
-			{ userId: { eq: session.user.account } },
+			{ ownerIds: { contains: session.user.account } },
 			policy.gardens.exists.where({
 				id: collection.gardenId,
 				adminIds: { contains: session.user.account }
@@ -33,19 +40,21 @@ export function constructCultivarCollectionsPolicy({
 	policy.cultivarCollections.allowRead.where((collection) =>
 		anyOf([
 			{ visibility: { ne: 'HIDDEN' } },
-			{ userId: { eq: session.user.account } },
-			policy.gardens.exists.where({
-				id: collection.gardenId,
-				adminIds: { contains: session.user.account }
-			}),
-			policy.gardens.exists.where({
-				id: collection.gardenId,
-				editorIds: { contains: session.user.account }
-			}),
-			policy.gardens.exists.where({
-				id: collection.gardenId,
-				viewerIds: { contains: session.user.account }
-			})
+			anyOf([
+				{ ownerIds: { contains: session.user.account } },
+				policy.gardens.exists.where({
+					id: collection.gardenId,
+					adminIds: { contains: session.user.account }
+				}),
+				policy.gardens.exists.where({
+					id: collection.gardenId,
+					editorIds: { contains: session.user.account }
+				}),
+				policy.gardens.exists.where({
+					id: collection.gardenId,
+					viewerIds: { contains: session.user.account }
+				})
+			])
 		])
 	);
 	policy.cultivarCollections.allowInsert.where(isOwner);
@@ -59,13 +68,13 @@ export function constructCultivarCollectionsPolicy({
  * qualified check this would otherwise need (cultivars -> collection ->
  * garden.adminIds), so ownership checks go through the direct gardenId
  * (single hop, the same pattern every other domain uses) alongside a
- * direct collection.userId check for personally-owned collections.
+ * direct collection.ownerIds check for personally-owned collections.
  */
 export function constructCultivarsPolicy({ policy, session }: CultivarPolicyContext) {
 	const isCollectionOwner = (cultivar: { collectionId: RowRefValue }) =>
 		policy.cultivarCollections.exists.where({
 			id: cultivar.collectionId,
-			userId: { eq: session.user.account }
+			ownerIds: { contains: session.user.account }
 		});
 
 	const isGardenAdmin = (cultivar: { gardenId: RowRefValue }) =>
@@ -80,19 +89,21 @@ export function constructCultivarsPolicy({ policy, session }: CultivarPolicyCont
 				id: cultivar.collectionId,
 				visibility: { ne: 'HIDDEN' }
 			}),
-			isCollectionOwner(cultivar),
-			policy.gardens.exists.where({
-				id: cultivar.gardenId,
-				adminIds: { contains: session.user.account }
-			}),
-			policy.gardens.exists.where({
-				id: cultivar.gardenId,
-				editorIds: { contains: session.user.account }
-			}),
-			policy.gardens.exists.where({
-				id: cultivar.gardenId,
-				viewerIds: { contains: session.user.account }
-			})
+			anyOf([
+				isCollectionOwner(cultivar),
+				policy.gardens.exists.where({
+					id: cultivar.gardenId,
+					adminIds: { contains: session.user.account }
+				}),
+				policy.gardens.exists.where({
+					id: cultivar.gardenId,
+					editorIds: { contains: session.user.account }
+				}),
+				policy.gardens.exists.where({
+					id: cultivar.gardenId,
+					viewerIds: { contains: session.user.account }
+				})
+			])
 		])
 	);
 	policy.cultivars.allowInsert.where((cultivar) =>

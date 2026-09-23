@@ -29,8 +29,14 @@ export const plantSchema = {
 		 * garden's cultivar collections.
 		 */
 		cultivarName: s.string(),
-		/** A set of cultivar attributes to override those from the collections. Untyped, see JazzCultivarAttributesOverride. */
-		cultivarAttributes: s.json().optional(),
+		/**
+		 * A set of cultivar attributes to override those from the
+		 * collections. Untyped, see JazzCultivarAttributesOverride.
+		 * `.default({})` rather than `.optional()`: an alpha bug rejects any
+		 * explicit value written to an `.optional()` json column (see
+		 * SPIKE_NOTES.md) - `.default({})` writes and reads correctly.
+		 */
+		cultivarAttributes: s.json().default({}),
 		/** Lifespan attributes populated from the expected attributes based on the cultivar. */
 		expectedLifespanId: s.ref('lifespans'),
 		/** Lifespan attributes populated by observations of users. */

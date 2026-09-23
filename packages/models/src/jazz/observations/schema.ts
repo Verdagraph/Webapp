@@ -13,8 +13,14 @@ export const observationSchema = {
 		entityIds: s.array(s.string()).default([]),
 		/** Date of the observation. */
 		date: s.timestamp(),
-		/** Optional unstructured data. Structure depends on the observation type. */
-		data: s.json().optional()
+		/**
+		 * Optional unstructured data. Structure depends on the observation
+		 * type. `.default({})` rather than `.optional()`: an alpha bug
+		 * rejects any explicit value written to an `.optional()` json
+		 * column (see SPIKE_NOTES.md) - `.default({})` writes and reads
+		 * correctly.
+		 */
+		data: s.json().default({})
 	})
 };
 export type JazzGenericObservation = TableRow<typeof observationSchema, 'observations'>;

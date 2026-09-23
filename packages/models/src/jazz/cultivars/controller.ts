@@ -110,7 +110,9 @@ async function resolveCultivarId(
 	cultivarId: string,
 	ctx: ControllerContext
 ): Promise<JazzCultivar | null> {
-	const cultivar = await ctx.db.one(ctx.jazz.cultivars.where({ id: cultivarId }));
+	const cultivar = (await ctx.db.one(
+		ctx.jazz.cultivars.where({ id: cultivarId })
+	)) as JazzCultivar | null;
 	if (cultivar == null) {
 		throw new AppError('Failed to fetch cultivar - invalid ID.', {
 			nonFormErrors: ['Failed to fetch cultivar.']
@@ -122,9 +124,9 @@ async function resolveCultivarId(
 	const cultivars = [cultivar];
 	let parentCultivarId: string | null = cultivar.parentId;
 	for (let index = 0; index < MAX_CULTIVAR_INHERITANCE_DEPTH; index++) {
-		const parentCultivar: JazzCultivar | null = await ctx.db.one(
+		const parentCultivar = (await ctx.db.one(
 			ctx.jazz.cultivars.where({ id: parentCultivarId })
-		);
+		)) as JazzCultivar | null;
 		if (parentCultivar) {
 			cultivars.push(parentCultivar);
 

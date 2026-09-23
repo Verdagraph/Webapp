@@ -481,7 +481,7 @@ arbitrary JWT claims, not just `session.user`/`session.authMode`.
 `jazz-tools`'s compiled `runtime/client-session.js`) projects every
 top-level JWT claim outside a small reserved set (`sub`, `exp`, `nbf`,
 `iat`, `iss`, `aud`, `jti`) into `session.claims`, for both external and
-local-first sessions - and this happens only *after* `jose`'s
+local-first sessions - and this happens only _after_ `jose`'s
 `compactVerify`/`importJWK` validates the JWT's signature, so a claim
 can only ever reach policy evaluation inside a JWT actually signed by
 the server's own key.
@@ -489,13 +489,14 @@ the server's own key.
 The DSL syntax is unforgiving in the same "typechecks, real server
 rejects it" way as findings #3/#6, but for a different reason (a genuine
 DSL restriction, not a compiler gap):
+
 - `session.where({ role: 'service' })` compiles and deploys, but is
-  silently *wrong* - the server error names the real problem:
+  silently _wrong_ - the server error names the real problem:
   `session.role` isn't a recognized session field; raw claims must go
   through `session.claims["name"]`.
 - `session.where({ claims: { role: 'service' } })` (nested object) is
   rejected outright: `"Nested object claim syntax is not supported; use
-  dotted path keys instead."`
+dotted path keys instead."`
 - The only form that works: `session.where({ 'claims.role': 'service' })`
   - a single dotted string key.
 
@@ -532,7 +533,7 @@ Distinct from the `users` table in `jazz/users.ts`, which mirrors public
 profile data keyed by a **Jazz-native** account UUID (assigned by Jazz's
 own registry on first login) - the credentials tables use their own
 server-generated id from signup onward, because signup necessarily
-happens *before* anyone has completed a Jazz login. The two id spaces
+happens _before_ anyone has completed a Jazz login. The two id spaces
 are intentionally different and never reconciled; `getClient`-style
 "resolve my Jazz session into a public profile row" wiring (not yet
 built anywhere in the app for any domain) is where that reconciliation
@@ -547,25 +548,138 @@ requires an explicit `null` (confirmed by `dsl.d.ts`'s own comment,
 pass at `verifyEmail()` used `unverifiedEmailAddress: undefined` to
 clear the pending email and silently left the stale value in place -
 switching to `unverifiedEmailAddress: null` fixed it). Every other
-domain ported so far only ever *sets* optional fields, never clears one,
+domain ported so far only ever _sets_ optional fields, never clears one,
 which is why this hadn't come up before.
+
+## Headline finding #8: `.optional()` JSON columns reject any explicit write - `.default({})` doesn't
+
+Discovered seeding a demo garden through `environments`/`cultivars`/`plants`,
+the first real writes to any of this session's four `s.json().optional()`
+"untyped for now" fields (`environments.attributes`, `cultivars.attributes`,
+`plants.cultivarAttributes`, `observations.data`). Every one of them
+rejected the write with:
+
+```
+Protocol: value does not match type Internal(InternalValueType(StoredScalar(Json)))
+```
+
+**Isolated precisely, not just observed.** A minimal repro schema with a
+`.json().optional()` column confirmed: omitting the field works (reads
+back `null`); writing _any_ explicit value to it - object, string, empty
+object `{}`, on insert or update - fails identically. `jazz-tools`'s own
+test fixtures use `col.json().default({ createdBy: "alice" })`
+successfully, which pointed at the real variable: a `.json()` column with
+`.default(x)` (not `.optional()`) accepts explicit values on insert
+_and_ update, including deeply nested payloads, exactly like the ones
+these four fields actually store. The bug is narrowly in how an
+`.optional()` JSON column encodes a _present_ value on the wire, not in
+JSON columns generally.
+
+**Fix applied**: `.optional()` changed to `.default({})` on all four fields. No
+consumer changes needed - still a plain object in and out, just never
+literally absent (an empty object rather than `null`/`undefined` when
+unset, which every reader already treats the same way via optional
+chaining).
+
+## Headline finding #9: `anyOf([...])` breaks when one branch uses `contains` and another doesn't - write policies only
+
+Also surfaced by the same demo-seeding pass: `cultivarCollections`'
+insert policy (`isOwner`, combining a direct `{ userId: { eq: ... } }`
+check with a `policy.gardens.exists.where({ ..., contains: ... })`
+check via `anyOf`) failed with `database error: Query: operand type
+mismatch` - a different error string than finding #8, but the same
+"passes local validate, fails on the real server" character.
+
+**Isolated with a matrix of minimal repros** against a real server:
+
+| Combined via `anyOf` (or repeated `.where()` calls, which compile to the same thing)                                            | Result    |
+| ------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| two plain `eq` conditions                                                                                                       | works     |
+| plain `eq` + `exists.where(...)` with a plain `eq` inside                                                                       | works     |
+| plain `eq` + `exists.where(...)` with `contains` inside                                                                         | **fails** |
+| two `exists.where(...)` clauses both using `contains` (the shape `gardenAdminOrEditor`/`gardenReadable` already use everywhere) | works     |
+| `exists.where(...)` with a plain `eq` + `exists.where(...)` with `contains`                                                     | **fails** |
+| a direct `{ field: { contains: ... } }` + `exists.where(...)` with `contains`                                                   | works     |
+
+The pattern: a branch using `contains` (direct or via `exists.where`)
+combined with a branch that does _not_ use `contains`, in the same
+`anyOf`/OR group, breaks - regardless of which side is the direct
+row condition and which is the cross-table `exists` check. All-`contains`
+or all-non-`contains` groups are both fine.
+
+**This only reproduces for write-check (insert/update/delete) policies.**
+`gardens.allowRead` has an equivalent-shaped mixed `anyOf`
+(`{ visibility: { ne: 'HIDDEN' } }` alongside three `contains` checks)
+and has been read successfully dozens of times this session with no
+issue - read (`using`) and write-check (`with_check`) policies are
+evaluated through different compiled paths, and only the latter hit this.
+Every other domain's write policies already happened to keep `anyOf`
+branches uniformly `contains`-shaped (`gardenAdminOrEditor`/
+`gardenAdminOnly` from `shared/gardenScopedPolicies.ts`), which is why
+only `cultivars`' hand-written `isOwner`/`isCollectionOwner` hit this -
+they were the only write policies mixing a personal-ownership check
+(inherently a scalar `eq`) with a `contains`-based garden check.
+
+**Fix applied**: `cultivarCollections.userId: s.ref('users').optional()`
+became `ownerIds: s.array(s.ref('users')).default([])`, so the
+personal-ownership check becomes `{ ownerIds: { contains: ... } }` -
+the same shape as the garden check, keeping every write-policy `anyOf`
+branch uniformly `contains`-based. `cultivars`' `isCollectionOwner`
+(an `exists.where` into `cultivarCollections`) was updated to match.
+The two affected read policies (`cultivarCollections.allowRead`,
+`cultivars.allowRead`) weren't proven broken, but were defensively
+restructured anyway: `anyOf([nonContainsCondition, anyOf([...allTheContainsConditions])])`,
+nesting the contains-only branches into their own sub-`anyOf` - verified
+to preserve correct read/deny behavior, in case reads are merely
+_unproven_ rather than actually safe.
+
+**Practical implication**: any future domain whose ownership/visibility
+logic needs to combine a scalar/direct condition with a `contains`-based
+one in the same write policy needs either this "make it an array so both
+sides use `contains`" treatment, or the nested-`anyOf` restructuring -
+plain `anyOf([eq, existsWithContains])` is not currently safe for writes.
 
 ## Deliberately out of scope for this spike (per the plan)
 
-- `apps/web` wiring is now **partially done** (see finding #5) -
-  `gardenContext.svelte.ts` only. Every other Triplit-backed context
-  (`cultivarContext`, `plantsContext`, `workspacesContext`, etc.) and
-  `apps/server`'s non-credential routes are still untouched. `planner`
-  needs no port at all - it's pure computation with no persisted tables
-  on the Triplit side either.
+- **`apps/web`/`apps/demo`/`packages/ui` wiring is now substantially
+  done**, not just gardens: `cultivarContext`, `plantsContext`,
+  `workspacesContext`, `environmentContext`, `client.svelte.ts`, and the
+  full write-side (`packages/models/src/jazz/dataController.ts`'s
+  `Commands` interface, bound into `appContext.svelte.ts` and every
+  mutation call site in `packages/ui/components`) all read from and
+  write to Jazz now. `apps/demo`'s `[demoId]/+page.svelte` seeds a real
+  garden - workspace, planting areas, cultivar, plant, observations -
+  through the real ported controllers (`jazzSeed.ts`), verified
+  end-to-end in a real browser with zero console errors and real
+  rendered content (planting area geometry, the seeded plant).
+  `apps/server`'s non-credential REST routes and `planner` are still
+  untouched; `planner` needs no port at all (pure computation, no
+  persisted tables on the Triplit side either).
+- **`GardenInvite.svelte` (`apps/web/src/routes/gardens/`) still queries
+  Triplit directly** for pending garden-membership invites - a genuinely
+  separate read (and its own write calls, `gardenMembershipAccept`/
+  `gardenMembershipDelete`, now routed through a standalone Triplit
+  controller kept alive at `apps/web/src/lib/data/controller.ts`
+  specifically for this one remaining consumer) that wasn't in scope for
+  this pass.
+- **Multi-visitor identity for `apps/demo` needs a real decision.** The
+  old Triplit-backed demo gave every visitor the same hardcoded mock
+  identity; the Jazz-backed seeding in `jazzSeed.ts` gives each browser
+  its own local-first identity instead. That's correct for a single
+  fresh visitor (verified), but if `apps/demo`'s Jazz server keeps
+  persistent data across real visitors the way it's deployed today, only
+  the first visitor to seed the shared demo garden ends up as its admin -
+  every subsequent visitor's own local-first identity has no rights on
+  it (`AppError: Requires ADMIN access`, reproduced by simply running the
+  same Playwright check twice against un-wiped data). Fixing this
+  properly means giving every demo visitor the _same_ Jazz identity
+  (e.g. a fixed demo JWT, minted safely without embedding a signing
+  secret in public client code) rather than local-first's one-per-browser
+  default - not attempted here.
 - Better Auth - investigated in depth (finding #7) and deliberately
   deferred rather than ruled out; a planned step before public release.
 - Real multi-user membership/invite flows - see the open question at the
   end of finding #4 (resolving an invited user's Jazz account UUID).
-- Any manual UI testing beyond confirming the page loads without errors -
-  no garden was created through Jazz and viewed through the actual UI (the
-  `/gardens/[gardenId]` route content itself is a pre-existing "Under
-  Construction" placeholder, unrelated to Jazz).
 
 ## How to reproduce locally
 
