@@ -4,7 +4,6 @@
 	import {
 		GardenCreateCommandSchema,
 		type GardenVisibility,
-		gardenCreate,
 		gardenFields
 	} from '@vdg-webapp/models';
 	import {
@@ -15,15 +14,17 @@
 		Select,
 		Textarea,
 		createForm,
+		getAppContext,
 		iconIds
 	} from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
-	import controller from '$data/controller';
 	import { generateGardenId } from '$data/gardens/utils';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
+
+	const ctx = getAppContext();
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions: {
@@ -51,14 +52,11 @@
 	);
 
 	/** Garden creation form. */
-	let gardenCreateHandler = createCommandHandler(
-		(data: Parameters<typeof gardenCreate>[0]) => gardenCreate(data, controller),
-		{
-			onSuccess: (data) => {
-				goto('/gardens/' + data.id);
-			}
+	let gardenCreateHandler = createCommandHandler(ctx.controller.gardenCreate, {
+		onSuccess: (data) => {
+			goto('/gardens/' + data.slug);
 		}
-	);
+	});
 	const form = createForm(GardenCreateCommandSchema, {
 		onSubmit: (data) => gardenCreateHandler.execute(data)
 	});

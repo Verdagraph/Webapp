@@ -6,6 +6,7 @@ import {
 } from '@vdg-webapp/models';
 
 import { userLoginOp, userRefreshOp } from '$codegen';
+import axiosClient from '$data/customAxios';
 import triplit from '$data/triplit';
 import { TRIPLIT_ANON_TOKEN } from '$data/triplit';
 import auth from '$state/auth.svelte';
@@ -100,4 +101,17 @@ export const getClientOrError = async (): Promise<User> => {
 	throw new AppError('Authentication failed.', {
 		nonFormErrors: ['Authentication failed. A login is required.']
 	});
+};
+
+/**
+ * Fetches this session's username from the server, for self-provisioning
+ * this browser's Jazz public profile row on first Jazz login (see
+ * packages/ui/src/state/application/jazzController.svelte.ts).
+ */
+export const fetchUsername = async (): Promise<string> => {
+	const me = await axiosClient<{ username: string }>({
+		url: '/users/me',
+		method: 'GET'
+	});
+	return me.username;
 };

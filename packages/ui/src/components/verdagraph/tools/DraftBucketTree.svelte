@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { jazzApp } from '@vdg-webapp/models/jazz';
+
 	import { EditableTree } from '$components';
 	import { ScrollArea, Select } from '$core';
 	import { Button } from '$core/button/index.js';
@@ -23,7 +25,7 @@
 			label:
 				bucket.creatorId === ctx.client.profile?.id
 					? bucket.name
-					: `${bucket.name} (${bucket.creator?.username ?? 'unknown'})`
+					: `${bucket.name} (${bucket.creatorUsername ?? 'unknown'})`
 		}))
 	);
 	const bucketSwitcherTrigger = $derived(
@@ -57,7 +59,7 @@
 		plants: () => plants,
 		workspaces: () => workspaces,
 		plantDeleteHandler: (id) => {
-			ctx.controller.triplit.delete('plants', id);
+			ctx.controller.db.delete(jazzApp.plants, id);
 		}
 	});
 </script>

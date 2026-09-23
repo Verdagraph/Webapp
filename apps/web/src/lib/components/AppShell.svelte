@@ -4,8 +4,7 @@
 	import { Tooltip, setAppContext } from '@vdg-webapp/ui';
 
 	import PrimaryNav from '$components/primaryNav';
-	import triplit from '$data/triplit';
-	import { getClient } from '$data/users/auth';
+	import { fetchUsername } from '$data/users/auth';
 
 	let { children }: { children: Snippet } = $props();
 
@@ -14,7 +13,7 @@
 	 * Must run inside <JazzProvider> (see +layout.svelte) since gardenContext
 	 * reads Jazz's Svelte context (getSession()/getDb()) during initialization.
 	 */
-	setAppContext({ triplit, getClient });
+	setAppContext(fetchUsername);
 </script>
 
 <div class="h-screen w-screen overflow-hidden">

@@ -1,4 +1,4 @@
-import { PlantsCreateCommandSchema, plantsCreate } from '@vdg-webapp/models';
+import { PlantsCreateCommandSchema } from '@vdg-webapp/models';
 
 import { type AppContext } from '$state/application';
 import createCommandHandler from '$state/commandHandler.svelte';
@@ -15,7 +15,7 @@ import { defaultSinglePlant } from './tools/plantsCreateFormDefaults';
  * `resetActiveStamp` below).
  */
 export function createPlantsCreateFormState(ctx: AppContext, getFocusUtc: () => Date) {
-	const plantsCreateHandler = createCommandHandler(plantsCreate, {
+	const plantsCreateHandler = createCommandHandler(ctx.controller.plantsCreate, {
 		/**
 		 * Stamp-style continuation: the next stamp starts as a copy of the one
 		 * just submitted (same cultivar, same geometry, same location), so
@@ -57,7 +57,7 @@ export function createPlantsCreateFormState(ctx: AppContext, getFocusUtc: () => 
 
 	const plantsCreateForm = createForm(PlantsCreateCommandSchema, {
 		initialValues: { plants: [defaultSinglePlant()] },
-		onSubmit: (data) => plantsCreateHandler.execute(data, ctx.controller)
+		onSubmit: (data) => plantsCreateHandler.execute(data)
 	});
 
 	/**

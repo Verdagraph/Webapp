@@ -71,6 +71,10 @@ export function createGardenContext() {
 		get id() {
 			return id;
 		},
+		/** The garden's Jazz row id, distinct from its user-facing slug (`id`); null until the garden resolves. */
+		get gardenId() {
+			return garden?.id ?? null;
+		},
 		get role() {
 			return role;
 		},
