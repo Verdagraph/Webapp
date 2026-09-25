@@ -1,12 +1,13 @@
 <script lang="ts">
-	import type { PlantingArea, Workspace } from '@vdg-webapp/models';
+	import type { Workspace } from '@vdg-webapp/models';
 
 	import { ScrollArea, Tabs } from '$core';
+	import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
 
 	import PlantingAreaTree from './PlantingAreaTree.svelte';
 
 	type Props = {
-		plantingAreas: PlantingArea[];
+		plantingAreas: ResolvedPlantingArea[];
 		workspaces: Pick<Workspace, 'id' | 'name'>[];
 	};
 	let { plantingAreas, workspaces }: Props = $props();

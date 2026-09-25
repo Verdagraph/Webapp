@@ -1,7 +1,7 @@
 import { type ControllerContext } from '../controller.js';
 import { AppError } from '../errors.js';
-import { type Cultivar, type CultivarCollection } from '../index.js';
 import { mergeAttributes } from '../utils/index.js';
+import { type Cultivar, type CultivarCollection } from './schema.js';
 
 const MAX_CULTIVAR_COLLECTION_INHERITANCE_DEPTH = 16;
 const MAX_CULTIVAR_INHERITANCE_DEPTH = 16;
@@ -11,40 +11,34 @@ type CultivarCollectionInheritanceStructure = {
 	collection: CultivarCollection;
 	parent?: CultivarCollectionInheritanceStructure;
 };
+
 /**
- * Retrieves all cultivar collections in a garden.
- * Collections are retrieved into an inheritance structure
- * which stores each collection in the garden as well as
- * its parent, with a fixed inheritance depth limit.
- * @param gardenId Garden to retrieve collections in.
- * @param ctx Controller context.
- * @returns The cultivar collections inheritance structures.
+ * Retrieves all cultivar collections in a garden, into an inheritance
+ * structure storing each collection as well as its parent, with a fixed
+ * inheritance depth limit.
  */
 export async function resolveCultivarCollections(
 	gardenId: string,
 	ctx: ControllerContext
 ): Promise<CultivarCollectionInheritanceStructure[]> {
-	/** Get all cultivar collections in the garden. */
-	const gardenCollections = await ctx.triplit.fetch(
-		ctx.triplit.query('cultivarCollections').Where(['gardenId', '=', gardenId])
+	const gardenCollections = await ctx.db.all(
+		ctx.jazz.cultivarCollections.where({ gardenId })
 	);
-	if (gardenCollections.length == 0) {
+	if (gardenCollections.length === 0) {
 		return [];
 	}
 
-	/** Iteratively retrieve all collections and their parents. */
 	const collections: CultivarCollectionInheritanceStructure[] = [];
 	for (const collection of gardenCollections) {
 		const branchStructure: CultivarCollectionInheritanceStructure = { collection };
 
 		let currentBranch = branchStructure;
-		for (let i = 0; i < MAX_CULTIVAR_COLLECTION_INHERITANCE_DEPTH; i++) {
+		for (let index = 0; index < MAX_CULTIVAR_COLLECTION_INHERITANCE_DEPTH; index++) {
 			if (!currentBranch.collection.parentId) {
 				break;
 			}
-			const parentCollection = await ctx.triplit.fetchById(
-				'cultivarCollections',
-				currentBranch.collection.parentId
+			const parentCollection = await ctx.db.one(
+				ctx.jazz.cultivarCollections.where({ id: currentBranch.collection.parentId })
 			);
 			if (!parentCollection) {
 				break;
@@ -62,48 +56,38 @@ export async function resolveCultivarCollections(
 
 /**
  * Given a cultivar name, retrieves the matching cultivar ID in the garden.
- * Cultivar collections within the garden are queried, along with their parent collections.
- * Collections are sorted by priority.
- * The first cultivar with a set of cultivar names which includes the target name
- * to be found in a search of each collection and all its parents is returned.
- * In the case that multiple cultivars which match a name exist in the same collection,
- * the one with the newest creation date is chosen.
- * @param gardenId The garden to search in.
- * @param cultivarName The cultivar name to search
- * @param ctx Controller context.
- * @returns The matching cultivar ID.
+ * Cultivar collections within the garden are queried, along with their
+ * parent collections. Collections are sorted by priority. The first
+ * cultivar with a matching name found in a search of each collection and
+ * all its parents is returned; in the case of multiple matches in the same
+ * collection, the newest is chosen.
  */
 export async function resolveCultivarName(
 	gardenId: string,
 	cultivarName: string,
 	ctx: ControllerContext
 ): Promise<string | null> {
-	/** Get all cultivar collections in the garden. */
 	const collections = await resolveCultivarCollections(gardenId, ctx);
-	if (collections.length == 0) {
+	if (collections.length === 0) {
 		return null;
 	}
 
-	/** Sort collections by priority. */
 	collections.sort((a, b) => a.collection.priority - b.collection.priority);
 
-	/** Return first matched cultivar ID, starting with children. */
 	for (const collection of collections) {
 		let currentBranch: CultivarCollectionInheritanceStructure | undefined = collection;
 
 		while (currentBranch) {
-			const matchedCultivars = await ctx.triplit.fetch(
-				ctx.triplit
-					.query('cultivars')
-					.Where('collectionId', '=', currentBranch.collection.id)
-					.Where(['name', '=', cultivarName])
-					.Select(['id', 'createdAt'])
+			const matchedCultivars = await ctx.db.all(
+				ctx.jazz.cultivars.where({
+					collectionId: currentBranch.collection.id,
+					name: cultivarName
+				})
 			);
 			if (matchedCultivars.length > 0) {
 				if (matchedCultivars.length > 1) {
-					/** Choose newest cultivar. */
 					matchedCultivars.sort(
-						(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+						(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
 					);
 				}
 				return matchedCultivars[0].id;
@@ -117,21 +101,18 @@ export async function resolveCultivarName(
 }
 
 /**
- * Given a cultivar ID, resolves the full cultivar object.
- * For cultivars without parents, this is a simple ID query.
- * For cultivars with parents, all cultivars in the inheritance tree
- * up to a fixed depth are retrieved, with child cultivar attributes
- * overriding parent attributes.
- * @param cultivarId The cultivar ID to resolve
- * @param ctx Controller context.
- * @returns The full cultivar object, with inherited attributes.
+ * Given a cultivar ID, resolves the full cultivar object. For cultivars
+ * without parents, this is a simple ID query. For cultivars with parents,
+ * all cultivars in the inheritance tree up to a fixed depth are retrieved,
+ * with child cultivar attributes overriding parent attributes.
  */
 async function resolveCultivarId(
 	cultivarId: string,
 	ctx: ControllerContext
 ): Promise<Cultivar | null> {
-	/** Retrieve base cultivar. */
-	const cultivar = await ctx.triplit.fetchById('cultivars', cultivarId);
+	const cultivar = (await ctx.db.one(
+		ctx.jazz.cultivars.where({ id: cultivarId })
+	)) as Cultivar | null;
 	if (cultivar == null) {
 		throw new AppError('Failed to fetch cultivar - invalid ID.', {
 			nonFormErrors: ['Failed to fetch cultivar.']
@@ -140,12 +121,12 @@ async function resolveCultivarId(
 
 	if (cultivar.parentId == null) return cultivar;
 
-	/** Gather cultivar and all parents in a list. */
-	let cultivars = [cultivar];
+	const cultivars = [cultivar];
 	let parentCultivarId: string | null = cultivar.parentId;
-	let parentCultivar: Cultivar | null = null;
-	for (let i = 0; i < MAX_CULTIVAR_INHERITANCE_DEPTH; i++) {
-		parentCultivar = await ctx.triplit.fetchById('cultivars', parentCultivarId);
+	for (let index = 0; index < MAX_CULTIVAR_INHERITANCE_DEPTH; index++) {
+		const parentCultivar = (await ctx.db.one(
+			ctx.jazz.cultivars.where({ id: parentCultivarId })
+		)) as Cultivar | null;
 		if (parentCultivar) {
 			cultivars.push(parentCultivar);
 
@@ -161,19 +142,13 @@ async function resolveCultivarId(
 
 	/** Merge all cultivar values, letting children override parents. */
 	let result = cultivars[cultivars.length - 1];
-	for (let i = cultivars.length - 2; i >= 0; i--) {
-		result = mergeAttributes(result, cultivars[i]);
+	for (let index = cultivars.length - 2; index >= 0; index--) {
+		result = mergeAttributes(result, cultivars[index]);
 	}
 	return result;
 }
 
-/**
- * Given a cultivar name, resolve the full cultivar.
- * @param gardenId The garden to search.
- * @param cultivarName The cultivar name to match.
- * @param ctx Controller context.
- * @returns The full cultivar object, with inherited attributes.
- */
+/** Given a cultivar name, resolve the full cultivar, with inherited attributes. */
 export async function resolveCultivar(
 	gardenId: string,
 	cultivarName: string,
@@ -182,30 +157,23 @@ export async function resolveCultivar(
 	const cultivarId = await resolveCultivarName(gardenId, cultivarName, ctx);
 	if (!cultivarId) return null;
 
-	return await resolveCultivarId(cultivarId, ctx);
+	return resolveCultivarId(cultivarId, ctx);
 }
 
 /**
- * Retrieve all the cultivar names that are valid in a garden.
- * This includes all unique names among all collections and parents
- * of collections in the garden up to a fixed inheritance level.
- * @param gardenId Garden to retrieve names in.
- * @param maxCultivarCollectionInheritanceDepth The maximum
- * cultivar collection inheritance depth to support.
- * @param ctx Controller context.
- * @returns The cultivar names.
+ * Retrieve all the cultivar names valid in a garden: all unique names
+ * among all collections and parents of collections in the garden up to a
+ * fixed inheritance level.
  */
 export async function getAllCultivarNames(
 	gardenId: string,
 	ctx: ControllerContext
 ): Promise<string[]> {
-	/** Get all cultivar collections in the garden. */
 	const collections = await resolveCultivarCollections(gardenId, ctx);
-	if (collections.length == 0) {
+	if (collections.length === 0) {
 		return [];
 	}
 
-	/** Collect all collection IDs. */
 	const collectionIds = new Set<string>();
 	for (const collection of collections) {
 		let currentBranch: CultivarCollectionInheritanceStructure | undefined = collection;
@@ -216,12 +184,8 @@ export async function getAllCultivarNames(
 		}
 	}
 
-	/** Collect all names. */
-	const cultivars = await ctx.triplit.fetch(
-		ctx.triplit
-			.query('cultivars')
-			.Where('collectionId', 'in', collectionIds)
-			.Select(['name'])
+	const cultivars = await ctx.db.all(
+		ctx.jazz.cultivars.where({ collectionId: { in: [...collectionIds] } })
 	);
 	const names = new Set<string>(cultivars.map((cultivar) => cultivar.name));
 

@@ -2,8 +2,9 @@ import { diContainer } from '@fastify/awilix';
 import { ValidationError } from 'common/errors.js';
 import { AuthenticationError } from 'common/errors.js';
 import env from 'env.js';
+import { type UserAccount } from 'users/repository.js';
 
-import { type UserAccount, type UserUpdateCommand } from '@vdg-webapp/models';
+import { type UserUpdateCommand } from '@vdg-webapp/models';
 
 import { hashPassword, verifyPassword } from '../auth/passwords.js';
 

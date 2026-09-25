@@ -26,11 +26,11 @@ export function plantingWindowCalendarItem(value: {
 	const endDate = fromDate(totalRange.end, getLocalTimeZone());
 
 	const fillColor =
-		value.plantingWindow.cultivar.attributes.color?.baseColor || defaultBaseColor;
+		value.plantingWindow.cultivar.attributes?.color?.baseColor || defaultBaseColor;
 	const borderColor =
-		value.plantingWindow.cultivar.attributes.color?.outlineColor || defaultBorderColor;
+		value.plantingWindow.cultivar.attributes?.color?.outlineColor || defaultBorderColor;
 	const itemColor =
-		value.plantingWindow.cultivar.attributes.color?.textColor || defaultItemColor;
+		value.plantingWindow.cultivar.attributes?.color?.textColor || defaultItemColor;
 
 	return {
 		id: `${value.plantingWindow.cultivar.id}|${value.plantingWindow.environment.id}`,

@@ -1,91 +1,26 @@
-import { type Entity, type Roles, Schema as S } from '@triplit/client';
+import { type TableRow, schema as s } from 'jazz-tools';
 
-export const roles: Roles = {
-	anon: {
-		match: {
-			'x-triplit-token-type': 'anon'
-		}
-	},
-	user: {
-		match: {
-			type: 'user',
-			accountId: '$accountId',
-			profileId: '$profileId',
-			username: '$username'
-		}
-	}
+/**
+ * Public username-lookup mirror, keyed by a Jazz-native account id. Every
+ * other domain (garden membership, cultivar/collection ownership, draft
+ * bucket creators, etc.) references users through this table's row ids via
+ * `s.ref('users')`, so membership and ownership can be resolved without
+ * touching credential data.
+ *
+ * Real auth data (password hash, email, tokens) lives in the separate
+ * `credentials/` domain instead, which is never readable by an end-user
+ * session - only a trusted server-minted service token can read/write it.
+ * A row here is created once a user completes signup, keyed by the same id
+ * their JWT carries as its subject.
+ */
+export const userSchema = {
+	users: s.table({
+		username: s.string()
+	})
 };
+export type UserProfile = TableRow<typeof userSchema, 'users'>;
 
-export const userSchema = S.Collections({
-	/** User profiles. */
-	profiles: {
-		schema: S.Schema({
-			id: S.Id(),
-
-			/** Username. Unique and used within the app to search for users. */
-			username: S.String(),
-
-			/** Date of user creation. */
-			createdAt: S.Date({ default: S.Default.now() })
-		}),
-
-		/** Profile objects can only be modified by the server but viewed by anyone. */
-		permissions: {
-			anon: {
-				read: {
-					filter: [true]
-				}
-			},
-			user: {
-				read: {
-					filter: [true]
-				}
-			}
-		}
-	},
-
-	/** User accounts. */
-	accounts: {
-		schema: S.Schema({
-			id: S.Id(),
-
-			/** The ID of the associated profile. */
-			profileId: S.String(),
-
-			/** Hashed password */
-			passwordHash: S.String(),
-
-			/** Primary email address. Only verified emails use this attribute. */
-			verifiedEmail: S.String({ nullable: true }),
-
-			/**
-			 * Secondary email. Used to avoid replacing primary email when switching emails.
-			 * Upon verification, should be nulled and used to set primaryEmail.
-			 */
-			unverifiedEmail: S.Record({
-				/** Address of the email. */
-				address: S.String({ nullable: true, default: null }),
-				/** JWT confirmation token which is sent to the user for verification. */
-				token: S.String({ nullable: true, default: null })
-			}),
-
-			/** JWT confirmation key used to confirm a password reset. */
-			passwordResetToken: S.String({ nullable: true, default: null }),
-
-			/** Set to false for inactive users. */
-			isActive: S.Boolean({ default: true })
-		}),
-		relationships: {
-			profile: S.RelationById('profiles', '$profileId')
-		},
-		/** Accounts objects can only be modified by the server and viewed by the user. */
-		permissions: {
-			user: {
-				read: { filter: [['id', '=', '$role.accountId']] }
-			}
-		}
-	}
-});
-export type UserProfile = Entity<typeof userSchema, 'profiles'>;
-export type UserAccount = Entity<typeof userSchema, 'accounts'>;
-export type User = { account: UserAccount; profile: UserProfile };
+/** Minimal authenticated-user shape used by controllers. */
+export type User = {
+	profile: UserProfile;
+};

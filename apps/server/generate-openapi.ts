@@ -8,7 +8,7 @@ import { buildApp } from './src/app';
  * swagger documentation endpoint, and writes it to file.
  */
 async function generateSwagger() {
-	const app = buildApp();
+	const app = await buildApp();
 
 	const swaggerJson = await app
 		.inject({

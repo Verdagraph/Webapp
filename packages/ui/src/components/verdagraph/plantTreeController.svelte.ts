@@ -1,16 +1,4 @@
-import {
-	type FieldErrors,
-	type Plant,
-	type Workspace,
-	geometryHistoryExtend,
-	geometryUpdate,
-	lifespanUpdate,
-	locationHistoryExtend,
-	locationUpdate,
-	observationDelete,
-	observationUpdate,
-	plantUpdate
-} from '@vdg-webapp/models';
+import { type FieldErrors, type Workspace } from '@vdg-webapp/models';
 
 import {
 	type PlantDeleteHandler,
@@ -19,6 +7,7 @@ import {
 	toTreeBaseId
 } from '$components';
 import { getAppContext } from '$state';
+import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
 import createCommandHandler from '$state/commandHandler.svelte';
 
 import { getVerdagraphContext } from './verdagraphContext.svelte';
@@ -35,7 +24,7 @@ type TreeEntities = 'plant';
  * delete handler is supplied - both are left to the caller.
  */
 export function createPlantTreeController(options: {
-	plants: () => Plant[];
+	plants: () => ResolvedPlant[];
 	workspaces: () => Pick<Workspace, 'id' | 'name'>[];
 	plantDeleteHandler?: PlantDeleteHandler;
 }) {
@@ -44,16 +33,28 @@ export function createPlantTreeController(options: {
 
 	const fieldErrors: FieldErrors = $state({});
 
-	const plantUpdateCommandHandler = createCommandHandler(plantUpdate);
-	const lifespanUpdateCommandHandler = createCommandHandler(lifespanUpdate);
-	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
-	const locationUpdateCommandHandler = createCommandHandler(locationUpdate);
-	const locationHistoryExtendCommandHandler =
-		createCommandHandler(locationHistoryExtend);
-	const geometryHistoryExtendCommandHandler =
-		createCommandHandler(geometryHistoryExtend);
-	const observationUpdateCommandHandler = createCommandHandler(observationUpdate);
-	const observationDeleteCommandHandler = createCommandHandler(observationDelete);
+	const plantUpdateCommandHandler = createCommandHandler(ctx.controller.plantUpdate);
+	const lifespanUpdateCommandHandler = createCommandHandler(
+		ctx.controller.lifespanUpdate
+	);
+	const geometryUpdateCommandHandler = createCommandHandler(
+		ctx.controller.geometryUpdate
+	);
+	const locationUpdateCommandHandler = createCommandHandler(
+		ctx.controller.locationUpdate
+	);
+	const locationHistoryExtendCommandHandler = createCommandHandler(
+		ctx.controller.locationHistoryExtend
+	);
+	const geometryHistoryExtendCommandHandler = createCommandHandler(
+		ctx.controller.geometryHistoryExtend
+	);
+	const observationUpdateCommandHandler = createCommandHandler(
+		ctx.controller.observationUpdate
+	);
+	const observationDeleteCommandHandler = createCommandHandler(
+		ctx.controller.observationDelete
+	);
 
 	const items = $derived(
 		options.plants().map((plant) => {
@@ -62,36 +63,33 @@ export function createPlantTreeController(options: {
 				{
 					fieldErrors,
 					plantUpdateHandler: (id, data) => {
-						plantUpdateCommandHandler.execute(id, data, ctx.controller);
+						plantUpdateCommandHandler.execute(id, data);
 					},
 					lifespanUpdateHandler: (id, data) => {
-						lifespanUpdateCommandHandler.execute(id, data, ctx.controller);
+						lifespanUpdateCommandHandler.execute(id, data);
 					},
 					geometryUpdateHandler: (id, data) => {
-						geometryUpdateCommandHandler.execute(id, data, ctx.controller);
+						geometryUpdateCommandHandler.execute(id, data);
 					},
 					locationUpdateHandler: (id, data) => {
-						locationUpdateCommandHandler.execute(id, data, ctx.controller);
+						locationUpdateCommandHandler.execute(id, data);
 					},
 					locationHistoryExtendHandler: (id) => {
-						locationHistoryExtendCommandHandler.execute(
-							id,
-							{ date: verdagraphContext.timeline.focusUtc },
-							ctx.controller
-						);
+						locationHistoryExtendCommandHandler.execute(id, {
+							date: verdagraphContext.timeline.focusUtc
+						});
 					},
 					geometryHistoryExtendHandler: (id) => {
 						geometryHistoryExtendCommandHandler.execute(
 							id,
-							verdagraphContext.timeline.focusUtc,
-							ctx.controller
+							verdagraphContext.timeline.focusUtc
 						);
 					},
 					observationUpdateHandler: (data) => {
-						observationUpdateCommandHandler.execute(data, ctx.controller);
+						observationUpdateCommandHandler.execute(data);
 					},
 					observationDeleteHandler: (id) => {
-						observationDeleteCommandHandler.execute(id, ctx.controller);
+						observationDeleteCommandHandler.execute(id);
 					},
 					plantDeleteHandler: options.plantDeleteHandler
 				}

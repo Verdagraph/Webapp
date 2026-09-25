@@ -8,7 +8,7 @@
 	import { toDate } from '@melt-ui/svelte/internal/helpers/date';
 	import type { Snippet } from 'svelte';
 
-	import { type GenericObservation, observationUpdate } from '@vdg-webapp/models';
+	import { type GenericObservation } from '@vdg-webapp/models';
 
 	import iconIds from '$assets/icons';
 	import type { ButtonVariant } from '$core/button';
@@ -27,7 +27,9 @@
 
 	/** Handlers. */
 	const ctx = getAppContext();
-	const observationUpdateHandler = createCommandHandler(observationUpdate);
+	const observationUpdateHandler = createCommandHandler(
+		ctx.controller.observationUpdate
+	);
 
 	const canEdit = false;
 
@@ -35,10 +37,10 @@
 
 	function translateDate(duration: DateDuration) {
 		const newVal = calendarDate.add(duration);
-		observationUpdateHandler.execute(
-			{ id: observation.id, date: toDate(newVal, getLocalTimeZone()) },
-			ctx.controller
-		);
+		observationUpdateHandler.execute({
+			id: observation.id,
+			date: toDate(newVal, getLocalTimeZone())
+		});
 	}
 </script>
 
@@ -90,10 +92,10 @@
 		compact={false}
 		onValueChange={async (newVal) => {
 			if (newVal) {
-				observationUpdateHandler.execute(
-					{ id: observation.id, date: toDate(newVal, getLocalTimeZone()) },
-					ctx.controller
-				);
+				observationUpdateHandler.execute({
+					id: observation.id,
+					date: toDate(newVal, getLocalTimeZone())
+				});
 			}
 		}}
 		disabled={canEdit}

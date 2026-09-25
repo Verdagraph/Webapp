@@ -1,13 +1,10 @@
-import { useQuery } from '@triplit/svelte';
+import { QuerySubscription, getDb } from 'jazz-tools/svelte';
 
-import {
-	type DraftBucket,
-	draftBucketCommit,
-	draftBucketCreate,
-	draftBucketDiscard
-} from '@vdg-webapp/models';
+import { type DraftBucket, app } from '@vdg-webapp/models';
 
 import { type AppContext } from '$state/application';
+
+export type ResolvedDraftBucket = DraftBucket & { creatorUsername: string | null };
 
 /**
  * Owns the lifecycle of a garden's open DraftBuckets: the live list, which
@@ -23,23 +20,41 @@ export function createDraftBucketsState(
 	gardenId: string,
 	onActiveBucketEnded: () => void
 ) {
+	const db = getDb();
+
 	/**
 	 * Every open (uncommitted) draft bucket in this garden - every plan
 	 * currently under consideration by any user, not just this one. Drives
 	 * both the Add Plants tool's bucket switcher and the Layout/Calendar
 	 * ghost-visibility toggle.
 	 */
-	const openDraftBucketsQuery = $derived(
-		useQuery(
-			ctx.controller.triplit,
-			ctx.controller.triplit
-				.query('draftBuckets')
-				.Where('gardenId', '=', gardenId)
-				.Where('committed', '=', false)
-				.Include('creator')
-		)
+	const openDraftBucketsQuery = new QuerySubscription(() =>
+		gardenId ? app.draftBuckets.where({ gardenId, committed: false }) : undefined
 	);
-	const draftBucketsList = $derived(openDraftBucketsQuery.results ?? []);
+	const rawDraftBuckets = $derived(openDraftBucketsQuery.current ?? []);
+
+	/**
+	 * Jazz has no relation-include like Triplit's `.Include('creator')`, so
+	 * each bucket's creator username is resolved manually.
+	 */
+	let draftBucketsList: ResolvedDraftBucket[] = $state([]);
+	$effect(() => {
+		const buckets = rawDraftBuckets;
+		if (buckets.length === 0) {
+			draftBucketsList = [];
+			return;
+		}
+		Promise.all(
+			buckets.map(async (bucket): Promise<ResolvedDraftBucket> => {
+				const creator = bucket.creatorId
+					? await db.one(app.users.where({ id: bucket.creatorId }))
+					: null;
+				return { ...bucket, creatorUsername: creator?.username ?? null };
+			})
+		).then((resolved) => {
+			draftBucketsList = resolved;
+		});
+	});
 
 	/** The bucket the Add Plants tool is currently staging new stamps into. */
 	let activeDraftBucketId: string | null = $state(null);
@@ -98,7 +113,7 @@ export function createDraftBucketsState(
 
 	/** Starts a brand new draft bucket and makes it active. */
 	async function createDraftBucket(name = 'Draft'): Promise<DraftBucket> {
-		const created = await draftBucketCreate({ gardenId, name }, ctx.controller);
+		const created = await ctx.controller.draftBucketCreate({ gardenId, name });
 		activeDraftBucketId = created.id;
 		return created;
 	}
@@ -125,14 +140,14 @@ export function createDraftBucketsState(
 	}
 
 	async function commitDraftBucket(bucketId: string) {
-		await draftBucketCommit(bucketId, ctx.controller);
+		await ctx.controller.draftBucketCommit(bucketId);
 		if (activeDraftBucketId === bucketId) {
 			activeDraftBucketId = null;
 			onActiveBucketEnded();
 		}
 	}
 	async function discardDraftBucket(bucketId: string) {
-		await draftBucketDiscard(bucketId, ctx.controller);
+		await ctx.controller.draftBucketDiscard(bucketId);
 		if (activeDraftBucketId === bucketId) {
 			activeDraftBucketId = null;
 			onActiveBucketEnded();

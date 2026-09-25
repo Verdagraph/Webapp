@@ -1,4 +1,4 @@
-import type { Geometry } from './schema.js';
+import type { GeometryType } from './schema.js';
 
 /**
  * Checks whether two dates are on the same day or not.
@@ -177,14 +177,26 @@ export function historyGetRange<T extends { date: Date }>(
 }
 
 /**
+ * The minimal geometry shape getGeometryHeight needs. Defined structurally
+ * rather than importing a full resolved geometry type, since this is a pure
+ * math helper that only reads a handful of fields.
+ */
+export type GeometryHeightInput = {
+	type: GeometryType;
+	scaleFactor: number;
+	rectangleWidth: number;
+	polygonRadius: number;
+	ellipseWidth: number;
+	linesCoordinates: Array<{ x: number; y: number }>;
+};
+
+/**
  * Given a geometry, returns the coordinate (in meters)
  * of its vertical extent, relative to the origin of the shape.
  * @param geometry The geometry to find the height for.
  * @returns The height, in meters, of the vertical extent of the shape.
  */
-export function getGeometryHeight(
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>
-): number {
+export function getGeometryHeight(geometry: GeometryHeightInput): number {
 	switch (geometry.type) {
 		case 'RECTANGLE':
 			return (geometry.rectangleWidth / 2) * geometry.scaleFactor;

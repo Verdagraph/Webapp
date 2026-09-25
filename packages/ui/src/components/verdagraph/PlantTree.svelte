@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { type Plant, type Workspace } from '@vdg-webapp/models';
+	import { type Workspace } from '@vdg-webapp/models';
 
 	import { EditableTree } from '$components';
+	import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
 
 	import { createPlantTreeController } from './plantTreeController.svelte';
 	import { getVerdagraphContext } from './verdagraphContext.svelte';
 
 	type Props = {
-		plants: Plant[];
+		plants: ResolvedPlant[];
 		workspaces: Pick<Workspace, 'id' | 'name'>[];
 	};
 	let { plants = [], workspaces = [] }: Props = $props();

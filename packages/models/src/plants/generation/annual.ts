@@ -1,9 +1,8 @@
-import { type Cultivar } from '../../cultivars/index.js';
+import { type CultivarAttributes } from '../../cultivars/index.js';
 import {
 	type GeometryCreateCommand,
 	GeometryCreateCommandSchema,
-	type LocationCreateCommand,
-	type Position
+	type LocationCreateCommand
 } from '../../workspaces/index.js';
 import { type Origin } from '../schema.js';
 import { addDays, deriveGeometry, dimensionOverridesForSize } from './common.js';
@@ -74,7 +73,7 @@ export function annualMilestonesForOrigin(origin: Origin): AnnualLifecycleMilest
  * one missing, equal-to-germToFirstHarvest) span rather than an error - a
  * Cultivar meant to be used as SEEDLING_TO_TRANSPLANT should have both set.
  */
-function daysFromGermination(lifeCycle: Cultivar['attributes']['annualLifeCycle']) {
+function daysFromGermination(lifeCycle: CultivarAttributes['annualLifeCycle']) {
 	const sowToGerm = lifeCycle?.sowToGerm ?? 0;
 	const germToTransplant = lifeCycle?.germToTransplant ?? 0;
 	const germToFirstHarvest = lifeCycle?.germToFirstHarvest ?? 0;
@@ -102,7 +101,7 @@ function daysFromGermination(lifeCycle: Cultivar['attributes']['annualLifeCycle'
  * that's intentional, not a gap, since it has no equivalent moment.
  */
 function sizeForMilestone(
-	profile: Cultivar['attributes']['expectedGeometry'],
+	profile: CultivarAttributes['expectedGeometry'],
 	milestone: AnnualLifecycleMilestone
 ): number | null | undefined {
 	switch (milestone) {
@@ -130,14 +129,14 @@ function sizeForMilestone(
  * always assuming today is the seed date.
  */
 export function generateExpectedHistories(params: {
-	expectedGeometryProfile: Cultivar['attributes']['expectedGeometry'];
-	annualLifecycleProfile: Cultivar['attributes']['annualLifeCycle'];
+	expectedGeometryProfile: CultivarAttributes['expectedGeometry'];
+	annualLifecycleProfile: CultivarAttributes['annualLifeCycle'];
 	origin: Origin;
 	anchorMilestone: AnnualLifecycleMilestone;
 	anchorDate: Date;
 	gardenId: string;
 	workspaceId: string;
-	coordinate: Position;
+	coordinate: { x: number; y: number };
 }): { geometries: GeometryCreateCommand[]; location: LocationCreateCommand } {
 	const milestones = annualMilestonesForOrigin(params.origin);
 	const offsets = daysFromGermination(params.annualLifecycleProfile);
@@ -191,7 +190,7 @@ function generateAnnualLocation(params: {
 	anchorDate: Date;
 	gardenId: string;
 	workspaceId: string;
-	coordinate: Position;
+	coordinate: { x: number; y: number };
 }): LocationCreateCommand {
 	return {
 		gardenId: params.gardenId,

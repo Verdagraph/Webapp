@@ -1,6 +1,5 @@
 import {
 	type FieldErrors,
-	type PlantingArea,
 	type PlantingAreaUpdateCommand,
 	workspaceFields
 } from '@vdg-webapp/models';
@@ -16,6 +15,7 @@ import {
 	toTreeBaseId,
 	toTreeId
 } from '$components';
+import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
 
 import { type GeometryUpdateHandler } from './geometry';
 import {
@@ -29,7 +29,10 @@ export type PlantingAreaUpdateHandler = (
 ) => void;
 
 export function plantingAreaTreeItem(
-	value: { plantingArea: PlantingArea; workspaces: { id: string; name: string }[] },
+	value: {
+		plantingArea: ResolvedPlantingArea;
+		workspaces: { id: string; name: string }[];
+	},
 	ctx: {
 		plantingAreaUpdateHandler: PlantingAreaUpdateHandler;
 		geometryUpdateHandler: GeometryUpdateHandler;
@@ -107,12 +110,13 @@ export function plantingAreaTreeItem(
 	const locationHistoryItem = locationHistoryTreeItem(
 		locationHistoryId,
 		{
-			locationHistory: value.plantingArea.locationHistory,
+			locationHistoryId: value.plantingArea.locationHistory?.id,
+			locations: value.plantingArea.locationHistory?.locations ?? [],
 			workspaces: value.workspaces
 		},
 		{
 			locationUpdateHandler: ctx.locationUpdateHandler,
-			onLocationHistoryExtend: ctx.locationHistoryExtendHandler,
+			locationHistoryExtendHandler: ctx.locationHistoryExtendHandler,
 			fieldErrors: ctx.fieldErrors
 		}
 	);

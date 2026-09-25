@@ -1,46 +1,46 @@
+import { type ControllerContext } from '../controller.js';
 import { AppError } from '../errors.js';
-import { ControllerContext } from '../index.js';
-import { geometryCreate, historyGetRange } from '../workspaces/index.js';
+import { geometryCreate } from '../workspaces/controller.js';
+import { historyGetRange } from '../workspaces/utils.js';
 import {
-	type DraftBucket,
 	type DraftBucketCreateCommand,
 	type LifespanUpdateCommand,
 	type PlantUpdateCommand,
 	type PlantsCreateCommand
-} from './index.js';
+} from './commands.js';
+import { type DraftBucket } from './schema.js';
 
 async function plantsCreateSingle(data: PlantsCreateCommand, ctx: ControllerContext) {
-	/** Retrieve client and authorize. */
 	const { garden } = await ctx.requireRole(data.gardenId, 'PlantsCreate');
 
-	await ctx.triplit.transact(async (transaction) => {
+	await ctx.db.transaction(async (tx) => {
 		for (const plantData of data.plants) {
 			/** Persist the expected geometry history. */
-			const geometryIds = new Set<string>();
+			const geometryIds: string[] = [];
 			for (const geometryData of plantData.geometryHistory.geometries) {
-				const geometry = await geometryCreate(garden.id, geometryData, transaction);
-				geometryIds.add(geometry.id);
+				const geometry = geometryCreate(garden.id, geometryData, ctx, tx);
+				geometryIds.push(geometry.id);
 			}
-			const geometryHistory = await transaction.insert('geometryHistories', {
+			const geometryHistory = tx.insert(ctx.jazz.geometryHistories, {
 				gardenId: garden.id,
 				geometryIds
 			});
 
 			/** Persist the expected location history. */
-			const locationIds = new Set<string>();
-			const workspaceIds = new Set<string>();
+			const locationIds: string[] = [];
+			const workspaceIds: string[] = [];
 			for (const locationData of plantData.locationHistory.locations) {
-				const location = await transaction.insert('locations', {
+				const location = tx.insert(ctx.jazz.locations, {
 					gardenId: garden.id,
 					workspaceId: locationData.workspaceId,
 					x: locationData.coordinate.x,
 					y: locationData.coordinate.y,
 					date: locationData.date
 				});
-				locationIds.add(location.id);
-				workspaceIds.add(locationData.workspaceId);
+				locationIds.push(location.id);
+				workspaceIds.push(locationData.workspaceId);
 			}
-			const locationHistory = await transaction.insert('locationHistories', {
+			const locationHistory = tx.insert(ctx.jazz.locationHistories, {
 				gardenId: garden.id,
 				locationIds,
 				workspaceIds
@@ -55,19 +55,19 @@ async function plantsCreateSingle(data: PlantsCreateCommand, ctx: ControllerCont
 			const endDate = dateRange?.max.date ?? new Date();
 
 			/** Persist the expected lifespan and an empty recorded lifespan. */
-			const expectedLifespan = await transaction.insert('lifespans', {
+			const expectedLifespan = tx.insert(ctx.jazz.lifespans, {
 				gardenId: garden.id,
 				origin: plantData.origin,
 				geometryHistoryId: geometryHistory.id,
 				locationHistoryId: locationHistory.id
 			});
-			const recordedLifespan = await transaction.insert('lifespans', {
+			const recordedLifespan = tx.insert(ctx.jazz.lifespans, {
 				gardenId: garden.id,
 				origin: plantData.origin
 			});
 
 			/** Persist the plant, staged into its draft bucket. */
-			await transaction.insert('plants', {
+			tx.insert(ctx.jazz.plants, {
 				gardenId: garden.id,
 				cultivarName: plantData.cultivarName,
 				cultivarAttributes: plantData.cultivarOverride,
@@ -104,12 +104,13 @@ export async function draftBucketCreate(
 ): Promise<DraftBucket> {
 	const { client } = await ctx.requireRole(data.gardenId, 'DraftBucketCreate');
 
-	return await ctx.triplit.insert('draftBuckets', {
+	const write = ctx.db.insert(ctx.jazz.draftBuckets, {
 		gardenId: data.gardenId,
 		name: data.name,
 		creatorId: client.profile.id,
 		committed: false
 	});
+	return write.wait({ tier: 'edge' });
 }
 
 /**
@@ -118,42 +119,35 @@ export async function draftBucketCreate(
  * to stop excluding them.
  */
 export async function draftBucketCommit(id: string, ctx: ControllerContext) {
-	const draftBucket = await ctx.triplit.fetchOne(
-		ctx.triplit.query('draftBuckets').Id(id)
-	);
+	const draftBucket = await ctx.db.one(ctx.jazz.draftBuckets.where({ id }));
 	if (!draftBucket) {
 		throw new AppError('Draft bucket does not exist.', {
 			nonFormErrors: ['Failed to commit draft bucket.']
 		});
 	}
 
-	await ctx.requireRole(draftBucket.gardenId, 'DraftBucketCommit');
+	await ctx.requireRoleForGardenId(draftBucket.gardenId, 'DraftBucketCommit');
 
-	await ctx.triplit.update('draftBuckets', id, (draftBucket) => {
-		draftBucket.committed = true;
-	});
+	ctx.db.update(ctx.jazz.draftBuckets, id, { committed: true });
 }
 
 /** Discards a draft bucket's plan, deleting it along with every plant staged in it. */
 export async function draftBucketDiscard(id: string, ctx: ControllerContext) {
-	const draftBucket = await ctx.triplit.fetchOne(
-		ctx.triplit.query('draftBuckets').Id(id)
-	);
+	const draftBucket = await ctx.db.one(ctx.jazz.draftBuckets.where({ id }));
 	if (!draftBucket) {
 		throw new AppError('Draft bucket does not exist.', {
 			nonFormErrors: ['Failed to discard draft bucket.']
 		});
 	}
 
-	await ctx.requireRole(draftBucket.gardenId, 'DraftBucketDiscard');
+	await ctx.requireRoleForGardenId(draftBucket.gardenId, 'DraftBucketDiscard');
 
-	const draftPlantsQuery = ctx.triplit.query('plants').Where('draftBucketId', '=', id);
-	await ctx.triplit.transact(async (transaction) => {
-		const draftPlants = await transaction.fetch(draftPlantsQuery);
+	await ctx.db.transaction(async (tx) => {
+		const draftPlants = await ctx.db.all(ctx.jazz.plants.where({ draftBucketId: id }));
 		for (const plant of draftPlants) {
-			await transaction.delete('plants', plant.id);
+			tx.delete(ctx.jazz.plants, plant.id);
 		}
-		await transaction.delete('draftBuckets', id);
+		tx.delete(ctx.jazz.draftBuckets, id);
 	});
 }
 
@@ -163,22 +157,18 @@ export async function plantUpdate(
 	data: PlantUpdateCommand,
 	ctx: ControllerContext
 ) {
-	const plant = await ctx.triplit.fetchOne(ctx.triplit.query('plants').Id(id));
+	const plant = await ctx.db.one(ctx.jazz.plants.where({ id }));
 	if (!plant) {
 		throw new AppError('Plant does not exist.', {
 			nonFormErrors: ['Failed to update plant.']
 		});
 	}
 
-	await ctx.requireRole(plant.gardenId, 'PlantUpdate');
+	await ctx.requireRoleForGardenId(plant.gardenId, 'PlantUpdate');
 
-	await ctx.triplit.update('plants', id, (plant) => {
-		if (data.cultivarName) {
-			plant.cultivarName = data.cultivarName;
-		}
-		if (data.quantity) {
-			plant.quantity = data.quantity;
-		}
+	ctx.db.update(ctx.jazz.plants, id, {
+		...(data.cultivarName ? { cultivarName: data.cultivarName } : {}),
+		...(data.quantity ? { quantity: data.quantity } : {})
 	});
 }
 
@@ -188,18 +178,16 @@ export async function lifespanUpdate(
 	data: LifespanUpdateCommand,
 	ctx: ControllerContext
 ) {
-	const lifespan = await ctx.triplit.fetchOne(ctx.triplit.query('lifespans').Id(id));
+	const lifespan = await ctx.db.one(ctx.jazz.lifespans.where({ id }));
 	if (!lifespan) {
 		throw new AppError('Lifespan does not exist.', {
 			nonFormErrors: ['Failed to update lifespan.']
 		});
 	}
 
-	await ctx.requireRole(lifespan.gardenId, 'PlantUpdate');
+	await ctx.requireRoleForGardenId(lifespan.gardenId, 'PlantUpdate');
 
-	await ctx.triplit.update('lifespans', id, (lifespan) => {
-		if (data.origin) {
-			lifespan.origin = data.origin;
-		}
+	ctx.db.update(ctx.jazz.lifespans, id, {
+		...(data.origin ? { origin: data.origin } : {})
 	});
 }

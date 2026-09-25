@@ -1,10 +1,7 @@
 import { mode } from 'mode-watcher';
 import { getContext, setContext } from 'svelte';
 
-import {
-	PlantingAreaCreateCommandSchema,
-	plantingAreaCreate
-} from '@vdg-webapp/models';
+import { PlantingAreaCreateCommandSchema } from '@vdg-webapp/models';
 
 import {
 	createSelectionManager,
@@ -57,13 +54,16 @@ export function createWorkspaceEditorContext(defaultId: string) {
 	const timelineSelection = createTimelineSelection(ctx.timeline);
 
 	/** Forms. */
-	const plantingAreaCreateHandler = createCommandHandler(plantingAreaCreate, {
-		onSuccess: () => {
-			toolbox.deactivate('plantingAreaCreate');
+	const plantingAreaCreateHandler = createCommandHandler(
+		ctx.controller.plantingAreaCreate,
+		{
+			onSuccess: () => {
+				toolbox.deactivate('plantingAreaCreate');
+			}
 		}
-	});
+	);
 	const plantingAreaCreateForm = createForm(PlantingAreaCreateCommandSchema, {
-		onSubmit: (data) => plantingAreaCreateHandler.execute(data, ctx.controller)
+		onSubmit: (data) => plantingAreaCreateHandler.execute(data)
 	});
 
 	/**

@@ -3,12 +3,12 @@ import { mode } from 'mode-watcher';
 
 import {
 	type Cultivar,
-	type Plant,
 	type PlantObservation,
 	PlantObservationLabels,
 	historyGetRange
 } from '@vdg-webapp/models';
 
+import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
 import { getColor } from '$utils';
 
 import {
@@ -23,7 +23,7 @@ const defaultBorderColor = getColor('grass', 11, mode.current);
 const defaultItemColor = getColor('grass', 8, mode.current);
 
 export function plantCalendarItem(value: {
-	plant: Plant;
+	plant: ResolvedPlant;
 	cultivar: Cultivar | null;
 }): CalendarItem | null {
 	if (
@@ -51,15 +51,22 @@ export function plantCalendarItem(value: {
 	const startDate = fromDate(totalRange.min.date, getLocalTimeZone());
 	const endDate = fromDate(totalRange.max.date, getLocalTimeZone());
 
-	const fillColor = value.cultivar.attributes.color?.baseColor || defaultBaseColor;
+	const fillColor = value.cultivar.attributes?.color?.baseColor || defaultBaseColor;
 	const borderColor =
-		value.cultivar.attributes.color?.outlineColor || defaultBorderColor;
-	const itemColor = value.cultivar.attributes.color?.textColor || defaultItemColor;
+		value.cultivar.attributes?.color?.outlineColor || defaultBorderColor;
+	const itemColor = value.cultivar.attributes?.color?.textColor || defaultItemColor;
 
 	const expectedLifespanInfoPoints: CalendarItemInfoPoint<{
 		observation: PlantObservation;
 	}>[] =
-		value.plant.expectedLifespan.observations?.map((observation) => {
+		value.plant.expectedLifespan.observations?.map((genericObservation) => {
+			/**
+			 * Observations resolve from Jazz as GenericObservation (untyped
+			 * `data`); PlantObservation's discriminated union is a caller-side
+			 * contract narrowed by `type`, same trust boundary the old
+			 * Triplit-era Lifespan type asserted implicitly.
+			 */
+			const observation = genericObservation as PlantObservation;
 			const label = PlantObservationLabels[observation.type] ?? 'Unknown Observation';
 			return createInfoPoint({
 				label: label,
@@ -87,7 +94,8 @@ export function plantCalendarItem(value: {
 	const recordedLifespanInfoPoints: CalendarItemInfoPoint<{
 		observation: PlantObservation;
 	}>[] =
-		value.plant.recordedLifespan.observations?.map((observation) => {
+		value.plant.recordedLifespan.observations?.map((genericObservation) => {
+			const observation = genericObservation as PlantObservation;
 			return {
 				label: PlantObservationLabels[observation.type] ?? 'Unknown Observation',
 				date: fromDate(observation.date, getLocalTimeZone())

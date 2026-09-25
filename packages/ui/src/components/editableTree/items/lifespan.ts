@@ -1,6 +1,5 @@
 import {
 	type FieldErrors,
-	type Lifespan,
 	type LifespanUpdateCommand,
 	type Origin,
 	OriginEnumLabels,
@@ -21,6 +20,7 @@ import {
 	toTreeBaseId,
 	toTreeId
 } from '$components';
+import { type ResolvedLifespan } from '$state/application/plantsContext.svelte';
 
 import DynamicSelect from '../attributes/DynamicSelect.svelte';
 import {
@@ -44,7 +44,10 @@ export type LifespanUpdateHandler = (id: string, data: LifespanUpdateCommand) =>
 export function lifespanTreeItem(
 	itemId: string,
 	itemLabel: string,
-	value: { lifespan: Lifespan | null; workspaces: { id: string; name: string }[] },
+	value: {
+		lifespan: ResolvedLifespan | null;
+		workspaces: { id: string; name: string }[];
+	},
 	ctx: {
 		lifespanUpdateHandler: LifespanUpdateHandler;
 		geometryUpdateHandler: GeometryUpdateHandler;
@@ -86,7 +89,10 @@ export function lifespanTreeItem(
 
 	const geometryHistoryItem = geometryHistoryTreeItem(
 		geometryHistoryId,
-		{ geometryHistory: value.lifespan.geometryHistory },
+		{
+			geometryHistoryId: value.lifespan.geometryHistoryId,
+			geometries: value.lifespan.geometries
+		},
 		{
 			geometryItemOptions: {
 				includeIndex: false,
@@ -105,7 +111,8 @@ export function lifespanTreeItem(
 	const locationHistoryItem = locationHistoryTreeItem(
 		locationHistoryId,
 		{
-			locationHistory: value.lifespan.locationHistory,
+			locationHistoryId: value.lifespan.locationHistoryId,
+			locations: value.lifespan.locations,
 			workspaces: value.workspaces
 		},
 		{

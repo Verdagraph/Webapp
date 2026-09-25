@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { AppError, type ServerErrorResponse } from '@vdg-webapp/models';
 
-import triplit from './triplit';
+import accessToken from '$state/accessToken.svelte';
 
 /** Static client configuration. */
 export const AXIOS_INSTANCE = axios.create({
@@ -14,7 +14,9 @@ export const AXIOS_INSTANCE = axios.create({
 /** Dynamic request configuration. */
 AXIOS_INSTANCE.interceptors.request.use((config) => {
 	//config.headers['X-CSRFToken'] = get(csrftoken);
-	config.headers['Authorization'] = triplit.token;
+	if (accessToken.current) {
+		config.headers['Authorization'] = accessToken.current;
+	}
 	return config;
 });
 

@@ -64,15 +64,15 @@ function calculatePlantingWindowFrostDates(
 
 	/** Retrieve attributes. */
 	const firstWindowOpen =
-		cultivar.attributes.frostDatePlantingWindows?.firstFrostWindowOpen;
+		cultivar.attributes?.frostDatePlantingWindows?.firstFrostWindowOpen;
 	const firstWindowClose =
-		cultivar.attributes.frostDatePlantingWindows?.firstFrostWindowClose;
-	const firstFrostDate = environment.attributes.frostDates?.firstFrostDate;
+		cultivar.attributes?.frostDatePlantingWindows?.firstFrostWindowClose;
+	const firstFrostDate = environment.attributes?.frostDates?.firstFrostDate;
 	const lastWindowOpen =
-		cultivar.attributes.frostDatePlantingWindows?.lastFrostWindowOpen;
+		cultivar.attributes?.frostDatePlantingWindows?.lastFrostWindowOpen;
 	const lastWindowClose =
-		cultivar.attributes.frostDatePlantingWindows?.lastFrostWindowClose;
-	const lastFrostDate = environment.attributes.frostDates?.lastFrostDate;
+		cultivar.attributes?.frostDatePlantingWindows?.lastFrostWindowClose;
+	const lastFrostDate = environment.attributes?.frostDates?.lastFrostDate;
 
 	/** Get all years in the range. */
 	const startYear = range.start.getUTCFullYear();

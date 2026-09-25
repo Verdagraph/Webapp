@@ -1,3 +1,4 @@
+import { AuthenticationError } from 'common/errors.js';
 import { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { requireAuth } from 'plugins/auth.js';
@@ -52,6 +53,41 @@ export const userRouter = async (app: FastifyInstance) => {
 			setRefreshTokenCookie(result.refreshToken, reply);
 			setAccessTokenHeader(result.accessToken, reply);
 			reply.code(200).send(result.accessToken);
+		}
+	});
+
+	/** Get the authenticated client's own account and profile. */
+	app.withTypeProvider<ZodTypeProvider>().route({
+		method: 'GET',
+		url: 'me',
+		schema: {
+			operationId: 'UserMeOp',
+			description: "Returns the authenticated client's own account and profile.",
+			tags: ['user'],
+			response: {
+				200: z.object({
+					id: z.string(),
+					username: z.string(),
+					verifiedEmail: z.string().nullable(),
+					isActive: z.boolean()
+				})
+			}
+		},
+		handler: async (request, reply) => {
+			const client = requireAuth(request.diScope.resolve('client'));
+			const users = app.diContainer.resolve('userRepo');
+			const profile = await users.getProfileByid(client.profileId);
+			if (!profile) {
+				throw new AuthenticationError('Malformed access credential', {
+					nonFormErrors: ['Authentication expired. Please login again.']
+				});
+			}
+			reply.code(200).send({
+				id: client.id,
+				username: profile.username,
+				verifiedEmail: client.verifiedEmail ?? null,
+				isActive: client.isActive
+			});
 		}
 	});
 

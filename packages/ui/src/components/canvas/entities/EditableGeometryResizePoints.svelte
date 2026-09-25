@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
-	import type { Geometry, GeometryUpdateCommand, Position } from '@vdg-webapp/models';
+	import type { GeometryUpdateCommand } from '@vdg-webapp/models';
 
+	import { type ResolvedGeometry } from '$state/application/workspacesContext.svelte';
 	import { roundToDecimalPlaces } from '$utils';
 
 	import type { CanvasContext } from '../state';
 	import { getGeometryResizePointCursor, getGeometryResizePoints } from './utils';
 
+	type Position = { x: number; y: number };
+
 	type Props = {
 		/** The ID of the canvas. */
 		canvasId: string;
 		/* The geometry to add points for. */
-		geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>;
+		geometry: Omit<ResolvedGeometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>;
 		/** The parent shape's current position, in local (pre-pan-zoom) canvas pixels. */
 		shapePosition: Position;
 		/** The parent shape's current rotation, in degrees. */
