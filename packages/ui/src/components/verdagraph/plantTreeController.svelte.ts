@@ -1,4 +1,4 @@
-import { type FieldErrors, type Plant, type Workspace } from '@vdg-webapp/models';
+import { type FieldErrors, type Workspace } from '@vdg-webapp/models';
 
 import {
 	type PlantDeleteHandler,
@@ -7,6 +7,7 @@ import {
 	toTreeBaseId
 } from '$components';
 import { getAppContext } from '$state';
+import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
 import createCommandHandler from '$state/commandHandler.svelte';
 
 import { getVerdagraphContext } from './verdagraphContext.svelte';
@@ -23,7 +24,7 @@ type TreeEntities = 'plant';
  * delete handler is supplied - both are left to the caller.
  */
 export function createPlantTreeController(options: {
-	plants: () => Plant[];
+	plants: () => ResolvedPlant[];
 	workspaces: () => Pick<Workspace, 'id' | 'name'>[];
 	plantDeleteHandler?: PlantDeleteHandler;
 }) {

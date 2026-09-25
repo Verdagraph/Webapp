@@ -1,8 +1,40 @@
 import { InternalFailureException } from 'common/errors.js';
 import { type Db } from 'jazz-tools/backend';
 
-import { type User, type UserAccount, type UserProfile } from '@vdg-webapp/models';
-import { jazzApp } from '@vdg-webapp/models/jazz';
+import { app } from '@vdg-webapp/models';
+
+/**
+ * The server-internal shape of a user account, adapted from the Jazz
+ * `accounts` credential row (see @vdg-webapp/models' credentials domain).
+ * Distinct from that module's own `Account` type: this nests the
+ * unverified email address/token together (matching the REST API's
+ * response shape, carried over from the pre-Jazz design) rather than
+ * exposing them as separate flat fields.
+ */
+export type UserAccount = {
+	id: string;
+	profileId: string;
+	passwordHash: string;
+	verifiedEmail: string | null;
+	unverifiedEmail: {
+		address: string | null;
+		token: string | null;
+	};
+	passwordResetToken: string | null;
+	isActive: boolean;
+};
+
+/**
+ * The server-internal shape of a user profile, adapted from the Jazz
+ * `accountProfiles` credential row. Distinct from @vdg-webapp/models' own
+ * `UserProfile` (the public username-lookup mirror keyed by Jazz account
+ * id, with no `createdAt`) - this is the credential-side profile instead.
+ */
+export type UserProfile = {
+	id: string;
+	username: string;
+	createdAt: Date;
+};
 
 /** Maps a Jazz accounts row to the shape callers expect. */
 function toUserAccount(row: NonNullable<Awaited<ReturnType<Db['one']>>>): UserAccount {
@@ -55,7 +87,7 @@ export class UserRepository {
 	 * @returns The retrieved account, or null if none exists.
 	 */
 	getAccountById = async (id: string): Promise<UserAccount | null> => {
-		const account = await this.jazzCredentialsDb.one(jazzApp.accounts.where({ id }));
+		const account = await this.jazzCredentialsDb.one(app.accounts.where({ id }));
 		return account ? toUserAccount(account) : null;
 	};
 
@@ -65,9 +97,7 @@ export class UserRepository {
 	 * @returns The retrieved profile, or null if none exists.
 	 */
 	getProfileByid = async (id: string): Promise<UserProfile | null> => {
-		const profile = await this.jazzCredentialsDb.one(
-			jazzApp.accountProfiles.where({ id })
-		);
+		const profile = await this.jazzCredentialsDb.one(app.accountProfiles.where({ id }));
 		return profile ? toUserProfile(profile) : null;
 	};
 
@@ -78,7 +108,7 @@ export class UserRepository {
 	 */
 	getAccountByVerifiedEmail = async (email: string): Promise<UserAccount | null> => {
 		const account = await this.jazzCredentialsDb.one(
-			jazzApp.accounts.where({ verifiedEmail: email })
+			app.accounts.where({ verifiedEmail: email })
 		);
 		return account ? toUserAccount(account) : null;
 	};
@@ -90,7 +120,7 @@ export class UserRepository {
 	 */
 	getAccountByUnverifiedEmail = async (email: string): Promise<UserAccount | null> => {
 		const account = await this.jazzCredentialsDb.one(
-			jazzApp.accounts.where({ unverifiedEmailAddress: email })
+			app.accounts.where({ unverifiedEmailAddress: email })
 		);
 		return account ? toUserAccount(account) : null;
 	};
@@ -102,10 +132,8 @@ export class UserRepository {
 	 */
 	emailExists = async (email: string): Promise<boolean> => {
 		const [verified, unverified] = await Promise.all([
-			this.jazzCredentialsDb.one(jazzApp.accounts.where({ verifiedEmail: email })),
-			this.jazzCredentialsDb.one(
-				jazzApp.accounts.where({ unverifiedEmailAddress: email })
-			)
+			this.jazzCredentialsDb.one(app.accounts.where({ verifiedEmail: email })),
+			this.jazzCredentialsDb.one(app.accounts.where({ unverifiedEmailAddress: email }))
 		]);
 		return verified != null || unverified != null;
 	};
@@ -117,7 +145,7 @@ export class UserRepository {
 	 */
 	usernameExists = async (username: string): Promise<boolean> => {
 		const profile = await this.jazzCredentialsDb.one(
-			jazzApp.accountProfiles.where({ username })
+			app.accountProfiles.where({ username })
 		);
 		return profile != null;
 	};
@@ -138,13 +166,13 @@ export class UserRepository {
 		passwordHash: string,
 		email: string,
 		verificationRequired: boolean
-	): Promise<User> => {
+	): Promise<{ account: UserAccount; profile: UserProfile }> => {
 		const write = await this.jazzCredentialsDb.transaction(async (tx) => {
-			const profile = tx.insert(jazzApp.accountProfiles, {
+			const profile = tx.insert(app.accountProfiles, {
 				username,
 				createdAt: new Date()
 			});
-			const account = tx.insert(jazzApp.accounts, {
+			const account = tx.insert(app.accounts, {
 				profileId: profile.id,
 				passwordHash,
 				...(verificationRequired
@@ -163,7 +191,7 @@ export class UserRepository {
 	 * @param username The new username.
 	 */
 	updateUsername = async (profileId: string, username: string) => {
-		this.jazzCredentialsDb.update(jazzApp.accountProfiles, profileId, { username });
+		this.jazzCredentialsDb.update(app.accountProfiles, profileId, { username });
 	};
 
 	/**
@@ -172,7 +200,7 @@ export class UserRepository {
 	 * @param passwordHash The new hashed password.
 	 */
 	updatePassword = async (accountId: string, passwordHash: string) => {
-		this.jazzCredentialsDb.update(jazzApp.accounts, accountId, { passwordHash });
+		this.jazzCredentialsDb.update(app.accounts, accountId, { passwordHash });
 	};
 
 	/**
@@ -188,11 +216,11 @@ export class UserRepository {
 		verificationRequired: boolean
 	) => {
 		if (verificationRequired) {
-			this.jazzCredentialsDb.update(jazzApp.accounts, accountId, {
+			this.jazzCredentialsDb.update(app.accounts, accountId, {
 				unverifiedEmailAddress: email
 			});
 		} else {
-			this.jazzCredentialsDb.update(jazzApp.accounts, accountId, {
+			this.jazzCredentialsDb.update(app.accounts, accountId, {
 				verifiedEmail: email
 			});
 		}
@@ -205,7 +233,7 @@ export class UserRepository {
 	 * @param token The JWT confirmation token to add.
 	 */
 	addEmailVerificationToken = async (accountId: string, token: string) => {
-		this.jazzCredentialsDb.update(jazzApp.accounts, accountId, {
+		this.jazzCredentialsDb.update(app.accounts, accountId, {
 			unverifiedEmailToken: token
 		});
 	};
@@ -216,7 +244,7 @@ export class UserRepository {
 	 */
 	verifyEmail = async (accountId: string) => {
 		const account = await this.jazzCredentialsDb.one(
-			jazzApp.accounts.where({ id: accountId })
+			app.accounts.where({ id: accountId })
 		);
 		const newVerifiedEmail = account?.unverifiedEmailAddress;
 		if (!newVerifiedEmail) {
@@ -224,7 +252,7 @@ export class UserRepository {
 				'No unverified email on user when one was expected.'
 			);
 		}
-		this.jazzCredentialsDb.update(jazzApp.accounts, accountId, {
+		this.jazzCredentialsDb.update(app.accounts, accountId, {
 			verifiedEmail: newVerifiedEmail,
 			unverifiedEmailAddress: null,
 			unverifiedEmailToken: null
@@ -237,7 +265,7 @@ export class UserRepository {
 	 * @param token The JWT confirmation token to add.
 	 */
 	addPasswordResetToken = async (accountId: string, token: string) => {
-		this.jazzCredentialsDb.update(jazzApp.accounts, accountId, {
+		this.jazzCredentialsDb.update(app.accounts, accountId, {
 			passwordResetToken: token
 		});
 	};

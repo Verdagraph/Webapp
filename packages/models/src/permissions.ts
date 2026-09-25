@@ -1,40 +1,28 @@
-import { type GardenRole } from './index.js';
+import { schema as s } from 'jazz-tools';
 
-/**
- * This file is a centralized location for mapping application actions to a required Garden role.
- */
-const permissions = Object.freeze({
-	/** Gardens. */
-	MembershipCreate: 'ADMIN',
-	MembershipRevoke: 'ADMIN',
-	MembershipRoleChange: 'ADMIN',
+import { constructUsersCredentialPolicy } from './credentials/permissions.js';
+import {
+	constructCultivarCollectionsPolicy,
+	constructCultivarsPolicy
+} from './cultivars/permissions.js';
+import { constructEnvironmentsPolicy } from './environments/permissions.js';
+import {
+	constructGardenMembershipsPolicy,
+	constructGardensPolicy
+} from './gardens/permissions.js';
+import { constructObservationsPolicy } from './observations/permissions.js';
+import { constructPlantsPolicy } from './plants/permissions.js';
+import { app } from './schema.js';
+import { constructWorkspacesPolicy } from './workspaces/permissions.js';
 
-	/** Workspaces. */
-	WorkspaceCreate: 'ADMIN',
-	WorkspaceUpdate: 'ADMIN',
-	WorkspaceEdit: 'EDITOR',
-	PlantingAreaCreate: 'EDITOR',
-
-	/** Observations. */
-	ObservationUpdate: 'EDITOR',
-
-	/** Plants. */
-	PlantsCreate: 'EDITOR',
-	PlantUpdate: 'EDITOR',
-	LifespanUpdate: 'EDITOR',
-
-	/** Draft buckets. */
-	DraftBucketCreate: 'EDITOR',
-	DraftBucketCommit: 'EDITOR',
-	DraftBucketDiscard: 'EDITOR'
-} satisfies Record<string, GardenRole>);
-export type ActionType = keyof typeof permissions;
-
-/**
- * Retrieves the required role of an action.
- * @param action The action to retrieve the required role for.
- * @returns The required role.
- */
-export function requiredRole(action: ActionType): GardenRole {
-	return permissions[action];
-}
+export const permissions = s.definePermissions(app, (ctx) => {
+	constructGardensPolicy(ctx);
+	constructGardenMembershipsPolicy(ctx);
+	constructObservationsPolicy(ctx);
+	constructWorkspacesPolicy(ctx);
+	constructEnvironmentsPolicy(ctx);
+	constructCultivarCollectionsPolicy(ctx);
+	constructCultivarsPolicy(ctx);
+	constructPlantsPolicy(ctx);
+	constructUsersCredentialPolicy(ctx);
+});

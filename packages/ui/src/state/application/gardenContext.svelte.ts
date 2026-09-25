@@ -3,9 +3,9 @@ import { QuerySubscriptionOne, getSession } from 'jazz-tools/svelte';
 import {
 	type ActionType,
 	type GardenRole,
+	app,
 	requiredRole as getRequiredRole
 } from '@vdg-webapp/models';
-import { jazzApp } from '@vdg-webapp/models/jazz';
 
 /**
  * Holds context for a garden,
@@ -21,7 +21,7 @@ export function createGardenContext() {
 	let id = $state('');
 	const session = getSession();
 	const gardenQuery = new QuerySubscriptionOne(() =>
-		id ? jazzApp.gardens.where({ slug: id }) : undefined
+		id ? app.gardens.where({ slug: id }) : undefined
 	);
 	const garden = $derived(gardenQuery.current ?? null);
 	const role: GardenRole | null = $derived.by(() => {
@@ -74,6 +74,10 @@ export function createGardenContext() {
 		/** The garden's Jazz row id, distinct from its user-facing slug (`id`); null until the garden resolves. */
 		get gardenId() {
 			return garden?.id ?? null;
+		},
+		/** True once the query for the current slug has loaded and found no garden. */
+		get notFound() {
+			return id !== '' && !gardenQuery.isLoading && garden === null;
 		},
 		get role() {
 			return role;

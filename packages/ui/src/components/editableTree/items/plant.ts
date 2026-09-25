@@ -1,6 +1,5 @@
 import {
 	type FieldErrors,
-	type Plant,
 	type PlantUpdateCommand,
 	isDraftPlant,
 	plantFields
@@ -15,6 +14,7 @@ import {
 	toTreeBaseId,
 	toTreeId
 } from '$components';
+import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
 
 import {
 	type GeometryHistoryExtendHandler,
@@ -34,7 +34,7 @@ export type PlantUpdateHandler = (id: string, data: PlantUpdateCommand) => void;
 export type PlantDeleteHandler = (id: string) => void;
 
 export function plantTreeItem(
-	value: { plant: Plant; workspaces: { id: string; name: string }[] },
+	value: { plant: ResolvedPlant; workspaces: { id: string; name: string }[] },
 	ctx: {
 		plantUpdateHandler: PlantUpdateHandler;
 		lifespanUpdateHandler: LifespanUpdateHandler;

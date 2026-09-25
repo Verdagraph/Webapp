@@ -3,7 +3,6 @@ import {
 	type GeometryCreateCommand,
 	type LocationCreateCommand,
 	type Origin,
-	type Position,
 	addDays,
 	annualMilestonesForOrigin,
 	daysBetween,
@@ -67,7 +66,7 @@ export function createStampSeeding(plantIndex: number) {
 	}
 
 	/** The existing dragged/generated coordinate if there is one, else the viewport center - so regenerating never snaps away a position already placed. */
-	function resolveCoordinate(): Position {
+	function resolveCoordinate(): { x: number; y: number } {
 		const existing = currentPlant()?.locationHistory?.locations?.[0]?.coordinate;
 		return (
 			existing ?? verdagraphContext.layoutCanvasContext.transform.viewportCenterModel()

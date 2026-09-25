@@ -1,34 +1,35 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { useQuery } from '@triplit/svelte';
+	import { QuerySubscriptionOne } from 'jazz-tools/svelte';
 
-	import { gardenMembershipAccept, gardenMembershipDelete } from '@vdg-webapp/models';
-	import { Button, Separator, iconIds } from '@vdg-webapp/ui';
+	import { type GardenMembership, app } from '@vdg-webapp/models';
+	import { Button, Separator, getAppContext, iconIds } from '@vdg-webapp/ui';
 
-	import controller from '$data/controller';
-	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
-	import triplit from '$data/triplit';
-	import { userProfilesQuery } from '$data/users/queries';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	type Props = {
-		invite: AcceptancePendingMembershipsQueryResult;
+		invite: GardenMembership;
 	};
 	let { invite }: Props = $props();
 
-	let inviterProfile = useQuery(
-		triplit,
-		userProfilesQuery.Vars({ profileIds: [invite.inviterId] })
+	const ctx = getAppContext();
+
+	const gardenQuery = new QuerySubscriptionOne(() =>
+		app.gardens.where({ id: invite.gardenId })
 	);
+	const garden = $derived(gardenQuery.current ?? null);
+
+	const inviterQuery = new QuerySubscriptionOne(() =>
+		invite.inviterId ? app.users.where({ id: invite.inviterId }) : undefined
+	);
+	const inviter = $derived(inviterQuery.current ?? null);
 
 	/** Mutations. */
 	const gardenMembershipAcceptHandler = createCommandHandler(
-		(data: Parameters<typeof gardenMembershipAccept>[0]) =>
-			gardenMembershipAccept(data, controller)
+		ctx.controller.gardenMembershipAccept
 	);
 	const gardenMembershipDeleteHandler = createCommandHandler(
-		(data: Parameters<typeof gardenMembershipDelete>[0]) =>
-			gardenMembershipDelete(data, controller)
+		ctx.controller.gardenMembershipDelete
 	);
 </script>
 
@@ -36,23 +37,23 @@
 	<div class="mr-8 flex flex-col">
 		<div class="mb-4 flex max-w-64 flex-col overflow-hidden text-wrap">
 			<span class="mb-1 break-words font-semibold">
-				{invite.garden?.name ?? 'Error - garden not found.'}
+				{garden?.name ?? 'Error - garden not found.'}
 			</span>
 			<span
 				class="bg-primary-3 text-primary-11 w-fit break-all rounded-md p-1 text-sm italic"
 			>
-				{invite.gardenId}
+				{garden?.slug ?? invite.gardenId}
 			</span>
 		</div>
 		<div class="my-0.5">
 			<span class="text-neutral-11 text-sm">Invited by: </span>
 			<span class="bg-neutral-4 text-neutral-11 rounded-lg p-1 text-sm italic">
-				{#if inviterProfile.fetching}
+				{#if inviterQuery.isLoading}
 					?
-				{:else if inviterProfile.error}
+				{:else if inviter}
+					{inviter.username}
+				{:else}
 					<i>unknown</i>
-				{:else if inviterProfile.results}
-					{inviterProfile.results[0].username}
 				{/if}
 			</span>
 		</div>
@@ -64,16 +65,22 @@
 	<div class="flex flex-col justify-evenly">
 		<Button.Root
 			variant="default"
+			disabled={!garden}
 			onclick={() => {
-				gardenMembershipAcceptHandler.execute({ gardenId: invite.gardenId });
+				if (garden) {
+					gardenMembershipAcceptHandler.execute({ gardenId: garden.slug });
+				}
 			}}
 		>
 			<Icon icon={iconIds.gardenInviteAcceptIcon} width="1.5rem" />
 		</Button.Root>
 		<Button.Root
 			variant="destructive"
+			disabled={!garden}
 			onclick={() => {
-				gardenMembershipDeleteHandler.execute({ gardenId: invite.gardenId });
+				if (garden) {
+					gardenMembershipDeleteHandler.execute({ gardenId: garden.slug });
+				}
 			}}><Icon width="1.5rem" icon={iconIds.gardenInviteRejectIcon} /></Button.Root
 		>
 	</div>

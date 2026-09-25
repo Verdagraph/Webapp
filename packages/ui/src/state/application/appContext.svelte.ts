@@ -1,10 +1,10 @@
 import { getContext, setContext } from 'svelte';
 
 import { createClientContext } from './client.svelte';
+import { createCommandsController } from './commandsController.svelte';
 import { createCultivarContext } from './cultivarContext.svelte';
 import { createEnvironmentContext } from './environmentContext.svelte';
 import { createGardenContext } from './gardenContext.svelte';
-import { createJazzCommands } from './jazzController.svelte';
 import { createPlantsContext } from './plantsContext.svelte';
 import { createTimelineContext } from './timelineContext.svelte';
 import { createSettingsContext } from './userSettings.svelte';
@@ -14,7 +14,7 @@ const appContextKey = 'appContext';
 
 /**
  * Builds every sub-context an app screen needs, sharing one Commands
- * instance (see jazzController.svelte.ts) for both reads that need a
+ * instance (see commandsController.svelte.ts) for both reads that need a
  * ControllerContext (resolveCultivar) and writes (the 24+ mutation call
  * sites throughout packages/ui/components).
  * @param fetchUsername Supplies a username the first time this session
@@ -22,7 +22,7 @@ const appContextKey = 'appContext';
  * apps/web, a constant in apps/demo.
  */
 export function createAppContext(fetchUsername: () => Promise<string>) {
-	const controller = setContext('controller', createJazzCommands(fetchUsername));
+	const controller = setContext('controller', createCommandsController(fetchUsername));
 	const client = setContext('client', createClientContext());
 	const settings = setContext('settings', createSettingsContext());
 	const timeline = setContext('timeline', createTimelineContext());

@@ -1,6 +1,4 @@
-import type { Geometry, Location } from '../workspaces/schema.js';
 import { historySelect } from '../workspaces/utils.js';
-import type { Lifespan, Plant } from './schema.js';
 
 export type LifespanSource = 'recorded' | 'expected';
 
@@ -9,10 +7,22 @@ export type LifespanSource = 'recorded' | 'expected';
  * with the source lifespan it came from, so that callers
  * (e.g. update handlers) can target the correct history for mutations.
  */
-export type Sourced<T> = {
+export type Sourced<T, TLifespan> = {
 	value: T;
 	source: LifespanSource;
-	lifespan: Lifespan;
+	lifespan: TLifespan;
+};
+
+/**
+ * The minimal plant shape resolveActiveLocation/resolveActiveGeometry need:
+ * a plant with an expected and recorded lifespan. Defined generically over
+ * the lifespan shape so this stays usable with whatever resolved lifespan
+ * type a caller has (e.g. the UI's ResolvedLifespan), without packages/models
+ * depending on that UI-specific type.
+ */
+export type PlantWithLifespans<TLifespan> = {
+	expectedLifespan: TLifespan | null;
+	recordedLifespan: TLifespan | null;
 };
 
 /**
@@ -25,10 +35,10 @@ export type Sourced<T> = {
  * @returns The resolved value with its source lifespan, or null
  * if neither lifespan produced a match.
  */
-function resolveFromLifespans<T>(
-	plant: Plant,
-	selector: (lifespan: Lifespan) => T | null
-): Sourced<T> | null {
+function resolveFromLifespans<T, TLifespan>(
+	plant: PlantWithLifespans<TLifespan>,
+	selector: (lifespan: TLifespan) => T | null
+): Sourced<T, TLifespan> | null {
 	if (plant.recordedLifespan) {
 		const value = selector(plant.recordedLifespan);
 		if (value) {
@@ -49,43 +59,62 @@ function resolveFromLifespans<T>(
 /**
  * Resolves the active location for a plant at a given point in time.
  * A plant may have both a recorded and expected lifespan, each with
- * its own location history. The recorded lifespan takes priority;
+ * its own resolved location list. The recorded lifespan takes priority;
  * the expected lifespan is used as a fallback.
  * @param plant The plant to resolve the location for.
  * @param focusDate The point in time to resolve the location at.
  * @returns The location with its source lifespan, or null if no
  * location exists at the given time in either lifespan.
  */
-export function resolveActiveLocation(
-	plant: Plant,
+export function resolveActiveLocation<
+	TLifespan extends { locations: Array<{ date: Date }> }
+>(
+	plant: PlantWithLifespans<TLifespan>,
 	focusDate: Date
-): Sourced<Location> | null {
-	return resolveFromLifespans(plant, (lifespan) => {
-		if (!lifespan.locationHistory) {
-			return null;
-		}
-		return historySelect(lifespan.locationHistory.locations, focusDate, false);
-	});
+): Sourced<TLifespan['locations'][number], TLifespan> | null {
+	return resolveFromLifespans(plant, (lifespan) =>
+		historySelect(lifespan.locations, focusDate, false)
+	);
 }
 
 /**
  * Resolves the active geometry for a plant at a given point in time.
  * A plant may have both a recorded and expected lifespan, each with
- * its own geometry history. The recorded lifespan takes priority;
+ * its own resolved geometry list. The recorded lifespan takes priority;
  * the expected lifespan is used as a fallback.
  * @param plant The plant to resolve the geometry for.
  * @param focusDate The point in time to resolve the geometry at.
  * @returns The geometry with its source lifespan, or null if no
  * geometry exists at the given time in either lifespan.
  */
-export function resolveActiveGeometry(
-	plant: Plant,
+export function resolveActiveGeometry<
+	TLifespan extends { geometries: Array<{ date: Date }> }
+>(
+	plant: PlantWithLifespans<TLifespan>,
 	focusDate: Date
-): Sourced<Geometry> | null {
-	return resolveFromLifespans(plant, (lifespan) => {
-		if (!lifespan.geometryHistory) {
-			return null;
-		}
-		return historySelect(lifespan.geometryHistory.geometries, focusDate, false);
-	});
+): Sourced<TLifespan['geometries'][number], TLifespan> | null {
+	return resolveFromLifespans(plant, (lifespan) =>
+		historySelect(lifespan.geometries, focusDate, false)
+	);
+}
+
+/**
+ * The minimal shape isDraftPlant needs. Defined structurally (rather than
+ * importing the UI's ResolvedPlant type) so this stays usable from any
+ * caller, not just the Svelte UI layer.
+ */
+export type DraftPlantLike = {
+	draftBucketId: string | null | undefined;
+	draftBucketCommitted: boolean | null;
+};
+
+/**
+ * Determines whether a plant is still staged as a draft: it has a
+ * draftBucketId and that bucket has not been committed. Committing a draft
+ * bucket only flips the bucket's `committed` flag - it never clears the
+ * plant's draftBucketId - so a plant with a committed draft bucket is no
+ * longer a draft.
+ */
+export function isDraftPlant(plant: DraftPlantLike): boolean {
+	return plant.draftBucketId != null && plant.draftBucketCommitted !== true;
 }

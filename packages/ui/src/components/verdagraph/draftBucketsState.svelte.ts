@@ -1,10 +1,10 @@
 import { QuerySubscription, getDb } from 'jazz-tools/svelte';
 
-import { type JazzDraftBucket, jazzApp } from '@vdg-webapp/models/jazz';
+import { type DraftBucket, app } from '@vdg-webapp/models';
 
 import { type AppContext } from '$state/application';
 
-export type ResolvedDraftBucket = JazzDraftBucket & { creatorUsername: string | null };
+export type ResolvedDraftBucket = DraftBucket & { creatorUsername: string | null };
 
 /**
  * Owns the lifecycle of a garden's open DraftBuckets: the live list, which
@@ -29,7 +29,7 @@ export function createDraftBucketsState(
 	 * ghost-visibility toggle.
 	 */
 	const openDraftBucketsQuery = new QuerySubscription(() =>
-		gardenId ? jazzApp.draftBuckets.where({ gardenId, committed: false }) : undefined
+		gardenId ? app.draftBuckets.where({ gardenId, committed: false }) : undefined
 	);
 	const rawDraftBuckets = $derived(openDraftBucketsQuery.current ?? []);
 
@@ -47,7 +47,7 @@ export function createDraftBucketsState(
 		Promise.all(
 			buckets.map(async (bucket): Promise<ResolvedDraftBucket> => {
 				const creator = bucket.creatorId
-					? await db.one(jazzApp.users.where({ id: bucket.creatorId }))
+					? await db.one(app.users.where({ id: bucket.creatorId }))
 					: null;
 				return { ...bucket, creatorUsername: creator?.username ?? null };
 			})
@@ -112,7 +112,7 @@ export function createDraftBucketsState(
 	}
 
 	/** Starts a brand new draft bucket and makes it active. */
-	async function createDraftBucket(name = 'Draft'): Promise<JazzDraftBucket> {
+	async function createDraftBucket(name = 'Draft'): Promise<DraftBucket> {
 		const created = await ctx.controller.draftBucketCreate({ gardenId, name });
 		activeDraftBucketId = created.id;
 		return created;
@@ -124,7 +124,7 @@ export function createDraftBucketsState(
 	 * yet (so reopening the tool resumes where you left off), otherwise
 	 * starts a fresh one.
 	 */
-	async function ensureActiveDraftBucket(): Promise<JazzDraftBucket> {
+	async function ensureActiveDraftBucket(): Promise<DraftBucket> {
 		if (activeDraftBucket) {
 			return activeDraftBucket;
 		}

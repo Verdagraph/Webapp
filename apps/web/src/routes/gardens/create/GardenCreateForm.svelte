@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import {
+		type Garden,
 		GardenCreateCommandSchema,
 		type GardenVisibility,
 		gardenFields
@@ -53,7 +54,7 @@
 
 	/** Garden creation form. */
 	let gardenCreateHandler = createCommandHandler(ctx.controller.gardenCreate, {
-		onSuccess: (data) => {
+		onSuccess: (data: Garden) => {
 			goto('/gardens/' + data.slug);
 		}
 	});
@@ -62,11 +63,14 @@
 	});
 
 	/** Garden ID generation handler. */
-	let gardenIdGenerationHandler = createCommandHandler(generateGardenId, {
-		onSuccess: (generatedId) => {
-			form.data.id = generatedId;
+	let gardenIdGenerationHandler = createCommandHandler(
+		() => generateGardenId(ctx.controller.db),
+		{
+			onSuccess: (generatedId) => {
+				form.data.id = generatedId;
+			}
 		}
-	});
+	);
 </script>
 
 <form onsubmit={form.submit} oninput={() => gardenCreateHandler.reset()}>

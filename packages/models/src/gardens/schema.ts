@@ -1,6 +1,4 @@
-import { type Entity, Schema as S, or } from '@triplit/client';
-
-import { userSchema } from '../users/schema.js';
+import { type TableRow, schema as s } from 'jazz-tools';
 
 /**
  * Controls the visibility of the garden.
@@ -32,164 +30,58 @@ export const GardenMembershipStatusEnumOptions = [
 	'ACCEPTED'
 ] as const;
 
-export const gardenSchema = S.Collections({
-	...userSchema,
-	/** Garden schema. */
-	gardens: {
-		schema: S.Schema({
-			/** URL-friendly shorthand - unique. */
-			id: S.Id(),
-
-			/** Non-unique name of the garden. */
-			name: S.String(),
-
-			/** Controls which non-users may view the garden. */
-			visibility: S.String({ enum: [...GardenVisibilityEnumOptions] }),
-
-			/** Optional description. */
-			description: S.String({ nullable: true, default: null }),
-
-			/** Set to false for inactive gardens. */
-			isActive: S.Boolean({ default: true }),
-
-			/**
-			 * User who created the garden.
-			 * Note that the creator has access through an admin membership.
-			 * If undefined, the original creator has left the garden.
-			 */
-			creatorId: S.String({ nullable: true }),
-
-			/** Set of users which have admin access. */
-			adminIds: S.Set(S.String()),
-
-			/** Set of users which have editing access. */
-			editorIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
-
-			/** Set of users which have viewing access. */
-			viewerIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
-
-			/** Date of garden creation. */
-			createdAt: S.Date({ default: S.Default.now() })
-		}),
-		relationships: {
-			creator: S.RelationById('profiles', '$creatorId'),
-			adminMemberships: S.RelationMany('gardenMemberships', {
-				where: [['userId', 'in', '$adminIds']]
-			}),
-			editorMemberships: S.RelationMany('gardenMemberships', {
-				where: [['userId', 'in', '$adminIds']]
-			}),
-			viewerMemberships: S.RelationMany('gardenMemberships', {
-				where: [['userId', 'in', '$adminIds']]
-			})
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the garden is not hidden. */
-					filter: [['visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the garden is not hidden or the user is a member. */
-					filter: [
-						or([
-							['visibility', '!=', 'HIDDEN'],
-							['adminIds', 'has', '$role.profileId'],
-							['editorIds', 'has', '$role.profileId'],
-							['viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/** Allow new gardens to be created by creators. */
-					filter: [['creatorId', '=', '$role.profileId']]
-				},
-				update: {
-					/** Restrict edit access to admins. */
-					filter: [['adminIds', 'has', '$role.profileId']]
-				}
-			}
-		}
-	},
-
-	/** Garden membership schema. */
-	gardenMemberships: {
-		schema: S.Schema({
-			id: S.Id(),
-
-			/** Garden the membership is in. */
-			gardenId: S.String(),
-
-			/** User who is the subject of the membership. */
-			userId: S.String(),
-
-			/** Role of the membership. */
-			role: S.String({ enum: [...GardenMembershipRoleEnumOptions] }),
-
-			/** User who created the membership. */
-			inviterId: S.String({ nullable: true }),
-
-			/** The acceptance status and acceptance date of the membership. */
-			status: S.String({ enum: [...GardenMembershipStatusEnumOptions] }),
-			acceptedAt: S.Date({ nullable: true, default: null }),
-
-			/** Allows marking gardens as favorites in the menu. */
-			favorite: S.Boolean({ default: false })
-		}),
-		relationships: {
-			garden: S.RelationById('gardens', '$gardenId'),
-			user: S.RelationById('profiles', '$userId'),
-			inviter: S.RelationById('profiles', '$inviterId')
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the garden is not hidden. */
-					filter: [['garden.visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the garden is not hidden or the user is a member. */
-					filter: [
-						or([
-							['garden.visibility', '!=', 'HIDDEN'],
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId'],
-							['garden.viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/** Allow new memberships to be created by admins. */
-					filter: [['garden.adminIds', 'has', '$role.profileId']]
-				},
-				update: {
-					/** Restrict membership updates to admins and subjects. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['userId', '=', '$role.profileId']
-						])
-					]
-				},
-				delete: {
-					/** Allow the membership to be revoked by an admin or deleted by the subject. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['userId', '=', '$role.accountId']
-						])
-					]
-				}
-			}
-		}
-	}
-});
-export type Garden = Entity<typeof gardenSchema, 'gardens'>;
-export type GardenMembership = Entity<typeof gardenSchema, 'gardenMemberships'>;
 export type GardenVisibility = (typeof GardenVisibilityEnumOptions)[number];
 export type GardenRole = (typeof GardenMembershipRoleEnumOptions)[number];
 export type GardenMembershipStatus = (typeof GardenMembershipStatusEnumOptions)[number];
+
+export const gardenSchema = {
+	/** Garden schema. */
+	gardens: s.table({
+		/**
+		 * URL-friendly, human-readable, unique identifier chosen by the user
+		 * (e.g. "my-garden"). Jazz row ids must be UUIDs, so this field carries
+		 * the identity the rest of the app addresses gardens by; uniqueness is
+		 * enforced in the controller (Jazz has no native unique constraint),
+		 * the same way the existing `id` uniqueness check already worked.
+		 */
+		slug: s.string(),
+		/** Non-unique name of the garden. */
+		name: s.string(),
+		/** Controls which non-users may view the garden. */
+		visibility: s.enum(...GardenVisibilityEnumOptions),
+		/** Optional description. */
+		description: s.string().optional(),
+		/** Set to false for inactive gardens. */
+		isActive: s.boolean().default(true),
+		/**
+		 * User who created the garden.
+		 * Note that the creator has access through an admin membership.
+		 * If undefined, the original creator has left the garden.
+		 */
+		creatorId: s.ref('users').optional(),
+		/** Set of users which have admin access. */
+		adminIds: s.array(s.ref('users')),
+		/** Set of users which have editing access. */
+		editorIds: s.array(s.ref('users')).default([]),
+		/** Set of users which have viewing access. */
+		viewerIds: s.array(s.ref('users')).default([])
+	}),
+	/** Garden membership schema. */
+	gardenMemberships: s.table({
+		/** Garden the membership is in. */
+		gardenId: s.ref('gardens'),
+		/** User who is the subject of the membership. */
+		userId: s.ref('users'),
+		/** Role of the membership. */
+		role: s.enum(...GardenMembershipRoleEnumOptions),
+		/** User who created the membership. */
+		inviterId: s.ref('users').optional(),
+		/** The acceptance status and acceptance date of the membership. */
+		status: s.enum(...GardenMembershipStatusEnumOptions),
+		acceptedAt: s.timestamp().optional(),
+		/** Allows marking gardens as favorites in the menu. */
+		favorite: s.boolean().default(false)
+	})
+};
+export type Garden = TableRow<typeof gardenSchema, 'gardens'>;
+export type GardenMembership = TableRow<typeof gardenSchema, 'gardenMemberships'>;

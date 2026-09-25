@@ -1,17 +1,12 @@
-import triplit, { TRIPLIT_ANON_TOKEN } from '$data/triplit';
+import accessToken from './accessToken.svelte';
 
 /**
- * The user is authenticated if the token registered in triplit
- * is defined and not equal to the anonymous token.
+ * The user is authenticated if an access token is currently held.
  */
 let _isAuthenticated: boolean = $state(false);
 
 function updateAuth() {
-	if (!triplit.token || triplit.token === TRIPLIT_ANON_TOKEN) {
-		_isAuthenticated = false;
-	} else {
-		_isAuthenticated = true;
-	}
+	_isAuthenticated = accessToken.current != null;
 }
 
 /* Exported state methods. */

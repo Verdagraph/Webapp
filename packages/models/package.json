@@ -3,20 +3,16 @@
 	"version": "1.0.0",
 	"type": "module",
 	"exports": {
-		".": "./dist/index.js",
-		"./jazz": "./dist/jazz/index.js"
+		".": "./dist/index.js"
 	},
 	"scripts": {
-		"dev": "TRIPLIT_JWT_SECRET=secret npx triplit dev --seed=triplit/seeds/seed.ts",
-		"dev:jazz": "bash scripts/jazz-dev.sh",
+		"dev": "bash scripts/dev.sh",
 		"build": "tsc",
-		"seed": "triplit seed",
 		"lint": "eslint . --fix"
 	},
 	"devDependencies": {
 		"@vdg-webapp/eslint-config": "workspace:*",
 		"@vdg-webapp/typescript-config": "workspace:*",
-		"@triplit/cli": "^1.0.42",
 		"@internationalized/date": "^3.7.0",
 		"@types/eslint": "^8.56.12",
 		"@types/node": "^20.17.24",
@@ -31,7 +27,6 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
-		"@triplit/client": "^1.0.33",
 		"jazz-tools": "2.0.0-alpha.55"
 	}
 }

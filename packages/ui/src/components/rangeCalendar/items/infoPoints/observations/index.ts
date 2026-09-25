@@ -1,12 +1,12 @@
 import type { Component } from 'svelte';
 
-import { type GenericObservation, type PlantObservationId } from '@vdg-webapp/models';
+import { type PlantObservation, type PlantObservationId } from '@vdg-webapp/models';
 
 import ObservationPlantGenericInfopoint from './ObservationPlantGenericInfopoint.svelte';
 
 export const PlantObservationPopupContentComponents: Record<
 	PlantObservationId,
-	Component<{ observation: GenericObservation }>
+	Component<{ observation: PlantObservation }>
 > = {
 	'plant-seed': ObservationPlantGenericInfopoint,
 	'plant-germ': ObservationPlantGenericInfopoint,

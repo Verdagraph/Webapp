@@ -1,11 +1,6 @@
 import { QuerySubscription } from 'jazz-tools/svelte';
 
-import {
-	type Commands,
-	type JazzCultivar,
-	jazzApp,
-	resolveCultivar
-} from '@vdg-webapp/models/jazz';
+import { type Commands, type Cultivar, app, resolveCultivar } from '@vdg-webapp/models';
 
 import type { GardenContext } from './gardenContext.svelte';
 
@@ -16,7 +11,7 @@ export function createCultivarContext(commands: Commands, garden: GardenContext)
 	/** Queries all collections in the garden. */
 	const gardenCollectionsQuery = new QuerySubscription(() =>
 		garden.gardenId
-			? jazzApp.cultivarCollections.where({ gardenId: garden.gardenId })
+			? app.cultivarCollections.where({ gardenId: garden.gardenId })
 			: undefined
 	);
 	const gardenCollections = $derived(gardenCollectionsQuery.current ?? []);
@@ -48,7 +43,7 @@ export function createCultivarContext(commands: Commands, garden: GardenContext)
 	 */
 	const allCultivarsQuery = new QuerySubscription(() =>
 		allCollectionIds.length > 0
-			? jazzApp.cultivars.where({ collectionId: { in: allCollectionIds } })
+			? app.cultivars.where({ collectionId: { in: allCollectionIds } })
 			: undefined
 	);
 	const allCultivars = $derived(
@@ -59,7 +54,7 @@ export function createCultivarContext(commands: Commands, garden: GardenContext)
 	);
 
 	/** Collects all resolved cultivar objects in the garden, keyed by name for O(1) lookup via getCultivar. */
-	let cultivarsByName: Map<string, JazzCultivar> = $state(new Map());
+	let cultivarsByName: Map<string, Cultivar> = $state(new Map());
 	$effect(() => {
 		const names = cultivarNames;
 		const gardenId = garden.gardenId;
@@ -74,7 +69,7 @@ export function createCultivarContext(commands: Commands, garden: GardenContext)
 			)
 		).then((entries) => {
 			cultivarsByName = new Map(
-				entries.filter((entry): entry is [string, JazzCultivar] => entry[1] !== null)
+				entries.filter((entry): entry is [string, Cultivar] => entry[1] !== null)
 			);
 		});
 	});
@@ -86,7 +81,7 @@ export function createCultivarContext(commands: Commands, garden: GardenContext)
 	 * can be O(1) via the underlying map instead of an O(n) scan repeated at
 	 * every call site.
 	 */
-	function getCultivar(name: string): JazzCultivar | null {
+	function getCultivar(name: string): Cultivar | null {
 		return cultivarsByName.get(name) ?? null;
 	}
 

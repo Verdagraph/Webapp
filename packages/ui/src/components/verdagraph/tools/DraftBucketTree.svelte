@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { jazzApp } from '@vdg-webapp/models/jazz';
+	import { app } from '@vdg-webapp/models';
 
 	import { EditableTree } from '$components';
 	import { ScrollArea, Select } from '$core';
@@ -59,7 +59,7 @@
 		plants: () => plants,
 		workspaces: () => workspaces,
 		plantDeleteHandler: (id) => {
-			ctx.controller.db.delete(jazzApp.plants, id);
+			ctx.controller.db.delete(app.plants, id);
 		}
 	});
 </script>

@@ -1,13 +1,12 @@
 import { type JazzAppConfig, jwtAuth } from 'jazz-tools/svelte';
 
+import accessToken from '$state/accessToken.svelte';
 import auth from '$state/auth.svelte';
 
-import triplit from './triplit';
-
 /**
- * Reuses the app's existing JWT auth (the same token driving `triplit`)
- * rather than a separate Jazz-native login. Local dev server started via
- * `pnpm --filter @vdg-webapp/models dev:jazz`.
+ * Reuses the app's existing JWT auth (the same token used for REST calls,
+ * see accessToken.svelte.ts) rather than a separate Jazz-native login. Local
+ * dev server started via `pnpm --filter @vdg-webapp/models dev:jazz`.
  */
 export const JAZZ_APP_ID = 'afe427f5-6e8a-5b1a-9546-1367d527cb39';
 const JAZZ_SERVER_URL = 'http://localhost:1626';
@@ -25,7 +24,7 @@ export function getJazzConfig(): JazzAppConfig {
 		auth: jwtAuth({
 			/** Stable per login/logout transition, not per token refresh. */
 			key: auth.isAuthenticated ? 'authenticated' : null,
-			getToken: async () => triplit.token ?? '',
+			getToken: async () => accessToken.current ?? '',
 			logout: () => {}
 		})
 	};

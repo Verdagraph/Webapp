@@ -1,9 +1,9 @@
-import type { Position } from '@vdg-webapp/models';
-
 import { isMobile } from '$state/isMobile.svelte';
 import { LocalStore } from '$state/localStore.svelte';
 
 import { type CanvasContainer } from './container.svelte';
+
+type Position = { x: number; y: number };
 
 /**
  * Indicates a corner of the canvas.

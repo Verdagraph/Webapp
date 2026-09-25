@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { WorkspaceCreateCommandSchema, workspaceFields } from '@vdg-webapp/models';
+	import {
+		type Workspace,
+		WorkspaceCreateCommandSchema,
+		workspaceFields
+	} from '@vdg-webapp/models';
 	import {
 		type ControlProps,
 		Form,
@@ -16,7 +20,7 @@
 	const ctx = getAppContext();
 
 	let formHandler = createCommandHandler(ctx.controller.workspaceCreate, {
-		onSuccess: (workspace) => {
+		onSuccess: (workspace: Workspace) => {
 			const workspaceHref = `/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
 			goto(workspaceHref);
 		}

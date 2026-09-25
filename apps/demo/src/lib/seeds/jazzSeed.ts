@@ -3,13 +3,13 @@ import { getDb, getSession } from 'jazz-tools/svelte';
 import type { GeometryCreateCommand } from '@vdg-webapp/models';
 import {
 	type ControllerContext,
+	app,
 	createController,
 	gardenCreate,
-	jazzApp,
 	plantingAreaCreate,
 	plantsCreate,
 	workspaceCreate
-} from '@vdg-webapp/models/jazz';
+} from '@vdg-webapp/models';
 
 const DEMO_GARDEN_SLUG = 'garden';
 const DEMO_USERNAME = 'Demo User';
@@ -38,11 +38,11 @@ async function createDemoController(): Promise<ControllerContext> {
 	const db = getDb();
 	const accountId = await waitForAccountId();
 
-	let profile = await db.one(jazzApp.users.where({ id: accountId }));
+	let profile = await db.one(app.users.where({ id: accountId }));
 	if (!profile) {
-		const write = db.upsert(jazzApp.users, accountId, { username: DEMO_USERNAME });
+		const write = db.upsert(app.users, accountId, { username: DEMO_USERNAME });
 		await write.wait({ tier: 'edge' });
-		profile = await db.one(jazzApp.users.where({ id: accountId }));
+		profile = await db.one(app.users.where({ id: accountId }));
 	}
 	if (!profile) {
 		throw new Error('Failed to provision the demo user profile.');
@@ -51,7 +51,7 @@ async function createDemoController(): Promise<ControllerContext> {
 
 	return createController({
 		db,
-		jazz: jazzApp,
+		jazz: app,
 		getClient: async () => ({ profile: resolvedProfile })
 	});
 }
@@ -209,7 +209,7 @@ async function seedDemoGardenInternal(): Promise<string> {
 	const ctx = await createDemoController();
 
 	const existingGarden = await ctx.db.one(
-		jazzApp.gardens.where({ slug: DEMO_GARDEN_SLUG })
+		app.gardens.where({ slug: DEMO_GARDEN_SLUG })
 	);
 	if (existingGarden) {
 		return DEMO_GARDEN_SLUG;
@@ -229,7 +229,7 @@ async function seedDemoGardenInternal(): Promise<string> {
 	);
 
 	await ctx.db
-		.insert(jazzApp.environments, {
+		.insert(app.environments, {
 			gardenId: garden.id,
 			name: 'Garden',
 			description: '',
@@ -271,7 +271,7 @@ async function seedDemoGardenInternal(): Promise<string> {
 	}
 
 	const collection = await ctx.db
-		.insert(jazzApp.cultivarCollections, {
+		.insert(app.cultivarCollections, {
 			gardenId: garden.id,
 			name: 'West Coast Seeds',
 			slug: 'west-coast-seeds',
@@ -279,7 +279,7 @@ async function seedDemoGardenInternal(): Promise<string> {
 		})
 		.wait({ tier: 'edge' });
 	await ctx.db
-		.insert(jazzApp.cultivars, {
+		.insert(app.cultivars, {
 			collectionId: collection.id,
 			gardenId: garden.id,
 			name: 'lettuce',
@@ -395,11 +395,11 @@ async function seedDemoGardenInternal(): Promise<string> {
 	);
 
 	const plant = await ctx.db.one(
-		jazzApp.plants.where({ gardenId: garden.id, cultivarName: 'lettuce' })
+		app.plants.where({ gardenId: garden.id, cultivarName: 'lettuce' })
 	);
 	if (plant) {
 		await ctx.db
-			.insert(jazzApp.observations, {
+			.insert(app.observations, {
 				gardenId: garden.id,
 				type: 'plant-seed',
 				entityIds: [plant.expectedLifespanId],
@@ -407,7 +407,7 @@ async function seedDemoGardenInternal(): Promise<string> {
 			})
 			.wait({ tier: 'edge' });
 		await ctx.db
-			.insert(jazzApp.observations, {
+			.insert(app.observations, {
 				gardenId: garden.id,
 				type: 'plant-expiry',
 				entityIds: [plant.expectedLifespanId],

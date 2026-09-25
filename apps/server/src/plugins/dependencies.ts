@@ -7,10 +7,9 @@ import { FastifyInstance } from 'fastify';
 import { type Db } from 'jazz-tools/backend';
 import { createJazzSession } from 'jazz-tools/backend';
 import { encodeServiceToken } from 'users/auth/tokens.js';
-import { UserRepository } from 'users/repository.js';
+import { type UserAccount, UserRepository } from 'users/repository.js';
 
-import { UserAccount } from '@vdg-webapp/models';
-import { jazzApp, permissions as jazzPermissions } from '@vdg-webapp/models/jazz';
+import { app, permissions as jazzPermissions } from '@vdg-webapp/models';
 
 /** Declares the types of dependencies available. */
 declare module '@fastify/awilix' {
@@ -32,7 +31,7 @@ declare module '@fastify/awilix' {
 const createJazzCredentialsDb = async (): Promise<Db> => {
 	const session = await createJazzSession({
 		appId: env.JAZZ_APP_ID,
-		app: jazzApp,
+		app: app,
 		permissions: jazzPermissions,
 		serverUrl: env.JAZZ_SERVER_URL,
 		driver: { type: 'memory' }

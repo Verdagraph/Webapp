@@ -9,20 +9,6 @@ const EnvSchema = z.object({
 		})
 		.default(true),
 
-	/** Triplit. */
-	TRIPLIT_URL: z
-		.string({ description: 'The URL of the Triplit database server.' })
-		.url()
-		.default('http://localhost:6543'),
-	TRIPLIT_SERVER_TOKEN: z
-		.string({
-			description:
-				'The service JWT token provided by triplit for access to the database by the server.'
-		})
-		.default(
-			'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4LXRyaXBsaXQtdG9rZW4tdHlwZSI6InNlY3JldCIsIngtdHJpcGxpdC1wcm9qZWN0LWlkIjoibG9jYWwtcHJvamVjdC1pZCJ9.UvSPskzroY-eB0o46-uZWA_I932KgKn6aMsLyEpGs64'
-		),
-
 	/** Jazz. */
 	JAZZ_SERVER_URL: z
 		.string({ description: 'The URL of the Jazz sync server.' })

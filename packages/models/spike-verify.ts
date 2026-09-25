@@ -6,10 +6,10 @@
  */
 import { createPolicyTestApp } from 'jazz-tools/testing';
 
-import { createController } from './dist/jazz/controller.js';
-import { gardenCreate } from './dist/jazz/gardens/controller.js';
-import { constructGardenPermissions } from './dist/jazz/gardens/permissions.js';
-import { jazzApp } from './dist/jazz/schema.js';
+import { createController } from './dist/controller.js';
+import { gardenCreate } from './dist/gardens/controller.js';
+import { constructGardenPermissions } from './dist/gardens/permissions.js';
+import { app } from './dist/schema.js';
 
 const ADMIN_ID = 'e92bbea9-7a9f-4c25-aa14-066ce643955c';
 const EDITOR_ID = '2992e0c8-aee0-4c1f-ae4c-d4bf0ec57f7f';
@@ -80,14 +80,14 @@ function expect(value: unknown) {
 }
 
 async function main() {
-	const permissions = constructGardenPermissions(jazzApp);
-	const testApp = await createPolicyTestApp(jazzApp, permissions, expect as any);
+	const permissions = constructGardenPermissions(app);
+	const testApp = await createPolicyTestApp(app, permissions, expect as any);
 
 	console.log('--- Test: gardenCreate() end-to-end through the ported controller ---');
 	const adminDb = testApp.as(makeSession(ADMIN_ID));
 	const adminCtx = createController({
 		db: adminDb as any,
-		jazz: jazzApp,
+		jazz: app,
 		getClient: async () => ({ profile: { id: ADMIN_ID, username: 'admin' } }) as any
 	});
 
@@ -128,7 +128,7 @@ async function main() {
 
 	console.log('\n--- Test: creator membership was created with ADMIN role ---');
 	const creatorMembership = await adminDb.one(
-		jazzApp.gardenMemberships.where({ gardenId: created.id, userId: ADMIN_ID })
+		app.gardenMemberships.where({ gardenId: created.id, userId: ADMIN_ID })
 	);
 	ok(
 		'creator membership exists with role ADMIN',
@@ -138,11 +138,11 @@ async function main() {
 	// Manually seed editor/viewer memberships to test read/update policy below,
 	// since gardenCreate() above only granted the creator (ADMIN) access.
 	await testApp.seed((db) => {
-		db.update(jazzApp.gardens, created.id, {
+		db.update(app.gardens, created.id, {
 			editorIds: [EDITOR_ID],
 			viewerIds: [VIEWER_ID]
 		});
-		return db.insert(jazzApp.gardenMemberships, {
+		return db.insert(app.gardenMemberships, {
 			gardenId: created.id,
 			userId: VIEWER_ID,
 			role: 'VIEWER',
@@ -152,13 +152,13 @@ async function main() {
 
 	console.log('\n--- Test: admin can update the garden ---');
 	adminDb.expectAllowed((db) => {
-		db.update(jazzApp.gardens, created.id, { name: 'Renamed by admin' });
+		db.update(app.gardens, created.id, { name: 'Renamed by admin' });
 	});
 
 	console.log('\n--- Test: viewer cannot update the garden ---');
 	const viewerDb = testApp.as(makeSession(VIEWER_ID));
 	await viewerDb.expectDenied((db) => {
-		return db.update(jazzApp.gardens, created.id, {
+		return db.update(app.gardens, created.id, {
 			name: 'should-be-denied'
 		}) as any;
 	});
@@ -166,14 +166,12 @@ async function main() {
 	console.log('\n--- Test: non-member cannot read a HIDDEN garden ---');
 	const strangerDb = testApp.as(makeSession(STRANGER_ID));
 	const strangerReadResult = await strangerDb.one(
-		jazzApp.gardens.where({ id: created.id })
+		app.gardens.where({ id: created.id })
 	);
 	ok('stranger got no result for a HIDDEN garden', strangerReadResult == null);
 
 	console.log('\n--- Test: viewer (a member) CAN read the HIDDEN garden ---');
-	const viewerReadResult = await viewerDb.one(
-		jazzApp.gardens.where({ id: created.id })
-	);
+	const viewerReadResult = await viewerDb.one(app.gardens.where({ id: created.id }));
 	ok('viewer member could read the HIDDEN garden', viewerReadResult != null);
 
 	await testApp.shutdown();

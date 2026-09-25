@@ -2,11 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import { Button } from 'bits-ui';
 
-	import { type Position } from '@vdg-webapp/models';
-
 	import { Input } from '$core/input/index.js';
 
 	import { type UnitSystem, createUnitAwareValues } from './units.svelte';
+
+	type Position = { x: number; y: number };
 
 	type Props = {
 		/** The output X value. Guarnteed to be in metric. */

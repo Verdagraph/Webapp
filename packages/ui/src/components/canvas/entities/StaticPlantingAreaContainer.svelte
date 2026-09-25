@@ -1,14 +1,17 @@
 <script lang="ts">
-	import { type PlantingArea, type Position, historySelect } from '@vdg-webapp/models';
+	import { historySelect } from '@vdg-webapp/models';
 
 	import {
 		type CanvasContext,
 		PlantingArea as PlantingAreaComponent,
 		type TimelineSelection
 	} from '$components';
+	import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
+
+	type Position = { x: number; y: number };
 
 	type Props = {
-		plantingArea: PlantingArea;
+		plantingArea: ResolvedPlantingArea;
 		canvasContext: CanvasContext;
 		timelineSelection: TimelineSelection;
 	};

@@ -1,12 +1,10 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { createTagsInput, melt } from '@melt-ui/svelte';
-	import { useQuery } from '@triplit/svelte';
+	import { QuerySubscription } from 'jazz-tools/svelte';
 
+	import { app } from '@vdg-webapp/models';
 	import { Popover, iconIds } from '@vdg-webapp/ui';
-
-	import triplit from '$data/triplit';
-	import { userProfilesUsernameQuery } from '$data/users/queries';
 
 	/** TODO: Redo this component once Melt-UI has updated the Tags-Input component to runes. */
 
@@ -49,12 +47,13 @@
 	});
 
 	/** Indicate in the input whether the username exists. */
-	let profiles = $derived(
-		useQuery(
-			triplit,
-			userProfilesUsernameQuery.Select(['username']).Vars({ usernames: [...tagsInput] })
-		)
+	const profilesQuery = new QuerySubscription(() =>
+		app.users.where({ username: { in: tagsInput } })
 	);
+	let profiles = $derived({
+		fetching: profilesQuery.isLoading,
+		results: profilesQuery.current
+	});
 </script>
 
 <div
@@ -85,7 +84,7 @@
 						{/if}
 					</Popover.Trigger>
 					<Popover.Content>
-						{#if profiles.results && profiles.results.includes({ username: t.value })}
+						{#if profiles.results && profiles.results.find((profile) => profile.username === t.value)}
 							This user exists.
 						{:else if profiles.fetching}
 							Verifying username...

@@ -2,12 +2,11 @@ import { type DateValue, fromDate, getLocalTimeZone } from '@internationalized/d
 
 import {
 	type FieldErrors,
-	type Location,
-	type LocationHistory,
 	type LocationUpdateCommand,
-	type Position,
 	workspaceFields
 } from '@vdg-webapp/models';
+
+import { type ResolvedLocation } from '$state/application/workspacesContext.svelte';
 
 import {
 	type DynamicSelectValue,
@@ -36,7 +35,7 @@ export function locationTreeItem(
 	itemId: string,
 	value: {
 		/** Location to represent. */
-		location: Location;
+		location: ResolvedLocation;
 		/**
 		 * The workspaces the location may be located in.
 		 * Required for changing the workspace of a location.
@@ -82,7 +81,7 @@ export function locationTreeItem(
 		description: workspaceFields.coordinateSchema.description,
 		valueComponent: TreeCoordinate,
 		value: { x: value.location.x, y: value.location.y },
-		onChange: (newData: Position) => {
+		onChange: (newData: { x: number; y: number }) => {
 			if (
 				!fieldValid(
 					coordinateId,
@@ -144,7 +143,17 @@ export function locationTreeItem(
 export function locationHistoryTreeItem(
 	itemId: string,
 	value: {
-		locationHistory: LocationHistory | null | undefined;
+		/**
+		 * A lifespan's location history has no standalone row to point at
+		 * once resolved (see ResolvedLifespan) - only the id of the
+		 * locationHistories row it originated from (needed to extend it)
+		 * and its already-resolved locations array. A planting area's
+		 * location history does have a resolved row (ResolvedLocationHistory)
+		 * but callers pass just its id/locations here too, so both call
+		 * sites share one shape.
+		 */
+		locationHistoryId: string | null | undefined;
+		locations: ResolvedLocation[];
 		workspaces: { id: string; name: string }[];
 	},
 	ctx: {
@@ -153,7 +162,7 @@ export function locationHistoryTreeItem(
 		fieldErrors: FieldErrors;
 	}
 ): Item {
-	if (!value.locationHistory) {
+	if (!value.locationHistoryId) {
 		return {
 			id: itemId,
 			label: 'Failed to resolve locations.'
@@ -161,11 +170,11 @@ export function locationHistoryTreeItem(
 	}
 
 	const addLocationId = toTreeId(itemId, 'locationAdd');
+	const locationHistoryId = value.locationHistoryId;
 
-	const locationItems = value.locationHistory.locations.map((location, index) => {
+	const locationItems = value.locations.map((location, index) => {
 		const locationId = toTreeId(itemId, `locations[${index}]`);
-		const numLocations = value.locationHistory?.locations.length;
-		const includeDelete = numLocations && numLocations > 1 ? true : false;
+		const includeDelete = value.locations.length > 1;
 
 		return locationTreeItem(
 			locationId,
@@ -186,11 +195,7 @@ export function locationHistoryTreeItem(
 		 * button has been pressed, so no need for data.
 		 */
 		onChange: () => {
-			if (!value.locationHistory) {
-				return;
-			}
-
-			ctx.locationHistoryExtendHandler(value.locationHistory.id);
+			ctx.locationHistoryExtendHandler(locationHistoryId);
 		}
 	};
 

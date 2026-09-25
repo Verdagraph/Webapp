@@ -1,4 +1,6 @@
-import { AppError, type Geometry } from '@vdg-webapp/models';
+import { AppError } from '@vdg-webapp/models';
+
+import { type ResolvedGeometry } from '$state/application/workspacesContext.svelte';
 
 import type { CanvasContext } from '../state';
 
@@ -71,7 +73,7 @@ function getRegularPolygonPoints(numSides: number, radius: number): string {
  */
 export function getShapeAttributes(
 	canvas: CanvasContext,
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'date' | 'linesCoordinateIds'>,
+	geometry: Omit<ResolvedGeometry, 'id' | 'gardenId' | 'date' | 'linesCoordinateIds'>,
 	forceLinesClosed: boolean = false
 ): ShapeAttributes {
 	switch (geometry.type) {

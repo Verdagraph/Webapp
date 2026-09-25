@@ -5,7 +5,6 @@
 	import type {
 		Cultivar,
 		CultivarPlantingWindow,
-		Plant,
 		PlantingWindow
 	} from '@vdg-webapp/models';
 
@@ -28,9 +27,12 @@
 			cultivar: {
 				id: 'cultivar',
 				collectionId: '',
+				gardenId: null,
 				name: '',
 				abbreviation: 'a',
+				scientificName: null,
 				description: '',
+				parentId: null,
 				attributes: {},
 				createdAt: new Date()
 			},
@@ -41,7 +43,11 @@
 				description: '',
 				parentType: 'GARDEN',
 				inherit: false,
-				attributes: {}
+				attributes: {},
+				workspaceIds: null,
+				plantingAreaIds: null,
+				geometryHistoryId: null,
+				locationHistoryId: null
 			},
 			windows: [
 				{

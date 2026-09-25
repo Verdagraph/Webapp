@@ -1,21 +1,39 @@
 import { QuerySubscription, getDb } from 'jazz-tools/svelte';
 
 import {
-	type JazzGeometry,
-	type JazzLocationHistory,
-	type JazzPlantingArea,
-	jazzApp
-} from '@vdg-webapp/models/jazz';
+	type Geometry,
+	type Location,
+	type LocationHistory,
+	type PlantingArea,
+	app
+} from '@vdg-webapp/models';
 
 import type { GardenContext } from './gardenContext.svelte';
 
-export type ResolvedPlantingArea = JazzPlantingArea & {
-	geometry:
-		| (JazzGeometry & { linesCoordinates: Array<{ x: number; y: number }> })
-		| null;
-	locationHistory:
-		| (JazzLocationHistory & { locations: Array<{ x: number; y: number; date: Date }> })
-		| null;
+/**
+ * A geometry with its lines' coordinates resolved (Jazz has no
+ * relation-include, so linesCoordinateIds must be resolved to actual
+ * coordinates by hand). Shared by every consumer of a resolved geometry
+ * (planting areas, plant lifespans).
+ */
+export type ResolvedGeometry = Geometry & {
+	linesCoordinates: Array<{ x: number; y: number }>;
+};
+
+/** A location with its date normalized to an actual Date instance. */
+export type ResolvedLocation = Omit<Location, 'date'> & { date: Date };
+
+/**
+ * A location history with its locations resolved. Shared by every consumer
+ * of a resolved location history (planting areas, plant lifespans).
+ */
+export type ResolvedLocationHistory = LocationHistory & {
+	locations: ResolvedLocation[];
+};
+
+export type ResolvedPlantingArea = PlantingArea & {
+	geometry: ResolvedGeometry | null;
+	locationHistory: ResolvedLocationHistory | null;
 };
 
 /**
@@ -25,16 +43,12 @@ export function createWorkspacesContext(garden: GardenContext) {
 	const db = getDb();
 
 	const workspacesQuery = new QuerySubscription(() =>
-		garden.gardenId
-			? jazzApp.workspaces.where({ gardenId: garden.gardenId })
-			: undefined
+		garden.gardenId ? app.workspaces.where({ gardenId: garden.gardenId }) : undefined
 	);
 	const workspaces = $derived(workspacesQuery.current ?? []);
 
 	const plantingAreasQuery = new QuerySubscription(() =>
-		garden.gardenId
-			? jazzApp.plantingAreas.where({ gardenId: garden.gardenId })
-			: undefined
+		garden.gardenId ? app.plantingAreas.where({ gardenId: garden.gardenId }) : undefined
 	);
 	const rawPlantingAreas = $derived(plantingAreasQuery.current ?? []);
 
@@ -53,13 +67,11 @@ export function createWorkspacesContext(garden: GardenContext) {
 
 		Promise.all(
 			areas.map(async (area): Promise<ResolvedPlantingArea> => {
-				const geometry = await db.one(
-					jazzApp.geometries.where({ id: area.geometryId })
-				);
+				const geometry = await db.one(app.geometries.where({ id: area.geometryId }));
 				let linesCoordinates: Array<{ x: number; y: number }> = [];
 				if (geometry?.type === 'LINES' && geometry.linesCoordinateIds.length > 0) {
 					const coordinates = await db.all(
-						jazzApp.coordinates.where({ id: { in: geometry.linesCoordinateIds } })
+						app.coordinates.where({ id: { in: geometry.linesCoordinateIds } })
 					);
 					const coordinatesById = new Map(
 						coordinates.map((coordinate) => [coordinate.id, coordinate])
@@ -73,11 +85,11 @@ export function createWorkspacesContext(garden: GardenContext) {
 				}
 
 				const locationHistory = await db.one(
-					jazzApp.locationHistories.where({ id: area.locationHistoryId })
+					app.locationHistories.where({ id: area.locationHistoryId })
 				);
 				const locations = locationHistory
 					? await db.all(
-							jazzApp.locations.where({ id: { in: locationHistory.locationIds } })
+							app.locations.where({ id: { in: locationHistory.locationIds } })
 						)
 					: [];
 
@@ -87,10 +99,9 @@ export function createWorkspacesContext(garden: GardenContext) {
 					locationHistory: locationHistory
 						? {
 								...locationHistory,
-								locations: locations.map(({ x, y, date }) => ({
-									x,
-									y,
-									date: new Date(date)
+								locations: locations.map((location) => ({
+									...location,
+									date: new Date(location.date)
 								}))
 							}
 						: null

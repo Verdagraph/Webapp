@@ -1,10 +1,7 @@
 import { type DateValue, fromDate, getLocalTimeZone } from '@internationalized/date';
 
-import {
-	type FieldErrors,
-	type GenericObservation,
-	type ObservationUpdateCommand
-} from '@vdg-webapp/models';
+import { type FieldErrors, type ObservationUpdateCommand } from '@vdg-webapp/models';
+import { type GenericObservation } from '@vdg-webapp/models';
 
 import { type Item, TreeDate, TreeDeleteButton, toTreeId } from '$components';
 

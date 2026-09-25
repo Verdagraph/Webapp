@@ -2,32 +2,44 @@ import { QuerySubscription, getDb } from 'jazz-tools/svelte';
 
 import {
 	type Commands,
-	type JazzCultivar,
-	type JazzGenericObservation,
-	type JazzPlant,
-	jazzApp,
+	type Cultivar,
+	type GenericObservation,
+	type Lifespan,
+	type Plant,
+	app,
 	resolveCultivar
-} from '@vdg-webapp/models/jazz';
+} from '@vdg-webapp/models';
 
 import type { GardenContext } from './gardenContext.svelte';
 import type { TimelineContext } from './timelineContext.svelte';
+import {
+	type ResolvedGeometry,
+	type ResolvedLocation
+} from './workspacesContext.svelte';
 
-type ResolvedGeometry = {
-	id: string;
-	type: string;
-	date: Date | number;
-	linesCoordinates: Array<{ x: number; y: number }>;
-};
-type ResolvedLifespan = {
-	id: string;
-	origin: string;
+export type { ResolvedGeometry };
+
+/**
+ * A lifespan with its geometry/location histories resolved to flat arrays
+ * (geometryHistoryId/locationHistoryId are kept, carried over from
+ * Lifespan, for callers that need to target the history for mutation,
+ * e.g. the geometry/location history "extend" commands).
+ */
+export type ResolvedLifespan = Lifespan & {
 	geometries: ResolvedGeometry[];
-	locations: Array<{ x: number; y: number; date: Date }>;
-	observations: JazzGenericObservation[];
+	locations: ResolvedLocation[];
+	observations: GenericObservation[];
 };
-export type ResolvedPlant = JazzPlant & {
+export type ResolvedPlant = Plant & {
 	expectedLifespan: ResolvedLifespan | null;
 	recordedLifespan: ResolvedLifespan | null;
+	/**
+	 * Whether the plant's draft bucket (if any) has been committed. Null when
+	 * the plant has no draftBucketId. See isDraftPlant in
+	 * '@vdg-webapp/models' for the draft/official determination this
+	 * feeds into.
+	 */
+	draftBucketCommitted: boolean | null;
 };
 
 /**
@@ -42,7 +54,7 @@ export function createPlantsContext(
 
 	/** Queries all plants in the garden. */
 	const plantsQuery = new QuerySubscription(() =>
-		garden.gardenId ? jazzApp.plants.where({ gardenId: garden.gardenId }) : undefined
+		garden.gardenId ? app.plants.where({ gardenId: garden.gardenId }) : undefined
 	);
 	const rawPlants = $derived(plantsQuery.current ?? []);
 
@@ -52,24 +64,24 @@ export function createPlantsContext(
 	 * history, location history, and observations - are resolved manually.
 	 */
 	async function resolveLifespan(lifespanId: string): Promise<ResolvedLifespan | null> {
-		const lifespan = await db.one(jazzApp.lifespans.where({ id: lifespanId }));
+		const lifespan = await db.one(app.lifespans.where({ id: lifespanId }));
 		if (!lifespan) return null;
 
 		let geometries: ResolvedGeometry[] = [];
 		if (lifespan.geometryHistoryId) {
 			const geometryHistory = await db.one(
-				jazzApp.geometryHistories.where({ id: lifespan.geometryHistoryId })
+				app.geometryHistories.where({ id: lifespan.geometryHistoryId })
 			);
 			if (geometryHistory && geometryHistory.geometryIds.length > 0) {
 				const rows = await db.all(
-					jazzApp.geometries.where({ id: { in: geometryHistory.geometryIds } })
+					app.geometries.where({ id: { in: geometryHistory.geometryIds } })
 				);
 				geometries = await Promise.all(
 					rows.map(async (geometry): Promise<ResolvedGeometry> => {
 						let linesCoordinates: Array<{ x: number; y: number }> = [];
 						if (geometry.type === 'LINES' && geometry.linesCoordinateIds.length > 0) {
 							const coordinates = await db.all(
-								jazzApp.coordinates.where({
+								app.coordinates.where({
 									id: { in: geometry.linesCoordinateIds }
 								})
 							);
@@ -89,32 +101,49 @@ export function createPlantsContext(
 			}
 		}
 
-		let locations: Array<{ x: number; y: number; date: Date }> = [];
+		let locations: ResolvedLocation[] = [];
 		if (lifespan.locationHistoryId) {
 			const locationHistory = await db.one(
-				jazzApp.locationHistories.where({ id: lifespan.locationHistoryId })
+				app.locationHistories.where({ id: lifespan.locationHistoryId })
 			);
 			if (locationHistory && locationHistory.locationIds.length > 0) {
 				const rows = await db.all(
-					jazzApp.locations.where({ id: { in: locationHistory.locationIds } })
+					app.locations.where({ id: { in: locationHistory.locationIds } })
 				);
-				locations = rows.map(({ x, y, date }) => ({ x, y, date: new Date(date) }));
+				locations = rows.map((location) => ({
+					...location,
+					date: new Date(location.date)
+				}));
 			}
 		}
 
 		const observations = await db.all(
-			jazzApp.observations.where({ entityIds: { contains: lifespanId } })
+			app.observations.where({ entityIds: { contains: lifespanId } })
 		);
 
 		return { ...lifespan, geometries, locations, observations };
 	}
 
-	async function resolvePlant(plant: JazzPlant): Promise<ResolvedPlant> {
-		const [expectedLifespan, recordedLifespan] = await Promise.all([
-			resolveLifespan(plant.expectedLifespanId),
-			resolveLifespan(plant.recordedLifespanId)
-		]);
-		return { ...plant, expectedLifespan, recordedLifespan };
+	async function resolvePlant(plant: Plant): Promise<ResolvedPlant> {
+		const [expectedLifespan, recordedLifespan, draftBucketCommitted] =
+			await Promise.all([
+				resolveLifespan(plant.expectedLifespanId),
+				resolveLifespan(plant.recordedLifespanId),
+				resolveDraftBucketCommitted(plant.draftBucketId)
+			]);
+		return { ...plant, expectedLifespan, recordedLifespan, draftBucketCommitted };
+	}
+
+	/**
+	 * Resolves whether a plant's draft bucket has been committed. Returns
+	 * null when the plant has no draft bucket.
+	 */
+	async function resolveDraftBucketCommitted(
+		draftBucketId: string | null | undefined
+	): Promise<boolean | null> {
+		if (!draftBucketId) return null;
+		const draftBucket = await db.one(app.draftBuckets.where({ id: draftBucketId }));
+		return draftBucket?.committed ?? null;
 	}
 
 	let plants: ResolvedPlant[] = $state([]);
@@ -136,13 +165,13 @@ export function createPlantsContext(
 	 * Constructs a map of cultivar names used by plants in the garden to the
 	 * full cultivar object and attributes.
 	 */
-	let plantsCultivarMap: Map<string, JazzCultivar> = $state(new Map());
+	let plantsCultivarMap: Map<string, Cultivar> = $state(new Map());
 	$effect(() => {
 		(async () => {
 			const gardenId = garden.gardenId;
 			const names = Array.from(new Set(plantsCultivarNames));
 			if (names.length === 0 || !gardenId) {
-				plantsCultivarMap = new Map<string, JazzCultivar>();
+				plantsCultivarMap = new Map<string, Cultivar>();
 				return;
 			}
 
@@ -150,7 +179,7 @@ export function createPlantsContext(
 				names.map((name) => resolveCultivar(gardenId, name, commands))
 			);
 
-			const entries = names.reduce<Array<[string, JazzCultivar]>>((acc, name, i) => {
+			const entries = names.reduce<Array<[string, Cultivar]>>((acc, name, i) => {
 				const cultivar = results[i];
 				if (cultivar) acc.push([name, cultivar]);
 				return acc;
@@ -164,7 +193,7 @@ export function createPlantsContext(
 	 * @param cultivarName The name to retrieve.
 	 * @returns The matched cultivar with all attributes.
 	 */
-	function getCultivar(cultivarName: string): JazzCultivar | null {
+	function getCultivar(cultivarName: string): Cultivar | null {
 		return plantsCultivarMap.get(cultivarName) ?? null;
 	}
 

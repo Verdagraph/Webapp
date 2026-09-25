@@ -1,10 +1,8 @@
 import {
 	type ControllerContext,
-	type Cultivar,
 	type CultivarPlantingWindow,
-	type Environment
+	calculatePlantingWindow
 } from '@vdg-webapp/models';
-import { calculatePlantingWindow } from '@vdg-webapp/models';
 
 import type { CultivarContext } from './cultivarContext.svelte';
 import type { EnvironmentContext } from './environmentContext.svelte';
@@ -27,14 +25,8 @@ export function createPlantingWindowsContext(
 			for (const cultivar of cultivars.cultivars) {
 				windows.push(
 					calculatePlantingWindow(
-						/**
-						 * calculatePlantingWindow's attribute-profile shape predates
-						 * the Jazz migration; cultivarContext now resolves
-						 * JazzCultivar rows instead, which are structurally
-						 * compatible for this pure computation.
-						 */
-						cultivar as unknown as Cultivar,
-						environment as unknown as Environment,
+						cultivar,
+						environment,
 						{ start: timeline.beginSelection, end: timeline.endSelection },
 						'frostDates'
 					)

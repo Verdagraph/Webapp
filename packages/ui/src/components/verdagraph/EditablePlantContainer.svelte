@@ -1,20 +1,19 @@
 <script lang="ts">
 	import {
+		type Cultivar,
 		type GeometryHistoryUpdateCommand,
 		type GeometryUpdateCommand,
-		type Plant,
-		type Position,
 		resolveActiveGeometry,
 		resolveActiveLocation
 	} from '@vdg-webapp/models';
-	import { type JazzCultivar } from '@vdg-webapp/models/jazz';
 
 	import { Plant as PlantComponent, getVerdagraphContext } from '$components';
 	import { getAppContext } from '$state';
+	import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	type Props = {
-		plant: Plant;
+		plant: ResolvedPlant;
 	};
 	let { plant }: Props = $props();
 
@@ -40,7 +39,7 @@
 		plant ? resolveActiveGeometry(plant, verdagraphContext.timeline.focusUtc) : null
 	);
 
-	let position: Position | null = $derived.by(() => {
+	let position: { x: number; y: number } | null = $derived.by(() => {
 		if (
 			activeLocation &&
 			activeLocation.value.workspaceId === canvasContext.workspaceId
@@ -52,9 +51,7 @@
 
 	let geometry = $derived(activeGeometry?.value ?? null);
 
-	let cultivar: JazzCultivar | null = $derived(
-		ctx.plants.getCultivar(plant.cultivarName)
-	);
+	let cultivar: Cultivar | null = $derived(ctx.plants.getCultivar(plant.cultivarName));
 
 	/** Editable only if editing is enabled and a new planting area isn't being created. */
 	let editable: boolean = $derived(
@@ -67,7 +64,7 @@
 	);
 
 	/** Update the location history on translation. */
-	function onTranslate(newPos: Position, movementOver: boolean) {
+	function onTranslate(newPos: { x: number; y: number }, movementOver: boolean) {
 		if (!movementOver) {
 			return;
 		}

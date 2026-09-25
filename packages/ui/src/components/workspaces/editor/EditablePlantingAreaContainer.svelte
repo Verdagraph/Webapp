@@ -1,19 +1,17 @@
 <script lang="ts">
-	import {
-		type GeometryUpdateCommand,
-		type PlantingArea,
-		type Position,
-		historySelect
-	} from '@vdg-webapp/models';
+	import { type GeometryUpdateCommand, historySelect } from '@vdg-webapp/models';
 
 	import { PlantingArea as PlantingAreaComponent } from '$components';
 	import { getAppContext } from '$state';
+	import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	import { getWorkspaceEditorContext } from './workspaceEditorContext.svelte';
 
+	type Position = { x: number; y: number };
+
 	type Props = {
-		plantingArea: PlantingArea;
+		plantingArea: ResolvedPlantingArea;
 	};
 	let { plantingArea }: Props = $props();
 
