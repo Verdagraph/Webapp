@@ -639,6 +639,73 @@ one in the same write policy needs either this "make it an array so both
 sides use `contains`" treatment, or the nested-`anyOf` restructuring -
 plain `anyOf([eq, existsWithContains])` is not currently safe for writes.
 
+## Headline finding #10: severe main-thread blocking from `jazz_wasm.js`, and writes producing zero network traffic - migration paused
+
+Found late, after the schema/permissions/controller port and the full
+`packages/ui` write-side migration were otherwise complete and verified
+end-to-end (demo garden loading and rendering correctly, seed data
+idempotent under concurrent load - see the demo-seeding race findings
+below). This finding is why the migration was paused rather than merged.
+
+**Symptom**: in a real (non-headless) browser, editing any field through
+the app's editable-tree UI appeared to do nothing - no error, no state
+change. Console showed dozens of Chrome performance violations:
+
+```
+[Violation] 'setTimeout' handler took 248ms
+jazz_wasm.js:2115 [Violation] 'setTimeout' handler took 106ms
+jazz_wasm.js:2115 [Violation] 'setTimeout' handler took 265ms
+... (repeating continuously, not just during interaction)
+```
+
+**Diagnosis attempted, inconclusive**:
+
+- Reproduced across multiple browsers and incognito/no-extension
+  profiles - not a machine/extension-specific artifact.
+- `pnpm build && pnpm preview` (production build, not dev server) for
+  apps/demo **failed to load at all** - worth its own follow-up, since a
+  production build is the only way to rule out Vite-dev-mode overhead as
+  the cause, and that path is currently broken.
+- With DevTools Network tab filtered to WS, performing an edit produced
+  **zero outgoing WebSocket frames** - the write was not merely slow or
+  rejected, it never appears to have been sent. Not yet determined
+  whether this is the click/input handler itself being starved by the
+  main-thread contention (event loop never gets a turn) or a genuine
+  break in the client-side write path. This is the critical unresolved
+  question for anyone picking this back up.
+- No SharedWorker was visible in DevTools' worker inspector at the time
+  of testing, despite `patches/jazz-tools@2.0.0-alpha.55.patch` existing
+  specifically to fix SharedWorker construction under Vite (see finding
+  #5) - unclear whether the worker never started, or wasn't visible in
+  the inspector for an unrelated reason.
+- The 32MB `jazz_wasm_bg.wasm` binary (no smaller/optimized variant
+  shipped in this package version) is a plausible contributing factor to
+  load time (6-15+ seconds observed to become interactive) but was not
+  confirmed as the direct cause of the _runtime_ (not just load-time)
+  blocking violations.
+
+**Upgrade to `jazz-tools@2.0.0-alpha.56` attempted and abandoned**: the
+one version bump available at the time was tried, hoping either to fix
+the performance issue or drop the SharedWorker patch. Neither panned out:
+
+- The existing patch's underlying bug is still present unpatched in
+  alpha.56 (confirmed by extracting the published tarball and diffing) -
+  patch still required, just re-versioned.
+- Far more importantly, alpha.56 **removes `s.ref()` entirely**, replacing
+  it with a new `s.rel()`/`s.reverse()` relationship API - a breaking
+  schema-DSL change between two adjacent alpha releases, not a patch-level
+  compatible bump. Every domain schema file in `packages/models/src`
+  (every table with any relation - nearly all of them) would need
+  rewriting to adopt it. Reverted rather than take on that scope blind,
+  with no evidence yet that it fixes the actual problem being chased.
+  **Practical implication**: this SDK is not API-stable even within its
+  alpha channel; pinning to any alpha version carries real forward-upgrade
+  risk, not just a version-bump exercise.
+
+**Status**: unresolved. The migration was paused here rather than pushing
+further into an alpha SDK's runtime internals. See
+`JAZZ_MIGRATION_PAUSE_TICKET.md` at the repo root for the resulting plan.
+
 ## Deliberately out of scope for this spike (per the plan)
 
 - **`apps/web`/`apps/demo`/`packages/ui` wiring is now substantially

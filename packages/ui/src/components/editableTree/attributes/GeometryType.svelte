@@ -8,11 +8,23 @@
 
 	let { value, editing, onChange }: EditableAttributeProps<GeometryType> = $props();
 
+	/**
+	 * Matches GeometrySelect's own option labels. Computed independently of
+	 * that component (rather than via its bindable `label` prop) since it
+	 * only mounts while editing, and this display also needs a label in
+	 * the read-only view.
+	 */
+	const geometryTypeLabels: Record<GeometryType, string> = {
+		RECTANGLE: 'Rectangle',
+		POLYGON: 'Polygon',
+		ELLIPSE: 'Ellipse',
+		LINES: 'Lines'
+	};
 	let label: string = $state('');
 </script>
 
 {#if editing}
 	<GeometrySelect {value} bind:label onValueChange={onChange} />
 {:else}
-	<DefaultStaticValue value={label} />
+	<DefaultStaticValue value={geometryTypeLabels[value]} />
 {/if}

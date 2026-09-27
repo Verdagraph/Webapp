@@ -7,9 +7,9 @@
 
 <!-- The default display for a value when it is not being edited. -->
 <span
-	class="{!value
+	class="{value == null
 		? 'italic'
 		: ''} border-neutral-7 bg-neutral-1 ring-offset-neutral-1 focus-visible:ring-neutral-7 flex w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 >
-	{value || 'None'}
+	{value == null ? 'None' : value}
 </span>

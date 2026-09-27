@@ -5,14 +5,49 @@ import {
 	type ControllerContext,
 	app,
 	createController,
-	gardenCreate,
-	plantingAreaCreate,
-	plantsCreate,
-	workspaceCreate
+	plantsCreate
 } from '@vdg-webapp/models';
 
 const DEMO_GARDEN_SLUG = 'garden';
 const DEMO_USERNAME = 'Demo User';
+
+/**
+ * Fixed row ids for every entity this seed creates, upserted rather than
+ * inserted with an auto-generated id. Every visitor logs in as the same
+ * identity (see apps/demo/src/lib/data/jazz.ts) and this function has no
+ * reliable single-page-load-only guard against concurrent or repeated
+ * seeding: a brand new Jazz connection's very first query can return stale
+ * results before its initial sync catches up, so two page loads (or the
+ * same one retried) can both decide "nothing exists yet" and proceed. With
+ * auto-generated ids that produced real duplicate rows (confirmed
+ * empirically - 4-5x duplication after repeated testing). Fixed ids make
+ * every attempt converge on the same rows instead, since Jazz enforces id
+ * uniqueness natively regardless of how many callers race to write them.
+ */
+const ids = {
+	garden: '00000000-0000-4000-8000-000000000001',
+	creatorMembership: '00000000-0000-4000-8000-000000000002',
+	environment: '00000000-0000-4000-8000-000000000003',
+	workspace: '00000000-0000-4000-8000-000000000004',
+	cultivarCollection: '00000000-0000-4000-8000-000000000005',
+	cultivar: '00000000-0000-4000-8000-000000000006'
+} as const;
+
+/** Fixed ids per planting area: geometry, location, locationHistory, the area itself, and (Corner only) 6 coordinates. */
+function areaIds(index: number) {
+	const base = 0x100 + index * 0x10;
+	return {
+		geometry: fixedId(base + 1),
+		location: fixedId(base + 2),
+		locationHistory: fixedId(base + 3),
+		plantingArea: fixedId(base + 4),
+		coordinates: [5, 6, 7, 8, 9, 10].map((offset) => fixedId(base + offset))
+	};
+}
+
+function fixedId(n: number): string {
+	return `00000000-0000-4000-8000-${n.toString(16).padStart(12, '0')}`;
+}
 
 /**
  * Polls until the local-first Jazz session has assigned this browser its
@@ -28,11 +63,9 @@ async function waitForAccountId(): Promise<string> {
 }
 
 /**
- * Builds a controller for the demo's local-first Jazz session,
- * self-provisioning a public profile row (see
- * packages/models/src/jazz/users.ts) keyed by this session's own account
- * id if one doesn't exist yet - a local-first session has no prior signup
- * step to have created one.
+ * Builds a controller for the demo's shared Jazz session, self-provisioning
+ * a public profile row (see packages/models/src/users/schema.ts) keyed by
+ * this session's account id if one doesn't exist yet.
  */
 async function createDemoController(): Promise<ControllerContext> {
 	const db = getDb();
@@ -181,21 +214,18 @@ const plantingAreaSeeds: Array<{
 ];
 
 /**
- * Guards against seedDemoGarden() running twice concurrently (observed in
- * dev under Vite HMR / a double onMount): the garden-existence check inside
- * it is a plain query-then-insert, racy under concurrent callers, and two
- * overlapping calls could each pass the check and insert their own garden
- * with the same slug from two different accounts.
+ * Guards against seedDemoGarden() running twice concurrently within the
+ * same page (observed in dev under Vite HMR / a double onMount). Every
+ * write below is also independently idempotent via fixed ids (see `ids`
+ * above), since this guard alone doesn't cover separate page loads.
  */
 let seedPromise: Promise<string> | null = null;
 
 /**
- * Seeds a demo garden with a workspace, planting areas, a cultivar
- * collection, and a plant, using the real ported Jazz controllers -
- * mirroring how a real garden is actually built, rather than a raw bulk
- * insert of hand-picked ids (Jazz row ids are always server-generated,
- * unlike Triplit's). Idempotent: if the garden already exists (e.g. a page
- * reload against an already-seeded local Jazz store), seeding is skipped.
+ * Seeds the shared demo garden with a workspace, planting areas, a
+ * cultivar collection, and a plant, using the real ported Jazz controllers
+ * where the entity doesn't need a fixed id, and direct fixed-id upserts
+ * (matching what those same controllers write) where it does.
  * @returns The demo garden's slug.
  */
 export function seedDemoGarden(): Promise<string> {
@@ -207,30 +237,32 @@ export function seedDemoGarden(): Promise<string> {
 
 async function seedDemoGardenInternal(): Promise<string> {
 	const ctx = await createDemoController();
+	const client = await ctx.getClientOrError();
 
-	const existingGarden = await ctx.db.one(
-		app.gardens.where({ slug: DEMO_GARDEN_SLUG })
-	);
-	if (existingGarden) {
-		return DEMO_GARDEN_SLUG;
-	}
-
-	const garden = await gardenCreate(
-		{
-			id: DEMO_GARDEN_SLUG,
+	await ctx.db
+		.upsert(app.gardens, ids.garden, {
+			slug: DEMO_GARDEN_SLUG,
 			name: 'Garden',
 			description: '',
 			visibility: 'PUBLIC',
-			adminInvites: [],
-			editorInvites: [],
-			viewerInvites: []
-		},
-		ctx
-	);
+			creatorId: client.profile.id,
+			adminIds: [client.profile.id]
+		})
+		.wait({ tier: 'edge' });
 
 	await ctx.db
-		.insert(app.environments, {
-			gardenId: garden.id,
+		.upsert(app.gardenMemberships, ids.creatorMembership, {
+			gardenId: ids.garden,
+			userId: client.profile.id,
+			role: 'ADMIN',
+			status: 'ACCEPTED',
+			acceptedAt: new Date()
+		})
+		.wait({ tier: 'edge' });
+
+	await ctx.db
+		.upsert(app.environments, ids.environment, {
+			gardenId: ids.garden,
 			name: 'Garden',
 			description: '',
 			parentType: 'GARDEN',
@@ -245,43 +277,85 @@ async function seedDemoGardenInternal(): Promise<string> {
 		})
 		.wait({ tier: 'edge' });
 
-	const workspace = await workspaceCreate(
-		{ gardenId: DEMO_GARDEN_SLUG, name: 'Workspace', description: '' },
-		ctx
-	);
+	await ctx.db
+		.upsert(app.workspaces, ids.workspace, {
+			gardenId: ids.garden,
+			name: 'Workspace',
+			slug: 'workspace',
+			description: ''
+		})
+		.wait({ tier: 'edge' });
 
-	for (const area of plantingAreaSeeds) {
-		await plantingAreaCreate(
-			{
-				gardenId: DEMO_GARDEN_SLUG,
-				workspaceId: workspace.id,
+	for (const [index, area] of plantingAreaSeeds.entries()) {
+		const entityIds = areaIds(index);
+
+		await ctx.db.transaction(async (tx) => {
+			const coordinateIds: string[] = [];
+			if (area.geometry.type === 'LINES') {
+				for (const [pointIndex, point] of area.geometry.linesCoordinates.entries()) {
+					const coordinateId = entityIds.coordinates[pointIndex];
+					tx.upsert(app.coordinates, coordinateId, {
+						gardenId: ids.garden,
+						x: point.x,
+						y: point.y
+					});
+					coordinateIds.push(coordinateId);
+				}
+			}
+
+			tx.upsert(app.geometries, entityIds.geometry, {
+				gardenId: ids.garden,
+				name: area.geometry.name ?? undefined,
+				type: area.geometry.type,
+				date: area.geometry.date,
+				scaleFactor: area.geometry.scaleFactor,
+				rotation: area.geometry.rotation,
+				rectangleLength: area.geometry.rectangleLength,
+				rectangleWidth: area.geometry.rectangleWidth,
+				polygonNumSides: area.geometry.polygonNumSides,
+				polygonRadius: area.geometry.polygonRadius,
+				ellipseLength: area.geometry.ellipseLength,
+				ellipseWidth: area.geometry.ellipseWidth,
+				linesCoordinateIds: coordinateIds,
+				linesClosed: area.geometry.linesClosed
+			});
+
+			tx.upsert(app.locations, entityIds.location, {
+				gardenId: ids.garden,
+				workspaceId: ids.workspace,
+				x: area.coordinate.x,
+				y: area.coordinate.y,
+				date: earlyDate
+			});
+			tx.upsert(app.locationHistories, entityIds.locationHistory, {
+				gardenId: ids.garden,
+				locationIds: [entityIds.location],
+				workspaceIds: [ids.workspace]
+			});
+
+			tx.upsert(app.plantingAreas, entityIds.plantingArea, {
+				gardenId: ids.garden,
 				name: area.name,
 				description: '',
 				depth: 0,
-				geometry: area.geometry,
-				location: {
-					gardenId: garden.id,
-					workspaceId: workspace.id,
-					coordinate: area.coordinate,
-					date: earlyDate
-				}
-			},
-			ctx
-		);
+				geometryId: entityIds.geometry,
+				locationHistoryId: entityIds.locationHistory
+			});
+		});
 	}
 
-	const collection = await ctx.db
-		.insert(app.cultivarCollections, {
-			gardenId: garden.id,
+	await ctx.db
+		.upsert(app.cultivarCollections, ids.cultivarCollection, {
+			gardenId: ids.garden,
 			name: 'West Coast Seeds',
 			slug: 'west-coast-seeds',
 			visibility: 'HIDDEN'
 		})
 		.wait({ tier: 'edge' });
 	await ctx.db
-		.insert(app.cultivars, {
-			collectionId: collection.id,
-			gardenId: garden.id,
+		.upsert(app.cultivars, ids.cultivar, {
+			collectionId: ids.cultivarCollection,
+			gardenId: ids.garden,
 			name: 'lettuce',
 			abbreviation: 'Le',
 			createdAt: new Date(),
@@ -313,6 +387,19 @@ async function seedDemoGardenInternal(): Promise<string> {
 		})
 		.wait({ tier: 'edge' });
 
+	/**
+	 * Plants aren't given fixed ids (plantsCreate's write shape is deep
+	 * enough - lifespans, geometry/location histories - that replicating it
+	 * manually isn't worth it for one demo plant); a plain existence check
+	 * is enough to keep this idempotent instead.
+	 */
+	const existingPlant = await ctx.db.one(
+		app.plants.where({ gardenId: ids.garden, cultivarName: 'lettuce' })
+	);
+	if (existingPlant) {
+		return DEMO_GARDEN_SLUG;
+	}
+
 	await plantsCreate(
 		{
 			gardenId: DEMO_GARDEN_SLUG,
@@ -325,7 +412,7 @@ async function seedDemoGardenInternal(): Promise<string> {
 					quantity: 1,
 					cultivarOverride: {},
 					geometryHistory: {
-						gardenId: garden.id,
+						gardenId: ids.garden,
 						geometries: [
 							{
 								type: 'ELLIPSE',
@@ -372,17 +459,17 @@ async function seedDemoGardenInternal(): Promise<string> {
 						]
 					},
 					locationHistory: {
-						gardenId: garden.id,
+						gardenId: ids.garden,
 						locations: [
 							{
-								gardenId: garden.id,
-								workspaceId: workspace.id,
+								gardenId: ids.garden,
+								workspaceId: ids.workspace,
 								coordinate: { x: 5, y: 5 },
 								date: new Date(2026, 1, 1)
 							},
 							{
-								gardenId: garden.id,
-								workspaceId: workspace.id,
+								gardenId: ids.garden,
+								workspaceId: ids.workspace,
 								coordinate: { x: -2, y: 8 },
 								date: new Date(2026, 6, 1)
 							}
@@ -395,12 +482,12 @@ async function seedDemoGardenInternal(): Promise<string> {
 	);
 
 	const plant = await ctx.db.one(
-		app.plants.where({ gardenId: garden.id, cultivarName: 'lettuce' })
+		app.plants.where({ gardenId: ids.garden, cultivarName: 'lettuce' })
 	);
 	if (plant) {
 		await ctx.db
 			.insert(app.observations, {
-				gardenId: garden.id,
+				gardenId: ids.garden,
 				type: 'plant-seed',
 				entityIds: [plant.expectedLifespanId],
 				date: new Date(2026, 2, 1)
@@ -408,7 +495,7 @@ async function seedDemoGardenInternal(): Promise<string> {
 			.wait({ tier: 'edge' });
 		await ctx.db
 			.insert(app.observations, {
-				gardenId: garden.id,
+				gardenId: ids.garden,
 				type: 'plant-expiry',
 				entityIds: [plant.expectedLifespanId],
 				date: new Date(2026, 6, 1)
