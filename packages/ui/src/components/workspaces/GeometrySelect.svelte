@@ -26,9 +26,7 @@
 		}
 	);
 	$effect(() => {
-		if (label) {
-			label = geometryTypeSelectTrigger.label;
-		}
+		label = geometryTypeSelectTrigger.label;
 	});
 </script>
 

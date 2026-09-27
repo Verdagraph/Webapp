@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { Verdagraph } from '@vdg-webapp/ui';
+	import { Verdagraph, getAppContext } from '@vdg-webapp/ui';
 
-	import { workspace } from '$lib/seeds/workspace';
+	const ctx = getAppContext();
+
+	const defaultWorkspaceId = $derived(ctx.workspaces.workspaces[0]?.id ?? null);
 </script>
 
-<Verdagraph contextParams={{ defaultSelectedWorkspaceId: workspace.id }} />
+{#if defaultWorkspaceId}
+	<Verdagraph contextParams={{ defaultSelectedWorkspaceId: defaultWorkspaceId }} />
+{/if}

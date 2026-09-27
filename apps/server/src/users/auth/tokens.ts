@@ -6,6 +6,24 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 const ACCESS_HEADER_KEY = 'Authorization';
 const REFRESH_COOKIE_KEY = 'refresh';
 const ACCESS_TOKEN_EXPIRY_S = 15 * 60;
+const SERVICE_TOKEN_EXPIRY_S = 60 * 60;
+
+/**
+ * Stable subject for the server's own Jazz identity, used only to log the
+ * backend's own service session into Jazz - never a real user account.
+ */
+const JAZZ_SERVICE_SUBJECT = 'verdagraph-server';
+
+/**
+ * Standard `iss`/`aud` claims on access tokens.
+ * Not used by this server's own `decodeAccessToken` (signature + expiry is
+ * enough here), but required for the same token to also authenticate to the
+ * Jazz sync server, which needs `sub`/`iss` to derive a session at all and
+ * requires `--jwt-issuer`/`--jwt-audience` to be configured whenever a
+ * static JWT public key is used.
+ */
+const ACCESS_TOKEN_ISSUER = 'verdagraph';
+const ACCESS_TOKEN_AUDIENCE = 'jazz';
 
 /** The payload information carried by access tokens. */
 type AccessTokenPayload = {
@@ -54,7 +72,40 @@ export const encodeAccessToken = (
 		jwt.sign(
 			payload,
 			env.ACCESS_TOKEN_SECRET,
-			{ expiresIn: ACCESS_TOKEN_EXPIRY_S },
+			{
+				expiresIn: ACCESS_TOKEN_EXPIRY_S,
+				subject: accountId,
+				issuer: ACCESS_TOKEN_ISSUER,
+				audience: ACCESS_TOKEN_AUDIENCE
+			},
+			(error, token) => {
+				if (error || !token) {
+					reject(new InternalFailureException());
+				} else resolve(token);
+			}
+		);
+	});
+};
+
+/**
+ * Encodes a JWT identifying the server itself as a trusted service, for
+ * connecting to Jazz to read and write the credential tables that no
+ * end-user session is ever granted access to (see
+ * packages/models/src/jazz/credentials/permissions.ts). Never sent to a
+ * client.
+ * @returns The encoded token.
+ */
+export const encodeServiceToken = (): Promise<string> => {
+	return new Promise((resolve, reject) => {
+		jwt.sign(
+			{ role: 'service' },
+			env.ACCESS_TOKEN_SECRET,
+			{
+				expiresIn: SERVICE_TOKEN_EXPIRY_S,
+				subject: JAZZ_SERVICE_SUBJECT,
+				issuer: ACCESS_TOKEN_ISSUER,
+				audience: ACCESS_TOKEN_AUDIENCE
+			},
 			(error, token) => {
 				if (error || !token) {
 					reject(new InternalFailureException());

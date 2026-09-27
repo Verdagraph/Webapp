@@ -1,14 +1,13 @@
 <script lang="ts">
-	import type { PlantingArea } from '@vdg-webapp/models';
-
 	import { Canvas, Gridlines, PlantingAreas, TransformControls } from '$components';
+	import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
 
 	import CreatePlantingAreaContainer from './CreatePlantingAreaContainer.svelte';
 	import EditablePlantingAreaContainer from './EditablePlantingAreaContainer.svelte';
 	import { getWorkspaceEditorContext } from './workspaceEditorContext.svelte';
 
 	type Props = {
-		plantingAreas: PlantingArea[];
+		plantingAreas: ResolvedPlantingArea[];
 	};
 	let { plantingAreas }: Props = $props();
 

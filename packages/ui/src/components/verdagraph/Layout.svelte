@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { Plant, PlantingArea } from '@vdg-webapp/models';
-
 	import {
 		Canvas,
 		Gridlines,
@@ -9,6 +7,8 @@
 		StaticPlantingAreaContainer,
 		TransformControls
 	} from '$components';
+	import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
+	import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
 
 	import CreatePlantsContainer from './CreatePlantsContainer.svelte';
 	import EditablePlantContainer from './EditablePlantContainer.svelte';
@@ -17,8 +17,8 @@
 	const verdagraphContext = getVerdagraphContext();
 
 	type Props = {
-		plantingAreas: PlantingArea[];
-		plants: Plant[];
+		plantingAreas: ResolvedPlantingArea[];
+		plants: ResolvedPlant[];
 		workspaceId: string;
 	};
 	let { plantingAreas, plants, workspaceId }: Props = $props();

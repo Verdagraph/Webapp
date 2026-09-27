@@ -1,21 +1,17 @@
 <script lang="ts">
-	import {
-		type GeometryUpdateCommand,
-		type PlantingArea,
-		type Position,
-		geometryUpdate,
-		historySelect,
-		locationHistoryUpdate
-	} from '@vdg-webapp/models';
+	import { type GeometryUpdateCommand, historySelect } from '@vdg-webapp/models';
 
 	import { PlantingArea as PlantingAreaComponent } from '$components';
 	import { getAppContext } from '$state';
+	import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	import { getWorkspaceEditorContext } from './workspaceEditorContext.svelte';
 
+	type Position = { x: number; y: number };
+
 	type Props = {
-		plantingArea: PlantingArea;
+		plantingArea: ResolvedPlantingArea;
 	};
 	let { plantingArea }: Props = $props();
 
@@ -26,8 +22,10 @@
 	const canvasId = canvasContext.canvasId;
 
 	/** Handlers. */
-	const translateCommandHandler = createCommandHandler(locationHistoryUpdate);
-	const transformCommandHandler = createCommandHandler(geometryUpdate);
+	const translateCommandHandler = createCommandHandler(
+		ctx.controller.locationHistoryUpdate
+	);
+	const transformCommandHandler = createCommandHandler(ctx.controller.geometryUpdate);
 
 	/**
 	 * Tracks the position in the location history at the
@@ -67,18 +65,15 @@
 			return;
 		}
 
-		translateCommandHandler.execute(
-			{
-				id: plantingArea.locationHistoryId,
-				workspaceId: workspaceEditor.id,
-				coordinate: {
-					x: canvasContext.transform.modelXPos(newPos.x),
-					y: canvasContext.transform.modelYPos(newPos.y)
-				},
-				date: workspaceEditor.timelineSelection.focusUtc
+		translateCommandHandler.execute({
+			id: plantingArea.locationHistoryId,
+			workspaceId: workspaceEditor.id,
+			coordinate: {
+				x: canvasContext.transform.modelXPos(newPos.x),
+				y: canvasContext.transform.modelYPos(newPos.y)
 			},
-			ctx.controller
-		);
+			date: workspaceEditor.timelineSelection.focusUtc
+		});
 	}
 
 	/** Update the geometry on transformation. */
@@ -87,11 +82,7 @@
 			return;
 		}
 
-		transformCommandHandler.execute(
-			plantingArea.geometryId,
-			newGeometry,
-			ctx.controller
-		);
+		transformCommandHandler.execute(plantingArea.geometryId, newGeometry);
 	}
 </script>
 

@@ -3,20 +3,17 @@
 		type Cultivar,
 		type GeometryHistoryUpdateCommand,
 		type GeometryUpdateCommand,
-		type Plant,
-		type Position,
-		geometryHistoryUpdate,
-		locationHistoryUpdate,
 		resolveActiveGeometry,
 		resolveActiveLocation
 	} from '@vdg-webapp/models';
 
 	import { Plant as PlantComponent, getVerdagraphContext } from '$components';
 	import { getAppContext } from '$state';
+	import { type ResolvedPlant } from '$state/application/plantsContext.svelte';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	type Props = {
-		plant: Plant;
+		plant: ResolvedPlant;
 	};
 	let { plant }: Props = $props();
 
@@ -27,8 +24,12 @@
 	const canvasId = canvasContext.canvasId;
 
 	/** Handlers. */
-	const translateCommandHandler = createCommandHandler(locationHistoryUpdate);
-	const transformCommandHandler = createCommandHandler(geometryHistoryUpdate);
+	const translateCommandHandler = createCommandHandler(
+		ctx.controller.locationHistoryUpdate
+	);
+	const transformCommandHandler = createCommandHandler(
+		ctx.controller.geometryHistoryUpdate
+	);
 
 	/** Resolve the active location and geometry across both lifespans. */
 	let activeLocation = $derived(
@@ -38,7 +39,7 @@
 		plant ? resolveActiveGeometry(plant, verdagraphContext.timeline.focusUtc) : null
 	);
 
-	let position: Position | null = $derived.by(() => {
+	let position: { x: number; y: number } | null = $derived.by(() => {
 		if (
 			activeLocation &&
 			activeLocation.value.workspaceId === canvasContext.workspaceId
@@ -63,7 +64,7 @@
 	);
 
 	/** Update the location history on translation. */
-	function onTranslate(newPos: Position, movementOver: boolean) {
+	function onTranslate(newPos: { x: number; y: number }, movementOver: boolean) {
 		if (!movementOver) {
 			return;
 		}
@@ -82,7 +83,7 @@
 			date: verdagraphContext.timeline.focusUtc
 		};
 		console.log('[EditablePlantContainer] onTranslate', command);
-		translateCommandHandler.execute(command, ctx.controller);
+		translateCommandHandler.execute(command);
 	}
 
 	/** Update the geometry history on transformation. */
@@ -114,7 +115,7 @@
 			date: verdagraphContext.timeline.focusUtc
 		} satisfies GeometryHistoryUpdateCommand;
 		console.log('[EditablePlantContainer] onTransform', command);
-		transformCommandHandler.execute(command, ctx.controller);
+		transformCommandHandler.execute(command);
 	}
 </script>
 

@@ -1,4 +1,5 @@
-import triplit from '$data/triplit';
+import { type Db, app } from '@vdg-webapp/models';
+
 /**
  * Names are assumed to be less than the
  * maximum ID length minus (GENERATED_KEY_RANDOM_SECTION_LENGTH + 1)
@@ -66,14 +67,15 @@ function generateGardenIdFromRandomString(): string {
 
 /**
  * Generates a random garden ID. Guarnteed to be unique.
+ * @param db The Jazz Db instance, used to check slug uniqueness.
  * @returns Generated unique garden ID.
  */
-export async function generateGardenId(): Promise<string> {
+export async function generateGardenId(db: Db): Promise<string> {
 	/** Try to generate a unique key with a plant name. */
 	for (let i = 0; i < MAX_PLANT_NAME_TRIES; i++) {
 		const id = generateGardenIdFromPlantName();
 
-		const existingGarden = await triplit.fetchOne(triplit.query('gardens').Id(id));
+		const existingGarden = await db.one(app.gardens.where({ slug: id }));
 		if (existingGarden == null) {
 			return id;
 		}
@@ -83,7 +85,7 @@ export async function generateGardenId(): Promise<string> {
 	for (let i = 0; i < MAX_PLANT_NAME_TRIES; i++) {
 		const id = generateGardenIdFromRandomString();
 
-		const existingGarden = await triplit.fetchOne(triplit.query('gardens').Id(id));
+		const existingGarden = await db.one(app.gardens.where({ slug: id }));
 		if (existingGarden == null) {
 			return id;
 		}

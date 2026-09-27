@@ -1,26 +1,7 @@
-import { AppError } from '@vdg-webapp/models';
-
-import { goto } from '$app/navigation';
-import triplit from '$data/triplit';
-import { workspaceSlugQuery } from '$data/workspaces/queries';
-
 /**
- * Retrieve the workspace.
+ * Passes the workspace's URL slug through to the page, which resolves and
+ * confirms its existence reactively against Jazz (see +page.svelte).
  */
-export async function load({ params }) {
-	const workspace = await triplit.fetchOne(
-		workspaceSlugQuery.Vars({
-			gardenId: params.gardenId,
-			workspaceSlug: params.workspaceSlug
-		})
-	);
-
-	if (!workspace) {
-		/** TODO: Make toasts work here. */
-		//toast.error('Workspace does not exist.');
-		goto(`/gardens/${params.gardenId}/workspaces`);
-		throw new AppError(`Workspace ${params.workspaceSlug} does not exist`);
-	}
-
-	return { workspace: workspace };
+export function load({ params }) {
+	return { workspaceSlug: params.workspaceSlug };
 }

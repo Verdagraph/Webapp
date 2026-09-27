@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { useQuery } from '@triplit/svelte';
 	import { useId } from 'bits-ui';
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';

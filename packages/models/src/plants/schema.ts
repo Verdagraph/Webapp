@@ -1,14 +1,10 @@
-import { type Entity, Schema as S, or } from '@triplit/client';
-
-import { CultivarAttributes } from '../cultivars/attributes/index.js';
-import { type Cultivar, cultivarSchema } from '../cultivars/schema.js';
-import { type Environment } from '../environments/schema.js';
-import { type DateRange } from '../time/utils.js';
-import { GeometryHistory, LocationHistory } from '../workspaces/schema.js';
-import { PlantObservation } from './observations.js';
+import { type TableRow, schema as s } from 'jazz-tools';
 
 /**
- *
+ * The origin of a plant lifespan.
+ * DIRECT_SEED: the plant was grown from seed directly at its planting location.
+ * SEED_TO_TRANSPLANT: the plant was grown from seed and later transplanted.
+ * SEEDLING_TO_TRANSPLANT: the plant was started as a purchased/started seedling and transplanted.
  */
 export const OriginEnumOptions = [
 	'DIRECT_SEED',
@@ -16,341 +12,97 @@ export const OriginEnumOptions = [
 	'SEEDLING_TO_TRANSPLANT'
 ] as const;
 
-export const plantSchema = S.Collections({
-	...cultivarSchema,
-	/** Lifespan schema. */
-	lifespans: {
-		schema: S.Schema({
-			id: S.Id(),
-
-			/** Garden the entity is located within - required for access control. */
-			gardenId: S.String(),
-
-			/** The origin of the lifespan. */
-			origin: S.String({ enum: [...OriginEnumOptions] }),
-
-			/** The geometries of the lifespan. */
-			geometryHistoryId: S.Optional(S.String()),
-
-			/** The locations of the lifespan. */
-			locationHistoryId: S.Optional(S.String())
-		}),
-		relationships: {
-			garden: S.RelationById('gardens', '$gardenId'),
-			geometryHistory: S.RelationById('geometryHistories', '$geometryHistoryId'),
-			locationHistory: S.RelationById('locationHistories', '$locationHistoryId'),
-			observations: S.RelationMany('observations', {
-				where: [['entityIds', 'has', '$id']]
-			})
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the garden is not hidden. */
-					filter: [['garden.visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the garden is not hidden or the user is a member. */
-					filter: [
-						or([
-							['garden.visibility', '!=', 'HIDDEN'],
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId'],
-							['garden.viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/** Allow new lifespans to be created by admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				update: {
-					/** Restrict lifespans updates to admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				delete: {
-					/** Restrict lifespans deletes to admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				}
-			}
-		}
-	},
-	/** Plant schema. */
-	plants: {
-		schema: S.Schema({
-			id: S.Id(),
-
-			/** Garden the entity is located within - required for access control. */
-			gardenId: S.String(),
-
-			/**
-			 * The name correlating with one of the common names specified by a cultivar.
-			 * Will match the plant with a cultivar in one of the garden's cultivar collections.
-			 */
-			cultivarName: S.String(),
-
-			/** A set of cultivar attributes to override those from the collections. */
-			cultivarAttributes: CultivarAttributes,
-
-			/** Lifespan attributes populated from the expected attributes based on the cultivar. */
-			expectedLifespanId: S.String(),
-
-			/** Lifespan attributes populated by observations of users. */
-			recordedLifespanId: S.String(),
-
-			/**
-			 * Range of dates which encapsulates all dates applicable to this plant.
-			 * This data is denormalized and must be updated alongside the update of
-			 * plant Lifespans.
-			 * This is necessary in order to not rely on complex query logic of what
-			 * time range a plant exists in.
-			 */
-			beginDate: S.Date(),
-			endDate: S.Date(),
-
-			/** The number of distinct plants which are managed together in this plant instance. */
-			quantity: S.Number({ default: 1 }),
-
-			/**
-			 * The DraftBucket this plant is staged in, if any. While set to a bucket whose
-			 * `committed` is false, this plant is excluded from official reads of the
-			 * garden's plants (see DraftBucket).
-			 */
-			draftBucketId: S.String({ nullable: true, default: null })
-		}),
-		relationships: {
-			garden: S.RelationById('gardens', '$gardenId'),
-			expectedLifespan: S.RelationById('lifespans', '$expectedLifespanId'),
-			recordedLifespan: S.RelationById('lifespans', '$recordedLifespanId'),
-			draftBucket: S.RelationById('draftBuckets', '$draftBucketId')
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the garden is not hidden. */
-					filter: [['garden.visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the garden is not hidden or the user is a member. */
-					filter: [
-						or([
-							['garden.visibility', '!=', 'HIDDEN'],
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId'],
-							['garden.viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/** Allow new location history to be created by admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				update: {
-					/** Restrict location history updates to admins. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				delete: {
-					/** Restrict location histories deletes to admins. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				}
-			}
-		}
-	},
-	/** Plant groups. */
-	plantGroups: {
-		schema: S.Schema({
-			id: S.Id(),
-
-			/** Garden the entity is located within - required for access control. */
-			gardenId: S.String(),
-
-			/** Name. */
-			name: S.String(),
-
-			/** A set of plants contained with the group. */
-			plantIds: S.Set(S.String()),
-
-			/** Optional description. */
-			description: S.String({ default: '' })
-		}),
-		relationships: {
-			garden: S.RelationById('gardens', '$gardenId'),
-			plants: S.RelationMany('plants', { where: [['id', 'in', '$plantIds']] })
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the garden is not hidden. */
-					filter: [['garden.visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the garden is not hidden or the user is a member. */
-					filter: [
-						or([
-							['garden.visibility', '!=', 'HIDDEN'],
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId'],
-							['garden.viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/** Allow new location history to be created by admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				update: {
-					/** Restrict location history updates to admins. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				delete: {
-					/** Restrict location histories deletes to admins. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				}
-			}
-		}
-	},
-	/** Draft buckets. */
-	draftBuckets: {
-		schema: S.Schema({
-			id: S.Id(),
-
-			/** Garden the entity is located within - required for access control. */
-			gardenId: S.String(),
-
-			/** Name. */
-			name: S.String(),
-
-			/** The user who started this plan. Null if that profile has since been removed. */
-			creatorId: S.String({ nullable: true, default: null }),
-
-			/**
-			 * Whether this plan has been accepted. Starts false; once true, this bucket's
-			 * plants stop being excluded from official reads of the garden's plants.
-			 */
-			committed: S.Boolean({ default: false })
-		}),
-		relationships: {
-			garden: S.RelationById('gardens', '$gardenId'),
-			creator: S.RelationById('profiles', '$creatorId'),
-			plants: S.RelationMany('plants', { where: [['draftBucketId', '=', '$id']] })
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the garden is not hidden. */
-					filter: [['garden.visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the garden is not hidden or the user is a member. */
-					filter: [
-						or([
-							['garden.visibility', '!=', 'HIDDEN'],
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId'],
-							['garden.viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/** Allow new draft buckets to be created by admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				update: {
-					/** Restrict draft bucket updates to admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				delete: {
-					/** Restrict draft bucket deletes to admins and editors. */
-					filter: [
-						or([
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId']
-						])
-					]
-				}
-			}
-		}
-	}
-});
 export type Origin = (typeof OriginEnumOptions)[number];
-export type Lifespan = Entity<typeof plantSchema, 'lifespans'> & {
-	locationHistory: LocationHistory | null;
-	geometryHistory: GeometryHistory | null;
-	observations: PlantObservation[] | null;
-};
-export type Plant = Entity<typeof plantSchema, 'plants'> & {
-	expectedLifespan: Lifespan | null;
-	recordedLifespan: Lifespan | null;
-	draftBucket: DraftBucket | null;
-};
-export type PlantGroup = Entity<typeof plantSchema, 'plantGroups'>;
-export type DraftBucket = Entity<typeof plantSchema, 'draftBuckets'>;
 
 export const OriginEnumLabels: Record<Origin, string> = {
 	DIRECT_SEED: 'Direct Seed',
 	SEEDLING_TO_TRANSPLANT: 'Seedling to Transplant',
 	SEED_TO_TRANSPLANT: 'Seed to Transplant'
 };
+
+/** Untyped for now, same tradeoff as cultivars' attributes field. */
+export type CultivarAttributesOverride = Record<string, unknown>;
+
+export const plantSchema = {
+	/** Lifespan schema. */
+	lifespans: s.table({
+		/** Garden the entity is located within, required for access control. */
+		gardenId: s.ref('gardens'),
+		/** The origin of the lifespan. */
+		origin: s.enum(...OriginEnumOptions),
+		/** The geometries of the lifespan. */
+		geometryHistoryId: s.ref('geometryHistories').optional(),
+		/** The locations of the lifespan. */
+		locationHistoryId: s.ref('locationHistories').optional()
+	}),
+	/** Plant schema. */
+	plants: s.table({
+		/** Garden the entity is located within, required for access control. */
+		gardenId: s.ref('gardens'),
+		/**
+		 * The name correlating with one of the common names specified by a
+		 * cultivar. Will match the plant with a cultivar in one of the
+		 * garden's cultivar collections.
+		 */
+		cultivarName: s.string(),
+		/**
+		 * A set of cultivar attributes to override those from the
+		 * collections. Untyped, see CultivarAttributesOverride.
+		 * `.default({})` rather than `.optional()`: an alpha bug rejects any
+		 * explicit value written to an `.optional()` json column (see
+		 * SPIKE_NOTES.md) - `.default({})` writes and reads correctly.
+		 */
+		cultivarAttributes: s.json().default({}),
+		/** Lifespan attributes populated from the expected attributes based on the cultivar. */
+		expectedLifespanId: s.ref('lifespans'),
+		/** Lifespan attributes populated by observations of users. */
+		recordedLifespanId: s.ref('lifespans'),
+		/**
+		 * Range of dates which encapsulates all dates applicable to this
+		 * plant. Denormalized, must be updated alongside plant lifespan
+		 * updates, to avoid relying on complex query logic for what time
+		 * range a plant exists in.
+		 */
+		beginDate: s.timestamp(),
+		endDate: s.timestamp(),
+		/** The number of distinct plants which are managed together in this plant instance. */
+		quantity: s.float().default(1),
+		/**
+		 * The DraftBucket this plant is staged in, if any. While set to a
+		 * bucket whose `committed` is false, this plant is excluded from
+		 * official reads of the garden's plants (see DraftBucket).
+		 */
+		draftBucketId: s.ref('draftBuckets').optional()
+	}),
+	/** Plant groups. */
+	plantGroups: s.table({
+		/** Garden the entity is located within, required for access control. */
+		gardenId: s.ref('gardens'),
+		/** Name. */
+		name: s.string(),
+		/** A set of plants contained with the group. */
+		plantIds: s.array(s.string()).default([]),
+		/** Optional description. */
+		description: s.string().default('')
+	}),
+	/** Draft buckets. */
+	draftBuckets: s.table({
+		/** Garden the entity is located within, required for access control. */
+		gardenId: s.ref('gardens'),
+		/** Name. */
+		name: s.string(),
+		/** The user who started this plan. Undefined if that user has since left the garden. */
+		creatorId: s.ref('users').optional(),
+		/**
+		 * Whether this plan has been accepted. Starts false; once true,
+		 * this bucket's plants stop being excluded from official reads of
+		 * the garden's plants.
+		 */
+		committed: s.boolean().default(false)
+	})
+};
+
+export type Lifespan = TableRow<typeof plantSchema, 'lifespans'>;
+export type Plant = TableRow<typeof plantSchema, 'plants'>;
+export type PlantGroup = TableRow<typeof plantSchema, 'plantGroups'>;
+export type DraftBucket = TableRow<typeof plantSchema, 'draftBuckets'>;

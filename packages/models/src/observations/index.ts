@@ -1,5 +1,9 @@
 export * from './schema.js';
 export * from './utils.js';
 export * from './commands.js';
-export * from './controller.js';
 export * from './ids.js';
+export * from './controller.js';
+export {
+	constructObservationPermissions,
+	constructObservationsPolicy
+} from './permissions.js';

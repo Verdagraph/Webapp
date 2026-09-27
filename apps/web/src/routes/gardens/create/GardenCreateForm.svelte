@@ -2,9 +2,9 @@
 	import Icon from '@iconify/svelte';
 
 	import {
+		type Garden,
 		GardenCreateCommandSchema,
 		type GardenVisibility,
-		gardenCreate,
 		gardenFields
 	} from '@vdg-webapp/models';
 	import {
@@ -15,15 +15,17 @@
 		Select,
 		Textarea,
 		createForm,
+		getAppContext,
 		iconIds
 	} from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
-	import controller from '$data/controller';
 	import { generateGardenId } from '$data/gardens/utils';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	import GardenCreateFormUserTagsInput from './GardenCreateFormUserTagsInput.svelte';
+
+	const ctx = getAppContext();
 
 	/* Defines the labels for the visibility enum options. */
 	const visibilityOptions: {
@@ -51,24 +53,24 @@
 	);
 
 	/** Garden creation form. */
-	let gardenCreateHandler = createCommandHandler(
-		(data: Parameters<typeof gardenCreate>[0]) => gardenCreate(data, controller),
-		{
-			onSuccess: (data) => {
-				goto('/gardens/' + data.id);
-			}
+	let gardenCreateHandler = createCommandHandler(ctx.controller.gardenCreate, {
+		onSuccess: (data: Garden) => {
+			goto('/gardens/' + data.slug);
 		}
-	);
+	});
 	const form = createForm(GardenCreateCommandSchema, {
 		onSubmit: (data) => gardenCreateHandler.execute(data)
 	});
 
 	/** Garden ID generation handler. */
-	let gardenIdGenerationHandler = createCommandHandler(generateGardenId, {
-		onSuccess: (generatedId) => {
-			form.data.id = generatedId;
+	let gardenIdGenerationHandler = createCommandHandler(
+		() => generateGardenId(ctx.controller.db),
+		{
+			onSuccess: (generatedId) => {
+				form.data.id = generatedId;
+			}
 		}
-	});
+	);
 </script>
 
 <form onsubmit={form.submit} oninput={() => gardenCreateHandler.reset()}>

@@ -1,7 +1,7 @@
-import { type Entity, Schema as S, or } from '@triplit/client';
+import { type TableRow, schema as s } from 'jazz-tools';
+import { type z } from 'zod';
 
-import { environmentSchema } from '../environments/schema.js';
-import { CultivarAttributes } from './attributes/index.js';
+import { type CultivarAttributesUpdateCommandSchema } from './attributes/index.js';
 
 /**
  * Controls the visibility of the collection.
@@ -17,216 +17,94 @@ export const CultivarCollectionVisibilityEnumOptions = [
 	'PUBLIC'
 ] as const;
 
-export const cultivarSchema = S.Collections({
-	...environmentSchema,
+/**
+ * `s.json(CultivarAttributesUpdateCommandSchema)` would type this at the
+ * schema level too, but jazz-tools's json() overload requires a Standard
+ * Schema feature (`~standard.jsonSchema`) this project's zod version
+ * doesn't implement - typed here instead via a TableRow override, the same
+ * pattern used for Environment.
+ */
+export type CultivarAttributes = z.infer<typeof CultivarAttributesUpdateCommandSchema>;
+
+export const cultivarSchema = {
 	/** Collection schema. */
-	cultivarCollections: {
-		schema: S.Schema({
-			/** URL-friendly shorthand - unique. */
-			id: S.Id(),
-
-			/** Non-unique name of the collection. */
-			name: S.String(),
-
-			/** Unique URL slug. */
-			slug: S.String(),
-
-			/** Visibility of the collection.  */
-			visibility: S.String({ enum: [...CultivarCollectionVisibilityEnumOptions] }),
-
-			/** If defined, the collection is owned by a user. */
-			userId: S.String({ nullable: true, default: null }),
-
-			/** If defined, the colletcion is owned by a garden. Overrides user ownership. */
-			gardenId: S.String({ nullable: true, default: null }),
-
-			/** Optional priority flag used to decide between collections in a garden. */
-			priority: S.Number({ default: 0 }),
-
-			/** Optional description. */
-			description: S.String({ default: '' }),
-
-			/** Optional parent collection to derive attributes from. */
-			parentId: S.String({ nullable: true, default: null }),
-
-			/**
-			 * Optional list of ancestor IDs (parent and their parent, up to fixed depth).
-			 * Note that this is denormalized data and must be maintained
-			 * upon update, to make reactive querying through Triplit easier.
-			 */
-			ancestorIds: S.Set(S.String(), { default: S.Default.Set.empty() }),
-
-			createdAt: S.Date({ default: S.Default.now() })
-		}),
-		relationships: {
-			user: S.RelationById('profiles', 'userId'),
-			garden: S.RelationById('gardens', '$gardenId'),
-			parent: S.RelationById('cultivarCollections', '$parentId'),
-			ancestors: S.RelationMany('cultivarCollections', {
-				where: [['id', 'in', '$ancestorIds']]
-			})
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the collection is not hidden. */
-					filter: [['visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the collection is not hidden,
-					 *  the garden is defined and the user is a member,
-					 *  or the user is defined and the user is the owner. */
-					filter: [
-						or([
-							['visibility', '!=', 'HIDDEN'],
-							['userId', '=', '$role.profileId'],
-							['garden.adminIds', 'has', '$role.profileId'],
-							['garden.editorIds', 'has', '$role.profileId'],
-							['garden.viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/**
-					 * Allow new collections to be created:
-					 * if the garden is defined, the user must be an admin in the garden.
-					 * Otherwise, the user can create their own collections.
-					 */
-					filter: [
-						or([
-							['userId', '=', '$role.profileId'],
-							['garden.adminIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				update: {
-					/**
-					 * Allow collections to be update:
-					 * if the garden is defined, the user must be an admin in the garden.
-					 * Otherwise, the user can update their own collections.
-					 */
-					filter: [
-						or([
-							['userId', '=', '$role.profileId'],
-							['garden.adminIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				delete: {
-					/**
-					 * Allow collections to be deleted:
-					 * if the garden is defined, the user must be an admin in the garden.
-					 * Otherwise, the user can deleted their own collections.
-					 */
-					filter: [
-						or([
-							['userId', '=', '$role.profileId'],
-							['garden.adminIds', 'has', '$role.profileId']
-						])
-					]
-				}
-			}
-		}
-	},
-
+	cultivarCollections: s.table({
+		/** Non-unique name of the collection. */
+		name: s.string(),
+		/** Unique URL slug. */
+		slug: s.string(),
+		/** Visibility of the collection. */
+		visibility: s.enum(...CultivarCollectionVisibilityEnumOptions),
+		/**
+		 * If non-empty, the collection is owned by a user (always exactly
+		 * one - an array rather than a single optional ref so the
+		 * ownership check can use `contains`, matching the garden-admin
+		 * check it's combined with via anyOf(): an alpha bug rejects
+		 * combining a `contains` condition with a non-`contains` condition
+		 * in the same anyOf/OR group (see SPIKE_NOTES.md) - keeping both
+		 * sides as `contains` checks avoids it.
+		 */
+		ownerIds: s.array(s.ref('users')).default([]),
+		/** If defined, the collection is owned by a garden. Overrides user ownership. */
+		gardenId: s.ref('gardens').optional(),
+		/** Optional priority flag used to decide between collections in a garden. */
+		priority: s.float().default(0),
+		/** Optional description. */
+		description: s.string().default(''),
+		/** Optional parent collection to derive attributes from. */
+		parentId: s.ref('cultivarCollections').optional(),
+		/**
+		 * Optional list of ancestor IDs (parent and their parent, up to a
+		 * fixed depth). Denormalized data maintained by the controller.
+		 */
+		ancestorIds: s.array(s.string()).default([])
+	}),
 	/** Cultivar schema. */
-	cultivars: {
-		schema: S.Schema({
-			id: S.Id(),
+	cultivars: s.table({
+		/** Collection the cultivar is in. */
+		collectionId: s.ref('cultivarCollections'),
+		/**
+		 * Denormalized from `collectionId`'s garden, maintained by the
+		 * controller at insert time. Jazz's server-side policy compiler
+		 * doesn't support a 2-hop qualified exists check (cultivars ->
+		 * collection -> garden.adminIds) even though it typechecks and
+		 * validates locally; this keeps the permission check a single hop,
+		 * matching the pattern used everywhere else. Undefined for
+		 * user-owned (non-garden) collections.
+		 */
+		gardenId: s.ref('gardens').optional(),
+		/** A common name. Used to match plants to cultivars. */
+		name: s.string(),
+		/** Shorthand. */
+		abbreviation: s.string(),
+		/** Optional scientific name. */
+		scientificName: s.string().optional(),
+		/** Optional description. */
+		description: s.string().default(''),
+		/** Optional parent cultivar to derive attributes from. */
+		parentId: s.ref('cultivars').optional(),
+		/**
+		 * Attributes which define this cultivar. Untyped at the schema
+		 * level, see CultivarAttributes. `.default({})` rather than
+		 * `.optional()`: an alpha bug rejects any explicit value written to
+		 * an `.optional()` json column (see SPIKE_NOTES.md) - `.default({})`
+		 * writes and reads correctly.
+		 */
+		attributes: s.json().default({}),
+		/**
+		 * Needed to pick the newest of several same-named cultivars in
+		 * `resolveCultivarName`; Jazz's built-in `$createdAt` provenance
+		 * column isn't exposed on plain query results, only usable within
+		 * queries/ordering/permissions themselves.
+		 */
+		createdAt: s.timestamp()
+	})
+};
 
-			/** Collection the cultivar is in. */
-			collectionId: S.String(),
-
-			/** A common name. Used to match plants to cultivars. */
-			name: S.String(),
-
-			/** Shorthand. */
-			abbreviation: S.String(),
-
-			/** Optional scientific name. */
-			scientificName: S.Optional(S.String()),
-
-			/** Optional description. */
-			description: S.String({ default: '' }),
-
-			/** Optional parent cultivar to derive attributes from. */
-			parentId: S.String({ nullable: true, default: null }),
-
-			/** Attributes which define this cultivar. */
-			attributes: CultivarAttributes,
-
-			createdAt: S.Date({ default: S.Default.now() })
-		}),
-		relationships: {
-			collection: S.RelationById('cultivarCollections', '$collectionId'),
-			parent: S.RelationById('cultivars', '$parentId')
-		},
-		permissions: {
-			anon: {
-				read: {
-					/** Allow anonymous reads if the collection is not hidden. */
-					filter: [['collection.visibility', '!=', 'HIDDEN']]
-				}
-			},
-			user: {
-				read: {
-					/** Allow reads if the collection is not hidden,
-					 *  the garden is defined and the user is a member,
-					 *  or the user is defined and the user is the owner. */
-					filter: [
-						or([
-							['collection.visibility', '!=', 'HIDDEN'],
-							['collection.userId', '=', '$role.profileId'],
-							['collection.garden.adminIds', 'has', '$role.profileId'],
-							['collection.garden.editorIds', 'has', '$role.profileId'],
-							['collection.garden.viewerIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				insert: {
-					/**
-					 * Allow new cultivars to be created:
-					 * if the garden is defined, the user must be an admin in the garden.
-					 * Otherwise, the user can create their own collections.
-					 */
-					filter: [
-						or([
-							['collection.userId', '=', '$role.profileId'],
-							['collection.garden.adminIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				update: {
-					/**
-					 * Allow cultivars to be update:
-					 * if the garden is defined, the user must be an admin in the garden.
-					 * Otherwise, the user can update their own collections.
-					 */
-					filter: [
-						or([
-							['collection.userId', '=', '$role.profileId'],
-							['collection.garden.adminIds', 'has', '$role.profileId']
-						])
-					]
-				},
-				delete: {
-					/**
-					 * Allow cultivars to be deleted:
-					 * if the garden is defined, the user must be an admin in the garden.
-					 * Otherwise, the user can delete their own collections.
-					 */
-					filter: [
-						or([
-							['collection.userId', '=', '$role.profileId'],
-							['collection.garden.adminIds', 'has', '$role.profileId']
-						])
-					]
-				}
-			}
-		}
-	}
-});
-export type Cultivar = Entity<typeof cultivarSchema, 'cultivars'>;
-export type CultivarCollection = Entity<typeof cultivarSchema, 'cultivarCollections'>;
+export type CultivarCollection = TableRow<typeof cultivarSchema, 'cultivarCollections'>;
+export type Cultivar = Omit<
+	TableRow<typeof cultivarSchema, 'cultivars'>,
+	'attributes'
+> & {
+	attributes?: CultivarAttributes;
+};

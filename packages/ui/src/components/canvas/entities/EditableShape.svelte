@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
-	import {
-		type Geometry,
-		type GeometryUpdateCommand,
-		type Position,
-		getGeometryHeight
-	} from '@vdg-webapp/models';
+	import { type GeometryUpdateCommand, getGeometryHeight } from '@vdg-webapp/models';
+
+	import { type ResolvedGeometry } from '$state/application/workspacesContext.svelte';
 
 	import type { CanvasContext } from '../state';
 	import { getShapeAttributes } from '../utils';
 	import EditableGeometryResizePoints from './EditableGeometryResizePoints.svelte';
+
+	type Position = { x: number; y: number };
 
 	type Props = {
 		/** The ID of the canvas. */
@@ -21,7 +20,7 @@
 		/** The current position of the shape in the workspace, in model quantity (meters). */
 		position: Position | null;
 		/** The geometry of the shape. */
-		geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>;
+		geometry: Omit<ResolvedGeometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>;
 		/** If true, the shape may be moved and resized. */
 		editable: boolean;
 		/** If true, the shape is selected. */

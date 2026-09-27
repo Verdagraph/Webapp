@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { WorkspaceEditor } from '@vdg-webapp/ui';
+	import { WorkspaceEditor, getAppContext } from '@vdg-webapp/ui';
 
-	import { workspace } from '$lib/seeds';
+	const ctx = getAppContext();
+
+	const defaultWorkspaceId = $derived(ctx.workspaces.workspaces[0]?.id ?? null);
 </script>
 
-<WorkspaceEditor defaultId={workspace.id} includeWorkspacesMenu={false} />
+{#if defaultWorkspaceId}
+	<WorkspaceEditor defaultId={defaultWorkspaceId} includeWorkspacesMenu={false} />
+{/if}

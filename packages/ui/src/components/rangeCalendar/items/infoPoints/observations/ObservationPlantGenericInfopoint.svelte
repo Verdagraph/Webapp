@@ -25,4 +25,14 @@
 	<span class="text-sm">{description}</span>
 {/snippet}
 
-<ObservationGenericInfopoint {observation} {label} {content} />
+<!--
+	ObservationGenericInfopoint only reads the fields common to every
+	observation (id, date) - the cast bridges PlantObservation's
+	discriminated `data` (untyped/undefined per variant) to GenericObservation's
+	plain `data: JsonValue`.
+-->
+<ObservationGenericInfopoint
+	observation={observation as GenericObservation}
+	{label}
+	{content}
+/>

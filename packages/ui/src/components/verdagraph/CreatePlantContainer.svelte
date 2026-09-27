@@ -1,14 +1,16 @@
 <script lang="ts">
-	import {
-		type Geometry,
-		type GeometryUpdateCommand,
-		type Position,
-		historySelect
-	} from '@vdg-webapp/models';
+	import { type GeometryUpdateCommand, historySelect } from '@vdg-webapp/models';
 
 	import { Plant } from '$components';
+	import { type ResolvedGeometry } from '$state/application/workspacesContext.svelte';
 
 	import { getVerdagraphContext } from './verdagraphContext.svelte';
+
+	type Position = { x: number; y: number };
+	type PlantGeometry = Omit<
+		ResolvedGeometry,
+		'id' | 'gardenId' | 'linesCoordinateIds' | 'date'
+	>;
 
 	type Props = {
 		workspaceId: string;
@@ -132,7 +134,7 @@ a plant in the plants creation form.
 		name={plant.cultivarName}
 		showName={true}
 		{position}
-		geometry={geometry as Geometry}
+		geometry={geometry as PlantGeometry}
 		editable={true}
 		selected={true}
 		{onTranslate}

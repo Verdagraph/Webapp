@@ -1,4 +1,4 @@
-import { type Geometry } from '@vdg-webapp/models';
+import { type ResolvedGeometry } from '$state/application/workspacesContext.svelte';
 
 /**
  * Given a geometry, returns an array of coordinates
@@ -51,7 +51,7 @@ import { type Geometry } from '@vdg-webapp/models';
  * @returns The list of points which can be used as resize points.
  */
 export function getGeometryResizePoints(
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>
+	geometry: Omit<ResolvedGeometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>
 ): Array<{ x: number; y: number }> {
 	switch (geometry.type) {
 		case 'RECTANGLE': {
@@ -187,7 +187,7 @@ function buildArrowCursor(
  * @returns The CSS `cursor` value for that resize point.
  */
 export function getGeometryResizePointCursor(
-	geometry: Omit<Geometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>,
+	geometry: Omit<ResolvedGeometry, 'id' | 'gardenId' | 'linesCoordinateIds' | 'date'>,
 	index: number
 ): string {
 	switch (geometry.type) {

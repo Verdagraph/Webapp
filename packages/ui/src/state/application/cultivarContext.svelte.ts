@@ -1,28 +1,20 @@
-import { useQuery } from '@triplit/svelte';
+import { QuerySubscription } from 'jazz-tools/svelte';
 
-import {
-	type ControllerContext,
-	type Cultivar,
-	resolveCultivar
-} from '@vdg-webapp/models';
+import { type Commands, type Cultivar, app, resolveCultivar } from '@vdg-webapp/models';
 
 import type { GardenContext } from './gardenContext.svelte';
 
 /**
  * Holds context for a garden's cultivar collections.
  */
-export function createCultivarContext(
-	controller: ControllerContext,
-	garden: GardenContext
-) {
+export function createCultivarContext(commands: Commands, garden: GardenContext) {
 	/** Queries all collections in the garden. */
-	const gardenCollectionsQuery = $derived(
-		useQuery(
-			controller.triplit,
-			controller.triplit.query('cultivarCollections').Where('gardenId', '=', garden.id)
-		)
+	const gardenCollectionsQuery = new QuerySubscription(() =>
+		garden.gardenId
+			? app.cultivarCollections.where({ gardenId: garden.gardenId })
+			: undefined
 	);
-	const gardenCollections = $derived(gardenCollectionsQuery.results ?? []);
+	const gardenCollections = $derived(gardenCollectionsQuery.current ?? []);
 	const gardenCollectionsIds = $derived(
 		gardenCollections.map((collection) => collection.id)
 	);
@@ -31,10 +23,6 @@ export function createCultivarContext(
 		const uniqueAncestorIds = new Set<string>([]);
 
 		for (const collection of gardenCollections) {
-			if (!collection.ancestorIds) {
-				continue;
-			}
-
 			for (const id of collection.ancestorIds) {
 				uniqueAncestorIds.add(id);
 			}
@@ -52,18 +40,14 @@ export function createCultivarContext(
 	 * already committed by the time it queries them, same as a real garden -
 	 * see apps/demo's [demoId]/+page.svelte, which seeds the demo the same
 	 * way for exactly this reason.
-	 * TODO: reinvestigate with the Jazz migration.
 	 */
-	const allCultivarsQuery = $derived(
-		useQuery(
-			controller.triplit,
-			controller.triplit
-				.query('cultivars')
-				.Where('collectionId', 'in', allCollectionIds)
-		)
+	const allCultivarsQuery = new QuerySubscription(() =>
+		allCollectionIds.length > 0
+			? app.cultivars.where({ collectionId: { in: allCollectionIds } })
+			: undefined
 	);
 	const allCultivars = $derived(
-		allCollectionIds.length === 0 ? [] : (allCultivarsQuery.results ?? [])
+		allCollectionIds.length === 0 ? [] : (allCultivarsQuery.current ?? [])
 	);
 	const cultivarNames = $derived(
 		new Set(allCultivars.map((cultivar) => cultivar.name))
@@ -73,15 +57,15 @@ export function createCultivarContext(
 	let cultivarsByName: Map<string, Cultivar> = $state(new Map());
 	$effect(() => {
 		const names = cultivarNames;
-		if (names.size === 0) {
+		const gardenId = garden.gardenId;
+		if (names.size === 0 || !gardenId) {
 			cultivarsByName = new Map();
 			return;
 		}
 
 		Promise.all(
 			[...names].map(
-				async (name) =>
-					[name, await resolveCultivar(garden.id, name, controller)] as const
+				async (name) => [name, await resolveCultivar(gardenId, name, commands)] as const
 			)
 		).then((entries) => {
 			cultivarsByName = new Map(
@@ -92,7 +76,7 @@ export function createCultivarContext(
 	const cultivars = $derived(new Set(cultivarsByName.values()));
 
 	/**
-	 * Looks up a resolved Cultivar by name - centralized here (rather than
+	 * Looks up a resolved cultivar by name - centralized here (rather than
 	 * every caller doing `[...cultivars].find(...)` itself) so the lookup
 	 * can be O(1) via the underlying map instead of an O(n) scan repeated at
 	 * every call site.

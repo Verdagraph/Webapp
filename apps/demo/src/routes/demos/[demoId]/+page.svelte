@@ -1,14 +1,12 @@
 <script lang="ts">
-	import { TriplitClient } from '@triplit/client';
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
-	import { roles, schema } from '@vdg-webapp/models';
 	import { setAppContext } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { type Demo, demos } from '$demos';
-	import { garden, user } from '$lib/seeds';
+	import { demos } from '$demos';
+	import { seedDemoGarden } from '$lib/seeds/jazzSeed';
 
 	/** Find the demo that is active. */
 	const demo = demos.find((demo) => demo.id === page.params.demoId);
@@ -16,42 +14,20 @@
 		console.error('This demo does not exist.');
 		goto('/demos');
 	}
-	const triplit = new TriplitClient({
-		schema,
-		roles,
-		autoConnect: false,
-		storage: 'memory'
-	});
 
-	/** Create a controller with a mock client retrieval function. */
-	async function getClient() {
-		return { account: user.account, profile: user.profile };
-	}
-
-	/** Set app context. */
-	const ctx = setAppContext(
-		{ triplit, getClient },
-		{ accountIdOverride: user.account.id }
-	);
-	ctx.garden.id = garden.id;
+	/** Set app context - no real login for the demo, a constant username is enough. */
+	const ctx = setAppContext(async () => 'Demo User');
 
 	/**
-	 * Initialize the data according to the seed file, fully committed BEFORE
-	 * the demo component (and the queries it fires on mount) render - matches
-	 * a real garden's data, which is always already-committed by the time any
-	 * page queries it, unlike inserting live while children are mounting.
+	 * Seeds a demo garden into Jazz before the demo component (and the
+	 * queries it fires on mount) render - matches a real garden's data,
+	 * which is always already-committed by the time any page queries it,
+	 * unlike inserting live while children are mounting.
 	 */
 	let seeded = $state(false);
 	onMount(async () => {
-		const seedData = (demo as Demo).seed();
-		await triplit.transact(async (tx) => {
-			for (const [collection, items] of Object.entries(seedData)) {
-				for (const item of items) {
-					// @ts-ignore
-					await tx.insert(collection, item);
-				}
-			}
-		});
+		const gardenSlug = await seedDemoGarden();
+		ctx.garden.id = gardenSlug;
 		seeded = true;
 	});
 </script>

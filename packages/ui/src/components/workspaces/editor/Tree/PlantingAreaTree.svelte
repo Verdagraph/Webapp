@@ -1,26 +1,17 @@
 <script lang="ts">
-	import {
-		type FieldErrors,
-		type PlantingArea,
-		type Workspace
-	} from '@vdg-webapp/models';
-	import {
-		geometryUpdate,
-		locationHistoryExtend,
-		locationUpdate,
-		plantingAreaUpdate
-	} from '@vdg-webapp/models';
+	import { type FieldErrors, type Workspace } from '@vdg-webapp/models';
 
 	import { EditableTree, createEditableTree, toTreeBaseId } from '$components';
 	import { plantingAreaTreeItem } from '$components';
 	import { ScrollArea } from '$core';
 	import { getAppContext } from '$state';
+	import { type ResolvedPlantingArea } from '$state/application/workspacesContext.svelte';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
 	import { getWorkspaceEditorContext } from '../workspaceEditorContext.svelte';
 
 	type Props = {
-		plantingAreas: PlantingArea[];
+		plantingAreas: ResolvedPlantingArea[];
 		workspaces: Pick<Workspace, 'id' | 'name'>[];
 	};
 	let { plantingAreas = [], workspaces = [] }: Props = $props();
@@ -41,15 +32,22 @@
 
 	/** Handlers. */
 	/** PlantingArea change. */
-	const plantingAreaUpdateCommandHandler = createCommandHandler(plantingAreaUpdate);
+	const plantingAreaUpdateCommandHandler = createCommandHandler(
+		ctx.controller.plantingAreaUpdate
+	);
 
 	/** Geometry change. */
-	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
+	const geometryUpdateCommandHandler = createCommandHandler(
+		ctx.controller.geometryUpdate
+	);
 
 	/** Location change. */
-	const locationUpdateCommandHandler = createCommandHandler(locationUpdate);
-	const locationHistoryExtendCommandHandler =
-		createCommandHandler(locationHistoryExtend);
+	const locationUpdateCommandHandler = createCommandHandler(
+		ctx.controller.locationUpdate
+	);
+	const locationHistoryExtendCommandHandler = createCommandHandler(
+		ctx.controller.locationHistoryExtend
+	);
 
 	/** Given the planting areas, construct the editable tree items. */
 	let items = $derived(
@@ -59,20 +57,18 @@
 				{
 					fieldErrors,
 					plantingAreaUpdateHandler: (id, data) => {
-						plantingAreaUpdateCommandHandler.execute(id, data, ctx.controller);
+						plantingAreaUpdateCommandHandler.execute(id, data);
 					},
 					geometryUpdateHandler: (id, data) => {
-						geometryUpdateCommandHandler.execute(id, data, ctx.controller);
+						geometryUpdateCommandHandler.execute(id, data);
 					},
 					locationUpdateHandler: (id, data) => {
-						locationUpdateCommandHandler.execute(id, data, ctx.controller);
+						locationUpdateCommandHandler.execute(id, data);
 					},
 					locationHistoryExtendHandler: (id) => {
-						locationHistoryExtendCommandHandler.execute(
-							id,
-							{ date: workspaceEditor.timelineSelection.focusUtc },
-							ctx.controller
-						);
+						locationHistoryExtendCommandHandler.execute(id, {
+							date: workspaceEditor.timelineSelection.focusUtc
+						});
 					}
 				}
 			);

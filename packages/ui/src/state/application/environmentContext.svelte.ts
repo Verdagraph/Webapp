@@ -1,24 +1,23 @@
-import { useQuery } from '@triplit/svelte';
+import { QuerySubscription } from 'jazz-tools/svelte';
 
-import { type ControllerContext } from '@vdg-webapp/models';
+import { type Environment, app } from '@vdg-webapp/models';
 
 import type { GardenContext } from './gardenContext.svelte';
 
 /**
  * Holds context for a garden's environments.
  */
-export function createEnvironmentContext(
-	controller: ControllerContext,
-	garden: GardenContext
-) {
-	/** Queries all environments in the garden. */
-	const environmentsQuery = $derived(
-		useQuery(
-			controller.triplit,
-			controller.triplit.query('environments').Where('gardenId', '=', garden.id)
-		)
+export function createEnvironmentContext(garden: GardenContext) {
+	const environmentsQuery = new QuerySubscription(() =>
+		garden.gardenId ? app.environments.where({ gardenId: garden.gardenId }) : undefined
 	);
-	const environments = $derived(environmentsQuery.results ?? []);
+	/**
+	 * Cast to the friendly `Environment` type: the raw query result types
+	 * `attributes` as unstructured `JsonValue` (jazz-tools has no typed-json
+	 * column support yet, see EnvironmentAttributes), the same trust
+	 * boundary `resolveCultivarId` asserts for cultivars.
+	 */
+	const environments = $derived((environmentsQuery.current ?? []) as Environment[]);
 
 	return {
 		get environments() {

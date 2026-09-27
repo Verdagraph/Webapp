@@ -2,8 +2,7 @@ import { asValue } from 'awilix';
 import { AuthenticationError } from 'common/errors.js';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { decodeAccessToken, getAccessTokenHeader } from 'users/auth/tokens.js';
-
-import { UserAccount } from '@vdg-webapp/models';
+import { type UserAccount } from 'users/repository.js';
 
 /**
  * Given a request, parse the request api key stored in the header

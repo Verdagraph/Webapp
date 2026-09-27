@@ -46,7 +46,7 @@ export const getGardensAuthTab = (gardens: Garden[] = []): PrimaryTabSpec => {
 		.slice(0, MAX_GARDENS_IN_TAB_SIDEBAR)
 		.map((garden) => ({
 			label: garden.name,
-			url: getGardenBaseUrl(garden.id),
+			url: getGardenBaseUrl(garden.slug),
 			className: 'truncate italic'
 		}));
 
@@ -91,22 +91,22 @@ export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 			submenuItems: [
 				{
 					label: garden.name,
-					url: getGardenBaseUrl(garden.id),
+					url: getGardenBaseUrl(garden.slug),
 					className: 'truncate italic'
 				},
 				{
 					label: 'Dashboard',
-					url: getGardenBaseUrl(garden.id) + '/dash',
+					url: getGardenBaseUrl(garden.slug) + '/dash',
 					iconId: iconIds.gardenDashboardIcon
 				},
 				{
 					label: 'Members',
-					url: getGardenBaseUrl(garden.id) + '/members',
+					url: getGardenBaseUrl(garden.slug) + '/members',
 					iconId: iconIds.gardenMembersIcon
 				},
 				{
 					label: 'Metrics',
-					url: getGardenBaseUrl(garden.id) + '/metrics',
+					url: getGardenBaseUrl(garden.slug) + '/metrics',
 					iconId: iconIds.gardenMetricsIcon
 				}
 			]
@@ -118,12 +118,12 @@ export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 			submenuItems: [
 				{
 					label: 'Verdagraph',
-					url: getGardenBaseUrl(garden.id) + '/verdagraph',
+					url: getGardenBaseUrl(garden.slug) + '/verdagraph',
 					iconId: iconIds.gardenPlannerVerdagraphIcon
 				},
 				{
 					label: 'Workbook',
-					url: getGardenBaseUrl(garden.id) + '/workbook',
+					url: getGardenBaseUrl(garden.slug) + '/workbook',
 					iconId: iconIds.gardenPlannerWorkbookIcon
 				}
 			]
@@ -136,17 +136,17 @@ export const getGardenSpecifcTabs = (garden: Garden): PrimaryTabSpec[] => {
 				{
 					label: 'Cultivars',
 					iconId: iconIds.cultivarIcon,
-					url: getGardenBaseUrl(garden.id) + '/cultivars'
+					url: getGardenBaseUrl(garden.slug) + '/cultivars'
 				},
 				{
 					label: 'Workspaces',
 					iconId: iconIds.workspaceIcon,
-					url: getGardenBaseUrl(garden.id) + '/workspaces'
+					url: getGardenBaseUrl(garden.slug) + '/workspaces'
 				},
 				{
 					label: 'Environments',
 					iconId: iconIds.environmentIcon,
-					url: getGardenBaseUrl(garden.id) + '/environments'
+					url: getGardenBaseUrl(garden.slug) + '/environments'
 				}
 			]
 		}

@@ -1,9 +1,9 @@
 import {
-	type GenericObservation,
 	type PlantHarvestObservationData,
 	PlantHarvestObservationId
 } from '@vdg-webapp/models';
 import type { FieldErrors } from '@vdg-webapp/models';
+import type { GenericObservation } from '@vdg-webapp/models';
 
 import { type Item, TreeNumber, TreeString, TreeTextarea, toTreeId } from '$components';
 

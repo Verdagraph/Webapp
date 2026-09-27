@@ -1,11 +1,11 @@
 import { mode } from 'mode-watcher';
 
-import type { Position } from '@vdg-webapp/models';
-
 import { localStore } from '$state/localStore.svelte';
 import { getColor } from '$utils';
 
 import { type CanvasContainer } from './container.svelte';
+
+type Position = { x: number; y: number };
 
 export type GridManagerConfig = {
 	metersPerBackgroundGridline: number;

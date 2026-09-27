@@ -1,12 +1,11 @@
 <script lang="ts">
+	import { type GardenMembership } from '@vdg-webapp/models';
 	import { ScrollArea } from '@vdg-webapp/ui';
-
-	import type { AcceptancePendingMembershipsQueryResult } from '$data/gardens/queries';
 
 	import GardenInvite from './GardenInvite.svelte';
 
 	type Props = {
-		invites: AcceptancePendingMembershipsQueryResult[];
+		invites: GardenMembership[];
 	};
 
 	let { invites }: Props = $props();

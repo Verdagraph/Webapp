@@ -66,8 +66,6 @@
 	"dependencies": {
 		"@sveltejs/adapter-cloudflare": "^7.0.4",
 		"@sveltejs/enhanced-img": "^0.6.0",
-		"@triplit/client": "^1.0.43",
-		"@triplit/svelte": "^1.0.43",
 		"@vdg-webapp/models": "workspace:*",
 		"@vdg-webapp/ui": "workspace:*",
 		"axios": "^1.9.0",

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { type Position } from '@vdg-webapp/models';
-
 	import { CoordinateInput, CoordinateSpan } from '$components/units';
 
 	import { type EditableAttributeProps } from './types';
+
+	type Position = { x: number; y: number };
 
 	let { value, editing, onChange }: EditableAttributeProps<Position> = $props();
 </script>

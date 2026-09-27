@@ -1,8 +1,8 @@
 import {
 	type ControllerContext,
-	type CultivarPlantingWindow
+	type CultivarPlantingWindow,
+	calculatePlantingWindow
 } from '@vdg-webapp/models';
-import { calculatePlantingWindow } from '@vdg-webapp/models';
 
 import type { CultivarContext } from './cultivarContext.svelte';
 import type { EnvironmentContext } from './environmentContext.svelte';

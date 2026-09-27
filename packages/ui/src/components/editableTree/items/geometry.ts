@@ -2,13 +2,12 @@ import { type DateValue, fromDate, getLocalTimeZone } from '@internationalized/d
 
 import {
 	type FieldErrors,
-	type Geometry,
-	type GeometryHistory,
 	type GeometryType,
 	type GeometryUpdateCommand,
-	type Position,
 	workspaceFields
 } from '@vdg-webapp/models';
+
+import { type ResolvedGeometry } from '$state/application/workspacesContext.svelte';
 
 import {
 	type Item,
@@ -42,7 +41,7 @@ export type GeometryTreeItemOptions = {
  */
 export function geometryTreeItem(
 	itemId: string,
-	value: { geometry: Geometry | null | undefined; index: number },
+	value: { geometry: ResolvedGeometry | null | undefined; index: number },
 	options: GeometryTreeItemOptions,
 	ctx: { updateHandler: GeometryUpdateHandler; fieldErrors: FieldErrors }
 ): Item {
@@ -359,7 +358,7 @@ export function geometryTreeItem(
 						description: workspaceFields.coordinateSchema.description,
 						valueComponent: TreeCoordinate,
 						value: coordinate,
-						onChange: (newData: Position) => {
+						onChange: (newData: { x: number; y: number }) => {
 							if (
 								!fieldValid(
 									positionId,
@@ -373,7 +372,7 @@ export function geometryTreeItem(
 							}
 
 							/** Modify the coordinate. */
-							const newCoordinates: Position[] = value.geometry.linesCoordinates;
+							const newCoordinates = [...value.geometry.linesCoordinates];
 							newCoordinates[index] = newData;
 
 							ctx.updateHandler(value.geometry.id, {
@@ -393,9 +392,13 @@ export function geometryTreeItem(
 								return;
 							}
 
-							/** Remove the coordinate. */
-							const newCoordinates: Position[] = value.geometry.linesCoordinates.filter(
-								(existingCoordinate) => existingCoordinate.id != coordinate.id
+							/**
+							 * Coordinates carry no id once resolved (see
+							 * ResolvedGeometry), so identity here is by position
+							 * in the array rather than by an id comparison.
+							 */
+							const newCoordinates = value.geometry.linesCoordinates.filter(
+								(_, coordinateIndex) => coordinateIndex !== index
 							);
 
 							ctx.updateHandler(value.geometry.id, {
@@ -425,7 +428,7 @@ export function geometryTreeItem(
 						return;
 					}
 
-					const newCoordinates: Position[] = [...value.geometry.linesCoordinates];
+					const newCoordinates = [...value.geometry.linesCoordinates];
 					const newCoordinate = {
 						x: newCoordinates[newCoordinates.length - 1].x + 0.1,
 						y: newCoordinates[newCoordinates.length - 1].y + 0.1
@@ -522,7 +525,14 @@ export type GeometryHistoryExtendHandler = (id: string) => void;
 export function geometryHistoryTreeItem(
 	itemId: string,
 	value: {
-		geometryHistory: GeometryHistory | null;
+		/**
+		 * A lifespan's geometry history has no standalone row to point at
+		 * once resolved (see ResolvedLifespan) - only the id of the
+		 * geometryHistories row it originated from (needed to extend it)
+		 * and its already-resolved geometries array.
+		 */
+		geometryHistoryId: string | null | undefined;
+		geometries: ResolvedGeometry[];
 	},
 	options: {
 		geometryItemOptions: GeometryTreeItemOptions;
@@ -533,7 +543,7 @@ export function geometryHistoryTreeItem(
 		fieldErrors: FieldErrors;
 	}
 ): Item {
-	if (!value.geometryHistory) {
+	if (!value.geometryHistoryId) {
 		return {
 			id: itemId,
 			label: 'Failed to resolve geometries.'
@@ -541,8 +551,9 @@ export function geometryHistoryTreeItem(
 	}
 
 	const addGeometryId = toTreeId(itemId, 'geometryAdd');
+	const geometryHistoryId = value.geometryHistoryId;
 
-	const geometryItems = value.geometryHistory.geometries.map((geometry, index) => {
+	const geometryItems = value.geometries.map((geometry, index) => {
 		const geometryId = toTreeId(itemId, `geometries[${index}]`);
 
 		return geometryTreeItem(
@@ -564,9 +575,7 @@ export function geometryHistoryTreeItem(
 		 * button has been pressed, so no need for data.
 		 */
 		onChange: () => {
-			if (value.geometryHistory) {
-				ctx.geometryHistoryExtendHandler(value.geometryHistory.id);
-			}
+			ctx.geometryHistoryExtendHandler(geometryHistoryId);
 		}
 	};
 

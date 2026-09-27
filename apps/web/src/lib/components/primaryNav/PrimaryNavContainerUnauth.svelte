@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { useQuery } from '@triplit/svelte';
+	import { QuerySubscriptionOne } from 'jazz-tools/svelte';
 	import type { Snippet } from 'svelte';
 
+	import { app } from '@vdg-webapp/models';
 	import { getAppContext } from '@vdg-webapp/ui';
-
-	import { gardenQuery } from '$data/gardens/queries';
-	import triplit from '$data/triplit';
 
 	import PrimaryNav from './PrimaryNav.svelte';
 	import {
@@ -24,14 +22,16 @@
 	const ctx = getAppContext();
 
 	/* Queries */
-	let activeGarden = useQuery(triplit, gardenQuery.Vars({ id: ctx.garden.id }));
+	const activeGardenQuery = new QuerySubscriptionOne(() =>
+		ctx.garden.id ? app.gardens.where({ slug: ctx.garden.id }) : undefined
+	);
 
 	/** Retrieve the tabs. */
 	let gardensTab = getGardensAnonTab();
 
 	let gardenTabs = $derived.by(() => {
-		if (activeGarden.results && activeGarden.results.length > 0) {
-			return getGardenSpecifcTabs(activeGarden.results[0]);
+		if (activeGardenQuery.current) {
+			return getGardenSpecifcTabs(activeGardenQuery.current);
 		} else {
 			return [];
 		}

@@ -1,7 +1,14 @@
 <script lang="ts">
-	import type { Geometry, GeometryUpdateCommand, Position } from '@vdg-webapp/models';
+	import type { GeometryUpdateCommand } from '@vdg-webapp/models';
 
 	import { PlantingArea, getWorkspaceEditorContext } from '$components';
+	import { type ResolvedGeometry } from '$state/application/workspacesContext.svelte';
+
+	type Position = { x: number; y: number };
+	type PlantingAreaGeometry = Omit<
+		ResolvedGeometry,
+		'id' | 'gardenId' | 'linesCoordinateIds' | 'date'
+	>;
 
 	/** Contexts.*/
 	const workspaceEditor = getWorkspaceEditorContext();
@@ -54,7 +61,7 @@ creation tool is active.
 	name={form.data.name}
 	showName={true}
 	position={form.data.location.coordinate}
-	geometry={form.data.geometry as Geometry}
+	geometry={form.data.geometry as PlantingAreaGeometry}
 	editable={true}
 	selected={true}
 	{onTranslate}

@@ -1,18 +1,11 @@
 <script lang="ts">
-	import { useQuery } from '@triplit/svelte';
+	import { QuerySubscriptionOne } from 'jazz-tools/svelte';
 	import type { Snippet } from 'svelte';
 
-	import type { Garden } from '@vdg-webapp/models';
+	import { app } from '@vdg-webapp/models';
 	import { getAppContext } from '@vdg-webapp/ui';
 
-	import {
-		adminGardensQuery,
-		editorGardensQuery,
-		favoriteMembershipsQuery,
-		gardenQuery,
-		viewerGardensQuery
-	} from '$data/gardens/queries';
-	import triplit from '$data/triplit';
+	import { createGardenMembershipLists } from '$state/gardenMemberships.svelte';
 
 	import PrimaryNav from './PrimaryNav.svelte';
 	import {
@@ -31,40 +24,26 @@
 	const ctx = getAppContext();
 
 	/* Queries */
-	let activeGarden = $derived(
-		useQuery(triplit, gardenQuery.Vars({ id: ctx.garden.id }))
+	const activeGardenQuery = new QuerySubscriptionOne(() =>
+		ctx.garden.id ? app.gardens.where({ slug: ctx.garden.id }) : undefined
 	);
-	let favoriteMemberships = useQuery(triplit, favoriteMembershipsQuery);
-	let adminGardens = useQuery(triplit, adminGardensQuery);
-	let editorGardens = useQuery(triplit, editorGardensQuery);
-	let viewerGardens = useQuery(triplit, viewerGardensQuery);
+	const memberships = createGardenMembershipLists();
 
 	/** Retrieve the tabs. */
 	let gardensTab = $derived.by(() => {
 		/** Include all associated gardens ordered from favorites to viewerships. */
-		const mostRelevantGardens: Garden[] = [];
-		if (favoriteMemberships.results) {
-			mostRelevantGardens.push(
-				...(favoriteMemberships.results
-					.map((membership) => membership.garden)
-					.filter((garden) => garden != null) ?? [])
-			);
-		}
-		if (adminGardens.results) {
-			mostRelevantGardens.push(...adminGardens.results);
-		}
-		if (editorGardens.results) {
-			mostRelevantGardens.push(...editorGardens.results);
-		}
-		if (viewerGardens.results) {
-			mostRelevantGardens.push(...viewerGardens.results);
-		}
+		const mostRelevantGardens = [
+			...memberships.favoriteGardens,
+			...memberships.adminGardens,
+			...memberships.editorGardens,
+			...memberships.viewerGardens
+		];
 		return getGardensAuthTab(mostRelevantGardens);
 	});
 
 	let gardenTabs = $derived.by(() => {
-		if (activeGarden.results && activeGarden.results[0]) {
-			return getGardenSpecifcTabs(activeGarden.results[0]);
+		if (activeGardenQuery.current) {
+			return getGardenSpecifcTabs(activeGardenQuery.current);
 		} else {
 			return [];
 		}

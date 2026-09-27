@@ -1,13 +1,12 @@
 import {
 	AppError,
-	type User,
 	type UserLoginCommand,
 	UserLoginCommandSchema
 } from '@vdg-webapp/models';
 
 import { userLoginOp, userRefreshOp } from '$codegen';
-import triplit from '$data/triplit';
-import { TRIPLIT_ANON_TOKEN } from '$data/triplit';
+import axiosClient from '$data/customAxios';
+import accessToken from '$state/accessToken.svelte';
 import auth from '$state/auth.svelte';
 
 /**
@@ -17,21 +16,14 @@ export const userLogin = {
 	schema: UserLoginCommandSchema,
 	mutation: async function (data: UserLoginCommand) {
 		/** Don't allow re-logging in. */
-		if (triplit.token != null && triplit.token != TRIPLIT_ANON_TOKEN) {
-			throw new AppError(
-				'Current token does not match anon token - already logged in.',
-				{ nonFormErrors: ['Already logged in.'] }
-			);
+		if (auth.isAuthenticated) {
+			throw new AppError('Already logged in.', {
+				nonFormErrors: ['Already logged in.']
+			});
 		}
 
-		/** Fetch the token. */
 		const token = await userLoginOp(data);
-
-		/** End the anonymous session. */
-		await triplit.endSession();
-
-		/** Start the Triplit session. */
-		await triplit.startSession(token);
+		accessToken.set(token);
 		auth.updateAuth();
 
 		return token;
@@ -39,18 +31,19 @@ export const userLogin = {
 };
 
 /**
- * Sends an authentication refresh request to the backend
+ * Sends an authentication refresh request to the backend.
  */
 export const userRefresh = {
 	mutation: async function () {
 		const token = await userRefreshOp();
+		accessToken.set(token);
 		auth.updateAuth();
 		return token;
 	}
 };
 
 /**
- * Ends the triplit session.
+ * Clears the client's access token.
  */
 export const userLogout = {
 	mutation: async function () {
@@ -59,45 +52,20 @@ export const userLogout = {
 			return;
 		}
 
-		await triplit.endSession();
+		accessToken.clear();
 		auth.updateAuth();
 	}
 };
 
 /**
- * Fetches the client's Account and Profile objects.
- * If anonymous, null is returned.
- * @returns The client if it was found, else null.
+ * Fetches this session's username from the server, for self-provisioning
+ * this browser's Jazz public profile row on first Jazz login (see
+ * packages/ui/src/state/application/commandsController.svelte.ts).
  */
-export const getClient = async (): Promise<User | null> => {
-	if (!auth.isAuthenticated) {
-		return null;
-	}
-
-	const account = await triplit.fetchOne(
-		triplit.query('accounts').Id('$session.accountId').Include('profile')
-	);
-	if (!account || !account.profile) {
-		return null;
-	}
-
-	return { account, profile: account.profile };
-};
-
-/**
- * Fetches the client's Account and Profile objects.
- * If the client fails to authenticate, an access refresh is attempted.
- * If this fails, an AppError is raised.
- * @returns The client.
- */
-export const getClientOrError = async (): Promise<User> => {
-	/** Return the client if authenticated. */
-	const client = await getClient();
-	if (client) {
-		return client;
-	}
-
-	throw new AppError('Authentication failed.', {
-		nonFormErrors: ['Authentication failed. A login is required.']
+export const fetchUsername = async (): Promise<string> => {
+	const me = await axiosClient<{ username: string }>({
+		url: '/users/me',
+		method: 'GET'
 	});
+	return me.username;
 };

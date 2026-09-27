@@ -1,19 +1,15 @@
 <script lang="ts">
+	import { JazzProvider } from 'jazz-tools/svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import 'tailwindcss/tailwind.css';
 
-	import { Toaster, Tooltip, setAppContext } from '@vdg-webapp/ui';
-
-	import PrimaryNav from '$components/primaryNav';
-	import triplit from '$data/triplit';
-	import { getClient, userLogin } from '$data/users/auth';
+	import AppShell from '$components/AppShell.svelte';
+	import { getJazzConfig } from '$data/jazz';
+	import { userLogin } from '$data/users/auth';
 
 	import '../app.pcss';
 
 	let { children } = $props();
-
-	/** Application context: controller, client, garden/workspace/plant contexts, etc. */
-	setAppContext({ triplit, getClient });
 
 	/**
 	 * For development purposes, automatically log the user in.
@@ -41,11 +37,11 @@
 <!--<Toaster richColors />-->
 
 {#if initialized}
-	<div class="h-screen w-screen overflow-hidden">
-		<Tooltip.Provider delayDuration={500}>
-			<PrimaryNav>
-				{@render children()}
-			</PrimaryNav>
-		</Tooltip.Provider>
-	</div>
+	<!-- AppShell (setAppContext) must be inside JazzProvider: gardenContext.svelte.ts
+	     reads Jazz's Svelte context (getSession()/getDb()) during its own init. -->
+	<JazzProvider {...getJazzConfig()}>
+		<AppShell>
+			{@render children()}
+		</AppShell>
+	</JazzProvider>
 {/if}
