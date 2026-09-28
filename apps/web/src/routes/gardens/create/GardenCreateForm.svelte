@@ -4,7 +4,6 @@
 	import {
 		GardenCreateCommandSchema,
 		type GardenVisibility,
-		gardenCreate,
 		gardenFields
 	} from '@vdg-webapp/models';
 	import {
@@ -51,14 +50,11 @@
 	);
 
 	/** Garden creation form. */
-	let gardenCreateHandler = createCommandHandler(
-		(data: Parameters<typeof gardenCreate>[0]) => gardenCreate(data, controller),
-		{
-			onSuccess: (data) => {
-				goto('/gardens/' + data.id);
-			}
+	let gardenCreateHandler = createCommandHandler(controller.gardens.create, {
+		onSuccess: (data) => {
+			goto('/gardens/' + data.id);
 		}
-	);
+	});
 	const form = createForm(GardenCreateCommandSchema, {
 		onSubmit: (data) => gardenCreateHandler.execute(data)
 	});

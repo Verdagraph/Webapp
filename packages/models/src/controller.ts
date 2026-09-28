@@ -1,5 +1,6 @@
 import { TriplitClient as TriplitClientBase } from '@triplit/client';
 
+import { GardenController } from './gardens/controller.js';
 import {
 	type ActionType,
 	AppError,
@@ -9,6 +10,9 @@ import {
 	requiredRole,
 	schema
 } from './index.js';
+import { ObservationController } from './observations/controller.js';
+import { PlantController } from './plants/controller.js';
+import { WorkspaceController } from './workspaces/controller.js';
 
 type TriplitClient = TriplitClientBase<typeof schema>;
 
@@ -91,3 +95,34 @@ export function createController(params: ControllerContextParams) {
 	};
 }
 export type ControllerContext = ReturnType<typeof createController>;
+
+/**
+ * The single write-side surface: one controller class instance per domain,
+ * each bound to the same ControllerContext, so callers never import a
+ * command function or a domain controller class directly. This is the only
+ * place a future backend swap would need to change - every caller goes
+ * through this interface instead.
+ */
+export interface Commands extends ControllerContext {
+	gardens: GardenController;
+	workspaces: WorkspaceController;
+	plants: PlantController;
+	observations: ObservationController;
+}
+
+/**
+ * Builds the app-scoped Commands surface: one shared ControllerContext,
+ * and one domain controller instance per domain bound to it.
+ * @param params Parameters for the controller context.
+ * @returns Commands.
+ */
+export function createCommands(params: ControllerContextParams): Commands {
+	const ctx = createController(params);
+	return {
+		...ctx,
+		gardens: new GardenController(ctx),
+		workspaces: new WorkspaceController(ctx),
+		plants: new PlantController(ctx),
+		observations: new ObservationController(ctx)
+	};
+}

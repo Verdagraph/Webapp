@@ -1,16 +1,4 @@
-import {
-	type FieldErrors,
-	type Plant,
-	type Workspace,
-	geometryHistoryExtend,
-	geometryUpdate,
-	lifespanUpdate,
-	locationHistoryExtend,
-	locationUpdate,
-	observationDelete,
-	observationUpdate,
-	plantUpdate
-} from '@vdg-webapp/models';
+import { type FieldErrors, type Plant, type Workspace } from '@vdg-webapp/models';
 
 import {
 	type PlantDeleteHandler,
@@ -44,16 +32,28 @@ export function createPlantTreeController(options: {
 
 	const fieldErrors: FieldErrors = $state({});
 
-	const plantUpdateCommandHandler = createCommandHandler(plantUpdate);
-	const lifespanUpdateCommandHandler = createCommandHandler(lifespanUpdate);
-	const geometryUpdateCommandHandler = createCommandHandler(geometryUpdate);
-	const locationUpdateCommandHandler = createCommandHandler(locationUpdate);
-	const locationHistoryExtendCommandHandler =
-		createCommandHandler(locationHistoryExtend);
-	const geometryHistoryExtendCommandHandler =
-		createCommandHandler(geometryHistoryExtend);
-	const observationUpdateCommandHandler = createCommandHandler(observationUpdate);
-	const observationDeleteCommandHandler = createCommandHandler(observationDelete);
+	const plantUpdateCommandHandler = createCommandHandler(ctx.controller.plants.update);
+	const lifespanUpdateCommandHandler = createCommandHandler(
+		ctx.controller.plants.lifespanUpdate
+	);
+	const geometryUpdateCommandHandler = createCommandHandler(
+		ctx.controller.workspaces.geometryUpdate
+	);
+	const locationUpdateCommandHandler = createCommandHandler(
+		ctx.controller.workspaces.locationUpdate
+	);
+	const locationHistoryExtendCommandHandler = createCommandHandler(
+		ctx.controller.workspaces.locationHistoryExtend
+	);
+	const geometryHistoryExtendCommandHandler = createCommandHandler(
+		ctx.controller.workspaces.geometryHistoryExtend
+	);
+	const observationUpdateCommandHandler = createCommandHandler(
+		ctx.controller.observations.update
+	);
+	const observationDeleteCommandHandler = createCommandHandler(
+		ctx.controller.observations.delete
+	);
 
 	const items = $derived(
 		options.plants().map((plant) => {
@@ -62,36 +62,33 @@ export function createPlantTreeController(options: {
 				{
 					fieldErrors,
 					plantUpdateHandler: (id, data) => {
-						plantUpdateCommandHandler.execute(id, data, ctx.controller);
+						plantUpdateCommandHandler.execute(id, data);
 					},
 					lifespanUpdateHandler: (id, data) => {
-						lifespanUpdateCommandHandler.execute(id, data, ctx.controller);
+						lifespanUpdateCommandHandler.execute(id, data);
 					},
 					geometryUpdateHandler: (id, data) => {
-						geometryUpdateCommandHandler.execute(id, data, ctx.controller);
+						geometryUpdateCommandHandler.execute(id, data);
 					},
 					locationUpdateHandler: (id, data) => {
-						locationUpdateCommandHandler.execute(id, data, ctx.controller);
+						locationUpdateCommandHandler.execute(id, data);
 					},
 					locationHistoryExtendHandler: (id) => {
-						locationHistoryExtendCommandHandler.execute(
-							id,
-							{ date: verdagraphContext.timeline.focusUtc },
-							ctx.controller
-						);
+						locationHistoryExtendCommandHandler.execute(id, {
+							date: verdagraphContext.timeline.focusUtc
+						});
 					},
 					geometryHistoryExtendHandler: (id) => {
 						geometryHistoryExtendCommandHandler.execute(
 							id,
-							verdagraphContext.timeline.focusUtc,
-							ctx.controller
+							verdagraphContext.timeline.focusUtc
 						);
 					},
 					observationUpdateHandler: (data) => {
-						observationUpdateCommandHandler.execute(data, ctx.controller);
+						observationUpdateCommandHandler.execute(data);
 					},
 					observationDeleteHandler: (id) => {
-						observationDeleteCommandHandler.execute(id, ctx.controller);
+						observationDeleteCommandHandler.execute(id);
 					},
 					plantDeleteHandler: options.plantDeleteHandler
 				}

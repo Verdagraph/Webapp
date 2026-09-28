@@ -2,7 +2,6 @@
 	import Icon from '@iconify/svelte';
 	import { useQuery } from '@triplit/svelte';
 
-	import { gardenMembershipAccept, gardenMembershipDelete } from '@vdg-webapp/models';
 	import { Button, Separator, iconIds } from '@vdg-webapp/ui';
 
 	import controller from '$data/controller';
@@ -23,12 +22,10 @@
 
 	/** Mutations. */
 	const gardenMembershipAcceptHandler = createCommandHandler(
-		(data: Parameters<typeof gardenMembershipAccept>[0]) =>
-			gardenMembershipAccept(data, controller)
+		controller.gardens.membershipAccept
 	);
 	const gardenMembershipDeleteHandler = createCommandHandler(
-		(data: Parameters<typeof gardenMembershipDelete>[0]) =>
-			gardenMembershipDelete(data, controller)
+		controller.gardens.membershipDelete
 	);
 </script>
 

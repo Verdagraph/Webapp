@@ -1,11 +1,6 @@
 import { useQuery } from '@triplit/svelte';
 
-import {
-	type DraftBucket,
-	draftBucketCommit,
-	draftBucketCreate,
-	draftBucketDiscard
-} from '@vdg-webapp/models';
+import { type DraftBucket } from '@vdg-webapp/models';
 
 import { type AppContext } from '$state/application';
 
@@ -98,7 +93,7 @@ export function createDraftBucketsState(
 
 	/** Starts a brand new draft bucket and makes it active. */
 	async function createDraftBucket(name = 'Draft'): Promise<DraftBucket> {
-		const created = await draftBucketCreate({ gardenId, name }, ctx.controller);
+		const created = await ctx.controller.plants.draftBucketCreate({ gardenId, name });
 		activeDraftBucketId = created.id;
 		return created;
 	}
@@ -125,14 +120,14 @@ export function createDraftBucketsState(
 	}
 
 	async function commitDraftBucket(bucketId: string) {
-		await draftBucketCommit(bucketId, ctx.controller);
+		await ctx.controller.plants.draftBucketCommit(bucketId);
 		if (activeDraftBucketId === bucketId) {
 			activeDraftBucketId = null;
 			onActiveBucketEnded();
 		}
 	}
 	async function discardDraftBucket(bucketId: string) {
-		await draftBucketDiscard(bucketId, ctx.controller);
+		await ctx.controller.plants.draftBucketDiscard(bucketId);
 		if (activeDraftBucketId === bucketId) {
 			activeDraftBucketId = null;
 			onActiveBucketEnded();

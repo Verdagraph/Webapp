@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		WorkspaceCreateCommandSchema,
-		workspaceCreate,
-		workspaceFields
-	} from '@vdg-webapp/models';
+	import { WorkspaceCreateCommandSchema, workspaceFields } from '@vdg-webapp/models';
 	import { type ControlProps, Form, Input, Textarea, createForm } from '@vdg-webapp/ui';
 
 	import { goto } from '$app/navigation';
@@ -11,15 +7,12 @@
 	import controller from '$data/controller';
 	import createCommandHandler from '$state/commandHandler.svelte';
 
-	let formHandler = createCommandHandler(
-		(data: Parameters<typeof workspaceCreate>[0]) => workspaceCreate(data, controller),
-		{
-			onSuccess: (workspace) => {
-				const workspaceHref = `/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
-				goto(workspaceHref);
-			}
+	let formHandler = createCommandHandler(controller.workspaces.create, {
+		onSuccess: (workspace) => {
+			const workspaceHref = `/gardens/${page.params.gardenId}/workspaces/${workspace.slug}`;
+			goto(workspaceHref);
 		}
-	);
+	});
 	const form = createForm(WorkspaceCreateCommandSchema, {
 		initialValues: { gardenId: page.params.gardenId },
 		onSubmit: (data) => formHandler.execute(data)

@@ -5,8 +5,6 @@
 		type GeometryUpdateCommand,
 		type Plant,
 		type Position,
-		geometryHistoryUpdate,
-		locationHistoryUpdate,
 		resolveActiveGeometry,
 		resolveActiveLocation
 	} from '@vdg-webapp/models';
@@ -27,8 +25,12 @@
 	const canvasId = canvasContext.canvasId;
 
 	/** Handlers. */
-	const translateCommandHandler = createCommandHandler(locationHistoryUpdate);
-	const transformCommandHandler = createCommandHandler(geometryHistoryUpdate);
+	const translateCommandHandler = createCommandHandler(
+		ctx.controller.workspaces.locationHistoryUpdate
+	);
+	const transformCommandHandler = createCommandHandler(
+		ctx.controller.workspaces.geometryHistoryUpdate
+	);
 
 	/** Resolve the active location and geometry across both lifespans. */
 	let activeLocation = $derived(
@@ -82,7 +84,7 @@
 			date: verdagraphContext.timeline.focusUtc
 		};
 		console.log('[EditablePlantContainer] onTranslate', command);
-		translateCommandHandler.execute(command, ctx.controller);
+		translateCommandHandler.execute(command);
 	}
 
 	/** Update the geometry history on transformation. */
@@ -114,7 +116,7 @@
 			date: verdagraphContext.timeline.focusUtc
 		} satisfies GeometryHistoryUpdateCommand;
 		console.log('[EditablePlantContainer] onTransform', command);
-		transformCommandHandler.execute(command, ctx.controller);
+		transformCommandHandler.execute(command);
 	}
 </script>
 

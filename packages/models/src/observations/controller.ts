@@ -2,39 +2,42 @@ import { type ControllerContext } from '../controller.js';
 import { AppError } from '../errors.js';
 import { type ObservationUpdateCommand } from '../index.js';
 
-export async function observationUpdate(
-	data: ObservationUpdateCommand,
-	ctx: ControllerContext
-) {
-	/** Retrieve client and authorize. */
-	//await ctx.requireRole(gardenId, 'ObservationUpdate');
+export class ObservationController {
+	constructor(private ctx: ControllerContext) {}
 
-	const obs = await ctx.triplit.fetchOne(ctx.triplit.query('observations').Id(data.id));
+	update = async (data: ObservationUpdateCommand) => {
+		/** Retrieve client and authorize. */
+		//await this.ctx.requireRole(gardenId, 'ObservationUpdate');
 
-	/** Update the observation. */
-	await ctx.triplit.update('observations', data.id, (observation) => {
-		if (data.entityIds) {
-			observation.entityIds = data.entityIds;
-		}
-		if (data.date) {
-			observation.date = data.date;
-		}
-		if (data.data) {
-			observation.data = data.data;
-		}
-	});
-}
+		const obs = await this.ctx.triplit.fetchOne(
+			this.ctx.triplit.query('observations').Id(data.id)
+		);
 
-/** Deletes an observation. */
-export async function observationDelete(id: string, ctx: ControllerContext) {
-	const observation = await ctx.triplit.fetchOne(
-		ctx.triplit.query('observations').Id(id)
-	);
-	if (!observation) {
-		throw new AppError('Observation does not exist.', {
-			nonFormErrors: ['Failed to delete observation.']
+		/** Update the observation. */
+		await this.ctx.triplit.update('observations', data.id, (observation) => {
+			if (data.entityIds) {
+				observation.entityIds = data.entityIds;
+			}
+			if (data.date) {
+				observation.date = data.date;
+			}
+			if (data.data) {
+				observation.data = data.data;
+			}
 		});
-	}
+	};
 
-	await ctx.triplit.delete('observations', id);
+	/** Deletes an observation. */
+	delete = async (id: string) => {
+		const observation = await this.ctx.triplit.fetchOne(
+			this.ctx.triplit.query('observations').Id(id)
+		);
+		if (!observation) {
+			throw new AppError('Observation does not exist.', {
+				nonFormErrors: ['Failed to delete observation.']
+			});
+		}
+
+		await this.ctx.triplit.delete('observations', id);
+	};
 }
