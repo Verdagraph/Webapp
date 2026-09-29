@@ -1,6 +1,6 @@
 import { getContext, setContext } from 'svelte';
 
-import { type ControllerContextParams, createController } from '@vdg-webapp/models';
+import { type ControllerContextParams, createCommands } from '@vdg-webapp/models';
 
 import { type ClientContextParams, createClientContext } from './client.svelte';
 import { createCultivarContext } from './cultivarContext.svelte';
@@ -36,7 +36,7 @@ export function createAppContext(
 	controllerParams: ControllerContextParams,
 	clientParams?: ClientContextParams
 ) {
-	const controller = setContext('controller', createController(controllerParams));
+	const controller = setContext('controller', createCommands(controllerParams));
 	const client = setContext('client', createClientContext(controller, clientParams));
 	const settings = setContext('settings', createSettingsContext());
 	const timeline = setContext('timeline', createTimelineContext());
