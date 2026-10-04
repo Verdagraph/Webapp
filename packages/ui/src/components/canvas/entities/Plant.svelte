@@ -26,6 +26,8 @@
 		editable: boolean;
 		/** If true, the plant is selected. */
 		selected: boolean;
+		/** If true, the plant belongs to an open DraftBucket the viewer has opted into seeing but isn't actively staging - renders faded to distinguish an uncommitted plan from the rest of the garden. */
+		ghost?: boolean;
 		labelTranslate?: Position;
 		/** The grid attributes of the plant. */
 		grid?: { numRows: number; numCols: number };
@@ -54,6 +56,7 @@
 		geometry,
 		editable,
 		selected,
+		ghost = false,
 		labelTranslate = { x: 0, y: 0 },
 		onTranslate,
 		onTransform,
@@ -84,20 +87,22 @@
 	);
 </script>
 
-<EditableShape
-	{canvasId}
-	{name}
-	{showName}
-	{position}
-	{geometry}
-	{editable}
-	{selected}
-	{strokeColor}
-	{fillColor}
-	{nameTextFillColor}
-	{strokeWidth}
-	{labelTranslate}
-	{onTranslate}
-	{onTransform}
-	{onClick}
-/>
+<g opacity={ghost ? 0.5 : 1}>
+	<EditableShape
+		{canvasId}
+		{name}
+		{showName}
+		{position}
+		{geometry}
+		{editable}
+		{selected}
+		{strokeColor}
+		{fillColor}
+		{nameTextFillColor}
+		{strokeWidth}
+		{labelTranslate}
+		{onTranslate}
+		{onTransform}
+		{onClick}
+	/>
+</g>

@@ -7,6 +7,7 @@ import {
 	GeometryHistoryCreateCommandSchema,
 	LocationHistoryCreateCommandSchema
 } from '../workspaces/commands.js';
+import { PlantObservationIds } from './observations.js';
 import { OriginEnumOptions } from './schema.js';
 
 /** Field specifications. */
@@ -39,6 +40,21 @@ const plantQuantitySchema = z
 	.number()
 	.describe('The number of distinct plants this plant entity represents.')
 	.default(1);
+/**
+ * One expected-lifespan milestone observation to create alongside a Plant -
+ * e.g. the seed/germination/harvest dates generated from the Cultivar's
+ * AnnualLifeCycleProfile (see generateExpectedHistories). Submitted
+ * explicitly, rather than re-derived server-side from geometryHistory, since
+ * a geometry's `name` is free-text the user can edit and isn't a safe key to
+ * match back to an observation type.
+ */
+const plantExpectedObservationSchema = z.object({
+	type: z.enum(PlantObservationIds),
+	date: z.date()
+});
+export type PlantExpectedObservationCommand = z.infer<
+	typeof plantExpectedObservationSchema
+>;
 
 /** PlantGroups. */
 export const plantFields = {
@@ -73,6 +89,7 @@ export const plantsCreateCommandSinglePlantSchema = z.object({
 		gardenId: '',
 		geometries: []
 	}),
+	expectedObservations: z.array(plantExpectedObservationSchema).default([]),
 	cultivarOverride: CultivarAttributesUpdateCommandSchema,
 	quantity: plantQuantitySchema
 });

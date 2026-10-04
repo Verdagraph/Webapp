@@ -69,6 +69,24 @@ export class PlantController {
 					origin: plantData.origin
 				});
 
+				/**
+				 * Persist the expected lifespan's milestone observations (seed,
+				 * germination, harvest, expiry, ...) submitted alongside the
+				 * geometry/location history that was generated from the same
+				 * milestone chain - these are what bound the Plant's date range
+				 * and info-points on the Calendar (see plantCalendarItem),
+				 * since that's computed from observations, not geometry/
+				 * location dates directly.
+				 */
+				for (const observationData of plantData.expectedObservations) {
+					await transaction.insert('observations', {
+						gardenId: garden.id,
+						type: observationData.type,
+						entityIds: new Set([expectedLifespan.id]),
+						date: observationData.date
+					});
+				}
+
 				/** Persist the plant, staged into its draft bucket. */
 				await transaction.insert('plants', {
 					gardenId: garden.id,

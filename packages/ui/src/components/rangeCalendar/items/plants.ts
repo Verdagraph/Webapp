@@ -6,7 +6,8 @@ import {
 	type Plant,
 	type PlantObservation,
 	PlantObservationLabels,
-	historyGetRange
+	historyGetRange,
+	isDraftPlant
 } from '@vdg-webapp/models';
 
 import { getColor } from '$utils';
@@ -56,6 +57,15 @@ export function plantCalendarItem(value: {
 		value.cultivar.attributes.color?.outlineColor || defaultBorderColor;
 	const itemColor = value.cultivar.attributes.color?.textColor || defaultItemColor;
 
+	/**
+	 * A plant still sitting in an open, uncommitted DraftBucket renders
+	 * faded/dashed rather than solid, matching the equivalent ghost styling
+	 * on the Layout canvas (see EditablePlantContainer.svelte) - the same
+	 * per-bucket visibility toggle (draftBucketsState.svelte.ts) governs
+	 * whether it reaches this function at all.
+	 */
+	const ghostStyle = isDraftPlant(value.plant) ? 'opacity-50 border-dashed' : '';
+
 	const expectedLifespanInfoPoints: CalendarItemInfoPoint<{
 		observation: PlantObservation;
 	}>[] =
@@ -81,7 +91,7 @@ export function plantCalendarItem(value: {
 		borderColor,
 		itemColor,
 		bottomMargin: 0,
-		itemStyleCollapsed: 'rounded-none border-t-0',
+		itemStyleCollapsed: `rounded-none border-t-0 ${ghostStyle}`.trim(),
 		infoPoints: expectedLifespanInfoPoints
 	};
 	const recordedLifespanInfoPoints: CalendarItemInfoPoint<{
@@ -105,7 +115,7 @@ export function plantCalendarItem(value: {
 		borderColor,
 		itemColor,
 		bottomMargin: 4,
-		itemStyleCollapsed: 'rounded-t-none border-t-0',
+		itemStyleCollapsed: `rounded-t-none border-t-0 ${ghostStyle}`.trim(),
 		infoPoints: recordedLifespanInfoPoints
 	};
 
@@ -122,6 +132,7 @@ export function plantCalendarItem(value: {
 		itemColor,
 		bottomMargin: 4,
 		bottomMarginChild: 0,
-		itemStyleExpanded: 'rounded-b-none'
+		itemStyleCollapsed: ghostStyle || undefined,
+		itemStyleExpanded: `rounded-b-none ${ghostStyle}`.trim()
 	};
 }

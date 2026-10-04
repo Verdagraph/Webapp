@@ -2,6 +2,7 @@
 	import { EditableTree } from '$components';
 	import { ScrollArea, Select } from '$core';
 	import { Button } from '$core/button/index.js';
+	import { Checkbox } from '$core/checkbox/index.js';
 	import { getAppContext } from '$state';
 
 	import { createPlantTreeController } from '../plantTreeController.svelte';
@@ -53,6 +54,16 @@
 	);
 	const workspaces = $derived(ctx.workspaces.workspaces);
 
+	/**
+	 * Every open draft bucket besides the active one, for the ghost-
+	 * visibility toggle below - the active bucket always renders on Layout/
+	 * Calendar regardless of this set (see draftBucketsState.svelte.ts's
+	 * isVisible), so it has nothing to toggle here.
+	 */
+	const otherOpenDraftBuckets = $derived(
+		verdagraphContext.draftBuckets.list.filter((bucket) => bucket.id !== draftBucketId)
+	);
+
 	const controller = createPlantTreeController({
 		plants: () => plants,
 		workspaces: () => workspaces,
@@ -91,6 +102,26 @@
 			</Select.Content>
 		</Select.Root>
 	</div>
+
+	{#if otherOpenDraftBuckets.length > 0}
+		<div class="border-b p-2">
+			<span class="text-neutral-11 block pb-1 text-sm">Show as ghosts</span>
+			{#each otherOpenDraftBuckets as bucket (bucket.id)}
+				<label class="flex items-center gap-2 py-1">
+					<Checkbox
+						checked={verdagraphContext.draftBuckets.isVisible(bucket.id)}
+						onCheckedChange={() =>
+							verdagraphContext.draftBuckets.toggleVisible(bucket.id)}
+					/>
+					<span
+						>{bucket.creatorId === ctx.client.profile?.id
+							? bucket.name
+							: `${bucket.name} (${bucket.creator?.username ?? 'unknown'})`}</span
+					>
+				</label>
+			{/each}
+		</div>
+	{/if}
 
 	<ScrollArea.Root class="flex-1 px-2">
 		{#if plants.length === 0}

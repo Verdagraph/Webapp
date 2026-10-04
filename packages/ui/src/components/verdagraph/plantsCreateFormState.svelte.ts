@@ -1,4 +1,4 @@
-import { PlantsCreateCommandSchema } from '@vdg-webapp/models';
+import { PlantsCreateCommandSchema, addDays, daysBetween } from '@vdg-webapp/models';
 
 import { type AppContext } from '$state/application';
 import createCommandHandler from '$state/commandHandler.svelte';
@@ -20,11 +20,14 @@ export function createPlantsCreateFormState(ctx: AppContext, getFocusUtc: () => 
 		 * Stamp-style continuation: the next stamp starts as a copy of the one
 		 * just submitted (same cultivar, same geometry, same location), so
 		 * placing a run of the same plant is drag-to-nudge rather than
-		 * re-pick/re-place/re-size from scratch every time. Only the dates
-		 * are refreshed to the current timeline focus, since the submitted
-		 * ones belong to the plant that just got created. Runs from the
-		 * handler's own onSuccess - which fires strictly after the real
-		 * mutation resolves - so there's no resync race to work around here.
+		 * re-pick/re-place/re-size from scratch every time. The whole staged
+		 * milestone chain is carried forward and shifted by a single delta
+		 * (the same day-translation stampSeeding's translateStamp applies),
+		 * not just its first entry - carrying only one entry collapsed the
+		 * next stamp down to a single day instead of the cultivar's full
+		 * expected date range. Runs from the handler's own onSuccess - which
+		 * fires strictly after the real mutation resolves - so there's no
+		 * resync race to work around here.
 		 */
 		onSuccess: () => {
 			if (plantsCreateForm.data.mode !== 'SINGLE') {
@@ -32,24 +35,40 @@ export function createPlantsCreateFormState(ctx: AppContext, getFocusUtc: () => 
 			}
 			const submitted = plantsCreateForm.data.plants[0];
 			const focusedDay = getFocusUtc();
-			const carriedGeometry = submitted?.geometryHistory?.geometries[0];
-			const carriedLocation = submitted?.locationHistory?.locations[0];
+			const submittedGeometries = submitted?.geometryHistory?.geometries ?? [];
+			const submittedLocations = submitted?.locationHistory?.locations ?? [];
+			const submittedExpectedObservations = submitted?.expectedObservations ?? [];
+			const deltaDays = submittedGeometries[0]
+				? daysBetween(submittedGeometries[0].date, focusedDay)
+				: 0;
 			plantsCreateForm.data.plants = [
 				defaultSinglePlant({
 					cultivarName: submitted?.cultivarName,
 					origin: submitted?.origin,
-					geometryHistory: carriedGeometry
-						? {
-								gardenId: ctx.garden.id,
-								geometries: [{ ...carriedGeometry, date: focusedDay }]
-							}
-						: undefined,
-					locationHistory: carriedLocation
-						? {
-								gardenId: ctx.garden.id,
-								locations: [{ ...carriedLocation, date: focusedDay }]
-							}
-						: undefined
+					geometryHistory:
+						submittedGeometries.length > 0
+							? {
+									gardenId: ctx.garden.id,
+									geometries: submittedGeometries.map((geometry) => ({
+										...geometry,
+										date: addDays(geometry.date, deltaDays)
+									}))
+								}
+							: undefined,
+					locationHistory:
+						submittedLocations.length > 0
+							? {
+									gardenId: ctx.garden.id,
+									locations: submittedLocations.map((location) => ({
+										...location,
+										date: addDays(location.date, deltaDays)
+									}))
+								}
+							: undefined,
+					expectedObservations: submittedExpectedObservations.map((observation) => ({
+						...observation,
+						date: addDays(observation.date, deltaDays)
+					}))
 				})
 			];
 		}
