@@ -43,10 +43,7 @@ const plantQuantitySchema = z
 /**
  * One expected-lifespan milestone observation to create alongside a Plant -
  * e.g. the seed/germination/harvest dates generated from the Cultivar's
- * AnnualLifeCycleProfile (see generateExpectedHistories). Submitted
- * explicitly, rather than re-derived server-side from geometryHistory, since
- * a geometry's `name` is free-text the user can edit and isn't a safe key to
- * match back to an observation type.
+ * AnnualLifeCycleProfile (see generateExpectedHistories).
  */
 const plantExpectedObservationSchema = z.object({
 	type: z.enum(PlantObservationIds),

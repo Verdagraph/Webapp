@@ -49,10 +49,11 @@ export class PlantController {
 					workspaceIds
 				});
 
-				/** Bound the plant's dates by whichever geometries/locations were supplied. */
+				/** Bound the plant's dates by every expected geometry, location, and observation supplied. */
 				const dateRange = historyGetRange([
 					...plantData.geometryHistory.geometries,
-					...plantData.locationHistory.locations
+					...plantData.locationHistory.locations,
+					...plantData.expectedObservations
 				]);
 				const beginDate = dateRange?.min.date ?? new Date();
 				const endDate = dateRange?.max.date ?? new Date();
@@ -73,10 +74,9 @@ export class PlantController {
 				 * Persist the expected lifespan's milestone observations (seed,
 				 * germination, harvest, expiry, ...) submitted alongside the
 				 * geometry/location history that was generated from the same
-				 * milestone chain - these are what bound the Plant's date range
-				 * and info-points on the Calendar (see plantCalendarItem),
-				 * since that's computed from observations, not geometry/
-				 * location dates directly.
+				 * milestone chain - these are what give the Calendar its
+				 * info-points, and widen the Plant's rendered date range
+				 * beyond beginDate/endDate alone (see plantCalendarItem).
 				 */
 				for (const observationData of plantData.expectedObservations) {
 					await transaction.insert('observations', {

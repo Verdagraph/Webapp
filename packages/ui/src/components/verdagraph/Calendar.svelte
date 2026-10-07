@@ -12,9 +12,9 @@
 	import { iconIds } from '$assets';
 	import { RangeCalendar, createCalendarContext } from '$components';
 	import {
+		createPlantStampCalendarItem,
 		plantCalendarItem,
-		plantingWindowCalendarItem,
-		stampPreviewCalendarItem
+		plantingWindowCalendarItem
 	} from '$components/rangeCalendar/items';
 	import { getAppContext } from '$state';
 	import { getColor } from '$utils';
@@ -81,7 +81,7 @@
 		verdagraphContext.plantsCreateForm.form.data.mode === 'SINGLE'
 			? verdagraphContext.plantsCreateForm.form.data.plants
 					.map((plant, plantIndex) =>
-						stampPreviewCalendarItem({
+						createPlantStampCalendarItem({
 							plantIndex,
 							plant,
 							cultivar: ctx.plants.getCultivar(plant.cultivarName)

@@ -26,7 +26,7 @@ const defaultItemColor = getColor('grass', 8, mode.current);
  * history instead of historyGetRange(lifespan.observations) the way
  * plantCalendarItem does for a saved Plant.
  */
-export function stampPreviewCalendarItem(value: {
+export function createPlantStampCalendarItem(value: {
 	plantIndex: number;
 	plant: StampPlant;
 	cultivar: Cultivar | null;

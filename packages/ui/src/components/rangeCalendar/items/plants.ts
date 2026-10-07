@@ -37,20 +37,35 @@ export function plantCalendarItem(value: {
 
 	const expectedRange = historyGetRange(value.plant.expectedLifespan.observations);
 	const recordedRange = historyGetRange(value.plant.recordedLifespan.observations);
-	if (!expectedRange) {
-		return null;
+
+	/**
+	 * Widened by beginDate/endDate - a denormalized cache of the Plant's
+	 * earliest/latest date across its observations and geometry/location
+	 * history (see PlantController#createSingle). Folding it in keeps the
+	 * bar covering the Plant's full extent even if the two ever drift, and
+	 * lets a Plant with no observations at all still render.
+	 */
+	let minDate = value.plant.beginDate;
+	let maxDate = value.plant.endDate;
+	if (expectedRange) {
+		if (expectedRange.min.date < minDate) {
+			minDate = expectedRange.min.date;
+		}
+		if (expectedRange.max.date > maxDate) {
+			maxDate = expectedRange.max.date;
+		}
 	}
-	const totalRange = expectedRange;
 	if (recordedRange) {
-		if (recordedRange.min.date < totalRange.min.date) {
-			totalRange.min.date = recordedRange.min.date;
+		if (recordedRange.min.date < minDate) {
+			minDate = recordedRange.min.date;
 		}
-		if (recordedRange.max.date > totalRange.max.date) {
-			totalRange.max.date = recordedRange.max.date;
+		if (recordedRange.max.date > maxDate) {
+			maxDate = recordedRange.max.date;
 		}
 	}
-	const startDate = fromDate(totalRange.min.date, getLocalTimeZone());
-	const endDate = fromDate(totalRange.max.date, getLocalTimeZone());
+
+	const startDate = fromDate(minDate, getLocalTimeZone());
+	const endDate = fromDate(maxDate, getLocalTimeZone());
 
 	const fillColor = value.cultivar.attributes.color?.baseColor || defaultBaseColor;
 	const borderColor =
