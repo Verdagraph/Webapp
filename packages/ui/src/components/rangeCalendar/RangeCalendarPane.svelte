@@ -268,7 +268,7 @@
 <ScrollArea class="h-full w-full">
 	<div
 		bind:clientHeight={pane.height}
-		class="relative h-full w-full cursor-grab overflow-hidden"
+		class="relative h-full w-full cursor-grab select-none overflow-hidden"
 		style:touch-action="none"
 		onpointerdown={handlePointerDown}
 		onpointermove={handlePointerMove}
