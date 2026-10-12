@@ -3,6 +3,7 @@ import {
 	type GeometryCreateCommand,
 	type LocationCreateCommand,
 	type Origin,
+	type PlantExpectedObservationCommand,
 	type Position,
 	addDays,
 	annualMilestonesForOrigin,
@@ -81,7 +82,7 @@ export function createStampSeeding(plantIndex: number) {
 			return;
 		}
 
-		const { geometries, location } = generateExpectedHistories({
+		const { geometries, location, expectedObservations } = generateExpectedHistories({
 			expectedGeometryProfile: cultivar?.attributes?.expectedGeometry,
 			annualLifecycleProfile: cultivar?.attributes?.annualLifeCycle,
 			origin,
@@ -95,6 +96,7 @@ export function createStampSeeding(plantIndex: number) {
 		const plant = form.data.plants[plantIndex];
 		plant.geometryHistory = { gardenId: ctx.garden.id, geometries };
 		plant.locationHistory = { gardenId: ctx.garden.id, locations: [location] };
+		plant.expectedObservations = expectedObservations;
 	}
 
 	function translateStamp(deltaDays: number) {
@@ -102,6 +104,8 @@ export function createStampSeeding(plantIndex: number) {
 		const geometries: GeometryCreateCommand[] =
 			plant?.geometryHistory?.geometries ?? [];
 		const locations: LocationCreateCommand[] = plant?.locationHistory?.locations ?? [];
+		const expectedObservations: PlantExpectedObservationCommand[] =
+			plant?.expectedObservations ?? [];
 
 		plant.geometryHistory = {
 			gardenId: ctx.garden.id,
@@ -117,6 +121,10 @@ export function createStampSeeding(plantIndex: number) {
 				date: addDays(location.date, deltaDays)
 			}))
 		};
+		plant.expectedObservations = expectedObservations.map((observation) => ({
+			...observation,
+			date: addDays(observation.date, deltaDays)
+		}));
 	}
 
 	let previousStructuralKey: string | null = $state(null);
@@ -176,6 +184,7 @@ export function createStampSeeding(plantIndex: number) {
 		const plant = form.data.plants[plantIndex];
 		plant.geometryHistory = { gardenId: ctx.garden.id, geometries: [] };
 		plant.locationHistory = { gardenId: ctx.garden.id, locations: [] };
+		plant.expectedObservations = [];
 	}
 
 	return {

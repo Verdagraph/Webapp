@@ -13,7 +13,6 @@ export class PlantController {
 	constructor(private ctx: ControllerContext) {}
 
 	async #createSingle(data: PlantsCreateCommand) {
-		/** Retrieve client and authorize. */
 		const { garden } = await this.ctx.requireRole(data.gardenId, 'PlantsCreate');
 
 		await this.ctx.triplit.transact(async (transaction) => {
@@ -49,10 +48,11 @@ export class PlantController {
 					workspaceIds
 				});
 
-				/** Bound the plant's dates by whichever geometries/locations were supplied. */
+				/** Bound the plant's dates by every expected geometry, location, and observation supplied. */
 				const dateRange = historyGetRange([
 					...plantData.geometryHistory.geometries,
-					...plantData.locationHistory.locations
+					...plantData.locationHistory.locations,
+					...plantData.expectedObservations
 				]);
 				const beginDate = dateRange?.min.date ?? new Date();
 				const endDate = dateRange?.max.date ?? new Date();
@@ -68,6 +68,18 @@ export class PlantController {
 					gardenId: garden.id,
 					origin: plantData.origin
 				});
+
+				/**
+				 * Persist the expected lifespan's milestone observations.
+				 */
+				for (const observationData of plantData.expectedObservations) {
+					await transaction.insert('observations', {
+						gardenId: garden.id,
+						type: observationData.type,
+						entityIds: new Set([expectedLifespan.id]),
+						date: observationData.date
+					});
+				}
 
 				/** Persist the plant, staged into its draft bucket. */
 				await transaction.insert('plants', {
@@ -114,8 +126,7 @@ export class PlantController {
 
 	/**
 	 * Accepts a draft bucket's plan. Its plants are unchanged and keep referencing
-	 * the bucket - this only flips `committed`, which is enough for official reads
-	 * to stop excluding them.
+	 * the bucket - this only flips `committed`.
 	 */
 	draftBucketCommit = async (id: string) => {
 		const draftBucket = await this.ctx.triplit.fetchOne(

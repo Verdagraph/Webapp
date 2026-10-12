@@ -1,8 +1,17 @@
 import { BulkInsert } from '@triplit/client';
 
+import { buildSeedGardenPlants } from '../../src/index.js';
 import { schema } from '../schema.js';
 
+const gardenId = 'garden1';
+
 export default function seed(): BulkInsert<typeof schema> {
+	const gardenPlants = buildSeedGardenPlants({
+		gardenId,
+		workspaceId: 'workspace1',
+		draftBucketCreatorId: 'user1'
+	});
+
 	return {
 		profiles: [
 			{ id: 'user1', username: 'user1' },
@@ -26,7 +35,7 @@ export default function seed(): BulkInsert<typeof schema> {
 		],
 		gardens: [
 			{
-				id: 'garden1',
+				id: gardenId,
 				name: "Nathaniel's Garden.",
 				visibility: 'PUBLIC',
 				description: 'This is the default seeded garden.',
@@ -52,7 +61,7 @@ export default function seed(): BulkInsert<typeof schema> {
 		],
 		gardenMemberships: [
 			{
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				userId: 'user1',
 				role: 'ADMIN',
 				inviterId: null,
@@ -79,42 +88,69 @@ export default function seed(): BulkInsert<typeof schema> {
 		workspaces: [
 			{
 				id: 'workspace1',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				name: 'Workspace 1',
 				slug: 'workspace-1',
 				description: 'This is the default seeded workspace.'
 			},
 			{
 				id: 'workspace2',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				name: 'Workspace 2',
 				slug: 'workspace-2'
 			}
 		],
+		/**
+		 * Garden-level frost dates, combined with each Cultivar's
+		 * frostDatePlantingWindows profile above to compute the Calendar's
+		 * PlantingWindows pane.
+		 */
+		environments: [
+			{
+				id: 'garden1-environment',
+				name: 'Garden',
+				description: '',
+				parentType: 'GARDEN',
+				gardenId: gardenId,
+				inherit: true,
+				attributes: {
+					frostDates: {
+						lastFrostDate: new Date(2026, 3, 15),
+						firstFrostDate: new Date(2026, 10, 1)
+					},
+					annualTemperature: { minimum: -12, maximum: 32 }
+				}
+			}
+		],
+		cultivarCollections: gardenPlants.cultivarCollections,
+		cultivars: gardenPlants.cultivars,
+		plants: gardenPlants.plants,
+		lifespans: gardenPlants.lifespans,
+		draftBuckets: gardenPlants.draftBuckets,
 		plantingAreas: [
 			{
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				name: 'Rectangle Area',
 				geometryId: 'rectangleAreaGeometry',
 				locationHistoryId: 'rectangleGeometryLocations',
 				description: 'Rectangle Description.'
 			},
 			{
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				name: 'Ellipse Area',
 				geometryId: 'ellipseAreaGeometry',
 				locationHistoryId: 'ellipseGeometryLocations',
 				description: 'Ellipse Description.'
 			},
 			{
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				name: 'Polygon Area',
 				geometryId: 'polygonAreaGeometry',
 				locationHistoryId: 'polygonGeometryLocations',
 				description: 'Polygon Description.'
 			},
 			{
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				name: 'Lines Area',
 				geometryId: 'linesAreaGeometry',
 				locationHistoryId: 'linesGeometryLocations',
@@ -124,7 +160,7 @@ export default function seed(): BulkInsert<typeof schema> {
 		geometries: [
 			{
 				id: 'rectangleAreaGeometry',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				type: 'RECTANGLE',
 				date: new Date(),
 				rectangleLength: 2,
@@ -132,7 +168,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'ellipseAreaGeometry',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				type: 'ELLIPSE',
 				date: new Date(),
 				ellipseWidth: 1.5,
@@ -140,7 +176,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'polygonAreaGeometry',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				type: 'POLYGON',
 				date: new Date(),
 				polygonNumSides: 5,
@@ -148,7 +184,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'linesAreaGeometry',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				type: 'LINES',
 				date: new Date(),
 				linesCoordinateIds: new Set([
@@ -158,12 +194,14 @@ export default function seed(): BulkInsert<typeof schema> {
 					'linesAreaCoord4'
 				]),
 				linesClosed: true
-			}
+			},
+			...gardenPlants.geometries
 		],
+		geometryHistories: gardenPlants.geometryHistories,
 		locationHistories: [
 			{
 				id: 'rectangleGeometryLocations',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				locationIds: new Set([
 					'rectangleAreaGeometryLocation1',
 					'rectangleAreaGeometryLocation2'
@@ -172,7 +210,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'ellipseGeometryLocations',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				locationIds: new Set([
 					'ellipseAreaGeometryLocation1',
 					'ellipseAreaGeometryLocation2'
@@ -181,21 +219,22 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'polygonGeometryLocations',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				locationIds: new Set(['polygonAreaGeometryLocation1']),
 				workspaceIds: new Set(['workspace1'])
 			},
 			{
 				id: 'linesGeometryLocations',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				locationIds: new Set(['linesAreaGeometryLocation1']),
 				workspaceIds: new Set(['workspace1'])
-			}
+			},
+			...gardenPlants.locationHistories
 		],
 		locations: [
 			{
 				id: 'rectangleAreaGeometryLocation1',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				workspaceId: 'workspace1',
 				x: 5,
 				y: 2,
@@ -203,7 +242,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'rectangleAreaGeometryLocation2',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				workspaceId: 'workspace1',
 				x: 6,
 				y: 8,
@@ -211,7 +250,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'ellipseAreaGeometryLocation1',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				workspaceId: 'workspace1',
 				x: -3,
 				y: 5,
@@ -219,7 +258,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'ellipseAreaGeometryLocation2',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				workspaceId: 'workspace1',
 				x: 0,
 				y: 10,
@@ -227,7 +266,7 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'polygonAreaGeometryLocation1',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				workspaceId: 'workspace1',
 				x: -5,
 				y: -5,
@@ -235,35 +274,37 @@ export default function seed(): BulkInsert<typeof schema> {
 			},
 			{
 				id: 'linesAreaGeometryLocation1',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				workspaceId: 'workspace1',
 				x: -8,
 				y: 2,
 				date: new Date(2024, 0, 3, 14, 30, 0)
-			}
+			},
+			...gardenPlants.locations
 		],
+		observations: gardenPlants.observations,
 		coordinates: [
 			{
 				id: 'linesAreaCoord1',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				x: -1,
 				y: 0
 			},
 			{
 				id: 'linesAreaCoord2',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				x: -4,
 				y: 1
 			},
 			{
 				id: 'linesAreaCoord3',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				x: 2,
 				y: 1.5
 			},
 			{
 				id: 'linesAreaCoord4',
-				gardenId: 'garden1',
+				gardenId: gardenId,
 				x: 0.5,
 				y: -1
 			}

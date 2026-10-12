@@ -5,6 +5,7 @@ import {
 	type LocationCreateCommand,
 	type Position
 } from '../../workspaces/index.js';
+import { type PlantExpectedObservationCommand } from '../commands.js';
 import { type Origin } from '../schema.js';
 import { addDays, deriveGeometry, dimensionOverridesForSize } from './common.js';
 
@@ -93,6 +94,26 @@ function daysFromGermination(lifeCycle: Cultivar['attributes']['annualLifeCycle'
 }
 
 /**
+ * Which PlantObservation type each milestone corresponds to, for seeding a
+ * Plant's expected observations at Create time from the same milestone chain
+ * used to generate its expected geometry. TRANSPLANT has no entry - there's
+ * no dedicated observation type for it in the model yet, so it's simply
+ * skipped rather than forced onto a mismatched type. FIRST_HARVEST and
+ * LAST_HARVEST both map to `plant-harvest`, matching the model's "no
+ * cardinality limit" design (see design/plants/models.md#observations) -
+ * two harvest observations bounding the harvest window, not a special case.
+ */
+export const AnnualLifecycleMilestoneObservationIds: Partial<
+	Record<AnnualLifecycleMilestone, PlantExpectedObservationCommand['type']>
+> = {
+	SEED: 'plant-seed',
+	GERMINATION: 'plant-germ',
+	FIRST_HARVEST: 'plant-harvest',
+	LAST_HARVEST: 'plant-harvest',
+	EXPIRY: 'plant-expiry'
+};
+
+/**
  * The ExpectedGeometryProfile size field a milestone is sized from. Seed and
  * Germination both read `seedSize` - Germination is just-emerged, still
  * seed-scale, not yet the more-grown "ready for transplant" size that
@@ -138,13 +159,18 @@ export function generateExpectedHistories(params: {
 	gardenId: string;
 	workspaceId: string;
 	coordinate: Position;
-}): { geometries: GeometryCreateCommand[]; location: LocationCreateCommand } {
+}): {
+	geometries: GeometryCreateCommand[];
+	location: LocationCreateCommand;
+	expectedObservations: PlantExpectedObservationCommand[];
+} {
 	const milestones = annualMilestonesForOrigin(params.origin);
 	const offsets = daysFromGermination(params.annualLifecycleProfile);
 	const anchorOffset = offsets[params.anchorMilestone];
 	const geometryType = params.expectedGeometryProfile?.geometryType ?? 'RECTANGLE';
 
 	const geometries: GeometryCreateCommand[] = [];
+	const expectedObservations: PlantExpectedObservationCommand[] = [];
 	for (const milestone of milestones) {
 		const date = addDays(params.anchorDate, offsets[milestone] - anchorOffset);
 		const size = sizeForMilestone(params.expectedGeometryProfile, milestone) ?? 1;
@@ -163,11 +189,16 @@ export function generateExpectedHistories(params: {
 						overrides
 					)
 		);
+
+		const observationType = AnnualLifecycleMilestoneObservationIds[milestone];
+		if (observationType) {
+			expectedObservations.push({ type: observationType, date });
+		}
 	}
 
 	const location = generateAnnualLocation(params);
 
-	return { geometries, location };
+	return { geometries, location, expectedObservations };
 }
 
 /**

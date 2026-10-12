@@ -5,6 +5,7 @@
 		type GeometryUpdateCommand,
 		type Plant,
 		type Position,
+		isDraftPlant,
 		resolveActiveGeometry,
 		resolveActiveLocation
 	} from '@vdg-webapp/models';
@@ -63,6 +64,8 @@
 	let selected: boolean = $derived(
 		verdagraphContext.selections.has('plants', plant.id)
 	);
+
+	let ghost: boolean = $derived(isDraftPlant(plant));
 
 	/** Update the location history on translation. */
 	function onTranslate(newPos: Position, movementOver: boolean) {
@@ -134,6 +137,7 @@ area in the workspace editor, ie., editable
 		{geometry}
 		{editable}
 		{selected}
+		{ghost}
 		{onTranslate}
 		{onTransform}
 		onClick={() => {

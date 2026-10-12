@@ -64,6 +64,66 @@
 	const focusSection = $derived(
 		calculateDeltaDays(context.timeline.focus, context.timeline.beginSelection)
 	);
+
+	/**
+	 * Dragging the pane's empty background pans the whole timeline selection
+	 * (shared across every pane and the slider above, since they all read
+	 * off the same context.timeline) - the calendar's equivalent of dragging
+	 * the Layout canvas's background to pan it (Canvas.svelte). A pointerdown
+	 * that lands on an item bar is left alone (no stopPropagation available
+	 * to us there, since items are Melt Tree elements) so its own click-to-
+	 * expand/tooltip/popup behavior still works.
+	 */
+	let isPanning = false;
+	let lastPointerX = 0;
+
+	/**
+	 * Which info point's popover is open, at most one at a time - keyed by
+	 * `${item.item.id}-${infoPointIndex}` since CalendarItemInfoPoint has no
+	 * id of its own. Popover.Root defaults to managing its own open state
+	 * independently per instance, which is what let every info point stay
+	 * open regardless of others; controlling it off this single value is
+	 * what makes opening one close whatever else was open.
+	 */
+	let openInfoPointKey: string | null = $state(null);
+
+	function handlePointerDown(event: PointerEvent) {
+		if ((event.target as HTMLElement).closest('li')) {
+			return;
+		}
+		(event.currentTarget as Element).setPointerCapture(event.pointerId);
+		isPanning = true;
+		lastPointerX = event.clientX;
+		document.body.style.cursor = 'grabbing';
+	}
+
+	function handlePointerMove(event: PointerEvent) {
+		if (!isPanning) {
+			return;
+		}
+		/**
+		 * Only translate by whole days (matching the day-granular selection
+		 * model), carrying the sub-day remainder forward in lastPointerX
+		 * rather than resetting it to event.clientX each move - otherwise a
+		 * slow drag would round its fractional movement away every frame and
+		 * never accumulate into a day.
+		 */
+		const deltaDays = Math.round((event.clientX - lastPointerX) / sectionWidthPx);
+		if (deltaDays === 0) {
+			return;
+		}
+		context.timeline.translate({ days: -deltaDays });
+		lastPointerX += deltaDays * sectionWidthPx;
+	}
+
+	function handlePointerUp(event: PointerEvent) {
+		if (!isPanning) {
+			return;
+		}
+		(event.currentTarget as Element).releasePointerCapture(event.pointerId);
+		isPanning = false;
+		document.body.style.cursor = 'default';
+	}
 </script>
 
 <!-- Snippet for rendering a calendar item. Allows arbitrary nesting. -->
@@ -134,12 +194,13 @@
 
 					<!-- Info popups. -->
 					<div class="relative flex h-full w-full">
-						{#each item.item.infoPoints || [] as infoPoint}
+						{#each item.item.infoPoints || [] as infoPoint, infoPointIndex}
 							{@const infoPointLeft = calculateInfoPointLeft(
 								item.item.startDate,
 								item.item.endDate,
 								infoPoint.date
 							)}
+							{@const infoPointKey = `${item.item.id}-${infoPointIndex}`}
 
 							<div
 								style:left="{infoPointLeft}%"
@@ -166,7 +227,13 @@
 								<Tooltip.Root>
 									<Tooltip.Trigger class="w-full">
 										{#if infoPoint.popup}
-											<Popover.Root>
+											<Popover.Root
+												open={openInfoPointKey === infoPointKey}
+												controlledOpen={true}
+												onOpenChange={(open) => {
+													openInfoPointKey = open ? infoPointKey : null;
+												}}
+											>
 												<Popover.Trigger class="w-full">
 													{@render infoPointIcon(infoPoint.icon)}
 												</Popover.Trigger>
@@ -199,7 +266,14 @@
 {/snippet}
 
 <ScrollArea class="h-full w-full">
-	<div bind:clientHeight={pane.height} class="relative h-full w-full overflow-hidden">
+	<div
+		bind:clientHeight={pane.height}
+		class="relative h-full w-full cursor-grab select-none overflow-hidden"
+		style:touch-action="none"
+		onpointerdown={handlePointerDown}
+		onpointermove={handlePointerMove}
+		onpointerup={handlePointerUp}
+	>
 		<!-- Focus day highlight. -->
 		<div
 			style:left="{calculateSectionLeft(focusSection)}%"

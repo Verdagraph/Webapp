@@ -18,12 +18,14 @@ export function defaultSinglePlant(carryForward?: {
 	origin?: SinglePlant['origin'];
 	geometryHistory?: SinglePlant['geometryHistory'];
 	locationHistory?: SinglePlant['locationHistory'];
+	expectedObservations?: SinglePlant['expectedObservations'];
 }): SinglePlant {
 	return {
 		cultivarName: carryForward?.cultivarName ?? '',
 		origin: carryForward?.origin ?? 'DIRECT_SEED',
 		locationHistory: carryForward?.locationHistory ?? { gardenId: '', locations: [] },
 		geometryHistory: carryForward?.geometryHistory ?? { gardenId: '', geometries: [] },
+		expectedObservations: carryForward?.expectedObservations ?? [],
 		cultivarOverride: {},
 		quantity: 1
 	};

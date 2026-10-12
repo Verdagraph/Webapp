@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import { isDraftPlant } from '@vdg-webapp/models';
+
 	import { TabToolbox, TimelineSelector } from '$components';
 	import { Resizable } from '$core';
 	import { getAppContext } from '$state/application';
@@ -22,6 +24,21 @@
 	/** Contexts. */
 	const ctx = getAppContext();
 	const verdagraphContext = setVerdagraphContext(contextParams);
+
+	/**
+	 * Every plant, minus draft-bucket-owned ones the viewer hasn't opted into
+	 * seeing - shared by Layout and Calendar so a plant's ghost visibility
+	 * stays consistent across both. A plant with no draft bucket always
+	 * passes through; draftBuckets.isVisible always allows the active bucket
+	 * (see draftBucketsState.svelte.ts).
+	 */
+	const visiblePlants = $derived(
+		ctx.plants.plants.filter(
+			(plant) =>
+				!isDraftPlant(plant) ||
+				verdagraphContext.draftBuckets.isVisible(plant.draftBucketId ?? '')
+		)
+	);
 
 	/** Force a re-render of the PaneGroup if the direction is changed. */
 	let initialized = $state(true);
@@ -54,7 +71,7 @@
 							<Layout
 								{workspaceId}
 								plantingAreas={ctx.workspaces.plantingAreas}
-								plants={ctx.plants.plants}
+								plants={visiblePlants}
 							/>
 						</Resizable.Pane>
 						<Resizable.Handle withHandle={false} />
@@ -62,7 +79,7 @@
 				{/if}
 				{#if verdagraphContext.paneSettings.isEnabled('calendar')}
 					<Resizable.Pane defaultSize={30} minSize={5} order={1}>
-						<Calendar />
+						<Calendar plants={visiblePlants} />
 					</Resizable.Pane>
 					<Resizable.Handle withHandle={false} />
 				{/if}
