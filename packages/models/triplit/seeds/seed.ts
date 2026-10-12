@@ -6,13 +6,6 @@ import { schema } from '../schema.js';
 const gardenId = 'garden1';
 
 export default function seed(): BulkInsert<typeof schema> {
-	/**
-	 * The cultivar/plant/draft-bucket slice is shared with apps/demo's own
-	 * seed (see packages/models/src/seedData.ts) - both need the same
-	 * representative data, differing only in the garden/user/workspace
-	 * scaffolding around it (this dev seed also exercises multiple gardens
-	 * and membership roles that the single-user demo has no use for).
-	 */
 	const gardenPlants = buildSeedGardenPlants({
 		gardenId,
 		workspaceId: 'workspace1',
@@ -110,9 +103,7 @@ export default function seed(): BulkInsert<typeof schema> {
 		/**
 		 * Garden-level frost dates, combined with each Cultivar's
 		 * frostDatePlantingWindows profile above to compute the Calendar's
-		 * PlantingWindows pane - not yet wired to real data there (see
-		 * Calendar.svelte's hardcoded placeholder `windows`), but seeded
-		 * correctly so that's a pure UI task whenever it happens.
+		 * PlantingWindows pane.
 		 */
 		environments: [
 			{
