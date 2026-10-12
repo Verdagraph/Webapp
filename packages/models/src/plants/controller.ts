@@ -13,7 +13,6 @@ export class PlantController {
 	constructor(private ctx: ControllerContext) {}
 
 	async #createSingle(data: PlantsCreateCommand) {
-		/** Retrieve client and authorize. */
 		const { garden } = await this.ctx.requireRole(data.gardenId, 'PlantsCreate');
 
 		await this.ctx.triplit.transact(async (transaction) => {
@@ -71,12 +70,7 @@ export class PlantController {
 				});
 
 				/**
-				 * Persist the expected lifespan's milestone observations (seed,
-				 * germination, harvest, expiry, ...) submitted alongside the
-				 * geometry/location history that was generated from the same
-				 * milestone chain - these are what give the Calendar its
-				 * info-points, and widen the Plant's rendered date range
-				 * beyond beginDate/endDate alone (see plantCalendarItem).
+				 * Persist the expected lifespan's milestone observations.
 				 */
 				for (const observationData of plantData.expectedObservations) {
 					await transaction.insert('observations', {
@@ -132,8 +126,7 @@ export class PlantController {
 
 	/**
 	 * Accepts a draft bucket's plan. Its plants are unchanged and keep referencing
-	 * the bucket - this only flips `committed`, which is enough for official reads
-	 * to stop excluding them.
+	 * the bucket - this only flips `committed`.
 	 */
 	draftBucketCommit = async (id: string) => {
 		const draftBucket = await this.ctx.triplit.fetchOne(

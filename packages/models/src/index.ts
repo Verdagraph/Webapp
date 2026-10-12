@@ -12,6 +12,7 @@ export * from './planner/index.js';
 export * from './cultivars/index.js';
 export * from './environments/index.js';
 export * from './plants/index.js';
+export * from './seedData.js';
 export * from './time/index.js';
 export * from './utils.js';
 export * from './errors.js';
