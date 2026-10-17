@@ -1,3 +1,4 @@
+import { or } from '@triplit/client';
 import { useQuery } from '@triplit/svelte';
 
 import {
@@ -57,9 +58,19 @@ export function createCultivarContext(
 	const allCultivarsQuery = $derived(
 		useQuery(
 			controller.triplit,
-			controller.triplit
-				.query('cultivars')
-				.Where('collectionId', 'in', allCollectionIds)
+			controller.triplit.query('cultivars').Where([
+				/**
+				 * An `or` of equalities rather than an `in` list: a Triplit `in`
+				 * subscription goes stale (misses later inserts) when it replaces an
+				 * earlier subscription on the same table with a different list, which
+				 * is what happens each time a collection is added.
+				 */
+				or(
+					allCollectionIds.length > 0
+						? allCollectionIds.map((id) => ['collectionId', '=', id] as const)
+						: [['collectionId', '=', ''] as const]
+				)
+			])
 		)
 	);
 	const allCultivars = $derived(
@@ -102,6 +113,14 @@ export function createCultivarContext(
 	}
 
 	return {
+		/** Collections owned by the garden. Ancestors owned elsewhere are not included. */
+		get collections() {
+			return gardenCollections;
+		},
+		/** Every cultivar stored in the garden's collections and their ancestors, unresolved. */
+		get storedCultivars() {
+			return allCultivars;
+		},
 		get cultivarNames() {
 			return cultivarNames;
 		},

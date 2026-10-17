@@ -1,7 +1,10 @@
 import { z } from 'zod';
 
 import { commonFields } from '../commands.js';
-import { attributesSchemas } from './attributes/index.js';
+import {
+	CultivarAttributesUpdateCommandSchema,
+	attributesSchemas
+} from './attributes/index.js';
 import { CultivarCollectionVisibilityEnumOptions } from './schema.js';
 
 /** Field specifications. */
@@ -38,7 +41,7 @@ const cultivarDescriptionSchema = commonFields.descriptionSchema.describe(
 	'Optional description.'
 );
 
-const cultivarCollectionNameSchema = commonFields.descriptionSchema.describe(
+const cultivarCollectionNameSchema = commonFields.nameSchema.describe(
 	'The name of the collection.'
 );
 
@@ -82,19 +85,36 @@ export const cultivarFields = {
 /**
  * Command to create a new cultivar.
  */
-export const CultivarCreateCommand = z.object({
+export const CultivarCreateCommandSchema = z.object({
 	collectionId: z.string(),
-	names: cultivarNamesSchema,
+	name: cultivarNameSchema,
 	abbreviation: cultivarAbbreviationSchema,
 	scientificName: cultivarScientificNameSchema.optional(),
 	description: cultivarDescriptionSchema.default(''),
-	parentId: z.string().optional()
+	parentId: z.string().optional(),
+	attributes: CultivarAttributesUpdateCommandSchema.optional()
 });
+export type CultivarCreateCommand = z.infer<typeof CultivarCreateCommandSchema>;
+
+/**
+ * Command to update a cultivar. A null parentId removes the parent.
+ * Attributes, if present, replace the stored attributes entirely.
+ */
+export const CultivarUpdateCommandSchema = z.object({
+	name: cultivarNameSchema.optional(),
+	abbreviation: cultivarAbbreviationSchema.optional(),
+	scientificName: cultivarScientificNameSchema.optional(),
+	description: cultivarDescriptionSchema.optional(),
+	parentId: z.string().nullable().optional(),
+	attributes: CultivarAttributesUpdateCommandSchema.optional()
+});
+export type CultivarUpdateCommand = z.infer<typeof CultivarUpdateCommandSchema>;
 
 /**
  * Command to create a new cultivar collection.
+ * Owned by the garden if one is given, otherwise by the user.
  */
-export const CultivarCollectionCreateCommand = z
+export const CultivarCollectionCreateCommandSchema = z
 	.object({
 		name: cultivarCollectionNameSchema,
 		visibility: cultivarCollectionVisibilitySchema.default('HIDDEN'),
@@ -104,7 +124,24 @@ export const CultivarCollectionCreateCommand = z
 		gardenId: z.string().optional(),
 		userId: z.string().optional()
 	})
-	.refine((data) => data.gardenId && data.parentId, {
-		message: 'A cultivar collection must be connected to a garden or a user..',
-		path: ['gardenId', 'userId']
+	.refine((data) => data.gardenId || data.userId, {
+		message: 'A cultivar collection must be connected to a garden or a user.',
+		path: ['gardenId']
 	});
+export type CultivarCollectionCreateCommand = z.infer<
+	typeof CultivarCollectionCreateCommandSchema
+>;
+
+/**
+ * Command to update a cultivar collection. A null parentId removes the parent.
+ */
+export const CultivarCollectionUpdateCommandSchema = z.object({
+	name: cultivarCollectionNameSchema.optional(),
+	visibility: cultivarCollectionVisibilitySchema.optional(),
+	description: cultivarCollectionDescriptionSchema.optional(),
+	tags: cultivarCollectionTagsSchema.optional(),
+	parentId: z.string().nullable().optional()
+});
+export type CultivarCollectionUpdateCommand = z.infer<
+	typeof CultivarCollectionUpdateCommandSchema
+>;

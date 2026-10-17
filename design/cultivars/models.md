@@ -1,5 +1,5 @@
 ---
-status: Mixed. Color and Expected Geometry profiles now match the implementation (previously undocumented, corrected 2026-09-09). TemperatureProfile, InterplantingProfile, IconPack, iconPackId, germToFlowering, and floweringScaleFactor are ahead of the implementation - TemperatureProfile deliberately so, kept pending Environment temperature observations.
+status: Mixed. CultivarCollection (including tags, export and import, and deletion semantics) matches the implementation, except priority is stored but not yet editable. The implemented Cultivar has a single name rather than names. Color and Expected Geometry profiles now match the implementation (previously undocumented, corrected 2026-09-09). TemperatureProfile, InterplantingProfile, IconPack, iconPackId, germToFlowering, and floweringScaleFactor are ahead of the implementation - TemperatureProfile deliberately so, kept pending Environment temperature observations.
 ---
 
 # Cultivars - Models
@@ -102,11 +102,15 @@ If owned by a user, the HIDDEN setting will allow only that user to access the c
 
 ## tags
 
-Optional metadata
+Optional metadata.
 
 ## parent
 
-A CultivarCollection may inherit its attributes from another collection. If it does so, it inherits all Cultivars from that collection, and may override or compose on top of this collection with its own Cultivars. If a collection that is referenced by another collection is deleted, the attributes of that collection are copied before deletion.
+A CultivarCollection may inherit its attributes from another collection. If it does so, it inherits all Cultivars from that collection, and may override or compose on top of this collection with its own Cultivars. If a collection that is referenced by another collection is deleted, the attributes of that collection are copied before deletion: each child collection receives a copy of the deleted collection's Cultivars (except those whose names it already defines), is reparented to the deleted collection's parent, and Cultivars which were varieties of a deleted Cultivar are re-linked to the copy.
+
+## Export and import
+
+A collection and its Cultivars can be exported to a versioned JSON file and imported as a new collection. The format omits ids and references a Cultivar's parent by name, so an import never collides with existing data. A Cultivar whose parent is inherited from another collection is exported without its parent. The format is composed from the same schemas as the update commands, so new fields and attribute profiles are carried without changes to it.
 
 ## user and garden
 
@@ -152,7 +156,7 @@ The annual lifecycle defines the length of the stages of life for annual plants.
 
 ### Frost Date Planting Windows
 
-A planting window defines a period of time within an environment that a cultivar should be planted. These attributes define an allowed planting window of time relative to the first and last frost dates. These planting windows are used for incdicating within the Verdagraph when plants are suggested to be planted.
+A planting window defines a period of time within an environment that a cultivar should be planted. These attributes define an allowed planting window of time relative to the first and last frost dates. These planting windows are used for indicating within the Verdagraph when plants are suggested to be planted, and are consumed by the Planner's PlantingWindows calendar pane and Tree (see [PlantingWindow](../planner/models.md#plantingwindow)). A window requires both its open and close offsets.
 
 - lastFrostWindowOpen: The amount of days between the last frost and the beginning of the planting window. Positive values indicate the window begins after the last frost date. For example, a value of -15 indicates the cultivar may be planted 15 days before the last frost date.
 - lastFrostWindowClose: The amount of days between the last frost and the end of the planting window. Positive values indicate the window begins after the last frost date. For example, a value of 15 indicates the cultivar must be planted before 15 days after the last frost date.

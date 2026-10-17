@@ -23,6 +23,9 @@ const permissions = Object.freeze({
 	PlantUpdate: 'EDITOR',
 	LifespanUpdate: 'EDITOR',
 
+	/** Cultivars. Only applies to garden-owned collections. */
+	CultivarCollectionEdit: 'ADMIN',
+
 	/** Draft buckets. */
 	DraftBucketCreate: 'EDITOR',
 	DraftBucketCommit: 'EDITOR',

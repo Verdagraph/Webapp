@@ -46,6 +46,9 @@ export const cultivarSchema = S.Collections({
 			/** Optional description. */
 			description: S.String({ default: '' }),
 
+			/** Optional metadata tags. */
+			tags: S.Set(S.String(), { default: S.Default.Set.empty() }),
+
 			/** Optional parent collection to derive attributes from. */
 			parentId: S.String({ nullable: true, default: null }),
 

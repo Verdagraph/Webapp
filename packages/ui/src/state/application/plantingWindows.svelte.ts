@@ -23,16 +23,18 @@ export function createPlantingWindowsContext(
 		const windows: CultivarPlantingWindow[] = [];
 		for (const environment of environments.environments) {
 			for (const cultivar of cultivars.cultivars) {
-				windows.push(
-					calculatePlantingWindow(
-						cultivar,
-						environment,
-						{ start: timeline.beginSelection, end: timeline.endSelection },
-						'frostDates'
-					)
+				const cultivarPlantingWindow = calculatePlantingWindow(
+					cultivar,
+					environment,
+					{ start: timeline.beginSelection, end: timeline.endSelection },
+					'frostDates'
 				);
+				if (cultivarPlantingWindow.windows.length > 0) {
+					windows.push(cultivarPlantingWindow);
+				}
 			}
 		}
+		return windows;
 	});
 
 	return {

@@ -1,5 +1,5 @@
 ---
-status: This document is ahead of the implementation.
+status: PlantingWindow matches the implementation. Generator is ahead of the implementation.
 ---
 
 # Planner Models
@@ -34,6 +34,13 @@ Note: the models in this file aren't database models like the rest, as they have
 # PlantingWindow
 
 A PlantingWindow just defines a window of time which a Cultivar may be planted within a specific Environment. In the Verdagraph, it is used to visualize calendar ranges when planting different plant species.
+
+Windows are derived, not stored, for every combination of Environment and Cultivar in the Garden:
+
+- Each window is relative to a frost date, using the offsets of the Cultivar's `FrostDatePlantingWindowsProfile`. The first frost window and last frost window are independent, and each produces one window per year.
+- A window is only produced when the Environment defines the matching frost date and the Cultivar defines both the open and close offsets of that pair. A combination with no windows is not displayed.
+- Offsets of zero are valid. Offsets may push a window into an adjacent year, and such a window is included for any year it overlaps.
+- Only windows overlapping the Timeline Selector's range are generated.
 
 # Generator
 
