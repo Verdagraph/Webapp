@@ -2,7 +2,7 @@
 status: This document is behind the implementation.
 ---
 
-# Planner Models
+# Environment Models
 
 ```mermaid
 ---
@@ -59,7 +59,7 @@ Gardens should be able to define attributes of the physical environment.
 
 ### FrostDateProfile
 
-Frost dates are a widely used heuristic for constructing planting calendars. The `FrostDatePlantingWindowProfile` defined in the Plants feature category use these to define acceptable planting windows.
+Frost dates are a widely used heuristic for constructing planting calendars. The `FrostDatePlantingWindowsProfile` defined in the Cultivars feature category uses these to define acceptable planting windows, which the [Planner](../planner/models.md#plantingwindow) displays.
 
 - lastFrostDate: The date at which the last frost date is expected to occurr.
 - firstFrostDate: The date at which the last frost date is expected to oc[urr.

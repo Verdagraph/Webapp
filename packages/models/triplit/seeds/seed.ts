@@ -120,6 +120,21 @@ export default function seed(): BulkInsert<typeof schema> {
 					},
 					annualTemperature: { minimum: -12, maximum: 32 }
 				}
+			},
+			{
+				id: 'workspace2-environment',
+				name: 'Workspace 2 (Greenhouse)',
+				description: 'A sheltered workspace with earlier last and later first frost.',
+				parentType: 'WORKSPACE',
+				gardenId: gardenId,
+				workspaceIds: new Set(['workspace2']),
+				inherit: false,
+				attributes: {
+					frostDates: {
+						lastFrostDate: new Date(2026, 2, 1),
+						firstFrostDate: new Date(2026, 11, 15)
+					}
+				}
 			}
 		],
 		cultivarCollections: gardenPlants.cultivarCollections,

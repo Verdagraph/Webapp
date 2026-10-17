@@ -24,6 +24,9 @@ import { type Position, historyGetRange } from './workspaces/index.js';
 
 const cultivarCollectionId = 'west-coast-seeds';
 
+/** Id of the seeded West Coast Seeds cultivar collection. */
+export const westCoastSeedsCollectionId = cultivarCollectionId;
+
 export const lettuce: Cultivar = {
 	id: 'lettuce',
 	collectionId: cultivarCollectionId,
@@ -122,6 +125,219 @@ export const carrot: Cultivar = {
 	},
 	createdAt: new Date()
 };
+
+/** Fills the fields every West Coast Seeds cultivar shares. */
+function westCoastCultivar(
+	cultivar: Omit<Cultivar, 'collectionId' | 'createdAt'>
+): Cultivar {
+	return { ...cultivar, collectionId: cultivarCollectionId, createdAt: new Date() };
+}
+
+/**
+ * Additional cultivars for the West Coast Seeds collection, so the cultivar
+ * editor has varieties (parentId chains) and a spread of lifecycles and
+ * frost windows to show. Values are representative, not copied from packets.
+ */
+export const romaTomato = westCoastCultivar({
+	id: 'roma-tomato',
+	name: 'Roma Tomato',
+	abbreviation: 'Ro',
+	parentId: 'tomato',
+	description: 'A paste tomato variety with dense, meaty fruit.',
+	attributes: {
+		annualLifeCycle: { germToFirstHarvest: 85, firstToLastHarvest: 45 },
+		color: { baseColor: '#CD2B31', outlineColor: '#FF9592', textColor: '#641723' }
+	}
+});
+export const cherryTomato = westCoastCultivar({
+	id: 'cherry-tomato',
+	name: 'Cherry Tomato',
+	abbreviation: 'Ch',
+	parentId: 'tomato',
+	description: 'A prolific, early variety with small sweet fruit.',
+	attributes: {
+		annualLifeCycle: { germToFirstHarvest: 62, firstToLastHarvest: 75 },
+		expectedGeometry: { firstHarvestSize: 0.5, lastHarvestSize: 0.55, expirySize: 0.5 }
+	}
+});
+export const romaineLettuce = westCoastCultivar({
+	id: 'romaine-lettuce',
+	name: 'Romaine Lettuce',
+	abbreviation: 'Rm',
+	parentId: 'lettuce',
+	description: 'An upright, heat-tolerant lettuce forming tall heads.',
+	attributes: { annualLifeCycle: { germToFirstHarvest: 55, firstToLastHarvest: 14 } }
+});
+export const spinach = westCoastCultivar({
+	id: 'spinach',
+	name: 'Spinach',
+	abbreviation: 'Sp',
+	scientificName: 'Spinacia oleracea',
+	description: 'A cold-hardy leafy green that bolts in summer heat.',
+	attributes: {
+		annualLifeCycle: {
+			sowToGerm: 7,
+			germToFirstHarvest: 40,
+			firstToLastHarvest: 15,
+			lastHarvestToExpiry: 7
+		},
+		color: { baseColor: '#30A46C', outlineColor: '#6CCB97', textColor: '#193B2D' },
+		frostDatePlantingWindows: {
+			lastFrostWindowOpen: -42,
+			lastFrostWindowClose: 14,
+			firstFrostWindowOpen: -56,
+			firstFrostWindowClose: -21
+		},
+		origin: { transplantable: false },
+		expectedGeometry: {
+			geometryType: 'ELLIPSE',
+			seedSize: 0.005,
+			seedlingSize: 0.03,
+			firstHarvestSize: 0.2,
+			lastHarvestSize: 0.25,
+			expirySize: 0.2
+		}
+	}
+});
+export const kale = westCoastCultivar({
+	id: 'kale',
+	name: 'Kale',
+	abbreviation: 'Ka',
+	scientificName: 'Brassica oleracea',
+	description: 'A hardy brassica harvested leaf by leaf into the winter.',
+	attributes: {
+		annualLifeCycle: {
+			sowToGerm: 7,
+			germToTransplant: 28,
+			germToFirstHarvest: 55,
+			firstToLastHarvest: 90,
+			lastHarvestToExpiry: 14
+		},
+		color: { baseColor: '#3E63DD', outlineColor: '#8DA4EF', textColor: '#182449' },
+		frostDatePlantingWindows: {
+			lastFrostWindowOpen: -28,
+			lastFrostWindowClose: 28,
+			firstFrostWindowOpen: -90,
+			firstFrostWindowClose: -45
+		},
+		origin: { transplantable: true },
+		expectedGeometry: {
+			geometryType: 'ELLIPSE',
+			seedSize: 0.01,
+			seedlingSize: 0.06,
+			firstHarvestSize: 0.45,
+			lastHarvestSize: 0.6,
+			expirySize: 0.5
+		}
+	}
+});
+export const radish = westCoastCultivar({
+	id: 'radish',
+	name: 'Radish',
+	abbreviation: 'Ra',
+	scientificName: 'Raphanus sativus',
+	description: 'A very fast direct-seeded root, suited to succession sowing.',
+	attributes: {
+		annualLifeCycle: {
+			sowToGerm: 4,
+			germToFirstHarvest: 25,
+			firstToLastHarvest: 7,
+			lastHarvestToExpiry: 5
+		},
+		color: { baseColor: '#E93D82', outlineColor: '#F3A0C0', textColor: '#5F1B35' },
+		frostDatePlantingWindows: {
+			lastFrostWindowOpen: -35,
+			lastFrostWindowClose: 35,
+			firstFrostWindowOpen: -50,
+			firstFrostWindowClose: -21
+		},
+		origin: { transplantable: false },
+		expectedGeometry: {
+			geometryType: 'ELLIPSE',
+			seedSize: 0.003,
+			seedlingSize: 0.015,
+			firstHarvestSize: 0.04,
+			lastHarvestSize: 0.05,
+			expirySize: 0.04
+		}
+	}
+});
+export const bushBean = westCoastCultivar({
+	id: 'bush-bean',
+	name: 'Bush Bean',
+	abbreviation: 'Bb',
+	scientificName: 'Phaseolus vulgaris',
+	description: 'A frost-tender, direct-seeded legume with a compact habit.',
+	attributes: {
+		annualLifeCycle: {
+			sowToGerm: 8,
+			germToFirstHarvest: 55,
+			firstToLastHarvest: 21,
+			lastHarvestToExpiry: 10
+		},
+		color: { baseColor: '#12A594', outlineColor: '#53B9AB', textColor: '#0D3D38' },
+		frostDatePlantingWindows: {
+			lastFrostWindowOpen: 7,
+			lastFrostWindowClose: 49,
+			firstFrostWindowOpen: -75,
+			firstFrostWindowClose: -56
+		},
+		origin: { transplantable: false },
+		expectedGeometry: {
+			geometryType: 'ELLIPSE',
+			seedSize: 0.01,
+			seedlingSize: 0.05,
+			firstHarvestSize: 0.35,
+			lastHarvestSize: 0.4,
+			expirySize: 0.35
+		}
+	}
+});
+export const zucchini = westCoastCultivar({
+	id: 'zucchini',
+	name: 'Zucchini',
+	abbreviation: 'Zu',
+	scientificName: 'Cucurbita pepo',
+	description: 'A productive summer squash that sprawls across the bed.',
+	attributes: {
+		annualLifeCycle: {
+			sowToGerm: 7,
+			germToTransplant: 21,
+			germToFirstHarvest: 50,
+			firstToLastHarvest: 60,
+			lastHarvestToExpiry: 14
+		},
+		color: { baseColor: '#FFC53D', outlineColor: '#FFE770', textColor: '#4F3422' },
+		frostDatePlantingWindows: {
+			lastFrostWindowOpen: 14,
+			lastFrostWindowClose: 49,
+			firstFrostWindowOpen: -110,
+			firstFrostWindowClose: -70
+		},
+		origin: { transplantable: true },
+		expectedGeometry: {
+			geometryType: 'ELLIPSE',
+			seedSize: 0.015,
+			seedlingSize: 0.1,
+			firstHarvestSize: 0.9,
+			lastHarvestSize: 1,
+			expirySize: 0.9
+		}
+	}
+});
+const westCoastSeedsCultivars = [
+	lettuce,
+	tomato,
+	carrot,
+	romaTomato,
+	cherryTomato,
+	romaineLettuce,
+	spinach,
+	kale,
+	radish,
+	bushBean,
+	zucchini
+];
 
 /**
  * Builds every row needed for one Plant - lifespans, geometry/location
@@ -385,10 +601,12 @@ export function buildSeedGardenPlants(params: {
 				gardenId: params.gardenId,
 				name: 'West Coast Seeds',
 				slug: 'west-coast-seeds',
+				description: 'Cultivars suited to a coastal temperate climate.',
+				tags: new Set(['seed company', 'temperate']),
 				visibility: 'HIDDEN' as const
 			}
 		],
-		cultivars: [lettuce, tomato, carrot],
+		cultivars: westCoastSeedsCultivars,
 		plants: seedPlants.map((seedPlant) => seedPlant.plant),
 		lifespans: seedPlants.flatMap((seedPlant) => seedPlant.lifespans),
 		geometryHistories: seedPlants.flatMap((seedPlant) => seedPlant.geometryHistories),

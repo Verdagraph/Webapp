@@ -18,7 +18,7 @@ function unwrapEffects(schema: z.ZodTypeAny): z.ZodTypeAny {
 }
 
 /** Unwraps refinements/optional/nullable/default wrappers to reach the node they describe. */
-function unwrapForTraversal(schema: z.ZodTypeAny): z.ZodTypeAny {
+export function unwrapForTraversal(schema: z.ZodTypeAny): z.ZodTypeAny {
 	if (schema instanceof z.ZodEffects) return unwrapForTraversal(schema._def.schema);
 	if (schema instanceof z.ZodOptional) return unwrapForTraversal(schema._def.innerType);
 	if (schema instanceof z.ZodNullable) return unwrapForTraversal(schema._def.innerType);
@@ -156,4 +156,14 @@ export function zodIssuesToFieldErrors(issues: z.ZodIssue[]): Record<string, str
 		(fieldErrors[key] ??= []).push(issue.message);
 	}
 	return fieldErrors;
+}
+
+/**
+ * Reads the `.describe()` text of a schema node, looking through
+ * optional/nullable/default wrappers when the wrapper itself has none.
+ * @param schema The schema node.
+ * @returns The description, if any.
+ */
+export function getSchemaDescription(schema: z.ZodTypeAny): string | undefined {
+	return schema.description ?? unwrapForTraversal(schema).description;
 }

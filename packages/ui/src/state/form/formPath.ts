@@ -81,3 +81,30 @@ export function getValueAtPath(path: string, obj: unknown): unknown {
 	}
 	return value;
 }
+
+/**
+ * Writes a value at a dot/bracket path, creating intermediate objects as needed.
+ * Writing undefined removes the key, so optional fields are cleared rather than
+ * left as undefined entries.
+ * @param path The path to write, e.g. "attributes.color.baseColor".
+ * @param obj The object to mutate.
+ * @param value The value to write.
+ */
+export function setValueAtPath(path: string, obj: unknown, value: unknown): void {
+	const segments = path.split(/[[\].]/).filter(Boolean);
+	const lastSegment = segments.pop();
+	if (lastSegment === undefined) return;
+
+	let container = obj as Record<string, unknown>;
+	for (const segment of segments) {
+		if (typeof container[segment] !== 'object' || container[segment] === null) {
+			container[segment] = {};
+		}
+		container = container[segment] as Record<string, unknown>;
+	}
+	if (value === undefined) {
+		delete container[lastSegment];
+	} else {
+		container[lastSegment] = value;
+	}
+}

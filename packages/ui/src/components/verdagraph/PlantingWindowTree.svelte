@@ -21,48 +21,61 @@
 	/** Stores errors of the tree fields. */
 	const fieldErrors: FieldErrors = $state({});
 
-	/** Construct read-only tree items from planting windows. */
+	/** Construct read-only tree items: Environment > Cultivar > Window. */
 	let items = $derived(
-		plantingWindows.map((plantingWindow) => {
-			const baseId = toTreeBaseId('plantingWindow', plantingWindow.cultivar.id);
+		[...Map.groupBy(plantingWindows, (entry) => entry.environment.id).values()].map(
+			(environmentWindows) => {
+				const environment = environmentWindows[0].environment;
+				const environmentId = toTreeBaseId('plantingWindowEnvironment', environment.id);
 
-			const windowItems: Item[] = plantingWindow.windows.map((window, index) => {
-				const windowId = toTreeId(baseId, `window[${index}]`);
+				const cultivarItems: Item[] = environmentWindows.map((plantingWindow) => {
+					const cultivarId = toTreeId(environmentId, plantingWindow.cultivar.id);
+
+					const windowItems: Item[] = plantingWindow.windows.map((window, index) => {
+						const windowId = toTreeId(cultivarId, `window[${index}]`);
+						return {
+							id: windowId,
+							label: `Window ${index + 1}`,
+							children: [
+								{
+									id: toTreeId(windowId, 'start'),
+									label: 'Start',
+									valueComponent: TreeDate,
+									value: fromDate(window.range.start, getLocalTimeZone()),
+									onChange: () => {}
+								},
+								{
+									id: toTreeId(windowId, 'end'),
+									label: 'End',
+									valueComponent: TreeDate,
+									value: fromDate(window.range.end, getLocalTimeZone()),
+									onChange: () => {}
+								},
+								{
+									id: toTreeId(windowId, 'suitability'),
+									label: 'Suitability',
+									valueComponent: TreeString,
+									value: `${Math.round(window.suitability * 100)}%`,
+									onChange: () => {}
+								}
+							]
+						};
+					});
+
+					return {
+						id: cultivarId,
+						label: plantingWindow.cultivar.name || plantingWindow.cultivar.abbreviation,
+						children: windowItems
+					};
+				});
+
 				return {
-					id: windowId,
-					label: `Window ${index + 1}`,
-					children: [
-						{
-							id: toTreeId(windowId, 'start'),
-							label: 'Start',
-							valueComponent: TreeDate,
-							value: fromDate(window.range.start, getLocalTimeZone()),
-							onChange: () => {}
-						},
-						{
-							id: toTreeId(windowId, 'end'),
-							label: 'End',
-							valueComponent: TreeDate,
-							value: fromDate(window.range.end, getLocalTimeZone()),
-							onChange: () => {}
-						},
-						{
-							id: toTreeId(windowId, 'suitability'),
-							label: 'Suitability',
-							valueComponent: TreeString,
-							value: `${Math.round(window.suitability * 100)}%`,
-							onChange: () => {}
-						}
-					]
+					id: environmentId,
+					label: environment.name,
+					children: cultivarItems
 				};
-			});
-
-			return {
-				id: baseId,
-				label: plantingWindow.cultivar.name || plantingWindow.cultivar.abbreviation,
-				children: windowItems
-			};
-		})
+			}
+		)
 	);
 
 	/** Create the editable tree. */

@@ -1,5 +1,5 @@
 ---
-status: The page structure (Tree/Calendar/Layout/Timeline Selector/Toolbar/Toolbox) roughly matches the implementation. Nearly everything else - the Layout window's rendering rules, Calendar's info-point popups, and every Toolbox Tool except Add Plants' Single mode - is ahead of the implementation.
+status: The page structure (Tree/Calendar/Layout/Timeline Selector/Toolbar/Toolbox) roughly matches the implementation. The PlantingWindows pane and Tree tab (read-only) also match the implementation. Nearly everything else - the Layout window's rendering rules, Calendar's info-point popups, and every Toolbox Tool except Add Plants' Single mode - is ahead of the implementation.
 ---
 
 # Planner - Wireframes
@@ -68,7 +68,7 @@ A Plant belonging to an open DraftBucket renders with the same "ghost" styling a
 
 #### PlantingWindows pane
 
-Nested Environment -> Cultivar -> PlantingWindow, matching [Tree](#tree)'s sort order - Environment leads because it's what a PlantingWindow's date range is actually derived from (frost dates), and a garden typically has few distinct Environments to begin with.
+Nested Environment -> Cultivar -> PlantingWindow, matching [Tree](#tree)'s sort order - Environment leads because it's what a PlantingWindow's date range is actually derived from (frost dates), and a garden typically has few distinct Environments to begin with. Every Environment and Cultivar combination with at least one window in the visible range is shown, with one bar per window under its Cultivar.
 
 #### Environment observations
 

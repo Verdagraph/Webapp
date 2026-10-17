@@ -1,5 +1,6 @@
 import { TriplitClient as TriplitClientBase } from '@triplit/client';
 
+import { CultivarController } from './cultivars/controller.js';
 import { GardenController } from './gardens/controller.js';
 import {
 	type ActionType,
@@ -105,6 +106,7 @@ export type ControllerContext = ReturnType<typeof createController>;
  */
 export interface Commands extends ControllerContext {
 	gardens: GardenController;
+	cultivars: CultivarController;
 	workspaces: WorkspaceController;
 	plants: PlantController;
 	observations: ObservationController;
@@ -121,6 +123,7 @@ export function createCommands(params: ControllerContextParams): Commands {
 	return {
 		...ctx,
 		gardens: new GardenController(ctx),
+		cultivars: new CultivarController(ctx),
 		workspaces: new WorkspaceController(ctx),
 		plants: new PlantController(ctx),
 		observations: new ObservationController(ctx)
