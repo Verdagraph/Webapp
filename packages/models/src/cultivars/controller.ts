@@ -12,6 +12,7 @@ import {
 	type CultivarCollectionImportCommand,
 	orderCultivarsParentsFirst
 } from './exportImport.js';
+import { allCultivarNames, normalizeCultivarName } from './names.js';
 
 const MAX_INHERITANCE_DEPTH = 16;
 
@@ -159,22 +160,62 @@ export class CultivarController {
 		}
 	}
 
-	/** Validates the cultivar name is unique within its collection. */
-	async #requireUniqueCultivarName(
+	/**
+	 * Validates a cultivar's names are unique, ignoring case and punctuation,
+	 * among its own names and every name in its collection.
+	 * @param collectionId The collection the cultivar is in.
+	 * @param name The cultivar's primary name.
+	 * @param names The cultivar's other names.
+	 * @param excludeId A cultivar to ignore (the one being updated).
+	 */
+	async #requireUniqueCultivarNames(
 		collectionId: string,
 		name: string,
+		names: string[],
 		excludeId?: string
 	): Promise<void> {
-		const existing = await this.ctx.triplit.fetchOne(
-			this.ctx.triplit.query('cultivars').Where([
-				['collectionId', '=', collectionId],
-				['name', '=', name]
-			])
+		const claimed = new Set<string>([normalizeCultivarName(name)]);
+		for (const otherName of names) {
+			const normalized = normalizeCultivarName(otherName);
+			if (claimed.has(normalized)) {
+				throw new AppError('Duplicate cultivar name.', {
+					fieldErrors: {
+						names: [`"${otherName}" is already one of this cultivar's names.`]
+					}
+				});
+			}
+			claimed.add(normalized);
+		}
+
+		const siblings = await this.ctx.triplit.fetch(
+			this.ctx.triplit.query('cultivars').Where(['collectionId', '=', collectionId])
 		);
-		if (existing && existing.id !== excludeId) {
-			throw new AppError('Cultivar name already exists.', {
-				fieldErrors: { name: ['This cultivar name already exists in this collection.'] }
-			});
+		for (const sibling of siblings) {
+			if (sibling.id === excludeId) continue;
+			const siblingNames = new Set(
+				allCultivarNames(sibling).map(normalizeCultivarName)
+			);
+			if (siblingNames.has(normalizeCultivarName(name))) {
+				throw new AppError('Cultivar name already exists.', {
+					fieldErrors: {
+						name: [
+							`"${name}" is already a name of "${sibling.name}" in this collection.`
+						]
+					}
+				});
+			}
+			const clashing = names.find((otherName) =>
+				siblingNames.has(normalizeCultivarName(otherName))
+			);
+			if (clashing) {
+				throw new AppError('Cultivar name already exists.', {
+					fieldErrors: {
+						names: [
+							`"${clashing}" is already a name of "${sibling.name}" in this collection.`
+						]
+					}
+				});
+			}
 		}
 	}
 
@@ -233,20 +274,22 @@ export class CultivarController {
 				tags: new Set(data.collection.tags ?? [])
 			});
 
+			/** Normalized primary names, so parents are referenced loosely. */
 			const idsByName = new Map<string, string>();
 			for (const cultivar of orderedCultivars) {
 				const inserted = await transaction.insert('cultivars', {
 					collectionId: collection.id,
 					name: cultivar.name,
+					names: new Set(cultivar.names ?? []),
 					abbreviation: cultivar.abbreviation,
 					scientificName: cultivar.scientificName,
 					description: cultivar.description ?? '',
 					parentId: cultivar.parentName
-						? (idsByName.get(cultivar.parentName) ?? null)
+						? (idsByName.get(normalizeCultivarName(cultivar.parentName)) ?? null)
 						: null,
 					attributes: cultivar.attributes ?? {}
 				});
-				idsByName.set(cultivar.name, inserted.id);
+				idsByName.set(normalizeCultivarName(cultivar.name), inserted.id);
 			}
 			imported = collection;
 		});
@@ -372,26 +415,35 @@ export class CultivarController {
 				const subtreeCultivars = await this.ctx.triplit.fetch(
 					this.ctx.triplit.query('cultivars').Where(['collectionId', 'in', subtreeIds])
 				);
-				const childNames = new Map(
-					subtreeCultivars
-						.filter((cultivar) => cultivar.collectionId === child.id)
-						.map((cultivar) => [cultivar.name, cultivar.id])
-				);
+				/** Every name the child's own cultivars answer to, normalized, to the cultivar. */
+				const childNames = new Map<string, string>();
+				for (const childCultivar of subtreeCultivars) {
+					if (childCultivar.collectionId !== child.id) continue;
+					for (const name of allCultivarNames(childCultivar)) {
+						childNames.set(normalizeCultivarName(name), childCultivar.id);
+					}
+				}
 
 				/** Maps deleted cultivar ids to their replacement in this child. */
 				const replacementIds = new Map<string, string>();
 				for (const cultivar of orderedCultivars) {
-					const existingId = childNames.get(cultivar.name);
+					/** The child already defines the name: its cultivar overrides the copy. */
+					const existingId = childNames.get(normalizeCultivarName(cultivar.name));
 					if (existingId) {
 						replacementIds.set(cultivar.id, existingId);
 						continue;
 					}
+					/** Other names the child already uses stay with the child. */
+					const copiedNames = [...cultivar.names].filter(
+						(name) => !childNames.has(normalizeCultivarName(name))
+					);
 					const parentId = cultivar.parentId
 						? (replacementIds.get(cultivar.parentId) ?? cultivar.parentId)
 						: null;
 					const copy = await transaction.insert('cultivars', {
 						collectionId: child.id,
 						name: cultivar.name,
+						names: new Set(copiedNames),
 						abbreviation: cultivar.abbreviation,
 						scientificName: cultivar.scientificName,
 						description: cultivar.description,
@@ -399,6 +451,9 @@ export class CultivarController {
 						parentId
 					});
 					replacementIds.set(cultivar.id, copy.id);
+					for (const name of [cultivar.name, ...copiedNames]) {
+						childNames.set(normalizeCultivarName(name), copy.id);
+					}
 				}
 
 				/** Re-link cultivars in the subtree which inherited from a deleted cultivar. */
@@ -451,7 +506,7 @@ export class CultivarController {
 	createCultivar = async (data: CultivarCreateCommand): Promise<Cultivar> => {
 		const collection = await this.#getCollectionOrError(data.collectionId);
 		await this.#requireCollectionEdit(collection);
-		await this.#requireUniqueCultivarName(collection.id, data.name);
+		await this.#requireUniqueCultivarNames(collection.id, data.name, data.names);
 		if (data.parentId) {
 			await this.#requireValidCultivarParent(collection, data.parentId);
 		}
@@ -459,6 +514,7 @@ export class CultivarController {
 		return await this.ctx.triplit.insert('cultivars', {
 			collectionId: collection.id,
 			name: data.name,
+			names: new Set(data.names),
 			abbreviation: data.abbreviation,
 			scientificName: data.scientificName,
 			description: data.description,
@@ -473,8 +529,13 @@ export class CultivarController {
 		const collection = await this.#getCollectionOrError(cultivar.collectionId);
 		await this.#requireCollectionEdit(collection);
 
-		if (data.name && data.name !== cultivar.name) {
-			await this.#requireUniqueCultivarName(collection.id, data.name, id);
+		if (data.name !== undefined || data.names !== undefined) {
+			await this.#requireUniqueCultivarNames(
+				collection.id,
+				data.name ?? cultivar.name,
+				data.names ?? [...cultivar.names],
+				id
+			);
 		}
 		if (data.parentId) {
 			await this.#requireValidCultivarParent(collection, data.parentId, id);
@@ -482,6 +543,7 @@ export class CultivarController {
 
 		await this.ctx.triplit.update('cultivars', id, (draft) => {
 			if (data.name !== undefined) draft.name = data.name;
+			if (data.names !== undefined) draft.names = new Set(data.names);
 			if (data.abbreviation !== undefined) draft.abbreviation = data.abbreviation;
 			if (data.scientificName !== undefined) draft.scientificName = data.scientificName;
 			if (data.description !== undefined) draft.description = data.description;

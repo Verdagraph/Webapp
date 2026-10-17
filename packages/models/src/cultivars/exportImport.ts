@@ -6,6 +6,7 @@ import {
 	CultivarUpdateCommandSchema,
 	cultivarFields
 } from './commands.js';
+import { allCultivarNames, normalizeCultivarName } from './names.js';
 import { type Cultivar, type CultivarCollection } from './schema.js';
 
 /** Bump when the export format changes incompatibly. */
@@ -67,6 +68,7 @@ export function exportCultivarCollection(
 		},
 		cultivars: collectionCultivars.map((cultivar) => ({
 			name: cultivar.name,
+			names: [...cultivar.names],
 			abbreviation: cultivar.abbreviation,
 			scientificName: cultivar.scientificName ?? undefined,
 			description: cultivar.description,
@@ -78,21 +80,25 @@ export function exportCultivarCollection(
 
 /**
  * Orders exported cultivars so each follows its parent, and rejects
- * duplicate names, unknown parents and cycles.
+ * duplicate names (primary or other, ignoring case and punctuation),
+ * unknown parents and cycles.
  * @param cultivars The exported cultivars.
  * @returns The cultivars, parents first.
  */
 export function orderCultivarsParentsFirst(
 	cultivars: CultivarCollectionExport['cultivars']
 ): CultivarCollectionExport['cultivars'] {
-	const names = new Set<string>();
+	const claimedNames = new Set<string>();
 	for (const cultivar of cultivars) {
-		if (names.has(cultivar.name)) {
-			throw new AppError('Duplicate cultivar name in import.', {
-				nonFormErrors: [`The cultivar name "${cultivar.name}" appears more than once.`]
-			});
+		for (const name of allCultivarNames(cultivar)) {
+			const normalized = normalizeCultivarName(name);
+			if (claimedNames.has(normalized)) {
+				throw new AppError('Duplicate cultivar name in import.', {
+					nonFormErrors: [`The cultivar name "${name}" appears more than once.`]
+				});
+			}
+			claimedNames.add(normalized);
 		}
-		names.add(cultivar.name);
 	}
 
 	const ordered: CultivarCollectionExport['cultivars'] = [];
@@ -100,7 +106,8 @@ export function orderCultivarsParentsFirst(
 	let remaining = [...cultivars];
 	while (remaining.length > 0) {
 		const ready = remaining.filter(
-			(cultivar) => !cultivar.parentName || placed.has(cultivar.parentName)
+			(cultivar) =>
+				!cultivar.parentName || placed.has(normalizeCultivarName(cultivar.parentName))
 		);
 		if (ready.length === 0) {
 			throw new AppError('Unresolvable cultivar parents in import.', {
@@ -111,9 +118,11 @@ export function orderCultivarsParentsFirst(
 		}
 		for (const cultivar of ready) {
 			ordered.push(cultivar);
-			placed.add(cultivar.name);
+			placed.add(normalizeCultivarName(cultivar.name));
 		}
-		remaining = remaining.filter((cultivar) => !placed.has(cultivar.name));
+		remaining = remaining.filter(
+			(cultivar) => !placed.has(normalizeCultivarName(cultivar.name))
+		);
 	}
 	return ordered;
 }

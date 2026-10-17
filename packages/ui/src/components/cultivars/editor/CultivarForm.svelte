@@ -46,6 +46,29 @@
 		<Form.FieldErrors handlerErrors={handler.fieldErrors?.name} />
 	</Form.Field>
 
+	<Form.Field {form} name="names">
+		<Form.Control>
+			{#snippet children({ props }: { props: ControlProps })}
+				<Form.Label
+					description={cultivarFields.cultivarNamesSchema.description}
+					optional={true}>Other names (comma separated)</Form.Label
+				>
+				<Input.Root
+					{...props}
+					type="text"
+					value={(form.data.names ?? []).join(', ')}
+					oninput={(event) => {
+						form.data.names = event.currentTarget.value
+							.split(',')
+							.map((name) => name.trim())
+							.filter((name) => name.length > 0);
+					}}
+				/>
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors handlerErrors={handler.fieldErrors?.names} />
+	</Form.Field>
+
 	<Form.Field {form} name="abbreviation">
 		<Form.Control>
 			{#snippet children({ props }: { props: ControlProps })}

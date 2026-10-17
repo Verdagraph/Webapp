@@ -17,12 +17,15 @@ const cultivarNameSchema = z
 		/^[0-9A-Za-z _-]+$/,
 		'Must contain only letters, numbers, spaces, hyphens, and underscores.'
 	)
-	.describe('A common name of this plant species.');
+	.describe('The primary name of this plant. Plants are matched to cultivars by name.');
 const cultivarNamesSchema = z
 	.array(cultivarNameSchema)
-	.min(1, 'Must contain at least 1 name.')
-	.max(10, 'May contain at most 10 names.')
-	.describe('A set of common names associated with this plant species.');
+	.max(10, 'May contain at most 10 other names.')
+	.describe(
+		'Other names this plant is known by, for example Courgette for Zucchini. \
+            Names match loosely: case, accents, hyphens and spacing are ignored. \
+            Each name must be unique among the names in the collection.'
+	);
 const cultivarAbbreviationSchema = z
 	.string()
 	.trim()
@@ -88,6 +91,7 @@ export const cultivarFields = {
 export const CultivarCreateCommandSchema = z.object({
 	collectionId: z.string(),
 	name: cultivarNameSchema,
+	names: cultivarNamesSchema.default([]),
 	abbreviation: cultivarAbbreviationSchema,
 	scientificName: cultivarScientificNameSchema.optional(),
 	description: cultivarDescriptionSchema.default(''),
@@ -102,6 +106,7 @@ export type CultivarCreateCommand = z.infer<typeof CultivarCreateCommandSchema>;
  */
 export const CultivarUpdateCommandSchema = z.object({
 	name: cultivarNameSchema.optional(),
+	names: cultivarNamesSchema.optional(),
 	abbreviation: cultivarAbbreviationSchema.optional(),
 	scientificName: cultivarScientificNameSchema.optional(),
 	description: cultivarDescriptionSchema.optional(),

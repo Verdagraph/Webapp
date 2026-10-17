@@ -31,6 +31,7 @@ export const lettuce: Cultivar = {
 	id: 'lettuce',
 	collectionId: cultivarCollectionId,
 	name: 'lettuce',
+	names: new Set(['leaf lettuce']),
 	abbreviation: 'Le',
 	description: 'A fast-growing, cold-hardy leafy green.',
 	attributes: {
@@ -49,6 +50,8 @@ export const lettuce: Cultivar = {
 			firstFrostWindowClose: -14
 		},
 		origin: { transplantable: true },
+		sowing: { sunExposure: 'PARTIAL_SHADE', plantingDepth: 0.003, rowSpacing: 0.3 },
+		interplanting: { minimumDistance: 0.25 },
 		expectedGeometry: {
 			geometryType: 'ELLIPSE',
 			seedSize: 0.01,
@@ -64,6 +67,7 @@ export const tomato: Cultivar = {
 	id: 'tomato',
 	collectionId: cultivarCollectionId,
 	name: 'tomato',
+	names: new Set(['tomatoes', 'love apple']),
 	abbreviation: 'To',
 	description: 'A frost-tender fruiting crop, started indoors and transplanted out.',
 	attributes: {
@@ -82,6 +86,8 @@ export const tomato: Cultivar = {
 			firstFrostWindowClose: -60
 		},
 		origin: { transplantable: true },
+		sowing: { sunExposure: 'FULL_SUN', plantingDepth: 0.006, rowSpacing: 0.9 },
+		interplanting: { minimumDistance: 0.6 },
 		expectedGeometry: {
 			geometryType: 'RECTANGLE',
 			seedSize: 0.02,
@@ -97,6 +103,7 @@ export const carrot: Cultivar = {
 	id: 'carrot',
 	collectionId: cultivarCollectionId,
 	name: 'carrot',
+	names: new Set(['carrots']),
 	abbreviation: 'Ca',
 	description: 'A direct-seeded root crop that does not transplant well.',
 	attributes: {
@@ -114,6 +121,8 @@ export const carrot: Cultivar = {
 			firstFrostWindowClose: -20
 		},
 		origin: { transplantable: false },
+		sowing: { sunExposure: 'FULL_SUN', plantingDepth: 0.006, rowSpacing: 0.3 },
+		interplanting: { minimumDistance: 0.05 },
 		expectedGeometry: {
 			geometryType: 'ELLIPSE',
 			seedSize: 0.005,
@@ -128,9 +137,16 @@ export const carrot: Cultivar = {
 
 /** Fills the fields every West Coast Seeds cultivar shares. */
 function westCoastCultivar(
-	cultivar: Omit<Cultivar, 'collectionId' | 'createdAt'>
+	cultivar: Omit<Cultivar, 'collectionId' | 'createdAt' | 'names'> & {
+		names?: string[];
+	}
 ): Cultivar {
-	return { ...cultivar, collectionId: cultivarCollectionId, createdAt: new Date() };
+	return {
+		...cultivar,
+		names: new Set(cultivar.names ?? []),
+		collectionId: cultivarCollectionId,
+		createdAt: new Date()
+	};
 }
 
 /**
@@ -265,6 +281,7 @@ export const radish = westCoastCultivar({
 export const bushBean = westCoastCultivar({
 	id: 'bush-bean',
 	name: 'Bush Bean',
+	names: ['Green Bean', 'Snap Bean'],
 	abbreviation: 'Bb',
 	scientificName: 'Phaseolus vulgaris',
 	description: 'A frost-tender, direct-seeded legume with a compact habit.',
@@ -283,6 +300,8 @@ export const bushBean = westCoastCultivar({
 			firstFrostWindowClose: -56
 		},
 		origin: { transplantable: false },
+		sowing: { sunExposure: 'FULL_SUN', plantingDepth: 0.025, rowSpacing: 0.6 },
+		interplanting: { minimumDistance: 0.1 },
 		expectedGeometry: {
 			geometryType: 'ELLIPSE',
 			seedSize: 0.01,
@@ -296,6 +315,7 @@ export const bushBean = westCoastCultivar({
 export const zucchini = westCoastCultivar({
 	id: 'zucchini',
 	name: 'Zucchini',
+	names: ['Courgette', 'Summer Squash'],
 	abbreviation: 'Zu',
 	scientificName: 'Cucurbita pepo',
 	description: 'A productive summer squash that sprawls across the bed.',

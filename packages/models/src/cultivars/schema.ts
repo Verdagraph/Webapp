@@ -142,8 +142,11 @@ export const cultivarSchema = S.Collections({
 			/** Collection the cultivar is in. */
 			collectionId: S.String(),
 
-			/** A common name. Used to match plants to cultivars. */
+			/** The primary name. Shown in lists, and matched loosely against plant cultivar names. */
 			name: S.String(),
+
+			/** Other names the cultivar answers to. Unique among the collection's names. */
+			names: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
 			/** Shorthand. */
 			abbreviation: S.String(),

@@ -1,5 +1,5 @@
 ---
-status: Mixed. CultivarCollection (including tags, export and import, and deletion semantics) matches the implementation, except priority is stored but not yet editable. The implemented Cultivar has a single name rather than names. Color and Expected Geometry profiles now match the implementation (previously undocumented, corrected 2026-09-09). TemperatureProfile, InterplantingProfile, IconPack, iconPackId, germToFlowering, and floweringScaleFactor are ahead of the implementation - TemperatureProfile deliberately so, kept pending Environment temperature observations.
+status: Mixed. CultivarCollection (including tags, export and import, and deletion semantics) matches the implementation, except priority is stored but not yet editable. Cultivar `name` and `names` match the implementation. Color and Expected Geometry profiles now match the implementation (previously undocumented, corrected 2026-09-09). The Sowing and Interplanting profiles match the implementation. TemperatureProfile, IconPack, iconPackId, germToFlowering, and floweringScaleFactor are ahead of the implementation - TemperatureProfile deliberately so, kept pending Environment temperature observations.
 ---
 
 # Cultivars - Models
@@ -18,6 +18,7 @@ classDiagram
     Cultivar --> ColorProfile : composed of one
     Cultivar --> ExpectedGeometryProfile : composed of one
     Cultivar --> InterplantingProfile : composed of one
+    Cultivar --> SowingProfile : composed of one
     Cultivar --> IconPack : refers to at most one
     IconPack --> IconPackVariant : refers to N
 
@@ -33,6 +34,7 @@ classDiagram
         garden: Garden
     }
     class Cultivar{
+        name: string
         names: set of string
         abbreviation: string
         scientificName: string
@@ -80,6 +82,11 @@ classDiagram
     class InterplantingProfile {
         minimumDistance: number
     }
+    class SowingProfile {
+        sunExposure: SunExposureEnum
+        plantingDepth: number
+        rowSpacing: number
+    }
     class IconPack {
         name: string
         owner: User or Garden
@@ -124,9 +131,11 @@ If the cultivar collection is in a garden, this defines its relation to other co
 
 A cultivar is a container for attributes which describe a type of plant.
 
-## names
+## name and names
 
-The common names of the plant. For example: ["Zucchini", "Summer Squash", "Courgette"]
+`name` is the primary name: it is shown in lists and is what a Plant stores to refer to its Cultivar. `names` holds other names the plant answers to. For example, name "Zucchini" with names ["Courgette", "Summer Squash"].
+
+Names match loosely when a Plant is resolved to a Cultivar: case, accents, and runs of spaces, hyphens and underscores are ignored, so "summer-squash", "SUMMER SQUASH" and "Summer Squash" are the same name. Plurals are not folded ("tomatoes" does not match "tomato") unless listed as a name. Every name, primary or other, must be unique within its collection once normalized, so a name can only resolve to one Cultivar there. The same name may be used in different collections, where the more child collection wins (see Cultivar Name Resolution). Other names are not inherited by child Cultivars (varieties), which would otherwise answer to the parent's names.
 
 ## abbreviation
 
@@ -148,7 +157,7 @@ The purpose of a Cultivar is to contain several different profiles which describ
 
 The annual lifecycle defines the length of the stages of life for annual plants.
 
-- seedToGerm: The expected amount of days from starting a seed to its germination.
+- sowToGerm: The expected amount of days from starting a seed to its germination.
 - germToTransplant: The expected amount of days from the germination of a seed to when it will be ready for transplant. For cultivars which are not able to be transplanted, this value is unused.
 - germToFlowering: The expected amount of days from germination (or, for a biennial/perennial's later cycles, exiting dormancy) to that cycle's first flowering or fruiting. Optional - left unset for cultivars typically harvested before this would ever occur, such as most root and leaf crops. Drives the `plant-flower` observations generated for this Cultivar's Plants, and the start of the `producing` [GrowthStage](../plants/models.md#growthstage).
 - germToFirstHarvest: The expected amount of days the germination of a seed to when it will be ready for a harvest.
@@ -181,9 +190,19 @@ Implemented but previously undocumented. Drives the default Layout rendering of 
 
 Implemented but previously undocumented, and since extended with `floweringScaleFactor`. Determines the default `expectedLifespan.geometryHistory` generated for a Plant when it's created: `peakSize` is the geometry's size at its largest (the diameter for an ellipse, a side length for a rectangle or polygon), and each `*ScaleFactor` is a fraction of `peakSize` applied at a milestone date - seedling, flowering (optional, only where `germToFlowering` is set), first harvest, last harvest, expiry, and (for biennials/perennials) entering and exiting dormancy. `geometryType` picks which `Geometry` shape those milestones are expressed in. [GrowthStage](../plants/models.md#growthstage) reads the same observations at coarser granularity - its `producing` stage spans flowering through lastHarvest as one icon variant, even though geometry still sizes each of those milestones separately.
 
-### Interplanting _(provisional)_
+### Interplanting
 
-A single `minimumDistance` (meters), the closest another plant may be placed to one of this Cultivar without conflict. New attribute, not yet implemented. Visualized in the Layout as a dotted line around a selected or hovered Plant (see [Planner wireframes](../planner/wireframes.md#layout)). Deliberately a single scalar rather than a per-Cultivar-pair table for now - real companion/antagonist planting relationships are pairwise, but that's a significantly heavier data-entry burden and can be layered on later without disturbing this field.
+A single `minimumDistance` (meters), the closest another plant may be placed to one of this Cultivar without conflict. It is also the spacing between plants within a row when sowing. Implemented as a stored attribute and editable in the Cultivar editor; the Layout does not yet use it. Intended to be visualized in the Layout as a dotted line around a selected or hovered Plant (see [Planner wireframes](../planner/wireframes.md#layout)). Deliberately a single scalar rather than a per-Cultivar-pair table for now - real companion/antagonist planting relationships are pairwise, but that's a significantly heavier data-entry burden and can be layered on later without disturbing this field.
+
+### Sowing
+
+What a seed packet says about how to sow a Cultivar, beyond timing. All optional.
+
+- sunExposure: `FULL_SUN` (roughly 6 or more hours of direct sun a day), `PARTIAL_SHADE` (3 to 6 hours), or `SHADE` (under 3).
+- plantingDepth: The depth in meters to sow seeds or set transplants at.
+- rowSpacing: The distance in meters between rows. The spacing between plants within a row is the Interplanting `minimumDistance`.
+
+Absolute calendar-month sowing windows from packets are deliberately not modeled: the Frost Date Planting Windows already express when to plant relative to the Environment, so month text is kept in the Cultivar description.
 
 ## Cultivar Name Resolution
 
@@ -192,7 +211,7 @@ Ultimately, all cultivars in a garden, through the garden collections and parent
 1. All cultivar collections in a garden are retrieved.
 2. If more than one collection is retrieved, filter to the collection with the highest priority.
 3. Recursively, all parent collections of the selected garden collection and parent collections of parent collections are retrieved.
-4. Retrieve all cultivars in all retrieved collections with names that match the target name.
+4. Retrieve all cultivars in all retrieved collections with a name or other name that loosely matches the target name.
 5. Select the cultivar from the most child collection. Prefer newer cultivars and child cultivars over parents.
 6. Merge selected cultivar with parents of all cultivars.
 

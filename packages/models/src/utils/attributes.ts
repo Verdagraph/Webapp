@@ -5,7 +5,10 @@
  * @returns If true, the value is an Object and has keys.
  */
 function isObjectType(value: any): boolean {
-	return value !== null && typeof value === 'object' && !Array.isArray(value);
+	if (value === null || typeof value !== 'object') return false;
+	/** Dates, Sets and other class instances are values, not nested attributes. */
+	const prototype = Object.getPrototypeOf(value);
+	return prototype === Object.prototype || prototype === null;
 }
 
 /**

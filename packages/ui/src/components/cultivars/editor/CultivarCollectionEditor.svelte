@@ -79,6 +79,7 @@
 		if (selectedCultivar) {
 			editor.cultivarUpdate.form.reset({
 				name: selectedCultivar.name,
+				names: [...selectedCultivar.names],
 				abbreviation: selectedCultivar.abbreviation,
 				scientificName: selectedCultivar.scientificName ?? undefined,
 				description: selectedCultivar.description,

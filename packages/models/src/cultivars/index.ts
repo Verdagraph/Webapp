@@ -4,3 +4,4 @@ export * from './queries.js';
 export * from './controller.js';
 export * from './attributes/index.js';
 export * from './exportImport.js';
+export * from './names.js';

@@ -4,6 +4,8 @@ import { useQuery } from '@triplit/svelte';
 import {
 	type ControllerContext,
 	type Cultivar,
+	allCultivarNames,
+	normalizeCultivarName,
 	resolveCultivar
 } from '@vdg-webapp/models';
 
@@ -101,15 +103,30 @@ export function createCultivarContext(
 		});
 	});
 	const cultivars = $derived(new Set(cultivarsByName.values()));
+	/** The same cultivars keyed by every name they answer to, normalized, for loose lookup. */
+	const cultivarsByLooseName = $derived(
+		new Map(
+			[...cultivars].flatMap((cultivar) =>
+				allCultivarNames(cultivar).map(
+					(name) => [normalizeCultivarName(name), cultivar] as const
+				)
+			)
+		)
+	);
 
 	/**
-	 * Looks up a resolved Cultivar by name - centralized here (rather than
+	 * Looks up a resolved Cultivar by name, or loosely by any of its other names
+	 * (see normalizeCultivarName) - centralized here (rather than
 	 * every caller doing `[...cultivars].find(...)` itself) so the lookup
 	 * can be O(1) via the underlying map instead of an O(n) scan repeated at
 	 * every call site.
 	 */
 	function getCultivar(name: string): Cultivar | null {
-		return cultivarsByName.get(name) ?? null;
+		return (
+			cultivarsByName.get(name) ??
+			cultivarsByLooseName.get(normalizeCultivarName(name)) ??
+			null
+		);
 	}
 
 	return {
