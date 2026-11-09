@@ -22,7 +22,7 @@
 			userId: page.params.userId,
 			token: page.params.confirmationToken
 		},
-		onSubmit: (data) => formHandler.execute(data)
+		handler: formHandler
 	});
 </script>
 

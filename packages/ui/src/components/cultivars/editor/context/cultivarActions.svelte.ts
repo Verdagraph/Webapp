@@ -16,19 +16,17 @@ import type { EditorSelectionContext } from './selection.svelte';
 export function createCultivarActions(selection: EditorSelectionContext) {
 	const ctx = getAppContext();
 
-	const createHandler = createCommandHandler(ctx.controller.cultivars.createCultivar, {
-		onSuccess: (cultivar) => selection.select({ kind: 'cultivar', id: cultivar.id })
-	});
 	const createFormState = createForm(CultivarCreateCommandSchema, {
-		handler: createHandler
+		handler: createCommandHandler(ctx.controller.cultivars.createCultivar, {
+			onSuccess: (cultivar) => selection.select({ kind: 'cultivar', id: cultivar.id })
+		})
 	});
 
-	const updateHandler = createCommandHandler(ctx.controller.cultivars.updateCultivar);
 	const updateFormState = createForm(CultivarUpdateCommandSchema, {
-		handler: updateHandler,
-		onSubmit: (data) => {
+		handler: createCommandHandler(ctx.controller.cultivars.updateCultivar),
+		onSubmit: (data, handler) => {
 			if (selection.selection?.kind === 'cultivar') {
-				return updateHandler.execute(selection.selection.id, data);
+				return handler.execute(selection.selection.id, data);
 			}
 		}
 	});

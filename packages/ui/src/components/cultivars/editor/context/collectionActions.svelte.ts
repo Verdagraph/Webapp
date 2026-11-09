@@ -16,24 +16,19 @@ import type { EditorSelectionContext } from './selection.svelte';
 export function createCollectionActions(selection: EditorSelectionContext) {
 	const ctx = getAppContext();
 
-	const createHandler = createCommandHandler(
-		ctx.controller.cultivars.createCollection,
-		{
+	const createFormState = createForm(CultivarCollectionCreateCommandSchema, {
+		handler: createCommandHandler(ctx.controller.cultivars.createCollection, {
 			onSuccess: (collection) =>
 				selection.select({ kind: 'collection', id: collection.id })
-		}
-	);
-	const createFormState = createForm(CultivarCollectionCreateCommandSchema, {
-		handler: createHandler,
+		}),
 		initialValues: { gardenId: ctx.garden.id }
 	});
 
-	const updateHandler = createCommandHandler(ctx.controller.cultivars.updateCollection);
 	const updateFormState = createForm(CultivarCollectionUpdateCommandSchema, {
-		handler: updateHandler,
-		onSubmit: (data) => {
+		handler: createCommandHandler(ctx.controller.cultivars.updateCollection),
+		onSubmit: (data, handler) => {
 			if (selection.selection?.kind === 'collection') {
-				return updateHandler.execute(selection.selection.id, data);
+				return handler.execute(selection.selection.id, data);
 			}
 		}
 	});

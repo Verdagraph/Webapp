@@ -12,7 +12,7 @@
 		}
 	});
 	const form = createForm(userLogin.schema, {
-		onSubmit: (data) => formHandler.execute(data)
+		handler: formHandler
 	});
 </script>
 

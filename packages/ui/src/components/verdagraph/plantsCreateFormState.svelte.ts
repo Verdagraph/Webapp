@@ -76,7 +76,7 @@ export function createPlantsCreateFormState(ctx: AppContext, getFocusUtc: () => 
 
 	const plantsCreateForm = createForm(PlantsCreateCommandSchema, {
 		initialValues: { plants: [defaultSinglePlant()] },
-		onSubmit: (data) => plantsCreateHandler.execute(data)
+		handler: plantsCreateHandler
 	});
 
 	/**

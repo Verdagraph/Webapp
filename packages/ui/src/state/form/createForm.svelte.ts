@@ -7,15 +7,15 @@ import {
 	zodIssuesToFieldErrors
 } from './zodIntrospection';
 
+/** The least a form needs of a handler: something to run the command with. */
+export type FormHandler = { execute: (...params: never[]) => unknown };
+
 /** Any command handler, whatever the command it runs. */
 export type AnyCommandHandler = ReturnType<
 	typeof createCommandHandler<never[], unknown>
 >;
 
-export type FormOptions<
-	T,
-	Handler extends AnyCommandHandler | undefined = undefined
-> = {
+export type FormOptions<T, Handler extends FormHandler | undefined = undefined> = {
 	/** The handler of the command this form submits, exposed as `form.handler` so the
 	 * two travel together. Without `onSubmit`, a valid submit runs `handler.execute(data)`. */
 	handler?: Handler;
@@ -26,9 +26,9 @@ export type FormOptions<
 	 * without it, TS would also try to infer T from whatever partial shape is
 	 * passed here, narrowing T down to just the keys provided. */
 	initialValues?: NoInfer<DeepPartial<T>>;
-	/** Called once client-side validation passes. Overrides the handler's default call, for
-	 * commands which take more than the form data (such as the id of what is updated). */
-	onSubmit?: (data: NoInfer<T>) => void | Promise<void>;
+	/** Called once client-side validation passes. Receives the handler, and replaces its default
+	 * call for commands which take more than the form data (such as the id of what is updated). */
+	onSubmit?: (data: NoInfer<T>, handler: NoInfer<Handler>) => unknown;
 };
 
 type ValidateResult<T> = { valid: true; data: T } | { valid: false };
@@ -46,7 +46,7 @@ type ValidateResult<T> = { valid: true; data: T } | { valid: false };
 export function createForm<
 	Schema extends z.ZodTypeAny,
 	T = z.infer<Schema>,
-	Handler extends AnyCommandHandler | undefined = undefined
+	Handler extends FormHandler | undefined = undefined
 >(schema: Schema, options?: FormOptions<T, Handler>) {
 	let data = $state<T>(
 		deriveInitialValues(schema, options?.initialValues as DeepPartial<z.infer<Schema>>)
@@ -71,9 +71,9 @@ export function createForm<
 		isSubmitting = true;
 		try {
 			if (options?.onSubmit) {
-				await options.onSubmit(result.data);
+				await options.onSubmit(result.data, options.handler as Handler);
 			} else if (options?.handler) {
-				await (options.handler.execute as (data: T) => Promise<void>)(result.data);
+				await (options.handler.execute as (data: T) => unknown)(result.data);
 			}
 		} finally {
 			isSubmitting = false;
@@ -115,7 +115,7 @@ export function createForm<
 export type FormState<
 	Schema extends z.ZodTypeAny = z.ZodTypeAny,
 	T = z.infer<Schema>,
-	Handler extends AnyCommandHandler | undefined = AnyCommandHandler | undefined
+	Handler extends FormHandler | undefined = FormHandler | undefined
 > = ReturnType<typeof createForm<Schema, T, Handler>>;
 
 export default createForm;
