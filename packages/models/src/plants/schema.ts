@@ -6,15 +6,10 @@ import { type Environment } from '../environments/schema.js';
 import { type DateRange } from '../time/utils.js';
 import { GeometryHistory, LocationHistory } from '../workspaces/schema.js';
 import { PlantObservation } from './observations.js';
+import { OriginEnumOptions } from './origin.js';
+import type { Origin } from './origin.js';
 
-/**
- *
- */
-export const OriginEnumOptions = [
-	'DIRECT_SEED',
-	'SEED_TO_TRANSPLANT',
-	'SEEDLING_TO_TRANSPLANT'
-] as const;
+export { OriginEnumOptions } from './origin.js';
 
 export const plantSchema = S.Collections({
 	...cultivarSchema,
@@ -335,7 +330,8 @@ export const plantSchema = S.Collections({
 		}
 	}
 });
-export type Origin = (typeof OriginEnumOptions)[number];
+export type { Origin } from './origin.js';
+
 export type Lifespan = Entity<typeof plantSchema, 'lifespans'> & {
 	locationHistory: LocationHistory | null;
 	geometryHistory: GeometryHistory | null;

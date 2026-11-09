@@ -4,6 +4,7 @@
 	import {
 		type Cultivar,
 		CultivarAttributesUpdateCommandSchema,
+		CultivarCategoryEnumOptions,
 		cultivarFields
 	} from '@vdg-webapp/models';
 
@@ -67,6 +68,67 @@
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors handlerErrors={handler.fieldErrors?.names} />
+	</Form.Field>
+
+	<Form.Field {form} name="category">
+		<Form.Control>
+			{#snippet children({ props }: { props: ControlProps })}
+				<Form.Label
+					description={cultivarFields.cultivarCategorySchema.description}
+					optional={true}>Category</Form.Label
+				>
+				<Select.Root
+					type="single"
+					value={form.data.category ?? NO_PARENT}
+					onValueChange={(selected) =>
+						(form.data.category = selected === NO_PARENT ? undefined : selected)}
+				>
+					<Select.Trigger class="w-full" {...props}>
+						{form.data.category
+							? form.data.category.replace('_', ' ').toLowerCase()
+							: 'Same as parent'}
+					</Select.Trigger>
+					<Select.Content>
+						<Select.Group>
+							<Select.Item value={NO_PARENT} label="Same as parent"
+								>Same as parent</Select.Item
+							>
+							{#each CultivarCategoryEnumOptions as option (option)}
+								<Select.Item
+									value={option}
+									label={option.replace('_', ' ').toLowerCase()}
+									>{option.replace('_', ' ').toLowerCase()}</Select.Item
+								>
+							{/each}
+						</Select.Group>
+					</Select.Content>
+				</Select.Root>
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors handlerErrors={handler.fieldErrors?.category} />
+	</Form.Field>
+
+	<Form.Field {form} name="tags">
+		<Form.Control>
+			{#snippet children({ props }: { props: ControlProps })}
+				<Form.Label
+					description={cultivarFields.cultivarTagsSchema.description}
+					optional={true}>Tags (comma separated)</Form.Label
+				>
+				<Input.Root
+					{...props}
+					type="text"
+					value={(form.data.tags ?? []).join(', ')}
+					oninput={(event) => {
+						form.data.tags = event.currentTarget.value
+							.split(',')
+							.map((tag) => tag.trim())
+							.filter((tag) => tag.length > 0);
+					}}
+				/>
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors handlerErrors={handler.fieldErrors?.tags} />
 	</Form.Field>
 
 	<Form.Field {form} name="abbreviation">

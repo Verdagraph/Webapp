@@ -5,3 +5,7 @@ export * from './controller.js';
 export * from './attributes/index.js';
 export * from './exportImport.js';
 export * from './names.js';
+export * from './propagation.js';
+export * from './rows.js';
+export * from './system.js';
+export * from './resolve.js';

@@ -1,8 +1,8 @@
 import { type ControllerContext } from '../controller.js';
 import { AppError } from '../errors.js';
 import { type Cultivar, type CultivarCollection } from '../index.js';
-import { mergeAttributes } from '../utils/index.js';
 import { cultivarMatchesName } from './names.js';
+import { mergeCultivarChain } from './resolve.js';
 
 const MAX_CULTIVAR_COLLECTION_INHERITANCE_DEPTH = 16;
 const MAX_CULTIVAR_INHERITANCE_DEPTH = 16;
@@ -85,8 +85,8 @@ export async function resolveCultivarName(
 		return null;
 	}
 
-	/** Sort collections by priority. */
-	collections.sort((a, b) => a.collection.priority - b.collection.priority);
+	/** Sort collections by priority, highest first: a higher number overrides a lower one. */
+	collections.sort((a, b) => b.collection.priority - a.collection.priority);
 
 	/** Return first matched cultivar ID, starting with children. */
 	for (const collection of collections) {
@@ -164,11 +164,7 @@ async function resolveCultivarId(
 	}
 
 	/** Merge all cultivar values, letting children override parents. */
-	let result = cultivars[cultivars.length - 1];
-	for (let i = cultivars.length - 2; i >= 0; i--) {
-		result = mergeAttributes(result, cultivars[i]);
-	}
-	return result;
+	return mergeCultivarChain(cultivars);
 }
 
 /**

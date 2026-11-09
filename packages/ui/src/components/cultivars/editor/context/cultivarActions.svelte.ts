@@ -36,9 +36,19 @@ export function createCultivarActions(selection: EditorSelectionContext) {
 		onSuccess: () => selection.select(null)
 	});
 
-	/** Empties the create form for a new cultivar in a collection. */
-	function resetCreateForm(collectionId: string) {
-		createFormState.reset({ collectionId });
+	/**
+	 * Empties the create form for a new cultivar in a collection.
+	 * @param collectionId The collection the cultivar is added to.
+	 * @param seed Values to start the form with, such as the cultivar being overridden.
+	 */
+	function resetCreateForm(
+		collectionId: string,
+		seed?: Omit<
+			NonNullable<Parameters<typeof createFormState.reset>[0]>,
+			'collectionId'
+		>
+	) {
+		createFormState.reset({ ...seed, collectionId });
 	}
 
 	return {

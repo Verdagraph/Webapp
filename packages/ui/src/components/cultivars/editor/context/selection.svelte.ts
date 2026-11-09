@@ -4,7 +4,12 @@ export type EditorSelection = { kind: 'collection' | 'cultivar'; id: string };
 /** A new entity being composed in the detail pane. */
 export type EditorCreation =
 	| { kind: 'collection' }
-	| { kind: 'cultivar'; collectionId: string };
+	| {
+			kind: 'cultivar';
+			collectionId: string;
+			/** Values to start the form with, such as the cultivar being overridden. */
+			seed?: { name?: string; abbreviation?: string; parentId?: string };
+	  };
 
 /**
  * Holds what the detail pane shows: an existing entity or a new one being created.

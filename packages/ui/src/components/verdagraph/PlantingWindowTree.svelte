@@ -12,6 +12,7 @@
 		toTreeBaseId,
 		toTreeId
 	} from '$components';
+	import { plantingWindowLabel } from '$components/rangeCalendar/items';
 
 	type Props = {
 		plantingWindows: CultivarPlantingWindow[];
@@ -35,7 +36,7 @@
 						const windowId = toTreeId(cultivarId, `window[${index}]`);
 						return {
 							id: windowId,
-							label: `Window ${index + 1}`,
+							label: plantingWindowLabel(window),
 							children: [
 								{
 									id: toTreeId(windowId, 'start'),

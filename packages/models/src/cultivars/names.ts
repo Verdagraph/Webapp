@@ -1,5 +1,5 @@
 /**
- * Normalizes a cultivar name for matching: case, accents, and runs of
+ * Normalizes a cultivar name for matching: case, accents, apostrophes, and runs of
  * whitespace, hyphens and underscores do not distinguish names.
  * Plurals are deliberately not folded.
  * @param name The name to normalize.
@@ -10,6 +10,7 @@ export function normalizeCultivarName(name: string): string {
 		.normalize('NFKD')
 		.replace(/[̀-ͯ]/g, '')
 		.toLowerCase()
+		.replace(/['\u2019]/g, '')
 		.replace(/[\s_-]+/g, ' ')
 		.trim();
 }
@@ -40,4 +41,14 @@ export function cultivarMatchesName(
 	return allCultivarNames(cultivar).some(
 		(name) => normalizeCultivarName(name) === normalizedTarget
 	);
+}
+
+/**
+ * Counts what a reader sees as characters, so accented and non-Latin letters count once.
+ * String length counts UTF-16 units, which would over-count anything outside the basic plane.
+ * @param text The text to measure.
+ * @returns The number of code points.
+ */
+export function codePointLength(text: string): number {
+	return [...text].length;
 }

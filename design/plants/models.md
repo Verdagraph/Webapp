@@ -69,6 +69,8 @@ The origin stores how the plant was created. Options are:
 - seedToTransplant: A seed is sown in one area and then transplanted into the area it will reach maturity in.
 - seedlingToTransplant: A seedling is transplanted directly into the area it will reach maturity in.
 
+A Cultivar says which origins it can be started with and which it prefers (see [Cultivar origin](../cultivars/models.md#origin)). Adding a Plant defaults its origin to the Cultivar's preferred one, and a Plant's expected timeline is built from the Cultivar for the origin it has: the packet's days to maturity are converted using the seedling age, and a transplanted Plant is set back by the Cultivar's transplant shock.
+
 In direct seed mode, most plants will have one location: the one they were seeded in. In seed to transplant mode, a plant will have at least two locations: the one where it was seeded, usually in a dedicated seed starting area, and where it is transplanted. Both should be defined when the plant is created. In the seedling to transplant mode, the plant starts as a seedling, for example, when seedlings are sourced from a nursery.
 
 ## locationHistory and geometryHistory

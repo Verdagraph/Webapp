@@ -5,18 +5,33 @@ import {
 	CultivarAttributesUpdateCommandSchema,
 	attributesSchemas
 } from './attributes/index.js';
-import { CultivarCollectionVisibilityEnumOptions } from './schema.js';
+import { codePointLength } from './names.js';
+import {
+	CultivarCategoryEnumOptions,
+	CultivarCollectionVisibilityEnumOptions
+} from './schema.js';
 
 /** Field specifications. */
+/**
+ * Letters and digits of any script, combining marks, spaces, apostrophes, underscores and hyphens.
+ * Control, zero-width and direction-changing characters are not letters, so they are rejected,
+ * which keeps look-alike duplicates out.
+ */
+const CULTIVAR_NAME_PATTERN = /^[\p{L}\p{M}\p{N} '\u2019_-]+$/u;
+const MAX_CULTIVAR_NAME_LENGTH = 40;
 const cultivarNameSchema = z
 	.string()
 	.trim()
-	.min(3, 'Must be at least 3 characters.')
-	.max(30, 'May be at most 30 characters.')
-	.regex(
-		/^[0-9A-Za-z _-]+$/,
-		'Must contain only letters, numbers, spaces, hyphens, and underscores.'
+	.refine((name) => codePointLength(name) >= 3, 'Must be at least 3 characters.')
+	.refine(
+		(name) => codePointLength(name) <= MAX_CULTIVAR_NAME_LENGTH,
+		`May be at most ${MAX_CULTIVAR_NAME_LENGTH} characters.`
 	)
+	.refine(
+		(name) => CULTIVAR_NAME_PATTERN.test(name),
+		'Must contain only letters, numbers, spaces, apostrophes, hyphens, and underscores.'
+	)
+	.transform((name) => name.normalize('NFC'))
 	.describe('The primary name of this plant. Plants are matched to cultivars by name.');
 const cultivarNamesSchema = z
 	.array(cultivarNameSchema)
@@ -25,6 +40,28 @@ const cultivarNamesSchema = z
 		'Other names this plant is known by, for example Courgette for Zucchini. \
             Names match loosely: case, accents, hyphens and spacing are ignored. \
             Each name must be unique among the names in the collection.'
+	);
+const cultivarCategorySchema = z
+	.enum(CultivarCategoryEnumOptions)
+	.describe(
+		'The kind of plant. Varieties take the category of the crop they belong to unless they set their own.'
+	);
+const cultivarTagSchema = z
+	.string()
+	.trim()
+	.toLowerCase()
+	.min(2, 'Must be at least 2 characters.')
+	.max(40, 'May be at most 40 characters.')
+	.regex(
+		/^[\p{L}\p{N}][\p{L}\p{N} -]*$/u,
+		'Must contain only letters, numbers, spaces and hyphens.'
+	)
+	.describe('A label such as open-pollinated or cut-flower.');
+const cultivarTagsSchema = z
+	.array(cultivarTagSchema)
+	.max(60, 'May contain at most 60 tags.')
+	.describe(
+		'Labels describing the cultivar, for searching and filtering. A variety also has the tags of the crop it belongs to.'
 	);
 const cultivarAbbreviationSchema = z
 	.string()
@@ -72,6 +109,9 @@ const cultivarCollectionTagsSchema = z
 	.max(150, 'Must contain at most 150 tags.')
 	.describe('A set of metadata tags.');
 export const cultivarFields = {
+	cultivarCategorySchema,
+	cultivarTagSchema,
+	cultivarTagsSchema,
 	cultivarNameSchema,
 	cultivarNamesSchema,
 	cultivarAbbreviationSchema,
@@ -92,6 +132,8 @@ export const CultivarCreateCommandSchema = z.object({
 	collectionId: z.string(),
 	name: cultivarNameSchema,
 	names: cultivarNamesSchema.default([]),
+	category: cultivarCategorySchema.optional(),
+	tags: cultivarTagsSchema.default([]),
 	abbreviation: cultivarAbbreviationSchema,
 	scientificName: cultivarScientificNameSchema.optional(),
 	description: cultivarDescriptionSchema.default(''),
@@ -107,6 +149,8 @@ export type CultivarCreateCommand = z.infer<typeof CultivarCreateCommandSchema>;
 export const CultivarUpdateCommandSchema = z.object({
 	name: cultivarNameSchema.optional(),
 	names: cultivarNamesSchema.optional(),
+	category: cultivarCategorySchema.nullable().optional(),
+	tags: cultivarTagsSchema.optional(),
 	abbreviation: cultivarAbbreviationSchema.optional(),
 	scientificName: cultivarScientificNameSchema.optional(),
 	description: cultivarDescriptionSchema.optional(),

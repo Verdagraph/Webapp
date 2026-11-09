@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { exportCultivarCollection } from '@vdg-webapp/models';
+	import { attributesFromStored, exportCultivarCollection } from '@vdg-webapp/models';
 
 	import { Button, Resizable, ScrollArea } from '$core';
 	import { getAppContext } from '$state';
@@ -21,17 +21,22 @@
 	let defaultApplied = false;
 	$effect(() => {
 		if (defaultApplied || !defaultCollectionId) return;
-		if (
-			ctx.cultivars.collections.some(
-				(collection) => collection.id === defaultCollectionId
-			)
-		) {
+		if (collections.some((collection) => collection.id === defaultCollectionId)) {
 			defaultApplied = true;
 			editor.select({ kind: 'collection', id: defaultCollectionId });
 		}
 	});
 
-	const collections = $derived(ctx.cultivars.collections);
+	/** Collections the garden owns, which can be changed. */
+	const ownedCollections = $derived(ctx.cultivars.collections);
+	/** Owned collections and the ones they inherit from, which are read only. */
+	const collections = $derived([
+		...ctx.cultivars.inheritedCollections,
+		...ownedCollections
+	]);
+	const ownedCollectionIds = $derived(
+		new Set(ownedCollections.map((collection) => collection.id))
+	);
 	const cultivars = $derived(ctx.cultivars.storedCultivars);
 
 	const selectedCollection = $derived(
@@ -80,11 +85,13 @@
 			editor.cultivarUpdate.form.reset({
 				name: selectedCultivar.name,
 				names: [...selectedCultivar.names],
+				category: selectedCultivar.category,
+				tags: [...selectedCultivar.tags],
 				abbreviation: selectedCultivar.abbreviation,
 				scientificName: selectedCultivar.scientificName ?? undefined,
 				description: selectedCultivar.description,
 				parentId: selectedCultivar.parentId,
-				attributes: JSON.parse(JSON.stringify(selectedCultivar.attributes ?? {}))
+				attributes: attributesFromStored(selectedCultivar.attributes)
 			});
 		}
 	});
@@ -110,10 +117,36 @@
 
 	let importInput: HTMLInputElement | null = $state(null);
 
-	/** The collection new cultivars are added to. */
-	const targetCollectionId = $derived(
-		selectedCollection?.id ?? selectedCultivar?.collectionId
+	/** True when the shown collection or cultivar belongs to an inherited collection. */
+	const isInherited = $derived(
+		selectedCollection
+			? !ownedCollectionIds.has(selectedCollection.id)
+			: selectedCultivar
+				? !ownedCollectionIds.has(selectedCultivar.collectionId)
+				: false
 	);
+
+	/** The collection new cultivars are added to: the one selected, if the garden owns it. */
+	const targetCollectionId = $derived.by(() => {
+		const selectedId = selectedCollection?.id ?? selectedCultivar?.collectionId;
+		return selectedId && ownedCollectionIds.has(selectedId)
+			? selectedId
+			: ownedCollections[0]?.id;
+	});
+
+	/** Starts a cultivar in the garden's collection which inherits the shown one, to change it for this garden. */
+	function overrideSelectedCultivar() {
+		if (!selectedCultivar || !targetCollectionId) return;
+		editor.startCreation({
+			kind: 'cultivar',
+			collectionId: targetCollectionId,
+			seed: {
+				name: selectedCultivar.name,
+				abbreviation: selectedCultivar.abbreviation,
+				parentId: selectedCultivar.id
+			}
+		});
+	}
 </script>
 
 <div class="relative flex h-full w-full flex-col">
@@ -149,14 +182,16 @@
 			<Button.Root size="sm" variant="outline" onclick={exportSelectedCollection}>
 				Export JSON
 			</Button.Root>
-			<Button.Root
-				size="sm"
-				variant="destructive"
-				onclick={() => editor.collectionDelete.handler.execute(selectedCollection.id)}
-			>
-				Delete collection
-			</Button.Root>
-		{:else if selectedCultivar}
+			{#if !isInherited}
+				<Button.Root
+					size="sm"
+					variant="destructive"
+					onclick={() => editor.collectionDelete.handler.execute(selectedCollection.id)}
+				>
+					Delete collection
+				</Button.Root>
+			{/if}
+		{:else if selectedCultivar && !isInherited}
 			<Button.Root
 				size="sm"
 				variant="destructive"
@@ -201,25 +236,52 @@
 						{:else if selectedCollection}
 							{#key selectedCollection.id}
 								<h2 class="mb-4 text-lg font-medium">{selectedCollection.name}</h2>
-								<CollectionForm
-									form={editor.collectionUpdate.form}
-									handler={editor.collectionUpdate.handler}
-									parentOptions={collectionParentOptions}
-									submitLabel="Save"
-								/>
+								{#if isInherited}
+									<p class="text-neutral-11 mb-4 text-sm">
+										This collection is inherited by your garden and cannot be changed
+										here.
+									</p>
+								{/if}
+								<fieldset disabled={isInherited} class="contents">
+									<CollectionForm
+										form={editor.collectionUpdate.form}
+										handler={editor.collectionUpdate.handler}
+										parentOptions={collectionParentOptions}
+										submitLabel="Save"
+									/>
+								</fieldset>
 							{/key}
 						{:else if selectedCultivar}
 							{#key selectedCultivar.id}
 								<h2 class="mb-4 text-lg font-medium">{selectedCultivar.name}</h2>
-								<CultivarForm
-									form={editor.cultivarUpdate.form}
-									handler={editor.cultivarUpdate.handler}
-									parentOptions={cultivarParentOptions(
-										selectedCultivar.collectionId,
-										selectedCultivar.id
-									)}
-									submitLabel="Save"
-								/>
+								{#if isInherited}
+									<div
+										class="border-neutral-5 mb-4 flex flex-wrap items-center justify-between gap-2 rounded-md border p-3 text-sm"
+									>
+										<span class="text-neutral-11">
+											Inherited from another collection. To change it for this garden,
+											make a version in your collection which builds on it.
+										</span>
+										<Button.Root
+											size="sm"
+											disabled={!targetCollectionId}
+											onclick={overrideSelectedCultivar}
+										>
+											Override in my collection
+										</Button.Root>
+									</div>
+								{/if}
+								<fieldset disabled={isInherited} class="contents">
+									<CultivarForm
+										form={editor.cultivarUpdate.form}
+										handler={editor.cultivarUpdate.handler}
+										parentOptions={cultivarParentOptions(
+											selectedCultivar.collectionId,
+											selectedCultivar.id
+										)}
+										submitLabel="Save"
+									/>
+								</fieldset>
 							{/key}
 						{:else}
 							<span class="italic">Select a collection or cultivar, or add one.</span>

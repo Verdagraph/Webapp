@@ -4,6 +4,8 @@ import { mode } from 'mode-watcher';
 import {
 	type CultivarPlantingWindow,
 	type DateRange,
+	type PlantingWindow,
+	SowingMethodLabels,
 	getBoundingDateRange
 } from '@vdg-webapp/models';
 
@@ -14,6 +16,12 @@ import type { CalendarItem } from '../types';
 const defaultBaseColor = getColor('grass', 6, mode.current);
 const defaultBorderColor = getColor('grass', 11, mode.current);
 const defaultItemColor = getColor('grass', 8, mode.current);
+
+/** Names a window by how the plant is started and which season it is for. */
+export function plantingWindowLabel(window: PlantingWindow): string {
+	const season = window.frost === 'lastFrost' ? 'spring' : 'fall';
+	return `${SowingMethodLabels[window.method]} (${season})`;
+}
 
 function toDateValues(range: DateRange) {
 	return {
@@ -44,7 +52,7 @@ function cultivarPlantingWindowCalendarItem(
 
 	const windowItems: CalendarItem[] = plantingWindow.windows.map((window, index) => ({
 		id: `${rowId}|window[${index}]`,
-		label: `Window ${index + 1}`,
+		label: plantingWindowLabel(window),
 		labelOnly: false,
 		description: `${Math.round(window.suitability * 100)}% suitable`,
 		...toDateValues(window.range),

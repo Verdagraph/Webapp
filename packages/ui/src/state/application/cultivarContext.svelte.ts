@@ -4,9 +4,7 @@ import { useQuery } from '@triplit/svelte';
 import {
 	type ControllerContext,
 	type Cultivar,
-	allCultivarNames,
-	normalizeCultivarName,
-	resolveCultivar
+	createCultivarIndex
 } from '@vdg-webapp/models';
 
 import type { GardenContext } from './gardenContext.svelte';
@@ -50,6 +48,28 @@ export function createCultivarContext(
 		...ancestorCollectionsIds
 	]);
 	/**
+	 * The collections the garden's own collections inherit from, such as the default collection.
+	 * They are read only to the garden. An `or` of equalities rather than `in`, for the reason
+	 * given on the cultivars query below.
+	 */
+	const inheritedCollectionsQuery = $derived(
+		useQuery(
+			controller.triplit,
+			controller.triplit
+				.query('cultivarCollections')
+				.Where([
+					or(
+						ancestorCollectionsIds.size > 0
+							? [...ancestorCollectionsIds].map((id) => ['id', '=', id] as const)
+							: [['id', '=', ''] as const]
+					)
+				])
+		)
+	);
+	const inheritedCollections = $derived(
+		ancestorCollectionsIds.size === 0 ? [] : (inheritedCollectionsQuery.results ?? [])
+	);
+	/**
 	 * A second live query chained off the first (collectionIds only settle
 	 * once gardenCollectionsQuery resolves). This assumes collections are
 	 * already committed by the time it queries them, same as a real garden -
@@ -82,57 +102,33 @@ export function createCultivarContext(
 		new Set(allCultivars.map((cultivar) => cultivar.name))
 	);
 
-	/** Collects all resolved cultivar objects in the garden, keyed by name for O(1) lookup via getCultivar. */
-	let cultivarsByName: Map<string, Cultivar> = $state(new Map());
-	$effect(() => {
-		const names = cultivarNames;
-		if (names.size === 0) {
-			cultivarsByName = new Map();
-			return;
-		}
-
-		Promise.all(
-			[...names].map(
-				async (name) =>
-					[name, await resolveCultivar(garden.id, name, controller)] as const
-			)
-		).then((entries) => {
-			cultivarsByName = new Map(
-				entries.filter((entry): entry is [string, Cultivar] => entry[1] !== null)
-			);
-		});
-	});
-	const cultivars = $derived(new Set(cultivarsByName.values()));
-	/** The same cultivars keyed by every name they answer to, normalized, for loose lookup. */
-	const cultivarsByLooseName = $derived(
-		new Map(
-			[...cultivars].flatMap((cultivar) =>
-				allCultivarNames(cultivar).map(
-					(name) => [normalizeCultivarName(name), cultivar] as const
-				)
-			)
-		)
-	);
-
 	/**
-	 * Looks up a resolved Cultivar by name, or loosely by any of its other names
-	 * (see normalizeCultivarName) - centralized here (rather than
-	 * every caller doing `[...cultivars].find(...)` itself) so the lookup
-	 * can be O(1) via the underlying map instead of an O(n) scan repeated at
-	 * every call site.
+	 * Resolves cultivar names from the rows already loaded, so looking one up never queries.
+	 * A name finds the cultivar of that name, or one with it as another name, in the garden's own
+	 * collections before the collections they inherit from, with its parents' values merged in.
 	 */
+	const index = $derived(
+		createCultivarIndex({
+			collections: [...gardenCollections, ...inheritedCollections],
+			roots: gardenCollections,
+			cultivars: allCultivars
+		})
+	);
+	const cultivars = $derived(new Set(index.all()));
+
+	/** Looks up a resolved Cultivar by name, loosely: see normalizeCultivarName. */
 	function getCultivar(name: string): Cultivar | null {
-		return (
-			cultivarsByName.get(name) ??
-			cultivarsByLooseName.get(normalizeCultivarName(name)) ??
-			null
-		);
+		return index.find(name);
 	}
 
 	return {
 		/** Collections owned by the garden. Ancestors owned elsewhere are not included. */
 		get collections() {
 			return gardenCollections;
+		},
+		/** Collections inherited from, which the garden can read but not change. */
+		get inheritedCollections() {
+			return inheritedCollections;
 		},
 		/** Every cultivar stored in the garden's collections and their ancestors, unresolved. */
 		get storedCultivars() {

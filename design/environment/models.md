@@ -59,7 +59,7 @@ Gardens should be able to define attributes of the physical environment.
 
 ### FrostDateProfile
 
-Frost dates are a widely used heuristic for constructing planting calendars. The `FrostDatePlantingWindowsProfile` defined in the Cultivars feature category uses these to define acceptable planting windows, which the [Planner](../planner/models.md#plantingwindow) displays.
+Frost dates are a widely used heuristic for constructing planting calendars. The sowing windows defined in the Cultivars feature category are measured from these, and the [Planner](../planner/models.md#plantingwindow) turns them into the planting windows it displays.
 
 - lastFrostDate: The date at which the last frost date is expected to occurr.
 - firstFrostDate: The date at which the last frost date is expected to oc[urr.

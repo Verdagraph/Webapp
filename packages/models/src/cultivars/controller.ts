@@ -2,17 +2,16 @@ import { type ControllerContext } from '../controller.js';
 import { AppError } from '../errors.js';
 import { type Cultivar, type CultivarCollection } from '../index.js';
 import { slugify } from '../utils/index.js';
+import { attributesToStored } from './attributes/index.js';
 import {
 	type CultivarCollectionCreateCommand,
 	type CultivarCollectionUpdateCommand,
 	type CultivarCreateCommand,
 	type CultivarUpdateCommand
 } from './commands.js';
-import {
-	type CultivarCollectionImportCommand,
-	orderCultivarsParentsFirst
-} from './exportImport.js';
+import type { CultivarCollectionImportCommand } from './exportImport.js';
 import { allCultivarNames, normalizeCultivarName } from './names.js';
+import { cultivarCollectionRows } from './rows.js';
 
 const MAX_INHERITANCE_DEPTH = 16;
 
@@ -261,37 +260,20 @@ export class CultivarController {
 
 		const slug = slugify(data.collection.name);
 		await this.#requireUniqueSlug(ownership, slug);
-		const orderedCultivars = orderCultivarsParentsFirst(data.cultivars);
+		const rows = cultivarCollectionRows(data, {
+			collectionId: crypto.randomUUID(),
+			slug,
+			gardenId: ownership.gardenId,
+			userId: ownership.userId,
+			cultivarId: () => crypto.randomUUID()
+		});
 
 		let imported: CultivarCollection | undefined;
 		await this.ctx.triplit.transact(async (transaction) => {
-			const collection = await transaction.insert('cultivarCollections', {
-				...ownership,
-				name: data.collection.name,
-				slug,
-				visibility: data.collection.visibility ?? 'HIDDEN',
-				description: data.collection.description ?? '',
-				tags: new Set(data.collection.tags ?? [])
-			});
-
-			/** Normalized primary names, so parents are referenced loosely. */
-			const idsByName = new Map<string, string>();
-			for (const cultivar of orderedCultivars) {
-				const inserted = await transaction.insert('cultivars', {
-					collectionId: collection.id,
-					name: cultivar.name,
-					names: new Set(cultivar.names ?? []),
-					abbreviation: cultivar.abbreviation,
-					scientificName: cultivar.scientificName,
-					description: cultivar.description ?? '',
-					parentId: cultivar.parentName
-						? (idsByName.get(normalizeCultivarName(cultivar.parentName)) ?? null)
-						: null,
-					attributes: cultivar.attributes ?? {}
-				});
-				idsByName.set(normalizeCultivarName(cultivar.name), inserted.id);
+			imported = await transaction.insert('cultivarCollections', rows.collection);
+			for (const row of rows.cultivars) {
+				await transaction.insert('cultivars', row);
 			}
-			imported = collection;
 		});
 		if (!imported) {
 			throw new AppError('Failed to import cultivar collection.', {
@@ -444,6 +426,8 @@ export class CultivarController {
 						collectionId: child.id,
 						name: cultivar.name,
 						names: new Set(copiedNames),
+						category: cultivar.category,
+						tags: new Set(cultivar.tags),
 						abbreviation: cultivar.abbreviation,
 						scientificName: cultivar.scientificName,
 						description: cultivar.description,
@@ -515,11 +499,13 @@ export class CultivarController {
 			collectionId: collection.id,
 			name: data.name,
 			names: new Set(data.names),
+			category: data.category ?? null,
+			tags: new Set(data.tags),
 			abbreviation: data.abbreviation,
 			scientificName: data.scientificName,
 			description: data.description,
 			parentId: data.parentId ?? null,
-			attributes: data.attributes ?? {}
+			attributes: attributesToStored(data.attributes) as Cultivar['attributes']
 		});
 	};
 
@@ -548,7 +534,13 @@ export class CultivarController {
 			if (data.scientificName !== undefined) draft.scientificName = data.scientificName;
 			if (data.description !== undefined) draft.description = data.description;
 			if (data.parentId !== undefined) draft.parentId = data.parentId;
-			if (data.attributes) draft.attributes = data.attributes;
+			if (data.category !== undefined) draft.category = data.category;
+			if (data.tags !== undefined) draft.tags = new Set(data.tags);
+			if (data.attributes) {
+				draft.attributes = attributesToStored(
+					data.attributes
+				) as Cultivar['attributes'];
+			}
 		});
 	};
 

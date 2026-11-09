@@ -1,4 +1,6 @@
 import { type ControllerContext } from '../controller.js';
+import { gardenCultivarCollectionRow } from '../cultivars/rows.js';
+import { DEFAULT_CULTIVAR_COLLECTION_ID } from '../cultivars/system.js';
 import {
 	AppError,
 	type Garden,
@@ -141,6 +143,21 @@ export class GardenController {
 				parentType: 'GARDEN',
 				attributes: {}
 			});
+
+			/**
+			 * Add the garden's own cultivar collection, inheriting the default
+			 * collection so the garden starts with its cultivars.
+			 */
+			const defaultCollection = await transaction.fetchById(
+				'cultivarCollections',
+				DEFAULT_CULTIVAR_COLLECTION_ID
+			);
+			if (defaultCollection) {
+				await transaction.insert(
+					'cultivarCollections',
+					gardenCultivarCollectionRow(garden.id, defaultCollection)
+				);
+			}
 		});
 
 		if (garden == null) {

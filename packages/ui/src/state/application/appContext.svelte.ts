@@ -54,11 +54,18 @@ export function createAppContext(
 	);
 	const plants = setContext(
 		'plants',
-		createPlantsContext(controller, timeline, garden)
+		createPlantsContext(controller, timeline, garden, cultivars)
 	);
 	const plantingWindows = setContext(
 		'plantingWindows',
-		createPlantingWindowsContext(controller, timeline, garden, cultivars, environments)
+		createPlantingWindowsContext(
+			controller,
+			timeline,
+			garden,
+			cultivars,
+			environments,
+			plants
+		)
 	);
 
 	return {

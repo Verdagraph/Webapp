@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { AppError } from '../errors.js';
+import { attributesFromStored } from './attributes/index.js';
 import {
 	CultivarCollectionUpdateCommandSchema,
 	CultivarUpdateCommandSchema,
@@ -69,11 +70,13 @@ export function exportCultivarCollection(
 		cultivars: collectionCultivars.map((cultivar) => ({
 			name: cultivar.name,
 			names: [...cultivar.names],
+			category: cultivar.category ?? undefined,
+			tags: [...cultivar.tags],
 			abbreviation: cultivar.abbreviation,
 			scientificName: cultivar.scientificName ?? undefined,
 			description: cultivar.description,
 			parentName: cultivar.parentId ? namesById.get(cultivar.parentId) : undefined,
-			attributes: cultivar.attributes
+			attributes: attributesFromStored(cultivar.attributes)
 		}))
 	});
 }

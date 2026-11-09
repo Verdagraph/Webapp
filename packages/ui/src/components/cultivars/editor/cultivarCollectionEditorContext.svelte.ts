@@ -25,7 +25,7 @@ export function createCultivarCollectionEditorContext() {
 		if (creation.kind === 'collection') {
 			collections.resetCreateForm();
 		} else {
-			cultivars.resetCreateForm(creation.collectionId);
+			cultivars.resetCreateForm(creation.collectionId, creation.seed);
 		}
 	}
 
