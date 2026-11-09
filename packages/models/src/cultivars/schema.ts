@@ -17,6 +17,20 @@ export const CultivarCollectionVisibilityEnumOptions = [
 	'PUBLIC'
 ] as const;
 
+/**
+ * What kind of plant the cultivar is, for browsing and filtering. Set on a crop
+ * and inherited by its varieties. Uses such as cover cropping are tags.
+ */
+export const CultivarCategoryEnumOptions = [
+	'VEGETABLE',
+	'FRUIT',
+	'HERB',
+	'FLOWER',
+	'COVER_CROP',
+	'OTHER'
+] as const;
+export type CultivarCategory = (typeof CultivarCategoryEnumOptions)[number];
+
 export const cultivarSchema = S.Collections({
 	...environmentSchema,
 	/** Collection schema. */
@@ -45,6 +59,9 @@ export const cultivarSchema = S.Collections({
 
 			/** Optional description. */
 			description: S.String({ default: '' }),
+
+			/** Optional metadata tags. */
+			tags: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
 			/** Optional parent collection to derive attributes from. */
 			parentId: S.String({ nullable: true, default: null }),
@@ -139,8 +156,21 @@ export const cultivarSchema = S.Collections({
 			/** Collection the cultivar is in. */
 			collectionId: S.String(),
 
-			/** A common name. Used to match plants to cultivars. */
+			/** The primary name. Shown in lists, and matched loosely against plant cultivar names. */
 			name: S.String(),
+
+			/** Other names the cultivar answers to. Unique among the collection's names. */
+			names: S.Set(S.String(), { default: S.Default.Set.empty() }),
+
+			/** Kind of plant. Inherited from the parent cultivar when unset. */
+			category: S.String({
+				enum: [...CultivarCategoryEnumOptions],
+				nullable: true,
+				default: null
+			}),
+
+			/** Free-form labels such as open-pollinated or cut-flower. Added to the parent's. */
+			tags: S.Set(S.String(), { default: S.Default.Set.empty() }),
 
 			/** Shorthand. */
 			abbreviation: S.String(),

@@ -1,4 +1,4 @@
-import { type Cultivar } from '../../cultivars/index.js';
+import { type Cultivar, rangeExpected } from '../../cultivars/index.js';
 import {
 	type GeometryCreateCommand,
 	GeometryCreateCommandSchema,
@@ -75,22 +75,95 @@ export function annualMilestonesForOrigin(origin: Origin): AnnualLifecycleMilest
  * one missing, equal-to-germToFirstHarvest) span rather than an error - a
  * Cultivar meant to be used as SEEDLING_TO_TRANSPLANT should have both set.
  */
-function daysFromGermination(lifeCycle: Cultivar['attributes']['annualLifeCycle']) {
-	const sowToGerm = lifeCycle?.sowToGerm ?? 0;
-	const germToTransplant = lifeCycle?.germToTransplant ?? 0;
-	const germToFirstHarvest = lifeCycle?.germToFirstHarvest ?? 0;
-	const firstToLastHarvest = lifeCycle?.firstToLastHarvest ?? 0;
-	const lastHarvestToExpiry = lifeCycle?.lastHarvestToExpiry ?? 0;
+function daysFromGermination(
+	lifeCycle: Cultivar['attributes']['annualLifeCycle'],
+	originProfile: Cultivar['attributes']['origin'],
+	origin: Origin
+): { offsets: Record<AnnualLifecycleMilestone, number>; assumptions: string[] } {
+	const assumptions: string[] = [];
+	const sowToGerm = rangeExpected(lifeCycle?.sowToGerm) ?? 0;
+	const seedlingAge = rangeExpected(lifeCycle?.germToTransplant) ?? 0;
+	const firstToLastHarvest = rangeExpected(lifeCycle?.firstToLastHarvest) ?? 0;
+	const lastHarvestToExpiry = rangeExpected(lifeCycle?.lastHarvestToExpiry) ?? 0;
 
-	const byMilestone: Record<AnnualLifecycleMilestone, number> = {
+	/**
+	 * Seed packets give days to maturity counted from sowing, germination or
+	 * transplant. Every offset here is from germination, so the packet figure
+	 * is converted using the seedling age and germination time. An explicit
+	 * germToFirstHarvest overrides the conversion.
+	 */
+	let maturityBasis = lifeCycle?.maturityBasis;
+	let basisFromOrigin = false;
+	if (!maturityBasis && originProfile?.preferred) {
+		/** Packets count from sowing for direct-seeded crops and from transplant for transplanted ones. */
+		maturityBasis = originProfile.preferred === 'DIRECT_SEED' ? 'SOWING' : 'TRANSPLANT';
+		basisFromOrigin = true;
+	}
+	let germToFirstHarvest = rangeExpected(lifeCycle?.germToFirstHarvest);
+	if (germToFirstHarvest === undefined) {
+		const maturity = rangeExpected(lifeCycle?.maturityDays);
+		if (maturity === undefined) {
+			germToFirstHarvest = 0;
+			assumptions.push('No time to harvest is set for this cultivar.');
+		} else {
+			if (basisFromOrigin) {
+				assumptions.push(
+					`Days to maturity have no basis, so they count from ${maturityBasis === 'SOWING' ? 'sowing' : 'transplant'}, following the preferred origin.`
+				);
+			}
+			switch (maturityBasis) {
+				case 'SOWING':
+					germToFirstHarvest = Math.max(maturity - sowToGerm, 0);
+					break;
+				case 'TRANSPLANT':
+					germToFirstHarvest = seedlingAge + maturity;
+					if (seedlingAge === 0) {
+						assumptions.push(
+							'Days to maturity count from transplant but no seedling age is set.'
+						);
+					}
+					break;
+				default:
+					germToFirstHarvest = maturity;
+					assumptions.push(
+						'Days to maturity have no basis, so they count from germination.'
+					);
+			}
+		}
+	}
+
+	/** A plant that is transplanted stalls for a while before it grows on. */
+	const transplanted = annualMilestonesForOrigin(origin).includes('TRANSPLANT');
+	const shock = transplanted ? (originProfile?.transplantShockDays ?? 0) : 0;
+	const firstHarvest = germToFirstHarvest + shock;
+
+	const offsets: Record<AnnualLifecycleMilestone, number> = {
 		SEED: -sowToGerm,
 		GERMINATION: 0,
-		TRANSPLANT: germToTransplant,
-		FIRST_HARVEST: germToFirstHarvest,
-		LAST_HARVEST: germToFirstHarvest + firstToLastHarvest,
-		EXPIRY: germToFirstHarvest + firstToLastHarvest + lastHarvestToExpiry
+		TRANSPLANT: seedlingAge,
+		FIRST_HARVEST: firstHarvest,
+		LAST_HARVEST: firstHarvest + firstToLastHarvest,
+		EXPIRY: firstHarvest + firstToLastHarvest + lastHarvestToExpiry
 	};
-	return byMilestone;
+	return { offsets, assumptions };
+}
+
+/**
+ * The days from starting a plant to its first harvest: from sowing for a seed, and from
+ * transplanting for a seedling. This is what a planting window has to leave room for.
+ * @param lifeCycle The cultivar's annual lifecycle.
+ * @param originProfile The cultivar's origin profile.
+ * @param origin How the plant is started.
+ * @returns Days to the first harvest.
+ */
+export function daysToFirstHarvest(
+	lifeCycle: Cultivar['attributes']['annualLifeCycle'],
+	originProfile: Cultivar['attributes']['origin'],
+	origin: Origin
+): number {
+	const { offsets } = daysFromGermination(lifeCycle, originProfile, origin);
+	const start = origin === 'SEEDLING_TO_TRANSPLANT' ? offsets.TRANSPLANT : offsets.SEED;
+	return offsets.FIRST_HARVEST - start;
 }
 
 /**
@@ -153,6 +226,7 @@ function sizeForMilestone(
 export function generateExpectedHistories(params: {
 	expectedGeometryProfile: Cultivar['attributes']['expectedGeometry'];
 	annualLifecycleProfile: Cultivar['attributes']['annualLifeCycle'];
+	originProfile?: Cultivar['attributes']['origin'];
 	origin: Origin;
 	anchorMilestone: AnnualLifecycleMilestone;
 	anchorDate: Date;
@@ -163,9 +237,15 @@ export function generateExpectedHistories(params: {
 	geometries: GeometryCreateCommand[];
 	location: LocationCreateCommand;
 	expectedObservations: PlantExpectedObservationCommand[];
+	/** What had to be assumed because the cultivar does not say. */
+	assumptions: string[];
 } {
 	const milestones = annualMilestonesForOrigin(params.origin);
-	const offsets = daysFromGermination(params.annualLifecycleProfile);
+	const { offsets, assumptions } = daysFromGermination(
+		params.annualLifecycleProfile,
+		params.originProfile,
+		params.origin
+	);
 	const anchorOffset = offsets[params.anchorMilestone];
 	const geometryType = params.expectedGeometryProfile?.geometryType ?? 'RECTANGLE';
 
@@ -198,7 +278,7 @@ export function generateExpectedHistories(params: {
 
 	const location = generateAnnualLocation(params);
 
-	return { geometries, location, expectedObservations };
+	return { geometries, location, expectedObservations, assumptions };
 }
 
 /**

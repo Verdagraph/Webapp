@@ -4,7 +4,9 @@ import { type ControllerContextParams, createCommands } from '@vdg-webapp/models
 
 import { type ClientContextParams, createClientContext } from './client.svelte';
 import { createCultivarContext } from './cultivarContext.svelte';
+import { createEnvironmentContext } from './environmentContext.svelte';
 import { createGardenContext } from './gardenContext.svelte';
+import { createPlantingWindowsContext } from './plantingWindows.svelte';
 import { createPlantsContext } from './plantsContext.svelte';
 import { createTimelineContext } from './timelineContext.svelte';
 import { createSettingsContext } from './userSettings.svelte';
@@ -42,13 +44,28 @@ export function createAppContext(
 	const timeline = setContext('timeline', createTimelineContext());
 	const garden = setContext('garden', createGardenContext(controller, client));
 	const cultivars = setContext('cultivars', createCultivarContext(controller, garden));
+	const environments = setContext(
+		'environments',
+		createEnvironmentContext(controller, garden)
+	);
 	const workspaces = setContext(
 		'workspaces',
 		createWorkspacesContext(controller, garden)
 	);
 	const plants = setContext(
 		'plants',
-		createPlantsContext(controller, timeline, garden)
+		createPlantsContext(controller, timeline, garden, cultivars)
+	);
+	const plantingWindows = setContext(
+		'plantingWindows',
+		createPlantingWindowsContext(
+			controller,
+			timeline,
+			garden,
+			cultivars,
+			environments,
+			plants
+		)
 	);
 
 	return {
@@ -58,8 +75,10 @@ export function createAppContext(
 		timeline,
 		garden,
 		cultivars,
+		environments,
 		workspaces,
-		plants
+		plants,
+		plantingWindows
 	};
 }
 export type AppContext = ReturnType<typeof createAppContext>;

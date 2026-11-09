@@ -56,7 +56,7 @@
 		}
 	});
 	const form = createForm(GardenCreateCommandSchema, {
-		onSubmit: (data) => gardenCreateHandler.execute(data)
+		handler: gardenCreateHandler
 	});
 
 	/** Garden ID generation handler. */

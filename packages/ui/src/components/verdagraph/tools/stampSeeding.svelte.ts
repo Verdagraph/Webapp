@@ -6,9 +6,11 @@ import {
 	type PlantExpectedObservationCommand,
 	type Position,
 	addDays,
+	allowedOrigins,
 	annualMilestonesForOrigin,
 	daysBetween,
-	generateExpectedHistories
+	generateExpectedHistories,
+	preferredOrigin
 } from '@vdg-webapp/models';
 
 import { getAppContext } from '$state/application';
@@ -85,6 +87,7 @@ export function createStampSeeding(plantIndex: number) {
 		const { geometries, location, expectedObservations } = generateExpectedHistories({
 			expectedGeometryProfile: cultivar?.attributes?.expectedGeometry,
 			annualLifecycleProfile: cultivar?.attributes?.annualLifeCycle,
+			originProfile: cultivar?.attributes?.origin,
 			origin,
 			anchorMilestone,
 			anchorDate: verdagraphContext.timeline.focusUtc,
@@ -127,6 +130,7 @@ export function createStampSeeding(plantIndex: number) {
 		}));
 	}
 
+	let lastCultivarName: string | null = null;
 	let previousStructuralKey: string | null = $state(null);
 	let previousFocusedDay: Date | null = $state(null);
 	$effect(() => {
@@ -135,6 +139,24 @@ export function createStampSeeding(plantIndex: number) {
 			previousStructuralKey = null;
 			previousFocusedDay = null;
 			return;
+		}
+
+		/**
+		 * Choosing a cultivar starts the plant the way the cultivar prefers, and a
+		 * cultivar which cannot be started the current way is switched to one it can.
+		 * Only changed here, so a later manual choice of an allowed origin is kept.
+		 */
+		const originProfile = ctx.cultivars.getCultivar(cultivarName)?.attributes?.origin;
+		const plant = currentPlant();
+		if (plant) {
+			const cultivarChanged = cultivarName !== lastCultivarName;
+			lastCultivarName = cultivarName;
+			if (cultivarChanged || !allowedOrigins(originProfile).includes(plant.origin)) {
+				const preferred = preferredOrigin(originProfile);
+				if (plant.origin !== preferred) {
+					plant.origin = preferred;
+				}
+			}
 		}
 
 		const origin = currentPlant()?.origin ?? 'DIRECT_SEED';

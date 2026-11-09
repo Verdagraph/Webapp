@@ -1,25 +1,14 @@
 <script lang="ts">
-	import { CalendarDate } from '@internationalized/date';
-	import { mode } from 'mode-watcher';
+	import type { Plant } from '@vdg-webapp/models';
 
-	import type {
-		Cultivar,
-		CultivarPlantingWindow,
-		Plant,
-		PlantingWindow
-	} from '@vdg-webapp/models';
-
-	import { iconIds } from '$assets';
 	import { RangeCalendar, createCalendarContext } from '$components';
 	import {
 		createPlantStampCalendarItem,
 		plantCalendarItem,
-		plantingWindowCalendarItem
+		plantingWindowCalendarItems
 	} from '$components/rangeCalendar/items';
 	import { getAppContext } from '$state';
-	import { getColor } from '$utils';
 
-	import TestComponent from './TestComponent.svelte';
 	import { getVerdagraphContext } from './verdagraphContext.svelte';
 
 	type Props = {
@@ -30,34 +19,6 @@
 	const ctx = getAppContext();
 	const verdagraphContext = getVerdagraphContext();
 
-	const windows: CultivarPlantingWindow[] = [
-		{
-			cultivar: {
-				id: 'cultivar',
-				collectionId: '',
-				name: '',
-				abbreviation: 'a',
-				description: '',
-				attributes: {},
-				createdAt: new Date()
-			},
-			environment: {
-				id: '',
-				name: '',
-				gardenId: '',
-				description: '',
-				parentType: 'GARDEN',
-				inherit: false,
-				attributes: {}
-			},
-			windows: [
-				{
-					range: { start: new Date(2026, 0, 1), end: new Date(2026, 0, 6) },
-					suitability: 1
-				}
-			]
-		}
-	];
 	const plantItems = $derived(
 		plants
 			.map((plant) => {
@@ -91,9 +52,7 @@
 			: []
 	);
 	const plantingWindowItems = $derived(
-		windows
-			.map((window) => plantingWindowCalendarItem({ plantingWindow: window }))
-			.filter((item) => item !== null)
+		plantingWindowCalendarItems(ctx.plantingWindows.frostDatesPlantingWindows)
 	);
 
 	const calendarContext = createCalendarContext(verdagraphContext.timeline, [

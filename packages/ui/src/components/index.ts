@@ -1,4 +1,5 @@
 export * from './canvas';
+export * from './cultivars';
 export * from './editableTree';
 export * from './misc';
 export * from './rangeCalendar';

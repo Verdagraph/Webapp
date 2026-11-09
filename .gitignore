@@ -28,3 +28,7 @@ vite.config.ts.timestamp-*
 
 # LLM
 .claude
+# Cached pages for tools/west-coast-seeds
+tools/**/.cache
+
+__pycache__/

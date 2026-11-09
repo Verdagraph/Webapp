@@ -52,14 +52,14 @@ export const fields = {
 /** Update command. */
 export const ExpectedGeometryUpdateCommandSchema = z
 	.object({
-		geometryType: workspaceFields.geometryTypeSchema,
-		seedSize: seedSizeSchema,
-		seedlingSize: seedlingSizeSchema,
-		firstHarvestSize: firstHarvestSizeSchema,
-		lastHarvestSize: lastHarvestSizeSchema,
-		expirySize: expirySizeSchema,
-		exitDormancySize: exitDormancySizeSchema,
-		enterDormancySize: enterDormancySizeSchema
+		geometryType: workspaceFields.geometryTypeSchema.optional(),
+		seedSize: seedSizeSchema.optional(),
+		seedlingSize: seedlingSizeSchema.optional(),
+		firstHarvestSize: firstHarvestSizeSchema.optional(),
+		lastHarvestSize: lastHarvestSizeSchema.optional(),
+		expirySize: expirySizeSchema.optional(),
+		exitDormancySize: exitDormancySizeSchema.optional(),
+		enterDormancySize: enterDormancySizeSchema.optional()
 	})
 	.describe(
 		'Determines the default geometric history when defining new instances of a cultivar.'

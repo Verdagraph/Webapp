@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type CultivarPlantingWindow, isDraftPlant } from '@vdg-webapp/models';
+	import { isDraftPlant } from '@vdg-webapp/models';
 
 	import { ScrollArea, Tabs } from '$core';
 	import { getAppContext } from '$state';
@@ -24,9 +24,7 @@
 	const workspaces = $derived(
 		ctx.workspaces.workspaces.map((w) => ({ id: w.id, name: w.name }))
 	);
-
-	/** Planting windows - currently uses placeholder data. */
-	const plantingWindows: CultivarPlantingWindow[] = $derived([]);
+	const plantingWindows = $derived(ctx.plantingWindows.frostDatesPlantingWindows);
 </script>
 
 <Tabs.Root value="plants" class="bg-neutral-1 flex h-full flex-col">

@@ -63,7 +63,7 @@ export function createWorkspaceEditorContext(defaultId: string) {
 		}
 	);
 	const plantingAreaCreateForm = createForm(PlantingAreaCreateCommandSchema, {
-		onSubmit: (data) => plantingAreaCreateHandler.execute(data)
+		handler: plantingAreaCreateHandler
 	});
 
 	/**

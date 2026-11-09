@@ -1,4 +1,8 @@
-import { type Cultivar } from './cultivars/index.js';
+import {
+	type Cultivar,
+	DEFAULT_CULTIVAR_COLLECTION_ID,
+	exactRange
+} from './cultivars/index.js';
 import {
 	type AnnualLifecycleMilestone,
 	type Origin,
@@ -22,30 +26,47 @@ import { type Position, historyGetRange } from './workspaces/index.js';
  * each caller still builds its own garden/workspace/user rows.
  */
 
-const cultivarCollectionId = 'west-coast-seeds';
+/**
+ * The three cultivars the seed plants are built from. They are not inserted: the plants refer
+ * to the default collection's Lettuce, Tomato and Carrot by name, and these only supply the
+ * timings the plants' histories are generated from.
+ */
+const cultivarCollectionId = DEFAULT_CULTIVAR_COLLECTION_ID;
 
 export const lettuce: Cultivar = {
 	id: 'lettuce',
 	collectionId: cultivarCollectionId,
+	category: 'VEGETABLE',
+	tags: new Set(),
 	name: 'lettuce',
+	names: new Set(['leaf lettuce']),
 	abbreviation: 'Le',
 	description: 'A fast-growing, cold-hardy leafy green.',
 	attributes: {
 		annualLifeCycle: {
-			sowToGerm: 5,
-			germToTransplant: 20,
-			germToFirstHarvest: 45,
-			firstToLastHarvest: 20,
-			lastHarvestToExpiry: 10
+			sowToGerm: exactRange(5),
+			germToTransplant: exactRange(20),
+			germToFirstHarvest: exactRange(45),
+			firstToLastHarvest: exactRange(20),
+			lastHarvestToExpiry: exactRange(10)
 		},
 		color: { baseColor: '#46A758', outlineColor: '#71D083', textColor: '#1A2E05' },
-		frostDatePlantingWindows: {
-			lastFrostWindowOpen: -14,
-			lastFrostWindowClose: 21,
-			firstFrostWindowOpen: -60,
-			firstFrostWindowClose: -14
+		sowingWindows: {
+			directSeed: {
+				lastFrost: { open: -14, close: 21 },
+				firstFrost: { open: -60, close: -14 }
+			}
 		},
-		origin: { transplantable: true },
+		origin: {
+			preferred: 'SEED_TO_TRANSPLANT',
+			allowed: new Set(['DIRECT_SEED', 'SEED_TO_TRANSPLANT', 'SEEDLING_TO_TRANSPLANT'])
+		},
+		sowing: {
+			sunExposure: new Set(['PARTIAL_SHADE']),
+			plantingDepth: exactRange(0.003),
+			rowSpacing: exactRange(0.3)
+		},
+		interplanting: { minimumDistance: 0.25 },
 		expectedGeometry: {
 			geometryType: 'ELLIPSE',
 			seedSize: 0.01,
@@ -60,25 +81,37 @@ export const lettuce: Cultivar = {
 export const tomato: Cultivar = {
 	id: 'tomato',
 	collectionId: cultivarCollectionId,
+	category: 'VEGETABLE',
+	tags: new Set(),
 	name: 'tomato',
+	names: new Set(['tomatoes', 'love apple']),
 	abbreviation: 'To',
 	description: 'A frost-tender fruiting crop, started indoors and transplanted out.',
 	attributes: {
 		annualLifeCycle: {
-			sowToGerm: 7,
-			germToTransplant: 35,
-			germToFirstHarvest: 80,
-			firstToLastHarvest: 60,
-			lastHarvestToExpiry: 20
+			sowToGerm: exactRange(7),
+			germToTransplant: exactRange(35),
+			germToFirstHarvest: exactRange(80),
+			firstToLastHarvest: exactRange(60),
+			lastHarvestToExpiry: exactRange(20)
 		},
 		color: { baseColor: '#E5484D', outlineColor: '#FF9592', textColor: '#641723' },
-		frostDatePlantingWindows: {
-			lastFrostWindowOpen: 14,
-			lastFrostWindowClose: 42,
-			firstFrostWindowOpen: -90,
-			firstFrostWindowClose: -60
+		sowingWindows: {
+			transplantOut: {
+				lastFrost: { open: 14, close: 42 },
+				firstFrost: { open: -90, close: -60 }
+			}
 		},
-		origin: { transplantable: true },
+		origin: {
+			preferred: 'SEED_TO_TRANSPLANT',
+			allowed: new Set(['DIRECT_SEED', 'SEED_TO_TRANSPLANT', 'SEEDLING_TO_TRANSPLANT'])
+		},
+		sowing: {
+			sunExposure: new Set(['FULL_SUN']),
+			plantingDepth: exactRange(0.006),
+			rowSpacing: exactRange(0.9)
+		},
+		interplanting: { minimumDistance: 0.6 },
 		expectedGeometry: {
 			geometryType: 'RECTANGLE',
 			seedSize: 0.02,
@@ -93,24 +126,33 @@ export const tomato: Cultivar = {
 export const carrot: Cultivar = {
 	id: 'carrot',
 	collectionId: cultivarCollectionId,
+	category: 'VEGETABLE',
+	tags: new Set(),
 	name: 'carrot',
+	names: new Set(['carrots']),
 	abbreviation: 'Ca',
 	description: 'A direct-seeded root crop that does not transplant well.',
 	attributes: {
 		annualLifeCycle: {
-			sowToGerm: 10,
-			germToFirstHarvest: 70,
-			firstToLastHarvest: 14,
-			lastHarvestToExpiry: 7
+			sowToGerm: exactRange(10),
+			germToFirstHarvest: exactRange(70),
+			firstToLastHarvest: exactRange(14),
+			lastHarvestToExpiry: exactRange(7)
 		},
 		color: { baseColor: '#F76B15', outlineColor: '#FFA057', textColor: '#582D1D' },
-		frostDatePlantingWindows: {
-			lastFrostWindowOpen: -7,
-			lastFrostWindowClose: 28,
-			firstFrostWindowOpen: -70,
-			firstFrostWindowClose: -20
+		sowingWindows: {
+			directSeed: {
+				lastFrost: { open: -7, close: 28 },
+				firstFrost: { open: -70, close: -20 }
+			}
 		},
-		origin: { transplantable: false },
+		origin: { preferred: 'DIRECT_SEED', allowed: new Set(['DIRECT_SEED']) },
+		sowing: {
+			sunExposure: new Set(['FULL_SUN']),
+			plantingDepth: exactRange(0.006),
+			rowSpacing: exactRange(0.3)
+		},
+		interplanting: { minimumDistance: 0.05 },
 		expectedGeometry: {
 			geometryType: 'ELLIPSE',
 			seedSize: 0.005,
@@ -151,6 +193,7 @@ function buildSeedPlant(input: {
 	const { geometries, location, expectedObservations } = generateExpectedHistories({
 		expectedGeometryProfile: input.cultivar.attributes.expectedGeometry,
 		annualLifecycleProfile: input.cultivar.attributes.annualLifeCycle,
+		originProfile: input.cultivar.attributes.origin,
 		origin: input.origin,
 		anchorMilestone: input.anchorMilestone,
 		anchorDate: input.anchorDate,
@@ -379,16 +422,6 @@ export function buildSeedGardenPlants(params: {
 	];
 
 	return {
-		cultivarCollections: [
-			{
-				id: cultivarCollectionId,
-				gardenId: params.gardenId,
-				name: 'West Coast Seeds',
-				slug: 'west-coast-seeds',
-				visibility: 'HIDDEN' as const
-			}
-		],
-		cultivars: [lettuce, tomato, carrot],
 		plants: seedPlants.map((seedPlant) => seedPlant.plant),
 		lifespans: seedPlants.flatMap((seedPlant) => seedPlant.lifespans),
 		geometryHistories: seedPlants.flatMap((seedPlant) => seedPlant.geometryHistories),

@@ -1,7 +1,8 @@
 import { type ControllerContext } from '../controller.js';
 import { AppError } from '../errors.js';
 import { type Cultivar, type CultivarCollection } from '../index.js';
-import { mergeAttributes } from '../utils/index.js';
+import { cultivarMatchesName } from './names.js';
+import { mergeCultivarChain } from './resolve.js';
 
 const MAX_CULTIVAR_COLLECTION_INHERITANCE_DEPTH = 16;
 const MAX_CULTIVAR_INHERITANCE_DEPTH = 16;
@@ -64,8 +65,8 @@ export async function resolveCultivarCollections(
  * Given a cultivar name, retrieves the matching cultivar ID in the garden.
  * Cultivar collections within the garden are queried, along with their parent collections.
  * Collections are sorted by priority.
- * The first cultivar with a set of cultivar names which includes the target name
- * to be found in a search of each collection and all its parents is returned.
+ * The first cultivar whose primary name or other names loosely match the target name
+ * (see normalizeCultivarName) to be found in a search of each collection and all its parents is returned.
  * In the case that multiple cultivars which match a name exist in the same collection,
  * the one with the newest creation date is chosen.
  * @param gardenId The garden to search in.
@@ -84,20 +85,23 @@ export async function resolveCultivarName(
 		return null;
 	}
 
-	/** Sort collections by priority. */
-	collections.sort((a, b) => a.collection.priority - b.collection.priority);
+	/** Sort collections by priority, highest first: a higher number overrides a lower one. */
+	collections.sort((a, b) => b.collection.priority - a.collection.priority);
 
 	/** Return first matched cultivar ID, starting with children. */
 	for (const collection of collections) {
 		let currentBranch: CultivarCollectionInheritanceStructure | undefined = collection;
 
 		while (currentBranch) {
-			const matchedCultivars = await ctx.triplit.fetch(
+			/** Names match loosely, and other names are a set, so compare in code. */
+			const collectionCultivars = await ctx.triplit.fetch(
 				ctx.triplit
 					.query('cultivars')
 					.Where('collectionId', '=', currentBranch.collection.id)
-					.Where(['name', '=', cultivarName])
-					.Select(['id', 'createdAt'])
+					.Select(['id', 'name', 'names', 'createdAt'])
+			);
+			const matchedCultivars = collectionCultivars.filter((cultivar) =>
+				cultivarMatchesName(cultivar, cultivarName)
 			);
 			if (matchedCultivars.length > 0) {
 				if (matchedCultivars.length > 1) {
@@ -160,11 +164,7 @@ async function resolveCultivarId(
 	}
 
 	/** Merge all cultivar values, letting children override parents. */
-	let result = cultivars[cultivars.length - 1];
-	for (let i = cultivars.length - 2; i >= 0; i--) {
-		result = mergeAttributes(result, cultivars[i]);
-	}
-	return result;
+	return mergeCultivarChain(cultivars);
 }
 
 /**

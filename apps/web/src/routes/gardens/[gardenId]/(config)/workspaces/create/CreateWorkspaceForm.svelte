@@ -15,7 +15,7 @@
 	});
 	const form = createForm(WorkspaceCreateCommandSchema, {
 		initialValues: { gardenId: page.params.gardenId },
-		onSubmit: (data) => formHandler.execute(data)
+		handler: formHandler
 	});
 </script>
 

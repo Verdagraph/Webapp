@@ -95,3 +95,7 @@ A GardenMembership should be able to grant these levels of access:
 ## favorite
 
 A garden membership should be able to be marked as a favorite, so it can show up at the top of the Gardens menu
+
+## Default cultivars
+
+When a Garden is created it also gets a CultivarCollection of its own, "Garden cultivars", which inherits the default cultivar collection (see [Cultivars](../cultivars/models.md#default-collection)). The Garden therefore starts with the default cultivars and adds its own beside them.

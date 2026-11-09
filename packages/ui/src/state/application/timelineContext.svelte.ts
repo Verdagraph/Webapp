@@ -1,9 +1,9 @@
 import { type DateDuration, getLocalTimeZone, today } from '@internationalized/date';
 
 /** Default offset between selected day and the upper selection range. */
-const defaultUpperSelectionOffset: DateDuration = { weeks: 3 };
+const defaultUpperSelectionOffset: DateDuration = { months: 2 };
 /** Default offset between selected day lower selection range. */
-const defaultLowerSelectionOffset: DateDuration = { weeks: 1 };
+const defaultLowerSelectionOffset: DateDuration = { months: 1 };
 
 /**
  * Holds context for a timeline,

@@ -1,11 +1,14 @@
 import { BulkInsert } from '@triplit/client';
 
-import { buildSeedGardenPlants } from '../../src/index.js';
+import { defaultCultivarRows } from '../../src/cultivars/defaults/index.js';
+import { buildSeedGardenPlants, gardenCultivarCollectionRow } from '../../src/index.js';
 import { schema } from '../schema.js';
 
 const gardenId = 'garden1';
 
 export default function seed(): BulkInsert<typeof schema> {
+	/** The default collection is owned by nobody; the garden's own collection inherits it. */
+	const defaults = defaultCultivarRows();
 	const gardenPlants = buildSeedGardenPlants({
 		gardenId,
 		workspaceId: 'workspace1',
@@ -102,7 +105,7 @@ export default function seed(): BulkInsert<typeof schema> {
 		],
 		/**
 		 * Garden-level frost dates, combined with each Cultivar's
-		 * frostDatePlantingWindows profile above to compute the Calendar's
+		 * sowingWindows profile above to compute the Calendar's
 		 * PlantingWindows pane.
 		 */
 		environments: [
@@ -120,10 +123,31 @@ export default function seed(): BulkInsert<typeof schema> {
 					},
 					annualTemperature: { minimum: -12, maximum: 32 }
 				}
+			},
+			{
+				id: 'workspace2-environment',
+				name: 'Workspace 2 (Greenhouse)',
+				description: 'A sheltered workspace with earlier last and later first frost.',
+				parentType: 'WORKSPACE',
+				gardenId: gardenId,
+				workspaceIds: new Set(['workspace2']),
+				inherit: false,
+				attributes: {
+					frostDates: {
+						lastFrostDate: new Date(2026, 2, 1),
+						firstFrostDate: new Date(2026, 11, 15)
+					}
+				}
 			}
 		],
-		cultivarCollections: gardenPlants.cultivarCollections,
-		cultivars: gardenPlants.cultivars,
+		cultivarCollections: [
+			defaults.collection,
+			{
+				id: `${gardenId}-cultivars`,
+				...gardenCultivarCollectionRow(gardenId, defaults.collection)
+			}
+		],
+		cultivars: defaults.cultivars,
 		plants: gardenPlants.plants,
 		lifespans: gardenPlants.lifespans,
 		draftBuckets: gardenPlants.draftBuckets,

@@ -18,7 +18,7 @@
 		}
 	});
 	const form = createForm(userRequestPasswordReset.schema, {
-		onSubmit: (data) => formHandler.execute(data)
+		handler: formHandler
 	});
 </script>
 
