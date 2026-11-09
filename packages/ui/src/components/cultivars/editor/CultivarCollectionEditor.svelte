@@ -71,7 +71,7 @@
 	/** Seed the update forms whenever the selected entity changes. */
 	$effect(() => {
 		if (selectedCollection) {
-			editor.collectionUpdate.form.reset({
+			editor.collectionUpdate.reset({
 				name: selectedCollection.name,
 				visibility: selectedCollection.visibility as 'HIDDEN' | 'UNLISTED' | 'PUBLIC',
 				description: selectedCollection.description,
@@ -82,7 +82,7 @@
 	});
 	$effect(() => {
 		if (selectedCultivar) {
-			editor.cultivarUpdate.form.reset({
+			editor.cultivarUpdate.reset({
 				name: selectedCultivar.name,
 				names: [...selectedCultivar.names],
 				category: selectedCultivar.category,
@@ -186,7 +186,7 @@
 				<Button.Root
 					size="sm"
 					variant="destructive"
-					onclick={() => editor.collectionDelete.handler.execute(selectedCollection.id)}
+					onclick={() => editor.collectionDelete.execute(selectedCollection.id)}
 				>
 					Delete collection
 				</Button.Root>
@@ -195,7 +195,7 @@
 			<Button.Root
 				size="sm"
 				variant="destructive"
-				onclick={() => editor.cultivarDelete.handler.execute(selectedCultivar.id)}
+				onclick={() => editor.cultivarDelete.execute(selectedCultivar.id)}
 			>
 				Delete cultivar
 			</Button.Root>
@@ -220,16 +220,14 @@
 						{#if editor.creation?.kind === 'collection'}
 							<h2 class="mb-4 text-lg font-medium">New collection</h2>
 							<CollectionForm
-								form={editor.collectionCreate.form}
-								handler={editor.collectionCreate.handler}
+								form={editor.collectionCreate}
 								parentOptions={collections}
 								submitLabel="Create"
 							/>
 						{:else if editor.creation?.kind === 'cultivar'}
 							<h2 class="mb-4 text-lg font-medium">New cultivar</h2>
 							<CultivarForm
-								form={editor.cultivarCreate.form}
-								handler={editor.cultivarCreate.handler}
+								form={editor.cultivarCreate}
 								parentOptions={cultivarParentOptions(editor.creation.collectionId)}
 								submitLabel="Create"
 							/>
@@ -244,8 +242,7 @@
 								{/if}
 								<fieldset disabled={isInherited} class="contents">
 									<CollectionForm
-										form={editor.collectionUpdate.form}
-										handler={editor.collectionUpdate.handler}
+										form={editor.collectionUpdate}
 										parentOptions={collectionParentOptions}
 										submitLabel="Save"
 									/>
@@ -273,8 +270,7 @@
 								{/if}
 								<fieldset disabled={isInherited} class="contents">
 									<CultivarForm
-										form={editor.cultivarUpdate.form}
-										handler={editor.cultivarUpdate.handler}
+										form={editor.cultivarUpdate}
 										parentOptions={cultivarParentOptions(
 											selectedCultivar.collectionId,
 											selectedCultivar.id

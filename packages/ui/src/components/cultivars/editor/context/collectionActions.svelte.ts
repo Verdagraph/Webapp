@@ -24,12 +24,13 @@ export function createCollectionActions(selection: EditorSelectionContext) {
 		}
 	);
 	const createFormState = createForm(CultivarCollectionCreateCommandSchema, {
-		initialValues: { gardenId: ctx.garden.id },
-		onSubmit: (data) => createHandler.execute(data)
+		handler: createHandler,
+		initialValues: { gardenId: ctx.garden.id }
 	});
 
 	const updateHandler = createCommandHandler(ctx.controller.cultivars.updateCollection);
 	const updateFormState = createForm(CultivarCollectionUpdateCommandSchema, {
+		handler: updateHandler,
 		onSubmit: (data) => {
 			if (selection.selection?.kind === 'collection') {
 				return updateHandler.execute(selection.selection.id, data);
@@ -50,9 +51,9 @@ export function createCollectionActions(selection: EditorSelectionContext) {
 	}
 
 	return {
-		create: { handler: createHandler, form: createFormState },
-		update: { handler: updateHandler, form: updateFormState },
-		delete: { handler: deleteHandler },
+		create: createFormState,
+		update: updateFormState,
+		delete: deleteHandler,
 		resetCreateForm
 	};
 }

@@ -1,5 +1,5 @@
 """Crop-level facts read by hand from West Coast Seeds' growing text, keyed by group id (see mkgroups.py).
-Lengths are cm, times are days. Midpoints are used where the text gives a range; the range stays in `extras`.
+Lengths are cm, times are days. Midpoints are used where the text gives a range.
 `basisAssumed` marks groups whose page does not say what days-to-maturity counts from."""
 E = {}
 def crop(gid, name, sci, abbr, **kw):

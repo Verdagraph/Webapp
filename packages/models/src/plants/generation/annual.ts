@@ -92,6 +92,13 @@ function daysFromGermination(
 	 * is converted using the seedling age and germination time. An explicit
 	 * germToFirstHarvest overrides the conversion.
 	 */
+	let maturityBasis = lifeCycle?.maturityBasis;
+	let basisFromOrigin = false;
+	if (!maturityBasis && originProfile?.preferred) {
+		/** Packets count from sowing for direct-seeded crops and from transplant for transplanted ones. */
+		maturityBasis = originProfile.preferred === 'DIRECT_SEED' ? 'SOWING' : 'TRANSPLANT';
+		basisFromOrigin = true;
+	}
 	let germToFirstHarvest = rangeExpected(lifeCycle?.germToFirstHarvest);
 	if (germToFirstHarvest === undefined) {
 		const maturity = rangeExpected(lifeCycle?.maturityDays);
@@ -99,7 +106,12 @@ function daysFromGermination(
 			germToFirstHarvest = 0;
 			assumptions.push('No time to harvest is set for this cultivar.');
 		} else {
-			switch (lifeCycle?.maturityBasis) {
+			if (basisFromOrigin) {
+				assumptions.push(
+					`Days to maturity have no basis, so they count from ${maturityBasis === 'SOWING' ? 'sowing' : 'transplant'}, following the preferred origin.`
+				);
+			}
+			switch (maturityBasis) {
 				case 'SOWING':
 					germToFirstHarvest = Math.max(maturity - sowToGerm, 0);
 					break;
@@ -113,11 +125,9 @@ function daysFromGermination(
 					break;
 				default:
 					germToFirstHarvest = maturity;
-					if (!lifeCycle?.maturityBasis) {
-						assumptions.push(
-							'Days to maturity have no basis, so they count from germination.'
-						);
-					}
+					assumptions.push(
+						'Days to maturity have no basis, so they count from germination.'
+					);
 			}
 		}
 	}

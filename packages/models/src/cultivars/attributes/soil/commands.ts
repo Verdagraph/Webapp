@@ -1,11 +1,12 @@
 import { z } from 'zod';
 
-import { rangeSchema } from '../range.js';
+import { boundedRange } from '../fields.js';
 
 /** Field specifications. */
-const phSchema = rangeSchema(z.number().min(3).max(11)).describe(
-	'The soil pH range the cultivar grows best in.'
-);
+const phSchema = boundedRange('The soil pH range the cultivar grows best in.', {
+	minimum: 3,
+	maximum: 11
+});
 export const fields = { phSchema };
 
 /** Update command. */

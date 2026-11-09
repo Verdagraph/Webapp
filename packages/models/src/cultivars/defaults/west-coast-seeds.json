@@ -3342,7 +3342,10 @@
 				},
 				"webResources": {
 					"sourceUrl": "https://www.westcoastseeds.com/products/scarlet-nantes",
-					"retrievedAt": "2026-10-20"
+					"retrievedAt": "2026-10-20",
+					"referenceUrls": [
+						"https://www.westcoastseeds.com/products/scarlet-nantes-seed-tape-2-5m-2-pk-1"
+					]
 				}
 			},
 			"parentName": "Carrot"
@@ -3456,8 +3459,8 @@
 						"max": 10
 					},
 					"germToTransplant": {
-						"min": 35,
-						"max": 42
+						"min": 26.5,
+						"max": 33.5
 					},
 					"maturityBasis": "TRANSPLANT"
 				},
@@ -7659,7 +7662,10 @@
 				},
 				"webResources": {
 					"sourceUrl": "https://www.westcoastseeds.com/products/grand-rapids-tbr",
-					"retrievedAt": "2026-10-20"
+					"retrievedAt": "2026-10-20",
+					"referenceUrls": [
+						"https://www.westcoastseeds.com/products/grand-rapids-tbr-seed-tape-2-5m-2-pk"
+					]
 				}
 			},
 			"parentName": "Looseleaf Lettuce"
@@ -7753,7 +7759,10 @@
 				},
 				"webResources": {
 					"sourceUrl": "https://www.westcoastseeds.com/products/little-gem",
-					"retrievedAt": "2026-10-20"
+					"retrievedAt": "2026-10-20",
+					"referenceUrls": [
+						"https://www.westcoastseeds.com/products/little-gem-seed-tape-2-5m-2-pk"
+					]
 				}
 			},
 			"parentName": "Romaine Lettuce"
@@ -8113,8 +8122,8 @@
 						"max": 10
 					},
 					"germToTransplant": {
-						"min": 35,
-						"max": 35
+						"min": 27.5,
+						"max": 27.5
 					},
 					"maturityBasis": "TRANSPLANT"
 				},
@@ -11719,8 +11728,8 @@
 						"max": 14
 					},
 					"germToTransplant": {
-						"min": 42,
-						"max": 42
+						"min": 30,
+						"max": 30
 					}
 				},
 				"origin": {
@@ -12627,7 +12636,10 @@
 				},
 				"webResources": {
 					"sourceUrl": "https://www.westcoastseeds.com/products/french-breakfast",
-					"retrievedAt": "2026-10-20"
+					"retrievedAt": "2026-10-20",
+					"referenceUrls": [
+						"https://www.westcoastseeds.com/products/copy-of-french-breakfast"
+					]
 				}
 			},
 			"parentName": "Radish"
@@ -15027,8 +15039,8 @@
 						"max": 14
 					},
 					"germToTransplant": {
-						"min": 42,
-						"max": 56
+						"min": 31.5,
+						"max": 45.5
 					},
 					"maturityBasis": "TRANSPLANT"
 				},
@@ -15748,7 +15760,10 @@
 				},
 				"webResources": {
 					"sourceUrl": "https://www.westcoastseeds.com/products/prairie-fire-organic-1",
-					"retrievedAt": "2026-10-20"
+					"retrievedAt": "2026-10-20",
+					"referenceUrls": [
+						"https://www.westcoastseeds.com/products/prairie-fire-organic"
+					]
 				}
 			},
 			"parentName": "Cherry Tomato"
@@ -19660,8 +19675,8 @@
 						"max": 14
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 46.5,
+						"max": 60.5
 					}
 				},
 				"origin": {
@@ -21607,8 +21622,8 @@
 						"max": 28
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 35,
+						"max": 49
 					}
 				},
 				"origin": {
@@ -21689,8 +21704,8 @@
 						"max": 10
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 46,
+						"max": 60
 					}
 				},
 				"origin": {
@@ -21850,8 +21865,8 @@
 						"max": 21
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 40.5,
+						"max": 54.5
 					}
 				},
 				"origin": {
@@ -22817,8 +22832,8 @@
 						"max": 10
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 47.5,
+						"max": 61.5
 					}
 				},
 				"origin": {
@@ -22888,8 +22903,8 @@
 						"max": 14
 					},
 					"germToTransplant": {
-						"min": 42,
-						"max": 56
+						"min": 30,
+						"max": 44
 					}
 				},
 				"origin": {
@@ -23136,8 +23151,8 @@
 						"max": 21
 					},
 					"germToTransplant": {
-						"min": 42,
-						"max": 56
+						"min": 24,
+						"max": 38
 					}
 				},
 				"origin": {
@@ -24409,8 +24424,8 @@
 						"max": 14
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 44,
+						"max": 58
 					}
 				},
 				"origin": {
@@ -25424,8 +25439,8 @@
 						"max": 21
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 40.5,
+						"max": 54.5
 					}
 				},
 				"origin": {
@@ -27419,8 +27434,8 @@
 						"max": 14
 					},
 					"germToTransplant": {
-						"min": 70,
-						"max": 84
+						"min": 56,
+						"max": 70
 					}
 				},
 				"origin": {
@@ -28060,8 +28075,8 @@
 						"max": 100
 					},
 					"germToTransplant": {
-						"min": 56,
-						"max": 70
+						"min": 1,
+						"max": 15
 					}
 				},
 				"origin": {

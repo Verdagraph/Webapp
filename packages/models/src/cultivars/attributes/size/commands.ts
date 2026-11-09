@@ -1,12 +1,10 @@
 import { z } from 'zod';
 
-import { rangeSchema } from '../range.js';
+import { lengthRange } from '../fields.js';
 
 /** Field specifications. */
-const size = (description: string) =>
-	rangeSchema(z.number().min(0).max(100)).describe(description);
-const heightSchema = size('The height in meters of a mature plant.');
-const spreadSchema = size('The width in meters a mature plant spreads to.');
+const heightSchema = lengthRange('The height in meters of a mature plant.', 100);
+const spreadSchema = lengthRange('The width in meters a mature plant spreads to.', 100);
 export const fields = { heightSchema, spreadSchema };
 
 /** Update command. */

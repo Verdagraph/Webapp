@@ -30,3 +30,5 @@ vite.config.ts.timestamp-*
 .claude
 # Cached pages for tools/west-coast-seeds
 tools/**/.cache
+
+__pycache__/

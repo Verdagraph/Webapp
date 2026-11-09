@@ -1,12 +1,24 @@
 import { z } from 'zod';
 
+import type createCommandHandler from '../commandHandler.svelte';
 import {
 	type DeepPartial,
 	deriveInitialValues,
 	zodIssuesToFieldErrors
 } from './zodIntrospection';
 
-export type FormOptions<T> = {
+/** Any command handler, whatever the command it runs. */
+export type AnyCommandHandler = ReturnType<
+	typeof createCommandHandler<never[], unknown>
+>;
+
+export type FormOptions<
+	T,
+	Handler extends AnyCommandHandler | undefined = undefined
+> = {
+	/** The handler of the command this form submits, exposed as `form.handler` so the
+	 * two travel together. Without `onSubmit`, a valid submit runs `handler.execute(data)`. */
+	handler?: Handler;
 	/** Merged over the schema-derived defaults on creation and on a bare `reset()`.
 	 * Only needed where the schema has no `.default()` for a value the caller
 	 * already has (e.g. seeding userId/token from route params).
@@ -14,7 +26,8 @@ export type FormOptions<T> = {
 	 * without it, TS would also try to infer T from whatever partial shape is
 	 * passed here, narrowing T down to just the keys provided. */
 	initialValues?: NoInfer<DeepPartial<T>>;
-	/** Called once client-side validation passes. */
+	/** Called once client-side validation passes. Overrides the handler's default call, for
+	 * commands which take more than the form data (such as the id of what is updated). */
 	onSubmit?: (data: NoInfer<T>) => void | Promise<void>;
 };
 
@@ -30,10 +43,11 @@ type ValidateResult<T> = { valid: true; data: T } | { valid: false };
  * submit (the caller's own onSubmit/success callback is the only thing that
  * ever reseeds data - there is no library-owned resync to race against).
  */
-export function createForm<Schema extends z.ZodTypeAny, T = z.infer<Schema>>(
-	schema: Schema,
-	options?: FormOptions<T>
-) {
+export function createForm<
+	Schema extends z.ZodTypeAny,
+	T = z.infer<Schema>,
+	Handler extends AnyCommandHandler | undefined = undefined
+>(schema: Schema, options?: FormOptions<T, Handler>) {
 	let data = $state<T>(
 		deriveInitialValues(schema, options?.initialValues as DeepPartial<z.infer<Schema>>)
 	);
@@ -56,7 +70,11 @@ export function createForm<Schema extends z.ZodTypeAny, T = z.infer<Schema>>(
 		if (!result.valid) return;
 		isSubmitting = true;
 		try {
-			await options?.onSubmit?.(result.data);
+			if (options?.onSubmit) {
+				await options.onSubmit(result.data);
+			} else if (options?.handler) {
+				await (options.handler.execute as (data: T) => Promise<void>)(result.data);
+			}
 		} finally {
 			isSubmitting = false;
 		}
@@ -84,6 +102,10 @@ export function createForm<Schema extends z.ZodTypeAny, T = z.infer<Schema>>(
 		get schema(): z.ZodTypeAny {
 			return schema;
 		},
+		/** The command handler given at creation, if any. */
+		get handler(): Handler {
+			return options?.handler as Handler;
+		},
 		validate,
 		submit,
 		reset
@@ -92,7 +114,8 @@ export function createForm<Schema extends z.ZodTypeAny, T = z.infer<Schema>>(
 
 export type FormState<
 	Schema extends z.ZodTypeAny = z.ZodTypeAny,
-	T = z.infer<Schema>
-> = ReturnType<typeof createForm<Schema, T>>;
+	T = z.infer<Schema>,
+	Handler extends AnyCommandHandler | undefined = AnyCommandHandler | undefined
+> = ReturnType<typeof createForm<Schema, T, Handler>>;
 
 export default createForm;

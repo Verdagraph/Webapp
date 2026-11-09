@@ -1,11 +1,12 @@
 import { z } from 'zod';
 
-import { rangeSchema } from '../range.js';
+import { lengthRange } from '../fields.js';
 import { NutrientRoleEnumOptions, RootTypeEnumOptions } from './schema.js';
 
 /** Field specifications. */
-const rootDepthSchema = rangeSchema(z.number().min(0).max(30)).describe(
-	'The depth in meters the roots of a mature plant reach. Plants with different root depths can share soil.'
+const rootDepthSchema = lengthRange(
+	'The depth in meters the roots of a mature plant reach. Plants with different root depths can share soil.',
+	30
 );
 const rootTypeSchema = z
 	.enum(RootTypeEnumOptions)

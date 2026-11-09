@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
-import { rangeSchema } from '../range.js';
+import { boundedRange } from '../fields.js';
 
 /** Field specifications. */
-const soilTempSchema = rangeSchema(z.number().min(-10).max(60)).describe(
-	'The soil temperature range in degrees Celsius seeds germinate best in.'
+const soilTempSchema = boundedRange(
+	'The soil temperature range in degrees Celsius seeds germinate best in.',
+	{ minimum: -10, maximum: 60, unit: ' C' }
 );
 const needsLightSchema = z
 	.boolean()

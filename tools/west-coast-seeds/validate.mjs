@@ -13,9 +13,7 @@ const dir =
 	path.join(here, '..', '..', 'packages', 'models', 'src', 'cultivars', 'defaults');
 
 let failed = false;
-for (const file of fs
-	.readdirSync(dir)
-	.filter((f) => f.endsWith('.json') && !f.includes('.extras.'))) {
+for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.json'))) {
 	const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
 	const result = models.CultivarCollectionExportSchema.safeParse(data);
 	if (!result.success) {

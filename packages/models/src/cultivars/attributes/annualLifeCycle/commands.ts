@@ -1,33 +1,28 @@
 import { z } from 'zod';
 
-import { rangeSchema } from '../range.js';
+import { daysRange } from '../fields.js';
 import { MaturityBasisEnumOptions } from './schema.js';
 
 /** Field specifications. */
-const days = (description: string) =>
-	rangeSchema(
-		z.number().min(0, 'May not be negative.').max(3650, 'May be at most 3650 days.')
-	).describe(description);
-
-const sowToGermSchema = days(
+const sowToGermSchema = daysRange(
 	'The expected amount of days from starting a seed to its germination.'
 );
-const germToTransplantSchema = days(
+const germToTransplantSchema = daysRange(
 	'The expected amount of days from the germination of a seed to when it will be ready for transplant, which is the age of the seedling at transplant. \
             For cultivars which are not able to be transplanted, this value is unused.'
 );
-const germToFirstHarvestSchema = days(
+const germToFirstHarvestSchema = daysRange(
 	'The expected amount of days from the germination of a seed to when it will be ready for a harvest. \
             If left unset, it is derived from the maturity days and their basis.'
 );
-const firstToLastHarvestSchema = days(
+const firstToLastHarvestSchema = daysRange(
 	'The expected amount of days the first and last harvest of a plant. \
             For plants which only have one harvest, this value is zero.'
 );
-const lastHarvestToExpirySchema = days(
+const lastHarvestToExpirySchema = daysRange(
 	'The expected amount of days from the last harvest of a plant to its expiry.'
 );
-const maturityDaysSchema = days(
+const maturityDaysSchema = daysRange(
 	'The days to maturity as the seed packet states them, counted from the point given by the maturity basis.'
 );
 const maturityBasisSchema = z

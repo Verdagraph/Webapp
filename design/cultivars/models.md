@@ -264,7 +264,7 @@ The annual lifecycle defines the length of the stages of life for annual plants.
 - germToFirstHarvest: The expected amount of days from germination to the first harvest. If left unset, it is derived from the maturity days and basis (see below).
 - firstToLastHarvest: The days between the first and last harvest of a plant. For plants which only have one harvest, this value is zero.
 - lastHarvestToExpiry: The days from the last harvest to expiry.
-- maturityDays and maturityBasis: The days to maturity as the packet states them, and what they are counted from: SOWING, GERMINATION or TRANSPLANT. They are stored as stated, because the conversion depends on how a Plant is started.
+- maturityDays and maturityBasis: The days to maturity as the packet states them, and what they are counted from: SOWING, GERMINATION or TRANSPLANT. They are stored as stated, because the conversion depends on how a Plant is started. When no basis is set, the Planner follows the preferred origin: SOWING if it is direct seeding, TRANSPLANT otherwise, and notes the assumption. Without a preferred origin it counts from germination.
 
 The Planner converts the packet figure to a timeline from germination per Plant (see [Plant generation](../plants/models.md)). From SOWING, germination time is subtracted. From TRANSPLANT, the seedling age is added. A Plant which is transplanted is also set back by `transplantShockDays`. Anything it has to assume, because the Cultivar does not say, is reported with the generated history.
 

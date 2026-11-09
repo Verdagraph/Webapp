@@ -1,11 +1,9 @@
 import { z } from 'zod';
 
-import { rangeSchema } from '../range.js';
+import { daysRange } from '../fields.js';
 
 /** Field specifications. */
-const bloomDaysSchema = rangeSchema(z.number().min(0).max(3650)).describe(
-	'The days a plant stays in bloom.'
-);
+const bloomDaysSchema = daysRange('The days a plant stays in bloom.');
 export const fields = { bloomDaysSchema };
 
 /** Update command. */

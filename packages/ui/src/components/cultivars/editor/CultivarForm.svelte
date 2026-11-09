@@ -10,8 +10,7 @@
 
 	import { Form, Input, Select, Textarea } from '$core';
 	import type { ControlProps } from '$core';
-	import type createCommandHandler from '$state/commandHandler.svelte';
-	import type { FormState } from '$state/form';
+	import type { AnyCommandHandler, FormState } from '$state/form';
 
 	import SchemaFields from './SchemaFields.svelte';
 
@@ -21,13 +20,13 @@
 	type Props = {
 		/** Create or update form: both share these fields. */
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		form: FormState<z.ZodTypeAny, any>;
-		handler: ReturnType<typeof createCommandHandler<never[], unknown>>;
+		form: FormState<z.ZodTypeAny, any, AnyCommandHandler>;
 		/** Cultivars which may be chosen as the parent. */
 		parentOptions: Pick<Cultivar, 'id' | 'name'>[];
 		submitLabel: string;
 	};
-	let { form, handler, parentOptions, submitLabel }: Props = $props();
+	let { form, parentOptions, submitLabel }: Props = $props();
+	const handler = $derived(form.handler);
 
 	const parentName = $derived(
 		parentOptions.find((option) => option.id === form.data.parentId)?.name ?? 'None'

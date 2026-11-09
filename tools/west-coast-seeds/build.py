@@ -14,7 +14,8 @@ import collections, datetime, json, os, re, sys, unicodedata
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(HERE, '.cache')
 OUT = os.path.normpath(os.path.join(HERE, '..', '..', 'packages', 'models', 'src', 'cultivars', 'defaults'))
-TODAY = datetime.date.today().isoformat()
+# Date the cached pages were fetched. Update when the cache is refreshed.
+TODAY = '2026-10-20'
 EXPORT_VERSION = 1
 COLLECTION_NAME = 'West Coast Seeds'
 COLLECTION_SLUG = 'west-coast-seeds'
@@ -347,10 +348,22 @@ def clean(value):
     return value
 
 
+def seedling_age_from_germination(curated):
+    """Packets give seedling age from sowing, but germToTransplant counts from germination, so the
+    expected days to germinate are taken off. Left as stated where germination time is unknown."""
+    age = curated.get('transplantAge')
+    germ = curated.get('germ')
+    if age is None or germ is None:
+        return age
+    germ_days = sum(germ) / 2 if isinstance(germ, tuple) else germ
+    low, high = (age if isinstance(age, tuple) else (age, age))
+    return (max(low - germ_days, 0), max(high - germ_days, 0))
+
+
 def crop_attributes(curated, group, facts, override=None):
     c = {**curated, **(override or {})}
     attrs = {}
-    life = {'sowToGerm': rng(c.get('germ'), digits=1), 'germToTransplant': rng(c.get('transplantAge'), digits=1)}
+    life = {'sowToGerm': rng(c.get('germ'), digits=1), 'germToTransplant': rng(seedling_age_from_germination(c), digits=1)}
     basis = {'sowing': 'SOWING', 'transplant': 'TRANSPLANT', 'germination': 'GERMINATION'}.get(c.get('basis'))
     if basis:
         life['maturityBasis'] = basis
@@ -448,7 +461,7 @@ def category_of(product):
 
 
 def build():
-    cultivars, extras_cultivars, extras_crops = [], {}, {}
+    cultivars, alternate_urls = [], {}
     claimed = {}
 
     def claim(name, aliases=()):
@@ -528,7 +541,6 @@ def build():
             node['names'] = [a for a in CROP_ALIASES.get(curated['crop'], []) if claim(a)]
             nodes[key] = node
             cultivars.append(node)
-            extras_crops[name] = {k: v for k, v in {'maturityBasisAssumed': True if curated.get('basisAssumed') else None, 'startIndoorsWeeksBeforePlantingOut': list(curated['indoorWeeksBeforePlantingOut']) if isinstance(curated.get('indoorWeeksBeforePlantingOut'), tuple) else curated.get('indoorWeeksBeforePlantingOut')}.items() if v}
             return node
 
         for gid, group_products in sorted(((g, v) for g, v in by_group.items() if g is not None), key=lambda kv: E[kv[0]]['crop']):
@@ -542,7 +554,7 @@ def build():
                 if len(title_name) < 3:
                     title_name = sanitize(p['title'] + ' ' + curated['crop'])
                 if norm(title_name) in group_names.get(gid, {}):
-                    extras_cultivars[group_names[gid][norm(title_name)]].setdefault('alternateUrls', []).append(p['url'])
+                    alternate_urls.setdefault(group_names[gid][norm(title_name)], []).append(p['url'])
                     continue
                 candidates = [t for t in p['collections'] if is_crop_tag(t) and t not in own]
                 override_tags = [t for t in candidates if t in curated.get('overrides', {})]
@@ -591,7 +603,6 @@ def build():
                     cultivars.append({'name': name, 'names': aliases, 'tags': tags, 'abbreviation': abbreviation(strip_variant(p['title'])), 'description': description, 'attributes': attrs, 'parentName': parent['name']})
                     key_name = name
                 group_names[gid][norm(title_name)] = key_name
-                extras_cultivars[key_name] = {k: v for k, v in {'color': p.get('color'), 'packSizes': p['packSizes'] or None, 'subtype': sname if chosen else None}.items() if v}
 
         for p in sorted(by_group.get(None, []), key=lambda r: r['title'].lower()):
             name = sanitize(re.sub(r'\bSeed Tape\b|\(.*?\)', ' ', p['title']))
@@ -601,7 +612,6 @@ def build():
             attrs = clean({'color': {'baseColor': COLOR_HEX.get((p.get('color') or '').strip().title())}, 'webResources': {'sourceUrl': p['url'], 'retrievedAt': TODAY}})
             bits = [t.replace('-', ' ') for t in tags if t in ('open-pollinated', 'hybrid', 'heirloom', 'certified-organic')]
             cultivars.append({'name': name, 'names': [], 'category': category, 'tags': tags, 'abbreviation': abbreviation(strip_variant(p['title'])), 'description': (', '.join(bits).capitalize() + '.') if bits else '', 'attributes': attrs})
-            extras_cultivars[name] = {k: v for k, v in {'color': p.get('color'), 'packSizes': p['packSizes'] or None, 'noGrowingSections': True}.items() if v}
 
     # Flower bulbs: one parent for planting depth, then a cultivar per genus.
     bulbs = [r for r in raw if r['fetched'] and r['productType'] == 'Flower Bulbs']
@@ -625,7 +635,6 @@ def build():
             aliases = [alias] if len(alias) >= 3 and norm(alias) != norm(name) and claim(alias) else []
             attrs = variety_attributes(p, {})
             cultivars.append({'name': name, 'names': aliases, 'tags': variety_tags(p), 'abbreviation': abbreviation(rest or genus), 'description': '', 'attributes': attrs, 'parentName': genus if genus in genus_nodes else 'Flower Bulb'})
-            extras_cultivars[name] = {k: v for k, v in {'color': p.get('color'), 'packSizes': p['packSizes'] or None}.items() if v}
 
     out = []
     for cu in cultivars:
@@ -634,20 +643,20 @@ def build():
         d['tags'] = sorted(set(d.get('tags', [])))
         if d.get('category') is None:
             d.pop('category', None)
+        if d['name'] in alternate_urls:
+            d['attributes'].setdefault('webResources', {})['referenceUrls'] = sorted(set(alternate_urls[d['name']]))
         out.append(d)
     collection = {
         'name': COLLECTION_NAME, 'visibility': 'PUBLIC',
         'description': f'Seed packet growing details compiled from westcoastseeds.com (retrieved {TODAY}). Facts only: names, timings, depths and spacings.',
         'tags': ['West Coast Seeds'],
     }
-    return ({'version': EXPORT_VERSION, 'collection': collection, 'cultivars': out},
-            {'source': 'https://www.westcoastseeds.com', 'retrieved': TODAY, 'crops': extras_crops, 'cultivars': extras_cultivars}, skipped)
+    return {'version': EXPORT_VERSION, 'collection': collection, 'cultivars': out}, skipped
 
 
 if __name__ == '__main__':
-    data, extras, skipped = build()
+    data, skipped = build()
     out_dir = sys.argv[1] if len(sys.argv) > 1 else OUT
     os.makedirs(out_dir, exist_ok=True)
     json.dump(data, open(os.path.join(out_dir, f'{COLLECTION_SLUG}.json'), 'w'), indent=2, ensure_ascii=False)
-    json.dump(extras, open(os.path.join(out_dir, f'{COLLECTION_SLUG}.extras.json'), 'w'), indent=2, ensure_ascii=False)
     print(len(data['cultivars']), 'cultivars; skipped:', dict(skipped))

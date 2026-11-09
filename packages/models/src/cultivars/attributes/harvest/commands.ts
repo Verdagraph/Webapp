@@ -1,15 +1,13 @@
 import { z } from 'zod';
 
-import { rangeSchema } from '../range.js';
+import { daysRange } from '../fields.js';
 import { HarvestPartEnumOptions } from './schema.js';
 
 /** Field specifications. */
 const partSchema = z
 	.enum(HarvestPartEnumOptions)
 	.describe('The part of the plant which is harvested.');
-const storageDaysSchema = rangeSchema(z.number().min(0).max(3650)).describe(
-	'The days the harvest keeps once picked.'
-);
+const storageDaysSchema = daysRange('The days the harvest keeps once picked.');
 export const fields = { partSchema, storageDaysSchema };
 
 /** Update command. */

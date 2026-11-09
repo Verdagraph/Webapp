@@ -13,7 +13,7 @@ python3 fetch_catalog.py   # the public product list, about seven requests
 python3 crawl.py           # product pages, one request every two seconds, resumable (about an hour)
 python3 build_raw.py       # combine the catalog and pages into .cache/raw.json
 python3 mkgroups.py        # group products by identical growing text into .cache/groups.json
-python3 build.py           # write the collection and its sidecar
+python3 build.py           # write the collection
 node validate.mjs          # check the output against the project's own import schema
 ```
 

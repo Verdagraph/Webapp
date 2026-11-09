@@ -1,12 +1,11 @@
 # Default cultivar collections
 
-The default cultivar collection, compiled from [West Coast Seeds](https://www.westcoastseeds.com) product pages, retrieved 2026-10-17.
+The default cultivar collection, compiled from [West Coast Seeds](https://www.westcoastseeds.com) product pages, retrieved 2026-10-20.
 
-| File                           | Contents                                                          |
-| ------------------------------ | ----------------------------------------------------------------- |
-| `west-coast-seeds.json`        | 1,313 cultivars: crops, subtypes and varieties, in one collection |
-| `west-coast-seeds.extras.json` | Facts the cultivar schema has no field for, and provenance        |
-| `index.ts`                     | Loads the collection and turns it into rows to insert             |
+| File                    | Contents                                                          |
+| ----------------------- | ----------------------------------------------------------------- |
+| `west-coast-seeds.json` | 1,313 cultivars: crops, subtypes and varieties, in one collection |
+| `index.ts`              | Loads the collection and turns it into rows to insert             |
 
 Not included: sprouting seeds, microgreens, and non-plant products.
 
@@ -24,7 +23,8 @@ The file is a `CultivarCollectionExportSchema` export (`../exportImport.ts`). Cu
 
 The growing text on a West Coast Seeds page is the same for every variety of a crop, so it was read once per crop by hand (`tools/west-coast-seeds/curated_*.py`). Where the text gave a range it is stored as a range.
 
-- Days to maturity are stored as stated, with what they count from (`maturityBasis`) on the crop. The Planner converts them for each way a plant is started, so a crop whose page does not say what they count from has an assumed basis, listed in the sidecar.
+- Days to maturity are stored as stated, with what they count from (`maturityBasis`) on the crop. The Planner converts them for each way a plant is started, so a crop whose page does not say what they count from has an assumed basis (Squash, Pumpkin, Zucchini, Kale, Pole Bean, Runner Bean, Drying Bean, Turnip, Leek and Tomatillo). Other pack details the schema has no field for, such as pack sizes and flower colour names, are not kept. Pages for the same variety under another listing are kept as `webResources.referenceUrls`.
+- Seedling age (`germToTransplant`) counts from germination, but packets give it from sowing, so the crop's days to germinate (midpoint) are taken off. Where a crop has no germination time, the packet figure is kept as stated.
 - Sowing windows are set only where the text gives them in relation to a frost date (`tools/west-coast-seeds/curated_windows.py`): 94 crops. Seasonal wording with no frost date, such as "late May", is left out. A window the text does not end has no close, and the Planner ends it where a plant can still be harvested.
 - `sunExposure` lists every exposure on the page ("full sun to partial shade" is both).
 - `origin.preferred` is the way the page puts first (direct sow or start indoors), and `allowed` follows from whether it can be transplanted. A crop whose page says it transplants poorly has `transplantTolerance` POOR.

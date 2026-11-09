@@ -20,11 +20,12 @@ export function createCultivarActions(selection: EditorSelectionContext) {
 		onSuccess: (cultivar) => selection.select({ kind: 'cultivar', id: cultivar.id })
 	});
 	const createFormState = createForm(CultivarCreateCommandSchema, {
-		onSubmit: (data) => createHandler.execute(data)
+		handler: createHandler
 	});
 
 	const updateHandler = createCommandHandler(ctx.controller.cultivars.updateCultivar);
 	const updateFormState = createForm(CultivarUpdateCommandSchema, {
+		handler: updateHandler,
 		onSubmit: (data) => {
 			if (selection.selection?.kind === 'cultivar') {
 				return updateHandler.execute(selection.selection.id, data);
@@ -52,9 +53,9 @@ export function createCultivarActions(selection: EditorSelectionContext) {
 	}
 
 	return {
-		create: { handler: createHandler, form: createFormState },
-		update: { handler: updateHandler, form: updateFormState },
-		delete: { handler: deleteHandler },
+		create: createFormState,
+		update: updateFormState,
+		delete: deleteHandler,
 		resetCreateForm
 	};
 }
